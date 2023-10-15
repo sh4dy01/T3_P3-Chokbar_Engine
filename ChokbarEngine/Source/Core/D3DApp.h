@@ -20,25 +20,26 @@ public:
 
 	D3DApp(HINSTANCE);
 	~D3DApp();
-	void InitializeWindow();
-	void CreateDepthStencilBuffer();
 
-	void CheckMSAAQualitySupport();
-	void CreateFenceAndDescriptor();
 
 public:
 
 	static D3DApp* GetInstance() { return m_pApp; }
 
 	void Initialize() override;
+	void OnResize();
 
 private:
 
 	void InitializeD3D12();
+	void InitializeWindow();
 	void EnableDebugLayer();
 	void CreateDevice();
+	void CheckMSAAQualitySupport();
+	void CreateFenceAndDescriptor();
 	void CreateCommandObjects();
 	void CreateSwapChain();
+	void CreateDepthStencilBuffer();
 	void CreateRtvAndDsvDescriptorHeaps();
 	void CreateRenderTargetView();
 

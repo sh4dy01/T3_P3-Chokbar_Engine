@@ -29,6 +29,11 @@ void D3DApp::Initialize()
 	InitializeD3D12();
 }
 
+void D3DApp::OnResize()
+{
+
+}
+
 void D3DApp::InitializeWindow()
 {
 	Window::RegisterNewClass();
@@ -45,6 +50,7 @@ void D3DApp::InitializeD3D12()
 	CreateDevice();
 	CreateFenceAndDescriptor();
 	CheckMSAAQualitySupport();
+	CreateCommandObjects();
 	CreateSwapChain();
 	CreateRtvAndDsvDescriptorHeaps();
 	CreateRenderTargetView();
@@ -203,11 +209,6 @@ void D3DApp::CreateRtvAndDsvDescriptorHeaps()
 
 void D3DApp::CreateRenderTargetView()
 {
-	// Release the previous resources we will be recreating.
-	for (int i = 0; i < SWAP_CHAIN_BUFFER_COUNT; ++i)
-		m_pSwapChainBuffer[i].Reset();
-	m_pDepthStencilBuffer.Reset();
-
 	CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHeapHandle(m_pRtvHeap->GetCPUDescriptorHandleForHeapStart());
 	for (UINT i = 0; i < SWAP_CHAIN_BUFFER_COUNT; i++)
 	{
