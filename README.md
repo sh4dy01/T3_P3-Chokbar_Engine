@@ -37,3 +37,35 @@ chore: Toute autre modification (mise à jour de version par exemple)
 
 Le scope
 Cet élément facultatif indique simplement le contexte du commit. Il s’agit des composants de notre projet, voici une liste non exhaustive :
+
+ORGANIZATION
+
+JEU
+
+
+CHOKABR
+  Core
+  Engine
+  Common
+  Platform (optionnal)
+  
+
+
+NOMENCLATURE
+
+Namespace     : ThisIsANamespace
+Class         : ThisIsAClass
+
+Field         : m_Name
+Bool field    : isActive
+Getter boolean: IsActivated()  
+
+Method        : ThisIsAMethod()
+Getter/Setter : GetName() / SetName()
+
+singleton     : m_Instance
+TaClasse::GetInstance() -> m_Instance
+
+
+
+
