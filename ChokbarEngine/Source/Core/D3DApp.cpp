@@ -8,12 +8,17 @@ using Microsoft::WRL::ComPtr;
 D3DApp* D3DApp::m_pApp = nullptr;
 
 
-D3DApp::D3DApp(HINSTANCE hInstance)
-	: Window(L"DX12 App", NULL), m_pInstance(hInstance)
-{
-	// Only one D3DApp can be constructed.
-	assert(m_pApp == nullptr);
+D3DApp::D3DApp() {
+
+	if (m_pApp != nullptr)
+	{
+		MessageBox(NULL, L"Only one instance of D3DApp can be created.", L"Error", MB_OK);
+		return;
+	}
+
 	m_pApp = this;
+
+	m_pInstance = HInstance();
 }
 
 D3DApp::~D3DApp()
@@ -21,12 +26,36 @@ D3DApp::~D3DApp()
 	/*if (md3dDevice != nullptr)
 		FlushCommandQueue();
 	*/
+
 }
 
 void D3DApp::Initialize()
 {
 	InitializeWindow();
 	InitializeD3D12();
+}
+
+void D3DApp::Update()
+{
+	MSG msg = { 0 };
+
+	m_GameTimer.Reset();
+
+	while (msg.message != WM_QUIT)
+	{
+		// If there are Window messages then process them.
+		if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
+		{
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+		// Otherwise, do animation/game stuff.
+		else
+		{
+			m_GameTimer.Tick();
+			CalculateFrameStats();
+		}
+	}
 }
 
 void D3DApp::OnResize()
@@ -53,8 +82,8 @@ void D3DApp::InitializeD3D12()
 	CreateCommandObjects();
 	CreateSwapChain();
 	CreateRtvAndDsvDescriptorHeaps();
-	CreateRenderTargetView();
-	CreateDepthStencilBuffer();
+	//CreateRenderTargetView();
+	//CreateDepthStencilBuffer();
 
 	m_ScreenViewport.TopLeftX = 0;
 	m_ScreenViewport.TopLeftY = 0;
@@ -220,6 +249,36 @@ void D3DApp::CreateRenderTargetView()
 
 		// Next entry in heap.
 		rtvHeapHandle.Offset(1, m_RtvDescriptorSize);
+	}
+}
+
+void D3DApp::CalculateFrameStats()
+{
+	// Code computes the average frames per second, and also the
+	// average time it takes to render one frame.  These stats
+	// are appended to the window caption bar.
+
+	static int frameCnt = 0;
+	static float timeElapsed = 0.0f;
+
+	frameCnt++;
+
+	// Compute averages over one second period.
+	if ((m_GameTimer.GetTotalTime() - timeElapsed) >= 1.0f)
+	{
+		float fps = (float)frameCnt; // fps = frameCnt / 1
+		float mspf = 1000.0f / fps;
+
+		std::wstring fpsStr = std::to_wstring(fps);
+		std::wstring mspfStr = std::to_wstring(mspf);
+
+		std::wstring windowText = L"    fps: " + fpsStr + L"   mspf: " + mspfStr;
+
+		SetWindowText(Handle(), windowText.c_str());
+
+		// Reset for next average.
+		frameCnt = 0;
+		timeElapsed += 1.0f;
 	}
 }
 

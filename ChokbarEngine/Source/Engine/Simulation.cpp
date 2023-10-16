@@ -5,7 +5,8 @@
 
 namespace Chokbar
 {
-	Simulation::Simulation(): D3DApp(HInstance())
+	Simulation::Simulation()
+		: Window(L"Application", NULL)
 	{
 	}
 
@@ -24,11 +25,8 @@ namespace Chokbar
 		Logger::PrintDebugSeperator();
 
 		//SplashScreen::Open();
-
-		D3DApp::Initialize();
-
-
 	}
+
 
 	LRESULT Simulation::MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{

@@ -1,12 +1,12 @@
 #include "BlankProject.h"
 #include "Engine/Simulation.h"
-#include "Platform/WIN32/WinEntry.h"
+#include "Platform/Windows//WinEntry.h"
 
 
-class Application : public Chokbar::Simulation
-{
+class Application : public D3DApp {
 
 public:
+
 	Application() {}
 	~Application() {}
 
@@ -15,10 +15,10 @@ public:
 	void SetupPerGameSettings();
 
 	/* Initialize the application */
-	void Initialize() {}
+	void Initialize() override;
 
 	/* Game Loop */
-	void Update();
+	void Update() override;
 };
 
 
@@ -31,7 +31,14 @@ void Application::SetupPerGameSettings()
 	PerGameSettings::SetMainIcon(IDI_MAINICON);
 }
 
+void Application::Initialize()
+{
+	D3DApp::Initialize();
+
+}
+
 void Application::Update()
 {
+	D3DApp::Update();
 
 }

@@ -1,11 +1,10 @@
 #pragma once
 
-#include "Platform/Win32/IApplication.h"
-#include "Core/D3DApp.h"
+#include "Platform/Windows/IApplication.h"
 
 namespace Chokbar {
 
-	class CHOKBAR_API Simulation : public Win32::IApplication, public D3DApp {
+	class CHOKBAR_API Simulation : public Win32::IApplication, public Win32::Window {
 
 	public:
 
@@ -13,6 +12,7 @@ namespace Chokbar {
 		~Simulation();
 
 		void PreInitialize() override;
+
 
 		LRESULT MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override;
 

@@ -101,12 +101,13 @@
     <ClCompile Include="Source\Core\D3DUtils.cpp" />
     <ClCompile Include="Source\Core\PerGameSettings.cpp" />
     <ClCompile Include="Source\Engine\Engine.cpp" />
+    <ClCompile Include="Source\Engine\GameTimer.cpp" />
     <ClCompile Include="Source\Engine\Simulation.cpp" />
     <ClCompile Include="Source\Engine\SplashScreen.cpp" />
-    <ClCompile Include="Source\Platform\WIN32\IApplication.cpp" />
-    <ClCompile Include="Source\Platform\WIN32\SubObject.cpp" />
-    <ClCompile Include="Source\Platform\WIN32\Win32Utils.cpp" />
-    <ClCompile Include="Source\Platform\WIN32\Window.cpp" />
+    <ClCompile Include="Source\Platform\Windows\IApplication.cpp" />
+    <ClCompile Include="Source\Platform\Windows\SubObject.cpp" />
+    <ClCompile Include="Source\Platform\Windows\Win32Utils.cpp" />
+    <ClCompile Include="Source\Platform\Windows\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Chokbar.h" />
@@ -119,13 +120,14 @@
     <ClInclude Include="Source\Core\D3DUtils.h" />
     <ClInclude Include="Source\Core\PerGameSettings.h" />
     <ClInclude Include="Source\Engine\Engine.h" />
+    <ClInclude Include="Source\Engine\GameTimer.h" />
     <ClInclude Include="Source\Engine\Simulation.h" />
     <ClInclude Include="Source\Engine\SplashScreen.h" />
-    <ClInclude Include="Source\Platform\WIN32\IApplication.h" />
-    <ClInclude Include="Source\Platform\WIN32\SubObject.h" />
-    <ClInclude Include="Source\Platform\WIN32\Win32Utils.h" />
-    <ClInclude Include="Source\Platform\WIN32\Window.h" />
-    <ClInclude Include="Source\Platform\WIN32\WinEntry.h" />
+    <ClInclude Include="Source\Platform\Windows\IApplication.h" />
+    <ClInclude Include="Source\Platform\Windows\SubObject.h" />
+    <ClInclude Include="Source\Platform\Windows\Win32Utils.h" />
+    <ClInclude Include="Source\Platform\Windows\Window.h" />
+    <ClInclude Include="Source\Platform\Windows\WinEntry.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

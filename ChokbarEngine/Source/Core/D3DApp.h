@@ -5,20 +5,23 @@
 #include <crtdbg.h>
 #endif
 
+#include "Engine/GameTimer.h"
 #include "Core/d3dx12.h"
 #include <dxgi1_4.h>
 #include <wrl.h>
+
+#include "Engine/Simulation.h"
 
 #pragma comment(lib,"d3dcompiler.lib")
 #pragma comment(lib, "D3D12.lib")
 #pragma comment(lib, "dxgi.lib")
 
 
-class CHOKBAR_API D3DApp : public Win32::Window {
+class CHOKBAR_API D3DApp : public Chokbar::Simulation {
 
 public:
 
-	D3DApp(HINSTANCE);
+	D3DApp();
 	~D3DApp();
 
 
@@ -27,12 +30,14 @@ public:
 	static D3DApp* GetInstance() { return m_pApp; }
 
 	void Initialize() override;
+	void Update() override;
 	void OnResize();
 
 private:
 
 	void InitializeD3D12();
 	void InitializeWindow();
+
 	void EnableDebugLayer();
 	void CreateDevice();
 	void CheckMSAAQualitySupport();
@@ -43,6 +48,8 @@ private:
 	void CreateRtvAndDsvDescriptorHeaps();
 	void CreateRenderTargetView();
 
+	void CalculateFrameStats();
+
 	D3D12_CPU_DESCRIPTOR_HANDLE CurrentBackBufferView() const;
 	D3D12_CPU_DESCRIPTOR_HANDLE DepthStencilView() const;
 
@@ -50,13 +57,14 @@ private:
 
 	static D3DApp *m_pApp;
 
-	HINSTANCE	m_hAppInst;					// application instance handle
+	GameTimer m_GameTimer;
+
+	HINSTANCE m_pInstance;
 
 	// Set true to use 4X MSAA (4.1.8).  The default is false.
 	bool		m_4xMsaaState = false;    // 4X MSAA enabled
 	UINT		m_4xMsaaQuality = 0;      // quality level of 4X MSAA
 
-	HINSTANCE m_pInstance;
 
 	Microsoft::WRL::ComPtr<IDXGIFactory4> m_pDxgiFactory;
 	Microsoft::WRL::ComPtr<IDXGISwapChain> m_pSwapChain;
