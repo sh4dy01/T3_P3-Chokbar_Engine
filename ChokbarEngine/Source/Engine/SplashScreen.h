@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Platform/WIN32/Window.h"
+#include "../Platform/Windows/Window.h"
 
 namespace SplashScreen {
 

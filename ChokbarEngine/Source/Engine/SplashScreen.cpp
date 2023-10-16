@@ -1,7 +1,7 @@
 #include "Chokbar.h"
 #include "SplashScreen.h"
 
-#include "Platform/Win32/Win32Utils.h"
+#include "Platform/Windows/Win32Utils.h"
 
 
 namespace SplashScreen

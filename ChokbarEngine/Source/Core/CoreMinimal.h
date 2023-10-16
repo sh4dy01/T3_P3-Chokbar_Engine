@@ -9,8 +9,8 @@
 #include "Common/Time.h"
 
 #ifdef WIN32
-	#include "Platform/Win32/Win32Utils.h"
-	#include "Platform/Win32/SubObject.h"
-	#include "Platform/Win32/Window.h"
-	#include "Platform/Win32/IApplication.h"
+	#include "Platform/Windows/Win32Utils.h"
+	#include "Platform/Windows/SubObject.h"
+	#include "Platform/Windows/Window.h"
+	#include "Platform/Windows/IApplication.h"
 #endif
