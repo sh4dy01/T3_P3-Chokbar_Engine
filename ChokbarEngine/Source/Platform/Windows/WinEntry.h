@@ -18,20 +18,8 @@ int CALLBACK WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
 		EntryApp->PreInitialize();
 		EntryApp->Initialize();
 
-		MSG msg = { 0 };
-		while (msg.message != WM_QUIT)
-		{
-			// If there are Window messages then process them.
-			if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
-			{
-				TranslateMessage(&msg);
-				DispatchMessage(&msg);
-			}
-			else
-			{
-				EntryApp->Update();
-			}
-		}
+		EntryApp->Update();
+
 	}
 	catch (DxException& e)
 	{
