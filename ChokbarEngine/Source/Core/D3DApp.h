@@ -17,13 +17,13 @@
 /* HELPER STRUCTS                                                            */
 /* ------------------------------------------------------------------------- */
 #pragma region Helper Structs
-struct Vertex
+struct CHOKBAR_API Vertex
 {
 	DirectX::XMFLOAT3 Pos;
 	UINT32 Color;
 };
 
-struct ObjectConstants
+struct CHOKBAR_API ObjectConstants
 {
 	DirectX::XMMATRIX WorldViewProj = DirectX::XMMatrixIdentity();
 };

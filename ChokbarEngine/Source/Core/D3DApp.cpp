@@ -253,8 +253,8 @@ void D3DApp::CreateSwapChain()
 	sd.BufferDesc.Format = m_BackBufferFormat;
 	sd.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 	sd.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
-	sd.SampleDesc.Count = m_4xMsaaState ? 4 : 1;
-	sd.SampleDesc.Quality = m_4xMsaaState ? (m_4xMsaaQuality - 1) : 0;
+	sd.SampleDesc.Count = 1;
+	sd.SampleDesc.Quality = 0;
 	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	sd.BufferCount = SWAP_CHAIN_BUFFER_COUNT;
 	HWND hwnd = Handle();
@@ -526,7 +526,7 @@ void D3DApp::CreateRootSignature()
 void D3DApp::CreatePipelineStateObject()
 {
 	m_vsByteCode = CompileShader(L"Shader/vertex_pixel.hlsl", nullptr, "vs_main", "vs_5_0");
-	m_psByteCode = CompileShader(L"shader/vertex_pixel.hlsl", nullptr, "ps_main", "ps_5_0");
+	m_psByteCode = CompileShader(L"Shader/vertex_pixel.hlsl", nullptr, "ps_main", "ps_5_0");
 
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc;
 	ZeroMemory(&psoDesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
@@ -541,8 +541,8 @@ void D3DApp::CreatePipelineStateObject()
 	psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 	psoDesc.NumRenderTargets = 1;
 	psoDesc.RTVFormats[0] = m_BackBufferFormat;
-	psoDesc.SampleDesc.Count = m_4xMsaaState ? 4 :1; 
-	psoDesc.SampleDesc.Quality =m_4xMsaaState ? (m_4xMsaaQuality - 1) : 0; 
+	psoDesc.SampleDesc.Count = 1; 
+	psoDesc.SampleDesc.Quality = 0; 
 	psoDesc.DSVFormat = m_DepthStencilFormat;
 
 	HRESULT hr = m_pD3dDevice->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(m_pipelineStateObject.GetAddressOf()));
