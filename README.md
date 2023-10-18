@@ -1,7 +1,6 @@
 # ChokbarEngine
 
-Git Branches 
-Aucun Commit dans dev et master. Pr dans dev.
+Projet n°3 de notre 3ème année en G.Tech.  
 
 
 ## Nomenclature du code
@@ -23,10 +22,11 @@ TaClasse::GetInstance() -> m_Instance
 
 
 ## Nomenclature des branches
+Aucun Commit dans dev et master. Pr dans dev.  
 type/name
 
 ### Les types de branches 
-Le type d’une branche doit être clair afin de comprendre le but de celle-ci. 
+Le type d’une branche doit être clair afin de comprendre le but de celle-ci.  
 Voici une liste non exhaustive des types de branches :
 
 - feature: Ajout d’une nouvelle fonctionnalité
@@ -55,17 +55,17 @@ Le type nous informe du type de commit. Smiley autorisé.
 
 
 ### Le scope 
-Cet élément facultatif indique simplement le contexte du commit. 
+Cet élément facultatif indique simplement le contexte du commit.  
 Il s’agit des composants de notre projet.
 
 
 ## Organisation des fichiers
 
-JEU
+- JEU  
 
-CHOKBAR
-  Core   : éléments nécessaires au bon fonctionnement du moteur (ex : D3DApp...)
-  Engine : éléments spécifiques au moteur (exemple : Components, GameTimer...)
-  Common : éléments en commun, accessible partout (ex : Logger...)
-  Platform (optionnal) : élément spécifique à la plateforme (fenêtre windows, WinEntry...)
+- CHOKBAR  
+  - Core   : éléments nécessaires au bon fonctionnement du moteur (ex : D3DApp...)  
+  - Engine : éléments spécifiques au moteur (exemple : Components, GameTimer...)  
+  - Common : éléments en commun, accessible partout (ex : Logger...)  
+  - Platform (optionnal) : élément spécifique à la plateforme (fenêtre windows, WinEntry...)  
 
