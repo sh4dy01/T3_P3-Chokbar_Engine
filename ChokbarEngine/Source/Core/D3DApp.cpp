@@ -55,22 +55,28 @@ void D3DApp::Run()
 			DispatchMessage(&msg);
 		}
 		
+		m_GameTimer.Tick();
+		
 		{
-			Update();
+			Update(m_GameTimer.GetDeltaTime());
 			Render();
 		}
 	}
 }
 
-void D3DApp::Update()
+void D3DApp::Update(const float dt)
 {
-	m_GameTimer.Tick();
-	m_zRotation += 1.0f * m_GameTimer.GetDeltaTime();
+	m_zRotation += 0.05f;
+	OutputDebugString(L"Update : ");
+	OutputDebugString(std::to_wstring(m_zRotation).c_str());
+	OutputDebugString(L"\n");
 	CalculateFrameStats();
 }
 
 void D3DApp::Render()
 {
+	OutputDebugString(L"Render : ");
+
 	UpdateConstantBuffers();
 	
 	// Prepare for render
@@ -130,7 +136,9 @@ void D3DApp::Render()
 
 void D3DApp::OnResize()
 {
-
+	RECT clientR;
+	GetClientRect(Handle(), &clientR);
+	Window::Size(clientR.right - clientR.left, clientR.bottom - clientR.top);
 }
 
 void D3DApp::InitializeWindow()
@@ -169,7 +177,7 @@ void D3DApp::CreateDevice()
 	D3D12CreateDevice(nullptr, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&m_pD3dDevice));
 	
 #if defined(DEBUG) || defined(_DEBUG)
-	// DEBUG_CreateInfoQueue();
+	//DEBUG_CreateInfoQueue();
 #endif
 }
 
@@ -367,8 +375,8 @@ void D3DApp::CreateDepthStencilBuffer()
 	depthStencilDesc.DepthOrArraySize = 1;
 	depthStencilDesc.MipLevels = 1;
 	depthStencilDesc.Format = m_DepthStencilFormat;
-	depthStencilDesc.SampleDesc.Count = m_4xMsaaState ? 4 : 1;
-	depthStencilDesc.SampleDesc.Quality = m_4xMsaaState ? (m_4xMsaaQuality - 1) : 0;
+	depthStencilDesc.SampleDesc.Count = 1;
+	depthStencilDesc.SampleDesc.Quality = 0;
 	depthStencilDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
 	depthStencilDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
 
@@ -411,7 +419,7 @@ void D3DApp::CreateVertexAndIndexBuffers()
 {
 	Vertex vList[] =
 	{
-		{ XMFLOAT3(0.0f, 1.0f, 0.0f), 0xFF00FF00},
+		{ XMFLOAT3(0.0f, 1.0f, 0.0f), 0xFF0000FF},
 		{ XMFLOAT3(-0.5f, 0.0f, -0.5f), 0xFF000000 },
 		{ XMFLOAT3(-0.5f, 0.0f, 0.5f), 0xFF000000 },
 		{ XMFLOAT3(0.5f, 0.0f, 0.5f), 0xFF000000 },
@@ -483,6 +491,9 @@ void D3DApp::UpdateConstantBuffers()
 
 	projection = XMMatrixPerspectiveFovLH(XMConvertToRadians(70.0F), Window::Size().cx / Window::Size().cy, 0.05F, 1000.0F);
 
+	OutputDebugStringA(std::to_string(m_zRotation).c_str());
+	OutputDebugStringA("\n");
+	
 	world = XMMatrixRotationY(m_zRotation);
 
 	objConstants.WorldViewProj = world * view * projection;

@@ -36,9 +36,13 @@ namespace Win32
 	LRESULT Window::MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 
-		switch (message) {
-
-
+		switch (message) 
+		{
+		case WM_QUIT:
+		case WM_CLOSE:
+		case WM_DESTROY:
+			PostQuitMessage(0);
+			break;
 		}
 
 		return SubObject::MessageHandler(hwnd, message, wParam, lParam);

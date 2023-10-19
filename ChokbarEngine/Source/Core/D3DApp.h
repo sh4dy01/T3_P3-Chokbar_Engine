@@ -42,15 +42,16 @@ public:
 
 	static D3DApp* GetInstance() { return m_pApp; }
 
-	virtual void Initialize() override;
+	void Initialize() override;
 
-	virtual void Run() override;
+	void Run() override;
 
 	void OnResize();
 
 protected:
-	virtual void Update() override;
-	virtual void Render() override;
+	
+	void Update(const float dt) override;
+	void Render() override;
 
 private:
 
@@ -173,7 +174,7 @@ private:
 	We use a root signature to define the resources that are going to be used by the shaders
 	Therefore, the root signature will be created with an array of RootParameter that express where the exprected resource by the shader is located */
 	ComPtr<ID3D12RootSignature> m_rootSignature;
-	int m_zRotation;
+	float m_zRotation;
 
 	/* D3D12 PipelineStateObject : (PSO : Pipeline State Object) Represents the state of the pipeline
 	We use a PSO to define the state of the pipeline. This includes the shaders, the input layout, the render targets, the depth stencil buffer, etc... */

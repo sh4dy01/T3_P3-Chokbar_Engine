@@ -27,7 +27,7 @@ namespace Win32
 
 	protected:
 		/* Game Loop */
-		virtual void Update() = 0;
+		virtual void Update(const float dt) = 0;
 
 		virtual void Render() = 0;
 	};

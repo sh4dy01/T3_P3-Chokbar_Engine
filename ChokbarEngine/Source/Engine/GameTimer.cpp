@@ -4,7 +4,7 @@
 GameTimer::GameTimer()
 	: m_SecondsPerCount(0.0), m_DeltaTime(-1.0), m_BaseTime(0), m_PausedTime(0), m_StopTime(0), m_PrevTime(0), m_CurrTime(0), isStopped(false)
 {
-	__int64 countsPerSec;
+	__int64 countsPerSec = 0;
 	QueryPerformanceFrequency((LARGE_INTEGER*)&countsPerSec);
 
 	m_SecondsPerCount = 1.0 / static_cast<double>(countsPerSec);
@@ -74,7 +74,8 @@ void GameTimer::Tick()
 	}
 
 	// Get the time this frame
-	const auto currTime = GetCurrentFrameTime();
+	__int64 currTime = 0;
+	QueryPerformanceCounter((LARGE_INTEGER*)&currTime);
 	m_CurrTime = currTime;
 
 	// Time difference between this frame and the previous.
@@ -124,9 +125,9 @@ float GameTimer::GetTotalTime()
 	// mBaseTime mStopTime startTime mCurrTime
 	else
 	{
-		OutputDebugString(L"Total time: ");
-		OutputDebugStringA(std::to_string(((m_CurrTime - m_PausedTime) - m_BaseTime) * m_SecondsPerCount).c_str());
-		OutputDebugString(L"\n");
+		//OutputDebugString(L"Total time: ");
+		//OutputDebugStringA(std::to_string(((m_CurrTime - m_PausedTime) - m_BaseTime) * m_SecondsPerCount).c_str());
+		//OutputDebugString(L"\n");
 
 		return static_cast<float>(((m_CurrTime - m_PausedTime) - m_BaseTime) * m_SecondsPerCount);
 	}
