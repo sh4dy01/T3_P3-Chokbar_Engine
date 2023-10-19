@@ -13,9 +13,6 @@ namespace Chokbar {
 
 		void PreInitialize() override;
 
-		virtual void Render();
-
-
 		LRESULT MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override;
 
 

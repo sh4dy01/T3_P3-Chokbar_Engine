@@ -42,10 +42,15 @@ public:
 
 	static D3DApp* GetInstance() { return m_pApp; }
 
-	void Initialize() override;
-	void Update() override;
-	void Render() override;
+	virtual void Initialize() override;
+
+	virtual void Run() override;
+
 	void OnResize();
+
+protected:
+	virtual void Update() override;
+	virtual void Render() override;
 
 private:
 
@@ -99,8 +104,7 @@ private:
 
 	/* D3D12 Factory : Used to create the swap chain */
 	Microsoft::WRL::ComPtr<IDXGIFactory4> m_pDxgiFactory;
-	/* D3D12 SwapChain : Used to swap the back buffer */
-	Microsoft::WRL::ComPtr<IDXGISwapChain> m_pSwapChain;
+
 
 	/* D3D12 Device : Represents a GPU device */
 	Microsoft::WRL::ComPtr<ID3D12Device> m_pD3dDevice;
@@ -133,8 +137,12 @@ private:
 
 	/* Number of buffer in the swapchain */
 	static const int SWAP_CHAIN_BUFFER_COUNT = 2;
+	/* D3D12 SwapChain : Used to swap the back buffer */
+	Microsoft::WRL::ComPtr<IDXGISwapChain> m_pSwapChain;
+	/* Buffer used by the swap chain (contains our two buffers that will serve for the Present() method) */
+	Microsoft::WRL::ComPtr<ID3D12Resource> m_pSwapChainBuffer[SWAP_CHAIN_BUFFER_COUNT];
 	/* Index of the current back buffer */
-	int mCurrBackBuffer = 0;
+	int m_currBackBuffer;
 	DXGI_FORMAT m_BackBufferFormat;
 	
 	/* The depth stencil buffer is used to render perspective given the object position
@@ -161,14 +169,13 @@ private:
 	ComPtr<ID3DBlob> m_vsByteCode;
 	/* Compile code of the pixel shader */
 	ComPtr<ID3DBlob> m_psByteCode;
-	/* ??? */
+	/* D3D12RootSignature : Defines where the resources bound to the rendering pipeline can be found by the shader
+	We use a root signature to define the resources that are going to be used by the shaders
+	Therefore, the root signature will be created with an array of RootParameter that express where the exprected resource by the shader is located */
 	ComPtr<ID3D12RootSignature> m_rootSignature;
 	int m_zRotation;
 
-	/* ??? */
+	/* D3D12 PipelineStateObject : (PSO : Pipeline State Object) Represents the state of the pipeline
+	We use a PSO to define the state of the pipeline. This includes the shaders, the input layout, the render targets, the depth stencil buffer, etc... */
 	ComPtr<ID3D12PipelineState> m_pipelineStateObject;
-
-	Microsoft::WRL::ComPtr<ID3D12Resource> m_pSwapChainBuffer[SWAP_CHAIN_BUFFER_COUNT];
-
-
 };

@@ -2,6 +2,8 @@
 #include "Engine/Simulation.h"
 #include "Platform/Windows//WinEntry.h"
 
+#include "Core/D3DApp.h"
+
 
 class Application : public D3DApp {
 

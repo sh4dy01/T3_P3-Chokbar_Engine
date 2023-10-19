@@ -19,7 +19,7 @@ using namespace Microsoft::WRL;
 
 
 template<typename T>
-class CHOKBAR_API UploadBuffer
+class UploadBuffer
 {
 public:
 	UploadBuffer(ID3D12Device* device, UINT elementCount, BOOL isConstantBuffer);

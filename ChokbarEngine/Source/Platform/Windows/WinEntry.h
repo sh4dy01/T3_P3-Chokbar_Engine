@@ -18,7 +18,7 @@ int CALLBACK WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
 		EntryApp->PreInitialize();
 		EntryApp->Initialize();
 
-		EntryApp->Update();
+		EntryApp->Run();
 
 	}
 	catch (DxException& e)

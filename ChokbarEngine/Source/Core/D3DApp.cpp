@@ -13,7 +13,7 @@ D3DApp::D3DApp() :
 	m_4xMsaaState(false), m_4xMsaaQuality(0),
 	m_RtvDescriptorSize(0), m_DsvDescriptorSize(0), m_CbvSrvUavDescriptorSize(0),
 	m_D3dDriverType(D3D_DRIVER_TYPE_HARDWARE), m_BackBufferFormat(DXGI_FORMAT_R8G8B8A8_UNORM), m_DepthStencilFormat(DXGI_FORMAT_D24_UNORM_S8_UINT),
-	m_zRotation(0), m_CurrentFenceValue(0), m_pInstance(nullptr)
+	m_zRotation(0), m_CurrentFenceValue(0), m_pInstance(nullptr), m_currBackBuffer(0)
 {
 
 	if (m_pApp != nullptr)
@@ -41,7 +41,7 @@ void D3DApp::Initialize()
 	InitializeD3D12();
 }
 
-void D3DApp::Update()
+void D3DApp::Run()
 {
 	MSG msg = { 0 };
 
@@ -49,19 +49,24 @@ void D3DApp::Update()
 
 	while (msg.message != WM_QUIT)
 	{
-		// If there are Window messages then process them.
-		if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
+		while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
 		{
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		}
-		// Otherwise, do animation/game stuff.
-		else
+		
 		{
-			m_GameTimer.Tick();
-			CalculateFrameStats();
+			Update();
+			Render();
 		}
 	}
+}
+
+void D3DApp::Update()
+{
+	m_GameTimer.Tick();
+	m_zRotation += 1.0f * m_GameTimer.GetDeltaTime();
+	CalculateFrameStats();
 }
 
 void D3DApp::Render()
@@ -72,7 +77,7 @@ void D3DApp::Render()
 	m_pCommandAllocator->Reset();
 	HRESULT hr = m_pCommandList->Reset(m_pCommandAllocator.Get(), nullptr);
 	
-	CD3DX12_RESOURCE_BARRIER bPresentToTarget = CD3DX12_RESOURCE_BARRIER::Transition(m_pSwapChainBuffer[mCurrBackBuffer].Get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
+	CD3DX12_RESOURCE_BARRIER bPresentToTarget = CD3DX12_RESOURCE_BARRIER::Transition(m_pSwapChainBuffer[m_currBackBuffer].Get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
 	m_pCommandList->ResourceBarrier(1, &bPresentToTarget);
 
 	// Clear
@@ -109,7 +114,7 @@ void D3DApp::Render()
 	UINT numTriangleIndices = 12;
 	m_pCommandList->DrawIndexedInstanced(numTriangleIndices, 1, 0, 0, 0);
 
-	CD3DX12_RESOURCE_BARRIER bTargetToPresent = CD3DX12_RESOURCE_BARRIER::Transition(m_pSwapChainBuffer[mCurrBackBuffer].Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
+	CD3DX12_RESOURCE_BARRIER bTargetToPresent = CD3DX12_RESOURCE_BARRIER::Transition(m_pSwapChainBuffer[m_currBackBuffer].Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
 	m_pCommandList->ResourceBarrier(1, &bTargetToPresent);
 	
 	hr = m_pCommandList->Close();
@@ -120,7 +125,7 @@ void D3DApp::Render()
 	FlushCommandQueue();
 	
 	m_pSwapChain->Present(1, 0);
-	mCurrBackBuffer = (mCurrBackBuffer + 1) % SWAP_CHAIN_BUFFER_COUNT;
+	m_currBackBuffer = (m_currBackBuffer + 1) % SWAP_CHAIN_BUFFER_COUNT;
 }
 
 void D3DApp::OnResize()
@@ -161,23 +166,11 @@ void D3DApp::CreateDevice()
 {
 	CreateDXGIFactory1(IID_PPV_ARGS(&m_pDxgiFactory));
 
-	HRESULT hardwareResult = D3D12CreateDevice(
-		nullptr, // default adapter
-		D3D_FEATURE_LEVEL_11_0,
-		IID_PPV_ARGS(&m_pD3dDevice)
-	);
-
-	// Fallback to WARP device.
-	if (FAILED(hardwareResult))
-	{
-		ComPtr<IDXGIAdapter> pWarpAdapter;
-		m_pDxgiFactory->EnumWarpAdapter(IID_PPV_ARGS(&pWarpAdapter));
-		D3D12CreateDevice(
-			pWarpAdapter.Get(),
-			D3D_FEATURE_LEVEL_11_0,
-			IID_PPV_ARGS(&m_pD3dDevice)
-		);
-	}
+	D3D12CreateDevice(nullptr, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&m_pD3dDevice));
+	
+#if defined(DEBUG) || defined(_DEBUG)
+	// DEBUG_CreateInfoQueue();
+#endif
 }
 
 void D3DApp::CreateFenceAndGetDescriptorsSizes()
@@ -257,8 +250,7 @@ void D3DApp::CreateSwapChain()
 	sd.SampleDesc.Quality = 0;
 	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	sd.BufferCount = SWAP_CHAIN_BUFFER_COUNT;
-	HWND hwnd = Handle();
-	sd.OutputWindow = hwnd;
+	sd.OutputWindow = Handle();
 	sd.Windowed = true;
 	sd.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 	sd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
@@ -574,10 +566,11 @@ ComPtr<ID3D12Resource> D3DApp::CreateDefaultBuffer(const void* initData, UINT64 
 
 D3D12_CPU_DESCRIPTOR_HANDLE D3DApp::CurrentBackBufferView() const
 {
+	
 	// CD3DX12 constructor to offset to the RTV of the current back buffer.
 	return CD3DX12_CPU_DESCRIPTOR_HANDLE(
 		m_pRtvHeap->GetCPUDescriptorHandleForHeapStart(),		// handle start
-		mCurrBackBuffer,										// index to offset
+		m_currBackBuffer,										// index to offset
 		m_RtvDescriptorSize										// byte size of descriptor
 	);
 }
