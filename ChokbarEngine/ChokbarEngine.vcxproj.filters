@@ -1,0 +1,178 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source">
+      <UniqueIdentifier>{d88b5640-8ebe-4dd1-8b20-97069ee98ea0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\pch">
+      <UniqueIdentifier>{9139896d-d27c-4485-9c72-f0f6f0575ef2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Core">
+      <UniqueIdentifier>{1ce36a97-6b74-4b35-856f-9c6c0a5549b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Core\Classes">
+      <UniqueIdentifier>{7a244edb-eb54-4868-91cd-2db9045495b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Core\Private">
+      <UniqueIdentifier>{e3d8a183-e744-4770-bbab-dd0bc6bd8376}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Core\Public">
+      <UniqueIdentifier>{bd8f5847-f1a6-497f-9b49-debe0ccdf6bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine">
+      <UniqueIdentifier>{6b2b109d-57f1-4756-b751-fce63a39b182}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\Classes">
+      <UniqueIdentifier>{77803344-ad3c-4d2e-9140-0969ec0f0585}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\Public">
+      <UniqueIdentifier>{d10e78b5-8ad6-499a-98f1-a891eeb6b030}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\Private">
+      <UniqueIdentifier>{d61c03a0-18ce-4b6c-b233-81e078aca649}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Platform">
+      <UniqueIdentifier>{bacb898f-ff04-4f85-8ada-7bda1311f90b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Common">
+      <UniqueIdentifier>{1f20c421-4ea7-4ee8-9c6b-dd78be9af64f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Common\Private">
+      <UniqueIdentifier>{90d07a9e-d584-402f-a805-9aa108ff0bac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Common\Public">
+      <UniqueIdentifier>{a4ea9cc0-0563-4b16-bcc1-5f5155fc6a5a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Platform\Windows">
+      <UniqueIdentifier>{79b65c58-2b8e-485f-86c8-06306c14cf22}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Platform\Windows\Public">
+      <UniqueIdentifier>{de9d6c0b-31da-4a57-ab71-f565ddf87aa0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Platform\Windows\Private">
+      <UniqueIdentifier>{814b8029-a50b-4f60-818b-fc320a062e39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Platform\Windows\Classes">
+      <UniqueIdentifier>{882579c6-83b9-4bbb-936b-97c1f57ccd7a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\Chokbar.cpp">
+      <Filter>Source\pch</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Core\Core.cpp">
+      <Filter>Source\Core\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Core\CoreMinimal.cpp">
+      <Filter>Source\Core\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Core\D3DApp.cpp">
+      <Filter>Source\Core\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Core\D3DUtils.cpp">
+      <Filter>Source\Core\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Core\PerGameSettings.cpp">
+      <Filter>Source\Core\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Core\CoreDefinitions.cpp">
+      <Filter>Source\Core\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Engine.cpp">
+      <Filter>Source\Engine\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Simulation.cpp">
+      <Filter>Source\Engine\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\SplashScreen.cpp">
+      <Filter>Source\Engine\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Common\Logger.cpp">
+      <Filter>Source\Common\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Common\Time.cpp">
+      <Filter>Source\Common\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\GameTimer.cpp">
+      <Filter>Source\Engine\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Platform\Windows\Window.cpp">
+      <Filter>Source\Platform\Windows\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Platform\Windows\SubObject.cpp">
+      <Filter>Source\Platform\Windows\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Platform\Windows\Win32Utils.cpp">
+      <Filter>Source\Platform\Windows\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Platform\Windows\IApplication.cpp">
+      <Filter>Source\Platform\Windows\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Core\UpdloadBuffer.cpp">
+      <Filter>Source\Core\Private</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\Chokbar.h">
+      <Filter>Source\pch</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Core\PerGameSettings.h">
+      <Filter>Source\Core\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Core\D3DApp.h">
+      <Filter>Source\Core\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Core\D3DUtils.h">
+      <Filter>Source\Core\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Core\Core.h">
+      <Filter>Source\Core\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Core\CoreMinimal.h">
+      <Filter>Source\Core\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Core\CoreDefinitions.h">
+      <Filter>Source\Core\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Engine.h">
+      <Filter>Source\Engine\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Simulation.h">
+      <Filter>Source\Engine\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\SplashScreen.h">
+      <Filter>Source\Engine\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Common\Logger.h">
+      <Filter>Source\Common\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Common\Time.h">
+      <Filter>Source\Common\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\GameTimer.h">
+      <Filter>Source\Engine\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Platform\Windows\Window.h">
+      <Filter>Source\Platform\Windows\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Platform\Windows\WinEntry.h">
+      <Filter>Source\Platform\Windows\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Platform\Windows\Win32Utils.h">
+      <Filter>Source\Platform\Windows\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Platform\Windows\SubObject.h">
+      <Filter>Source\Platform\Windows\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Platform\Windows\IApplication.h">
+      <Filter>Source\Platform\Windows\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Core\UploadBuffer.h">
+      <Filter>Source\Core\Classes</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
