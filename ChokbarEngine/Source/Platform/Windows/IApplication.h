@@ -23,8 +23,13 @@ namespace Win32
 		/* Initialize the application */
 		virtual void Initialize() = 0;
 
+		virtual void Run() = 0;
+
+	protected:
 		/* Game Loop */
-		virtual void Update() = 0;
+		virtual void Update(const float dt) = 0;
+
+		virtual void Render() = 0;
 	};
 
 	IApplication* EntryApplication();

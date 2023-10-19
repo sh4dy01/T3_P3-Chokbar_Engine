@@ -2,6 +2,8 @@
 #include "Engine/Simulation.h"
 #include "Platform/Windows//WinEntry.h"
 
+#include "Core/D3DApp.h"
+
 
 class Application : public D3DApp {
 
@@ -18,7 +20,7 @@ public:
 	void Initialize() override;
 
 	/* Game Loop */
-	void Update() override;
+	void Update(const float dt) override;
 
 	void Render() override;
 };
@@ -38,9 +40,9 @@ void Application::Initialize()
 	D3DApp::Initialize();
 }
 
-void Application::Update()
+void Application::Update(const float dt)
 {
-	D3DApp::Update();
+	D3DApp::Update(dt);
 }
 
 void Application::Render()

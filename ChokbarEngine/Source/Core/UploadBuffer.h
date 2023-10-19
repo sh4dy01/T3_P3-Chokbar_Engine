@@ -9,13 +9,14 @@
 #include <dxgi1_6.h>
 #include <DirectXMath.h>
 #include <d3dcompiler.h>
+using namespace DirectX;
 
 #include <wrl.h>
 using namespace Microsoft::WRL;
 
 #include <memory>
 
-using namespace DirectX;
+
 
 template<typename T>
 class UploadBuffer

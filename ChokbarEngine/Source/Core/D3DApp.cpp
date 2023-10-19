@@ -13,7 +13,7 @@ D3DApp::D3DApp() :
 	m_4xMsaaState(false), m_4xMsaaQuality(0),
 	m_RtvDescriptorSize(0), m_DsvDescriptorSize(0), m_CbvSrvUavDescriptorSize(0),
 	m_D3dDriverType(D3D_DRIVER_TYPE_HARDWARE), m_BackBufferFormat(DXGI_FORMAT_R8G8B8A8_UNORM), m_DepthStencilFormat(DXGI_FORMAT_D24_UNORM_S8_UINT),
-	m_zRotation(0), m_CurrentFenceValue(0), m_pInstance(nullptr)
+	m_zRotation(0), m_CurrentFenceValue(0), m_pInstance(nullptr), m_currBackBuffer(0)
 {
 
 	if (m_pApp != nullptr)
@@ -41,7 +41,7 @@ void D3DApp::Initialize()
 	InitializeD3D12();
 }
 
-void D3DApp::Update()
+void D3DApp::Run()
 {
 	MSG msg = { 0 };
 
@@ -49,83 +49,103 @@ void D3DApp::Update()
 
 	while (msg.message != WM_QUIT)
 	{
-		// If there are Window messages then process them.
-		if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
+		while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
 		{
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		}
-		// Otherwise, do animation/game stuff.
-		else
+		
+		m_GameTimer.Tick();
+		
 		{
-			m_GameTimer.Tick();
-			CalculateFrameStats();
+			Update(m_GameTimer.GetDeltaTime());
+			Render();
 		}
 	}
 }
 
+void D3DApp::Update(const float dt)
+{
+	m_zRotation += 1.0f * dt;
+	CalculateFrameStats();
+}
+
 void D3DApp::Render()
 {
+	// Update the constant buffers with our CPU updated values
 	UpdateConstantBuffers();
 	
-	// Prepare for render
+	// Reset the commandQueue and prepare it for the next frame
 	m_pCommandAllocator->Reset();
 	HRESULT hr = m_pCommandList->Reset(m_pCommandAllocator.Get(), nullptr);
 	
-	CD3DX12_RESOURCE_BARRIER bPresentToTarget = CD3DX12_RESOURCE_BARRIER::Transition(m_pSwapChainBuffer[mCurrBackBuffer].Get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
+	// Set resource barrier to transition the back buffer from present to render target
+	// This allows to draw to the back buffer (D3D12_RESOURCE_STATE_RENDER_TARGET state)
+	// /!\ When the resource barrier is set to D3D12_RESOURCE_STATE_RENDER_TARGET, you back buffer is set to be used as a render target, it cannot be presented.
+	CD3DX12_RESOURCE_BARRIER bPresentToTarget = CD3DX12_RESOURCE_BARRIER::Transition(m_pSwapChainBuffer[m_currBackBuffer].Get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
 	m_pCommandList->ResourceBarrier(1, &bPresentToTarget);
 
-	// Clear
+	// Create Viewport and ScissorRect for the current back buffer rendering 
 	SIZE winSize = Window::Size();
 	D3D12_VIEWPORT viewport = { 0.0f, 0.0f, winSize.cx, winSize.cy, 0.0f, 1.0f };
 	D3D12_RECT scissorRect = { 0, 0, winSize.cx, winSize.cy };
 	m_pCommandList->RSSetViewports(1, &viewport);
 	m_pCommandList->RSSetScissorRects(1, &scissorRect);
 
+	// Clear the back buffer and depth buffer 
 	float color[4] = { 0.1f, 0.1f, 0.1f, 1.0f };
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = CurrentBackBufferView();
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = DepthStencilView();
-		
 	m_pCommandList->OMSetRenderTargets(1, &rtvHandle, false, &dsvHandle);
-	
 	m_pCommandList->ClearRenderTargetView(rtvHandle, color, 0, nullptr);
 	m_pCommandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
 
-	// Draw
+	// Bind the root signature and pipeline state object
 	m_pCommandList->SetGraphicsRootSignature(m_rootSignature.Get());
 	m_pCommandList->SetPipelineState(m_pipelineStateObject.Get());
 
+	// Create the descriptor heap for our updated constant buffers
 	ID3D12DescriptorHeap* descriptorHeaps[] = { m_pCbvHeap.Get() };
 	m_pCommandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 	CD3DX12_GPU_DESCRIPTOR_HANDLE cbvHandle(m_pCbvHeap->GetGPUDescriptorHandleForHeapStart());
 	cbvHandle.Offset(0, m_CbvSrvUavDescriptorSize);
 	m_pCommandList->SetGraphicsRootDescriptorTable(0, cbvHandle);
 
+	// Bind the vertex and indices buffers to the IA (Input Assembler) stage
 	D3D12_VERTEX_BUFFER_VIEW vertexBuffers[1] = { m_vertexBufferView };
 	m_pCommandList->IASetVertexBuffers(0, 1, vertexBuffers);
 	m_pCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	m_pCommandList->IASetIndexBuffer(&m_indexBufferView);
 
+	// Draw call to render our bound vertex and index buffers
 	UINT numTriangleIndices = 12;
 	m_pCommandList->DrawIndexedInstanced(numTriangleIndices, 1, 0, 0, 0);
 
-	CD3DX12_RESOURCE_BARRIER bTargetToPresent = CD3DX12_RESOURCE_BARRIER::Transition(m_pSwapChainBuffer[mCurrBackBuffer].Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
+	// Set resource barrier to transition the back buffer from render target to present
+	// This allows to present the back buffer (D3D12_RESOURCE_STATE_PRESENT state)
+	// /!\ When the resource barrier is set to D3D12_RESOURCE_STATE_PRESENT, you cannot draw to the back buffer anymore
+	CD3DX12_RESOURCE_BARRIER bTargetToPresent = CD3DX12_RESOURCE_BARRIER::Transition(m_pSwapChainBuffer[m_currBackBuffer].Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
 	m_pCommandList->ResourceBarrier(1, &bTargetToPresent);
 	
+	// Close the command list (mandatory before calling ExecuteCommandLists)
 	hr = m_pCommandList->Close();
 
-	// Present
+	// Execute the command list and flush the command queue
+	// Refer to the m_pFence member to understand how the command queue is flushed
 	ID3D12CommandList* cmdLists[] = { m_pCommandList.Get() };
 	m_pCommandQueue->ExecuteCommandLists(_countof(cmdLists), cmdLists);
 	FlushCommandQueue();
 	
+	// Present the back buffer to the screen and swap the front/back buffer
 	m_pSwapChain->Present(1, 0);
-	mCurrBackBuffer = (mCurrBackBuffer + 1) % SWAP_CHAIN_BUFFER_COUNT;
+	m_currBackBuffer = (m_currBackBuffer + 1) % SWAP_CHAIN_BUFFER_COUNT;
 }
 
 void D3DApp::OnResize()
 {
-
+	RECT clientR;
+	GetClientRect(Handle(), &clientR);
+	Window::Size(clientR.right - clientR.left, clientR.bottom - clientR.top);
 }
 
 void D3DApp::InitializeWindow()
@@ -161,23 +181,11 @@ void D3DApp::CreateDevice()
 {
 	CreateDXGIFactory1(IID_PPV_ARGS(&m_pDxgiFactory));
 
-	HRESULT hardwareResult = D3D12CreateDevice(
-		nullptr, // default adapter
-		D3D_FEATURE_LEVEL_11_0,
-		IID_PPV_ARGS(&m_pD3dDevice)
-	);
-
-	// Fallback to WARP device.
-	if (FAILED(hardwareResult))
-	{
-		ComPtr<IDXGIAdapter> pWarpAdapter;
-		m_pDxgiFactory->EnumWarpAdapter(IID_PPV_ARGS(&pWarpAdapter));
-		D3D12CreateDevice(
-			pWarpAdapter.Get(),
-			D3D_FEATURE_LEVEL_11_0,
-			IID_PPV_ARGS(&m_pD3dDevice)
-		);
-	}
+	D3D12CreateDevice(nullptr, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&m_pD3dDevice));
+	
+#if defined(DEBUG) || defined(_DEBUG)
+	// DEBUG_CreateInfoQueue();
+#endif
 }
 
 void D3DApp::CreateFenceAndGetDescriptorsSizes()
@@ -253,12 +261,11 @@ void D3DApp::CreateSwapChain()
 	sd.BufferDesc.Format = m_BackBufferFormat;
 	sd.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 	sd.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
-	sd.SampleDesc.Count = m_4xMsaaState ? 4 : 1;
-	sd.SampleDesc.Quality = m_4xMsaaState ? (m_4xMsaaQuality - 1) : 0;
+	sd.SampleDesc.Count = 1;
+	sd.SampleDesc.Quality = 0;
 	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	sd.BufferCount = SWAP_CHAIN_BUFFER_COUNT;
-	HWND hwnd = Handle();
-	sd.OutputWindow = hwnd;
+	sd.OutputWindow = Handle();
 	sd.Windowed = true;
 	sd.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 	sd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
@@ -375,8 +382,8 @@ void D3DApp::CreateDepthStencilBuffer()
 	depthStencilDesc.DepthOrArraySize = 1;
 	depthStencilDesc.MipLevels = 1;
 	depthStencilDesc.Format = m_DepthStencilFormat;
-	depthStencilDesc.SampleDesc.Count = m_4xMsaaState ? 4 : 1;
-	depthStencilDesc.SampleDesc.Quality = m_4xMsaaState ? (m_4xMsaaQuality - 1) : 0;
+	depthStencilDesc.SampleDesc.Count = 1;
+	depthStencilDesc.SampleDesc.Quality = 0;
 	depthStencilDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
 	depthStencilDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
 
@@ -419,7 +426,7 @@ void D3DApp::CreateVertexAndIndexBuffers()
 {
 	Vertex vList[] =
 	{
-		{ XMFLOAT3(0.0f, 1.0f, 0.0f), 0xFF00FF00},
+		{ XMFLOAT3(0.0f, 1.0f, 0.0f), 0xFF0000FF},
 		{ XMFLOAT3(-0.5f, 0.0f, -0.5f), 0xFF000000 },
 		{ XMFLOAT3(-0.5f, 0.0f, 0.5f), 0xFF000000 },
 		{ XMFLOAT3(0.5f, 0.0f, 0.5f), 0xFF000000 },
@@ -490,7 +497,7 @@ void D3DApp::UpdateConstantBuffers()
 	view = XMMatrixLookAtLH(pos, target, up);
 
 	projection = XMMatrixPerspectiveFovLH(XMConvertToRadians(70.0F), Window::Size().cx / Window::Size().cy, 0.05F, 1000.0F);
-
+	
 	world = XMMatrixRotationY(m_zRotation);
 
 	objConstants.WorldViewProj = world * view * projection;
@@ -526,7 +533,7 @@ void D3DApp::CreateRootSignature()
 void D3DApp::CreatePipelineStateObject()
 {
 	m_vsByteCode = CompileShader(L"Shader/vertex_pixel.hlsl", nullptr, "vs_main", "vs_5_0");
-	m_psByteCode = CompileShader(L"shader/vertex_pixel.hlsl", nullptr, "ps_main", "ps_5_0");
+	m_psByteCode = CompileShader(L"Shader/vertex_pixel.hlsl", nullptr, "ps_main", "ps_5_0");
 
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc;
 	ZeroMemory(&psoDesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
@@ -541,8 +548,8 @@ void D3DApp::CreatePipelineStateObject()
 	psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 	psoDesc.NumRenderTargets = 1;
 	psoDesc.RTVFormats[0] = m_BackBufferFormat;
-	psoDesc.SampleDesc.Count = m_4xMsaaState ? 4 :1; 
-	psoDesc.SampleDesc.Quality =m_4xMsaaState ? (m_4xMsaaQuality - 1) : 0; 
+	psoDesc.SampleDesc.Count = 1; 
+	psoDesc.SampleDesc.Quality = 0; 
 	psoDesc.DSVFormat = m_DepthStencilFormat;
 
 	HRESULT hr = m_pD3dDevice->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(m_pipelineStateObject.GetAddressOf()));
@@ -574,10 +581,11 @@ ComPtr<ID3D12Resource> D3DApp::CreateDefaultBuffer(const void* initData, UINT64 
 
 D3D12_CPU_DESCRIPTOR_HANDLE D3DApp::CurrentBackBufferView() const
 {
+	
 	// CD3DX12 constructor to offset to the RTV of the current back buffer.
 	return CD3DX12_CPU_DESCRIPTOR_HANDLE(
 		m_pRtvHeap->GetCPUDescriptorHandleForHeapStart(),		// handle start
-		mCurrBackBuffer,										// index to offset
+		m_currBackBuffer,										// index to offset
 		m_RtvDescriptorSize										// byte size of descriptor
 	);
 }

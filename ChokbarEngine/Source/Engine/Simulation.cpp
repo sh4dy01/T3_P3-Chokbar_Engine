@@ -27,10 +27,6 @@ namespace Chokbar
 		//SplashScreen::Open();
 	}
 
-	void Simulation::Render()
-	{
-	}
-
 
 	LRESULT Simulation::MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
