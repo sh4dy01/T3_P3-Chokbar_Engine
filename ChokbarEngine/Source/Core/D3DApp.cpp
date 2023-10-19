@@ -66,70 +66,77 @@ void D3DApp::Run()
 
 void D3DApp::Update(const float dt)
 {
-	m_zRotation += 0.05f;
-	OutputDebugString(L"Update : ");
-	OutputDebugString(std::to_wstring(m_zRotation).c_str());
-	OutputDebugString(L"\n");
+	m_zRotation += 1.0f * dt;
 	CalculateFrameStats();
 }
 
 void D3DApp::Render()
 {
-	OutputDebugString(L"Render : ");
-
+	// Update the constant buffers with our CPU updated values
 	UpdateConstantBuffers();
 	
-	// Prepare for render
+	// Reset the commandQueue and prepare it for the next frame
 	m_pCommandAllocator->Reset();
 	HRESULT hr = m_pCommandList->Reset(m_pCommandAllocator.Get(), nullptr);
 	
+	// Set resource barrier to transition the back buffer from present to render target
+	// This allows to draw to the back buffer (D3D12_RESOURCE_STATE_RENDER_TARGET state)
+	// /!\ When the resource barrier is set to D3D12_RESOURCE_STATE_RENDER_TARGET, you back buffer is set to be used as a render target, it cannot be presented.
 	CD3DX12_RESOURCE_BARRIER bPresentToTarget = CD3DX12_RESOURCE_BARRIER::Transition(m_pSwapChainBuffer[m_currBackBuffer].Get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
 	m_pCommandList->ResourceBarrier(1, &bPresentToTarget);
 
-	// Clear
+	// Create Viewport and ScissorRect for the current back buffer rendering 
 	SIZE winSize = Window::Size();
 	D3D12_VIEWPORT viewport = { 0.0f, 0.0f, winSize.cx, winSize.cy, 0.0f, 1.0f };
 	D3D12_RECT scissorRect = { 0, 0, winSize.cx, winSize.cy };
 	m_pCommandList->RSSetViewports(1, &viewport);
 	m_pCommandList->RSSetScissorRects(1, &scissorRect);
 
+	// Clear the back buffer and depth buffer 
 	float color[4] = { 0.1f, 0.1f, 0.1f, 1.0f };
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = CurrentBackBufferView();
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = DepthStencilView();
-		
 	m_pCommandList->OMSetRenderTargets(1, &rtvHandle, false, &dsvHandle);
-	
 	m_pCommandList->ClearRenderTargetView(rtvHandle, color, 0, nullptr);
 	m_pCommandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
 
-	// Draw
+	// Bind the root signature and pipeline state object
 	m_pCommandList->SetGraphicsRootSignature(m_rootSignature.Get());
 	m_pCommandList->SetPipelineState(m_pipelineStateObject.Get());
 
+	// Create the descriptor heap for our updated constant buffers
 	ID3D12DescriptorHeap* descriptorHeaps[] = { m_pCbvHeap.Get() };
 	m_pCommandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 	CD3DX12_GPU_DESCRIPTOR_HANDLE cbvHandle(m_pCbvHeap->GetGPUDescriptorHandleForHeapStart());
 	cbvHandle.Offset(0, m_CbvSrvUavDescriptorSize);
 	m_pCommandList->SetGraphicsRootDescriptorTable(0, cbvHandle);
 
+	// Bind the vertex and indices buffers to the IA (Input Assembler) stage
 	D3D12_VERTEX_BUFFER_VIEW vertexBuffers[1] = { m_vertexBufferView };
 	m_pCommandList->IASetVertexBuffers(0, 1, vertexBuffers);
 	m_pCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	m_pCommandList->IASetIndexBuffer(&m_indexBufferView);
 
+	// Draw call to render our bound vertex and index buffers
 	UINT numTriangleIndices = 12;
 	m_pCommandList->DrawIndexedInstanced(numTriangleIndices, 1, 0, 0, 0);
 
+	// Set resource barrier to transition the back buffer from render target to present
+	// This allows to present the back buffer (D3D12_RESOURCE_STATE_PRESENT state)
+	// /!\ When the resource barrier is set to D3D12_RESOURCE_STATE_PRESENT, you cannot draw to the back buffer anymore
 	CD3DX12_RESOURCE_BARRIER bTargetToPresent = CD3DX12_RESOURCE_BARRIER::Transition(m_pSwapChainBuffer[m_currBackBuffer].Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
 	m_pCommandList->ResourceBarrier(1, &bTargetToPresent);
 	
+	// Close the command list (mandatory before calling ExecuteCommandLists)
 	hr = m_pCommandList->Close();
 
-	// Present
+	// Execute the command list and flush the command queue
+	// Refer to the m_pFence member to understand how the command queue is flushed
 	ID3D12CommandList* cmdLists[] = { m_pCommandList.Get() };
 	m_pCommandQueue->ExecuteCommandLists(_countof(cmdLists), cmdLists);
 	FlushCommandQueue();
 	
+	// Present the back buffer to the screen and swap the front/back buffer
 	m_pSwapChain->Present(1, 0);
 	m_currBackBuffer = (m_currBackBuffer + 1) % SWAP_CHAIN_BUFFER_COUNT;
 }
@@ -177,7 +184,7 @@ void D3DApp::CreateDevice()
 	D3D12CreateDevice(nullptr, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&m_pD3dDevice));
 	
 #if defined(DEBUG) || defined(_DEBUG)
-	//DEBUG_CreateInfoQueue();
+	// DEBUG_CreateInfoQueue();
 #endif
 }
 
@@ -490,9 +497,6 @@ void D3DApp::UpdateConstantBuffers()
 	view = XMMatrixLookAtLH(pos, target, up);
 
 	projection = XMMatrixPerspectiveFovLH(XMConvertToRadians(70.0F), Window::Size().cx / Window::Size().cy, 0.05F, 1000.0F);
-
-	OutputDebugStringA(std::to_string(m_zRotation).c_str());
-	OutputDebugStringA("\n");
 	
 	world = XMMatrixRotationY(m_zRotation);
 
