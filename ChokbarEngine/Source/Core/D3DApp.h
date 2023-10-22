@@ -100,12 +100,13 @@ private:
 
 	HINSTANCE m_pInstance;
 
+	ID3D12Debug* m_pDebugController;
+
 	bool		m_4xMsaaState;		// 4X MSAA (4.1.8) enabled. Default is false.
 	UINT		m_4xMsaaQuality;	// quality level of 4X MSAA
 
 	/* D3D12 Factory : Used to create the swap chain */
 	IDXGIFactory4* m_pDxgiFactory;
-
 
 	/* D3D12 Device : Represents a GPU device */
 	ID3D12Device* m_pD3dDevice;

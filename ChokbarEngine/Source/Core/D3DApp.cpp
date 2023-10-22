@@ -2,7 +2,6 @@
 #include "D3DApp.h"
 #include <cassert>
 
-using Microsoft::WRL::ComPtr;
 using namespace DirectX;
 
 
@@ -13,15 +12,37 @@ D3DApp::D3DApp() :
 	m_4xMsaaState(false), m_4xMsaaQuality(0),
 	m_RtvDescriptorSize(0), m_DsvDescriptorSize(0), m_CbvSrvUavDescriptorSize(0),
 	m_D3dDriverType(D3D_DRIVER_TYPE_HARDWARE), m_BackBufferFormat(DXGI_FORMAT_R8G8B8A8_UNORM), m_DepthStencilFormat(DXGI_FORMAT_D24_UNORM_S8_UINT),
-	m_zRotation(0), m_CurrentFenceValue(0), m_pInstance(nullptr), m_currBackBuffer(0),
-	m_pDxgiFactory(nullptr), m_pD3dDevice(nullptr), m_pFence(nullptr), 
-	m_pCommandQueue(nullptr), m_pCommandAllocator(nullptr), m_pCommandList(nullptr),
-	m_pRtvHeap(nullptr), m_pDsvHeap(nullptr), m_pCbvHeap(nullptr),
-	m_pSwapChain(nullptr), m_pSwapChainBuffer(), m_pDepthStencilBuffer(nullptr),
-	m_vertexBufferGPU(nullptr), m_vertexBufferUploader(nullptr), m_indexBufferGPU(nullptr), m_indexBufferUploader(nullptr),
-	m_vsByteCode(nullptr), m_psByteCode(nullptr), m_rootSignature(nullptr), m_pipelineStateObject(nullptr)
+	m_zRotation(0), m_CurrentFenceValue(0), m_pInstance(nullptr), m_currBackBuffer(0)
 {
+	m_pDebugController = nullptr;
+	
+	m_pDxgiFactory = nullptr;
+	m_pD3dDevice = nullptr;
+	m_pFence = nullptr;
+	
+	m_pCommandQueue = nullptr;
+	m_pCommandAllocator = nullptr;
+	m_pCommandList = nullptr;
 
+	m_pRtvHeap = nullptr;
+	m_pDsvHeap = nullptr;
+	m_pCbvHeap = nullptr;
+
+	m_pSwapChain = nullptr;
+	m_pSwapChainBuffer[0] = nullptr;
+	m_pSwapChainBuffer[1] = nullptr;
+	m_pDepthStencilBuffer = nullptr;
+
+	m_vertexBufferGPU = nullptr;
+	m_vertexBufferUploader = nullptr;
+	m_indexBufferGPU = nullptr;
+	m_indexBufferUploader = nullptr;
+
+	m_vsByteCode = nullptr;
+	m_psByteCode = nullptr;
+	m_rootSignature = nullptr;
+	m_pipelineStateObject = nullptr;
+	
 	if (m_pApp != nullptr)
 	{
 		MessageBox(NULL, L"Only one instance of D3DApp can be created.", L"Error", MB_OK);
@@ -66,6 +87,8 @@ D3DApp::~D3DApp()
 
 	m_rootSignature->Release();
 	m_pipelineStateObject->Release();
+
+	m_pDebugController->Release();
 }
 
 void D3DApp::Initialize()
@@ -205,9 +228,8 @@ void D3DApp::InitializeD3D12()
 void D3DApp::EnableDebugLayer()
 {
 	// Enable the D3D12 debug layer.
-	ComPtr<ID3D12Debug> debugController;
-	D3D12GetDebugInterface(IID_PPV_ARGS(&debugController));
-	debugController->EnableDebugLayer();
+	D3D12GetDebugInterface(IID_PPV_ARGS(&m_pDebugController));
+	m_pDebugController->EnableDebugLayer();
 }
 
 void D3DApp::CreateDevice()
@@ -419,7 +441,7 @@ void D3DApp::CreateDepthStencilBuffer()
 	depthStencilDesc.SampleDesc.Quality = 0;
 	depthStencilDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
 	depthStencilDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
-
+	
 	D3D12_CLEAR_VALUE optClear;
 	optClear.Format = m_DepthStencilFormat;
 	optClear.DepthStencil.Depth = 1.0f;
@@ -459,11 +481,11 @@ void D3DApp::CreateVertexAndIndexBuffers()
 {
 	Vertex vList[] =
 	{
-		{ XMFLOAT3(0.0f, 1.0f, 0.0f), 0xFF0000FF},
+		{ XMFLOAT3(0.0f, 1.0f, 0.0f),   0xFF00FF00 },
 		{ XMFLOAT3(-0.5f, 0.0f, -0.5f), 0xFF000000 },
-		{ XMFLOAT3(-0.5f, 0.0f, 0.5f), 0xFF000000 },
-		{ XMFLOAT3(0.5f, 0.0f, 0.5f), 0xFF000000 },
-		{ XMFLOAT3(0.5f, 0.0f, -0.5f), 0xFF000000 },
+		{ XMFLOAT3(-0.5f, 0.0f, 0.5f),  0xFF000000 },
+		{ XMFLOAT3(0.5f, 0.0f, 0.5f),   0xFF000000 },
+		{ XMFLOAT3(0.5f, 0.0f, -0.5f),  0xFF000000 },
 	};
 
 	m_inputLayout[0] = { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 };
@@ -552,15 +574,16 @@ void D3DApp::CreateRootSignature()
 
 	CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc(1, slotRootParameter, 0, nullptr, D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
-	ComPtr<ID3DBlob> serializedRootSignature = nullptr;
-	ComPtr<ID3DBlob> errorBlob = nullptr;
+	ID3DBlob* serializedRootSignature = nullptr;
+	ID3DBlob* errorBlob = nullptr;
 
-	HRESULT hr = D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, serializedRootSignature.GetAddressOf(), errorBlob.GetAddressOf());
+	HRESULT hr = D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &serializedRootSignature, &errorBlob);
 	m_pD3dDevice->CreateRootSignature(0, serializedRootSignature->GetBufferPointer(), serializedRootSignature->GetBufferSize(), IID_PPV_ARGS(&m_rootSignature));
 
 	if (errorBlob != nullptr) errorBlob->Release();
 
 	m_pCommandList->SetGraphicsRootSignature(m_rootSignature);
+	serializedRootSignature->Release();
 }
 
 void D3DApp::CreatePipelineStateObject()
@@ -595,9 +618,11 @@ ID3D12Resource* D3DApp::CreateDefaultBuffer(const void* initData, UINT64 byteSiz
 	CD3DX12_HEAP_PROPERTIES heapProperties(D3D12_HEAP_TYPE_DEFAULT);
 	CD3DX12_RESOURCE_DESC resourceDesc = CD3DX12_RESOURCE_DESC::Buffer(byteSize);
 	m_pD3dDevice->CreateCommittedResource(&heapProperties, D3D12_HEAP_FLAG_NONE, &resourceDesc, D3D12_RESOURCE_STATE_COMMON, nullptr, IID_PPV_ARGS(&defaultBuffer));
-
+	if (defaultBuffer == nullptr) return nullptr;
+	
 	CD3DX12_HEAP_PROPERTIES uploadHeapProperties(D3D12_HEAP_TYPE_UPLOAD);
 	m_pD3dDevice->CreateCommittedResource(&uploadHeapProperties, D3D12_HEAP_FLAG_NONE, &resourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&uploadBuffer));
+	if (uploadBuffer == nullptr) return nullptr;
 
 	D3D12_SUBRESOURCE_DATA subresourceData = {};
 	subresourceData.pData = initData;

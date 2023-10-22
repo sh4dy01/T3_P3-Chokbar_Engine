@@ -11,9 +11,6 @@
 #include <d3dcompiler.h>
 using namespace DirectX;
 
-#include <wrl.h>
-using namespace Microsoft::WRL;
-
 #include <memory>
 
 
@@ -29,13 +26,13 @@ public:
 	UploadBuffer& operator=(const UploadBuffer& rhs) = delete;
 
 	UINT GetElementByteSize() const { return m_elementByteSize; }
-	ID3D12Resource* GetResource() const { return m_uploadBuffer.Get(); }
+	ID3D12Resource* GetResource() const { return m_uploadBuffer; }
 	BYTE*& GetMappedData() { return m_mappedData; }
 
 	void CopyData(int elementIndex, const void* data);
 
 private:
-	ComPtr<ID3D12Resource> m_uploadBuffer;
+	ID3D12Resource* m_uploadBuffer;
 	UINT m_elementByteSize;
 	BYTE* m_mappedData;
 	BOOL m_isConstantBuffer;
