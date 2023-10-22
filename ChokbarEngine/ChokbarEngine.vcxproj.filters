@@ -112,6 +112,9 @@
     <ClCompile Include="Source\Core\UpdloadBuffer.cpp">
       <Filter>Source\Core\Private</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Core\MeshGeometry.cpp">
+      <Filter>Source\Core\Private</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Chokbar.h">
@@ -166,6 +169,9 @@
       <Filter>Source\Platform\Windows\Classes</Filter>
     </ClInclude>
     <ClInclude Include="Source\Core\UploadBuffer.h">
+      <Filter>Source\Core\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Core\MeshGeometry.h">
       <Filter>Source\Core\Classes</Filter>
     </ClInclude>
   </ItemGroup>

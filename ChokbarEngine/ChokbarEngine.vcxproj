@@ -101,6 +101,7 @@
     <ClCompile Include="Source\Core\CoreMinimal.cpp" />
     <ClCompile Include="Source\Core\D3DApp.cpp" />
     <ClCompile Include="Source\Core\D3DUtils.cpp" />
+    <ClCompile Include="Source\Core\MeshGeometry.cpp" />
     <ClCompile Include="Source\Core\PerGameSettings.cpp" />
     <ClCompile Include="Source\Core\UpdloadBuffer.cpp" />
     <ClCompile Include="Source\Engine\Engine.cpp" />
@@ -120,6 +121,7 @@
     <ClInclude Include="Source\Core\CoreMinimal.h" />
     <ClInclude Include="Source\Core\D3DApp.h" />
     <ClInclude Include="Source\Core\D3DUtils.h" />
+    <ClInclude Include="Source\Core\MeshGeometry.h" />
     <ClInclude Include="Source\Core\PerGameSettings.h" />
     <ClInclude Include="Source\Core\UploadBuffer.h" />
     <ClInclude Include="Source\Engine\Engine.h" />
