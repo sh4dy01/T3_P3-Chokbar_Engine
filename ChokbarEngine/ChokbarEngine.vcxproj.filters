@@ -61,15 +61,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Chokbar.cpp">
-      <Filter>Source\pch</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Core\Core.cpp">
-      <Filter>Source\Core\Private</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Core\CoreMinimal.cpp">
-      <Filter>Source\Core\Private</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Core\D3DApp.cpp">
       <Filter>Source\Core\Private</Filter>
     </ClCompile>
@@ -77,9 +68,6 @@
       <Filter>Source\Core\Private</Filter>
     </ClCompile>
     <ClCompile Include="Source\Core\PerGameSettings.cpp">
-      <Filter>Source\Core\Private</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Core\CoreDefinitions.cpp">
       <Filter>Source\Core\Private</Filter>
     </ClCompile>
     <ClCompile Include="Source\Engine\Engine.cpp">

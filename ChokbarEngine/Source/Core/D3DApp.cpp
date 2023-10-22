@@ -2,6 +2,7 @@
 #include "D3DApp.h"
 #include <cassert>
 
+#include "D3DUtils.h"
 #include "MeshGeometry.h"
 
 D3DApp* D3DApp::m_pApp = nullptr;
@@ -56,35 +57,6 @@ D3DApp::~D3DApp()
 		FlushCommandQueue();
 	*/
 
-}
-
-void D3DApp::Initialize()
-{
-	InitializeWindow();
-	InitializeD3D12();
-}
-
-void D3DApp::Run()
-{
-	MSG msg = { 0 };
-
-	m_GameTimer.Reset();
-
-	while (msg.message != WM_QUIT)
-	{
-		while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
-		{
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-		}
-		
-		m_GameTimer.Tick();
-		
-		{
-			Update(m_GameTimer.GetDeltaTime());
-			Render();
-		}
-	}
 }
 
 void D3DApp::Update(const float dt)

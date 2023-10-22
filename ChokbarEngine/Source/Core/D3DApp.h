@@ -5,8 +5,15 @@
 #include <crtdbg.h>
 #endif
 
-#include "Engine/GameTimer.h"
-#include "Engine/Simulation.h"
+#pragma comment(lib,"d3dcompiler.lib")
+#pragma comment(lib, "D3D12.lib")
+#pragma comment(lib, "dxgi.lib")
+
+#include <Core/d3dx12.h>
+#include <dxgi1_6.h>
+#include <DirectXMath.h>
+#include <d3dcompiler.h>
+using namespace DirectX;
 
 #include "UploadBuffer.h"
 #include <iostream>

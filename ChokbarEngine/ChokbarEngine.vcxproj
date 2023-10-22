@@ -93,12 +93,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Chokbar.cpp" />
     <ClCompile Include="Source\Common\Logger.cpp" />
     <ClCompile Include="Source\Common\Time.cpp" />
-    <ClCompile Include="Source\Core\Core.cpp" />
-    <ClCompile Include="Source\Core\CoreDefinitions.cpp" />
-    <ClCompile Include="Source\Core\CoreMinimal.cpp" />
     <ClCompile Include="Source\Core\D3DApp.cpp" />
     <ClCompile Include="Source\Core\D3DUtils.cpp" />
     <ClCompile Include="Source\Core\MeshGeometry.cpp" />
