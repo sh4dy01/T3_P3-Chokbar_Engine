@@ -10,26 +10,10 @@
 
 #include "UploadBuffer.h"
 #include <iostream>
+#include <vector>
 
 class MeshGeometry;
-
-
-
-/* ------------------------------------------------------------------------- */
-/* HELPER STRUCTS                                                            */
-/* ------------------------------------------------------------------------- */
-#pragma region Helper Structs
-struct CHOKBAR_API Vertex
-{
-	XMFLOAT3 Pos;
-	UINT32 Color;
-};
-
-struct CHOKBAR_API ObjectConstants
-{
-	XMMATRIX WorldViewProj = XMMatrixIdentity();
-};
-#pragma endregion
+class FrameResource;
 
 
 class CHOKBAR_API D3DApp : public Chokbar::Simulation {
@@ -68,6 +52,7 @@ private:
 	void CreateFenceAndGetDescriptorsSizes();
 
 	void CreateCommandObjects();
+	void CreateFrameResources();
 	void FlushCommandQueue();
 
 	void CreateSwapChain();
@@ -78,7 +63,8 @@ private:
 	void CreateDepthStencilBuffer();
 	void CreateVertexAndIndexBuffers();
 	void CreateConstantBuffers();
-	void UpdateConstantBuffers();
+	void UpdateObjectCB(const float dt);
+	void UpdateMainPassCB(const float dt, const float totalTime);
 	void CreateRootSignature();
 	void CreatePipelineStateObject();
 
@@ -118,11 +104,14 @@ private:
 	The other one will be put on hold */
 	ID3D12Fence* m_pFence;
 	int m_CurrentFenceValue;
-	
+
 	/* D3D12 CommandQueue : Represents the actual command queue of the GPU */
 	ID3D12CommandQueue* m_pCommandQueue;
 	/* D3D12 CommandAllocator : Represents a chunk of memory on the GPU that stores commands */
 	ID3D12CommandAllocator* m_pCommandAllocator;
+	std::vector<FrameResource*> m_pFrameResources;
+	FrameResource* m_pCurrentFrameResource;
+	int m_CurrentFrameResourceIndex;
 	/* D3D12 GraphicsCommandList : Represents a list of commands that will be sent to the GPU command queue */
 	ID3D12GraphicsCommandList* m_pCommandList;
 	/* D3D12 RenderTargetView DescriptorHeap :  */
@@ -140,8 +129,6 @@ private:
 	/* This struct helps the GPU identifying how our Vertex class is composed */
 	D3D12_INPUT_ELEMENT_DESC m_inputLayout[2];
 
-	/* Number of buffer in the swapchain */
-	static const int SWAP_CHAIN_BUFFER_COUNT = 2;
 	/* D3D12 SwapChain : Used to swap the back buffer */
 	IDXGISwapChain* m_pSwapChain;
 	/* Buffer used by the swap chain (contains our two buffers that will serve for the Present() method) */
@@ -155,11 +142,16 @@ private:
 	ID3D12Resource* m_pDepthStencilBuffer;
 	DXGI_FORMAT m_DepthStencilFormat;
 	
+	std::vector<std::unique_ptr<RenderItem>> m_AllRenderItems;
+	std::vector<RenderItem*> m_OpaqueRenderItems;
+	std::vector<RenderItem*> m_TransparentRenderItems;
+	
 	std::unique_ptr<MeshGeometry> m_geometry;
 
 	/* Upload buffer used to give the GPU information at runtime with the CPU.
 	This buffer uses the GPU Upload Heap that allows the CPu to upload data to the GPU at runtime */
-	std::unique_ptr<UploadBuffer<ObjectConstants>> m_constantBuffer;
+	std::unique_ptr<UploadBuffer<ObjectConstants>> m_mainObjectCB;
+	PassConstants m_mainPassCB;
 	/* Compile code of the vertex shader */
 	ID3DBlob* m_vsByteCode;
 	/* Compile code of the pixel shader */
@@ -168,9 +160,13 @@ private:
 	We use a root signature to define the resources that are going to be used by the shaders
 	Therefore, the root signature will be created with an array of RootParameter that express where the exprected resource by the shader is located */
 	ID3D12RootSignature* m_rootSignature;
+
+	XMFLOAT3 m_eyePosition;
+	XMFLOAT4X4 m_view, m_proj;
 	float m_zRotation;
 
 	/* D3D12 PipelineStateObject : (PSO : Pipeline State Object) Represents the state of the pipeline
 	We use a PSO to define the state of the pipeline. This includes the shaders, the input layout, the render targets, the depth stencil buffer, etc... */
-	ID3D12PipelineState* m_pipelineStateObject;
+	std::unordered_map<std::string, ID3D12PipelineState*> m_PSOs;
+	bool m_isWireframe;
 };

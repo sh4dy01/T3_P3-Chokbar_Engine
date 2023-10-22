@@ -3,24 +3,40 @@
 #include <cassert>
 
 #include "MeshGeometry.h"
+#include "FrameResource.h"
 
 D3DApp* D3DApp::m_pApp = nullptr;
 
+/* ------------------------------------------------------------------------- */
+/* HELPER STRUCTS                                                            */
+/* ------------------------------------------------------------------------- */
+#pragma region HelperFunctions
+XMFLOAT4X4 Identity4x4()
+{
+	return XMFLOAT4X4(
+		1.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.0f, 0.0f, 0.0f, 1.0f
+	);
+}
+#pragma endregion
 
 D3DApp::D3DApp() :
 	m_4xMsaaState(false), m_4xMsaaQuality(0),
 	m_RtvDescriptorSize(0), m_DsvDescriptorSize(0), m_CbvSrvUavDescriptorSize(0),
 	m_D3dDriverType(D3D_DRIVER_TYPE_HARDWARE), m_BackBufferFormat(DXGI_FORMAT_R8G8B8A8_UNORM), m_DepthStencilFormat(DXGI_FORMAT_D24_UNORM_S8_UINT),
-	m_zRotation(0), m_CurrentFenceValue(0), m_pInstance(nullptr), m_currBackBuffer(0)
+	m_zRotation(0), m_CurrentFenceValue(0), m_pInstance(nullptr), m_currBackBuffer(0), m_eyePosition(0, 0, 0)
 {
 	m_pDebugController = nullptr;
-	
+
 	m_pDxgiFactory = nullptr;
 	m_pD3dDevice = nullptr;
 	m_pFence = nullptr;
-	
+
 	m_pCommandQueue = nullptr;
 	m_pCommandAllocator = nullptr;
+	m_pCurrentFrameResource = nullptr;
 	m_pCommandList = nullptr;
 
 	m_pRtvHeap = nullptr;
@@ -37,8 +53,7 @@ D3DApp::D3DApp() :
 	m_vsByteCode = nullptr;
 	m_psByteCode = nullptr;
 	m_rootSignature = nullptr;
-	m_pipelineStateObject = nullptr;
-	
+
 	if (m_pApp != nullptr)
 	{
 		MessageBox(NULL, L"Only one instance of D3DApp can be created.", L"Error", MB_OK);
@@ -54,9 +69,9 @@ D3DApp::~D3DApp()
 {
 	m_pDxgiFactory->Release();
 	m_pD3dDevice->Release();
-	
+
 	m_pFence->Release();
-	
+
 	m_pCommandList->Release();
 	m_pCommandAllocator->Release();
 	m_pCommandQueue->Release();
@@ -77,7 +92,6 @@ D3DApp::~D3DApp()
 	m_psByteCode->Release();
 
 	m_rootSignature->Release();
-	m_pipelineStateObject->Release();
 
 	m_pDebugController->Release();
 }
@@ -101,9 +115,9 @@ void D3DApp::Run()
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		}
-		
+
 		m_GameTimer.Tick();
-		
+
 		{
 			Update(m_GameTimer.GetDeltaTime());
 			Render();
@@ -115,17 +129,31 @@ void D3DApp::Update(const float dt)
 {
 	m_zRotation += 1.0f * dt;
 	CalculateFrameStats();
+
+	m_CurrentFrameResourceIndex = (m_CurrentFrameResourceIndex + 1) % FRAME_RESOURCE_COUNT;
+	m_pCurrentFrameResource = m_pFrameResources[m_CurrentFrameResourceIndex];
+
+	if (m_pCurrentFrameResource->Fence != 0 && m_pCommandList->GetLastCompletedFence() < m_pCurrentFrameResource->Fence)
+	{
+		HANDLE eventHandle = CreateEventEx(nullptr, false, false, EVENT_ALL_ACCESS);
+		m_pFence->SetEventOnCompletion(m_pCurrentFrameResource->Fence, eventHandle);
+		WaitForSingleObject(eventHandle, INFINITE);
+		CloseHandle(eventHandle);
+	}
+
+	UpdateObjectCB(dt);
+	UpdateMainPassCB(dt, m_GameTimer.GetTotalTime());
 }
 
 void D3DApp::Render()
 {
-	// Update the constant buffers with our CPU updated values
-	UpdateConstantBuffers();
-	
+	auto cmdListAlloc = m_pCurrentFrameResource->CmdListAlloc;
 	// Reset the commandQueue and prepare it for the next frame
-	m_pCommandAllocator->Reset();
-	HRESULT hr = m_pCommandList->Reset(m_pCommandAllocator, nullptr);
-	
+	cmdListAlloc->Reset();
+
+	if (m_isWireframe) m_pCommandList->Reset(cmdListAlloc, m_PSOs["opaque_wireframe"]);
+	else m_pCommandList->Reset(cmdListAlloc, m_PSOs["opaque"]);
+
 	// Set resource barrier to transition the back buffer from present to render target
 	// This allows to draw to the back buffer (D3D12_RESOURCE_STATE_RENDER_TARGET state)
 	// /!\ When the resource barrier is set to D3D12_RESOURCE_STATE_RENDER_TARGET, you back buffer is set to be used as a render target, it cannot be presented.
@@ -147,9 +175,8 @@ void D3DApp::Render()
 	m_pCommandList->ClearRenderTargetView(rtvHandle, color, 0, nullptr);
 	m_pCommandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
 
-	// Bind the root signature and pipeline state object
+	// Bind the root signature
 	m_pCommandList->SetGraphicsRootSignature(m_rootSignature);
-	m_pCommandList->SetPipelineState(m_pipelineStateObject);
 
 	// Create the descriptor heap for our updated constant buffers
 	ID3D12DescriptorHeap* descriptorHeaps[] = { m_pCbvHeap };
@@ -172,19 +199,29 @@ void D3DApp::Render()
 	// /!\ When the resource barrier is set to D3D12_RESOURCE_STATE_PRESENT, you cannot draw to the back buffer anymore
 	CD3DX12_RESOURCE_BARRIER bTargetToPresent = CD3DX12_RESOURCE_BARRIER::Transition(m_pSwapChainBuffer[m_currBackBuffer], D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
 	m_pCommandList->ResourceBarrier(1, &bTargetToPresent);
-	
+
 	// Close the command list (mandatory before calling ExecuteCommandLists)
-	hr = m_pCommandList->Close();
+	m_pCommandList->Close();
 
 	// Execute the command list and flush the command queue
 	// Refer to the m_pFence member to understand how the command queue is flushed
 	ID3D12CommandList* cmdLists[] = { m_pCommandList };
 	m_pCommandQueue->ExecuteCommandLists(_countof(cmdLists), cmdLists);
 	FlushCommandQueue();
-	
+
 	// Present the back buffer to the screen and swap the front/back buffer
 	m_pSwapChain->Present(1, 0);
 	m_currBackBuffer = (m_currBackBuffer + 1) % SWAP_CHAIN_BUFFER_COUNT;
+
+	// Advance the fence value to mark commands up to this fence point
+	m_pCurrentFrameResource->Fence = ++m_CurrentFenceValue;
+
+	/*
+	 * Add an instruction to the command queue to set a new fence point.
+	 * Because we are on the GPU timeline, the new fence point won't be
+	 * set until the GPU finishes processing all the commands prior to this Signal().
+	 */
+	m_pCommandQueue->Signal(m_pFence, m_CurrentFenceValue);
 }
 
 void D3DApp::OnResize()
@@ -227,7 +264,7 @@ void D3DApp::CreateDevice()
 	CreateDXGIFactory1(IID_PPV_ARGS(&m_pDxgiFactory));
 
 	D3D12CreateDevice(nullptr, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&m_pD3dDevice));
-	
+
 #if defined(DEBUG) || defined(_DEBUG)
 	// DEBUG_CreateInfoQueue();
 #endif
@@ -291,6 +328,15 @@ void D3DApp::CreateCommandObjects()
 	// refer to the command list we will Reset it, and it needs to be
 	// closed before calling Reset.
 	m_pCommandList->Close();
+}
+
+void D3DApp::CreateFrameResources()
+{
+	m_pFrameResources.resize(SWAP_CHAIN_BUFFER_COUNT);
+	for (int i = 0; i < FRAME_RESOURCE_COUNT; ++i)
+	{
+		m_pFrameResources[i] = new FrameResource(m_pD3dDevice, 1, (UINT)m_AllRenderItems.size());
+	}
 }
 
 void D3DApp::CreateSwapChain()
@@ -431,7 +477,7 @@ void D3DApp::CreateDepthStencilBuffer()
 	depthStencilDesc.SampleDesc.Quality = 0;
 	depthStencilDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
 	depthStencilDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
-	
+
 	D3D12_CLEAR_VALUE optClear;
 	optClear.Format = m_DepthStencilFormat;
 	optClear.DepthStencil.Depth = 1.0f;
@@ -480,7 +526,7 @@ void D3DApp::CreateVertexAndIndexBuffers()
 
 	m_inputLayout[0] = { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 };
 	m_inputLayout[1] = { "COLOR", 0, DXGI_FORMAT_R8G8B8A8_UINT, 0, sizeof(XMFLOAT3), D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 };
-	
+
 	UINT16 iList[] = { 0, 1, 2, 0, 2, 3, 0, 3, 4, 0, 4, 1 };
 
 	const UINT64 iBufferSize = sizeof(iList);
@@ -498,7 +544,7 @@ void D3DApp::CreateVertexAndIndexBuffers()
 	m_geometry->VertexBufferGPU = CreateDefaultBuffer(vList, vBufferSize, m_geometry->VertexBufferUploader);
 	m_geometry->VertexByteStride = sizeof(Vertex);
 	m_geometry->VertexBufferByteSize = sizeof(Vertex) * _countof(vList);
-	
+
 	m_geometry->IndexBufferGPU = CreateDefaultBuffer(iList, iBufferSize, m_geometry->IndexBufferUploader);
 	m_geometry->IndexFormat = DXGI_FORMAT_R16_UINT;
 	m_geometry->IndexBufferByteSize = iBufferSize;
@@ -523,8 +569,8 @@ void D3DApp::CreateConstantBuffers()
 
 	m_pD3dDevice->CreateDescriptorHeap(&cbvHeapDesc, IID_PPV_ARGS(&m_pCbvHeap));
 
-	m_constantBuffer = std::make_unique<UploadBuffer<ObjectConstants>>(m_pD3dDevice, numCB, true);
-	D3D12_GPU_VIRTUAL_ADDRESS cbAddress = m_constantBuffer->GetResource()->GetGPUVirtualAddress();
+	m_mainObjectCB = std::make_unique<UploadBuffer<ObjectConstants>>(m_pD3dDevice, numCB, true);
+	D3D12_GPU_VIRTUAL_ADDRESS cbAddress = m_mainObjectCB->GetResource()->GetGPUVirtualAddress();
 
 	// Offset to the ith object constant buffer in the buffer here.
 
@@ -533,46 +579,69 @@ void D3DApp::CreateConstantBuffers()
 	cbvDesc.SizeInBytes = (UINT)cBufferSize;
 
 	m_pD3dDevice->CreateConstantBufferView(&cbvDesc, m_pCbvHeap->GetCPUDescriptorHandleForHeapStart());
-
-	UpdateConstantBuffers();
 }
 
-void D3DApp::UpdateConstantBuffers()
+void D3DApp::UpdateObjectCB(const float dt)
 {
-	// When we want to update the constant buffer we will Map() the buffer to get a CPU virtual address to the start of the buffer.
-	m_constantBuffer->GetResource()->Map(0, nullptr, reinterpret_cast<void**>(m_constantBuffer->GetMappedData()));
+	auto currObjectCB = m_pCurrentFrameResource->ObjectConstantBuffer;
+	for (auto& item : m_AllRenderItems)
+	{
+		if (item->NumFramesDirty > 0)
+		{
+			XMMATRIX world = XMLoadFloat4x4(&item->World);
 
-	ObjectConstants objConstants;
+			ObjectConstants objConstants;
+			XMStoreFloat4x4(&objConstants.World, XMMatrixTranspose(world));
 
-	XMMATRIX view, projection, world;
+			currObjectCB->CopyData(item->ObjCBIndex, &objConstants);
 
-	XMVECTOR pos = XMVectorSet(0.0F, 1.0F, -2.0F, 1.0F);
-	XMVECTOR target = XMVectorSet(0.0F, 0.5F, 0.0F, 0.0F);
-	XMVECTOR up = XMVectorSet(0.0F, 1.0F, 0.0F, 0.0F);
-	view = XMMatrixLookAtLH(pos, target, up);
+			item->NumFramesDirty--;
+		}
+	}
+}
 
-	projection = XMMatrixPerspectiveFovLH(XMConvertToRadians(70.0F), Window::Size().cx / Window::Size().cy, 0.05F, 1000.0F);
+void D3DApp::UpdateMainPassCB(const float dt, const float totalTime)
+{
+	XMMATRIX view = XMLoadFloat4x4(&m_view);
+	XMMATRIX proj = XMLoadFloat4x4(&m_proj);
+
+	XMMATRIX viewProj = XMMatrixMultiply(view, proj);
+	XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(view), view);
+	XMMATRIX invProj = XMMatrixInverse(&XMMatrixDeterminant(proj), proj);
+	XMMATRIX invViewProj = XMMatrixInverse(&XMMatrixDeterminant(viewProj), viewProj);
 	
-	world = XMMatrixRotationY(m_zRotation);
+	XMStoreFloat4x4(&m_mainPassCB.View, XMMatrixTranspose(view));
+	XMStoreFloat4x4(&m_mainPassCB.InvView, XMMatrixTranspose(invView));
+	XMStoreFloat4x4(&m_mainPassCB.Proj, XMMatrixTranspose(proj));
+	XMStoreFloat4x4(&m_mainPassCB.InvProj, XMMatrixTranspose(invProj));
+	XMStoreFloat4x4(&m_mainPassCB.ViewProj, XMMatrixTranspose(viewProj));
+	XMStoreFloat4x4(&m_mainPassCB.InvViewProj, XMMatrixTranspose(invViewProj));
+	
+	m_mainPassCB.EyePosW = m_eyePosition;
+	m_mainPassCB.RenderTargetSize = XMFLOAT2(Window::Size().cx, Window::Size().cy);
+	m_mainPassCB.InvRenderTargetSize = XMFLOAT2(1.0f / Window::Size().cx, 1.0f / Window::Size().cy);
+	m_mainPassCB.NearZ = 1.0f;
+	m_mainPassCB.FarZ = 1000.0f;
+	m_mainPassCB.TotalTime = totalTime;
+	m_mainPassCB.DeltaTime = dt;
 
-	objConstants.WorldViewProj = world * view * projection;
-
-	m_constantBuffer->CopyData(0, &objConstants);
-
-	// Once we are done updating the constant buffer we will Unmap() it.
-	m_constantBuffer->GetResource()->Unmap(0, nullptr);
+	auto currPassCB = m_pCurrentFrameResource->PassConstantBuffer;
+	currPassCB->CopyData(0, &m_mainPassCB);
 }
 
 void D3DApp::CreateRootSignature()
 {
-	CD3DX12_ROOT_PARAMETER slotRootParameter[1];
+	CD3DX12_DESCRIPTOR_RANGE cbvTable0;
+	cbvTable0.Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 0);
 
-	CD3DX12_DESCRIPTOR_RANGE cbvTable;
-	cbvTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 0);
+	CD3DX12_DESCRIPTOR_RANGE cbvTable1;
+	cbvTable1.Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 1);
 
-	slotRootParameter[0].InitAsDescriptorTable(1, &cbvTable);
+	CD3DX12_ROOT_PARAMETER slotRootParameter[2];
+	slotRootParameter[0].InitAsDescriptorTable(1, &cbvTable0);
+	slotRootParameter[1].InitAsDescriptorTable(1, &cbvTable1);
 
-	CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc(1, slotRootParameter, 0, nullptr, D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
+	CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc(2, slotRootParameter, 0, nullptr, D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
 	ID3DBlob* serializedRootSignature = nullptr;
 	ID3DBlob* errorBlob = nullptr;
@@ -604,11 +673,14 @@ void D3DApp::CreatePipelineStateObject()
 	psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 	psoDesc.NumRenderTargets = 1;
 	psoDesc.RTVFormats[0] = m_BackBufferFormat;
-	psoDesc.SampleDesc.Count = 1; 
-	psoDesc.SampleDesc.Quality = 0; 
+	psoDesc.SampleDesc.Count = 1;
+	psoDesc.SampleDesc.Quality = 0;
 	psoDesc.DSVFormat = m_DepthStencilFormat;
 
-	HRESULT hr = m_pD3dDevice->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&m_pipelineStateObject));
+	for (int i = 0; i < m_PSOs.size(); i++)
+	{
+		m_pD3dDevice->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&m_PSOs[i]));
+	}
 }
 
 ID3D12Resource* D3DApp::CreateDefaultBuffer(const void* initData, UINT64 byteSize, ID3D12Resource* uploadBuffer)
@@ -619,7 +691,7 @@ ID3D12Resource* D3DApp::CreateDefaultBuffer(const void* initData, UINT64 byteSiz
 	CD3DX12_RESOURCE_DESC resourceDesc = CD3DX12_RESOURCE_DESC::Buffer(byteSize);
 	m_pD3dDevice->CreateCommittedResource(&heapProperties, D3D12_HEAP_FLAG_NONE, &resourceDesc, D3D12_RESOURCE_STATE_COMMON, nullptr, IID_PPV_ARGS(&defaultBuffer));
 	if (defaultBuffer == nullptr) return nullptr;
-	
+
 	CD3DX12_HEAP_PROPERTIES uploadHeapProperties(D3D12_HEAP_TYPE_UPLOAD);
 	m_pD3dDevice->CreateCommittedResource(&uploadHeapProperties, D3D12_HEAP_FLAG_NONE, &resourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&uploadBuffer));
 	if (uploadBuffer == nullptr) return nullptr;
@@ -639,7 +711,7 @@ ID3D12Resource* D3DApp::CreateDefaultBuffer(const void* initData, UINT64 byteSiz
 
 D3D12_CPU_DESCRIPTOR_HANDLE D3DApp::CurrentBackBufferView() const
 {
-	
+
 	// CD3DX12 constructor to offset to the RTV of the current back buffer.
 	return CD3DX12_CPU_DESCRIPTOR_HANDLE(
 		m_pRtvHeap->GetCPUDescriptorHandleForHeapStart(),		// handle start
