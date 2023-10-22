@@ -2,8 +2,7 @@
 #include "D3DApp.h"
 #include <cassert>
 
-using namespace DirectX;
-
+#include "MeshGeometry.h"
 
 D3DApp* D3DApp::m_pApp = nullptr;
 
@@ -28,15 +27,12 @@ D3DApp::D3DApp() :
 	m_pDsvHeap = nullptr;
 	m_pCbvHeap = nullptr;
 
+	m_geometry = nullptr;
+
 	m_pSwapChain = nullptr;
 	m_pSwapChainBuffer[0] = nullptr;
 	m_pSwapChainBuffer[1] = nullptr;
 	m_pDepthStencilBuffer = nullptr;
-
-	m_vertexBufferGPU = nullptr;
-	m_vertexBufferUploader = nullptr;
-	m_indexBufferGPU = nullptr;
-	m_indexBufferUploader = nullptr;
 
 	m_vsByteCode = nullptr;
 	m_psByteCode = nullptr;
@@ -76,11 +72,6 @@ D3DApp::~D3DApp()
 	m_pSwapChain->Release();
 
 	m_pDepthStencilBuffer->Release();
-	
-	m_vertexBufferGPU->Release();
-	m_vertexBufferUploader->Release();
-	m_indexBufferGPU->Release();
-	m_indexBufferUploader->Release();
 
 	m_vsByteCode->Release();
 	m_psByteCode->Release();
@@ -168,13 +159,12 @@ void D3DApp::Render()
 	m_pCommandList->SetGraphicsRootDescriptorTable(0, cbvHandle);
 
 	// Bind the vertex and indices buffers to the IA (Input Assembler) stage
-	D3D12_VERTEX_BUFFER_VIEW vertexBuffers[1] = { m_vertexBufferView };
-	m_pCommandList->IASetVertexBuffers(0, 1, vertexBuffers);
+	m_pCommandList->IASetVertexBuffers(0, 1, &m_geometry->VertexBufferView());
 	m_pCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	m_pCommandList->IASetIndexBuffer(&m_indexBufferView);
+	m_pCommandList->IASetIndexBuffer(&m_geometry->IndexBufferView());
 
 	// Draw call to render our bound vertex and index buffers
-	UINT numTriangleIndices = 12;
+	UINT numTriangleIndices = m_geometry->DrawArgs["Pyramid"].IndexCount;
 	m_pCommandList->DrawIndexedInstanced(numTriangleIndices, 1, 0, 0, 0);
 
 	// Set resource barrier to transition the back buffer from render target to present
@@ -490,24 +480,34 @@ void D3DApp::CreateVertexAndIndexBuffers()
 
 	m_inputLayout[0] = { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 };
 	m_inputLayout[1] = { "COLOR", 0, DXGI_FORMAT_R8G8B8A8_UINT, 0, sizeof(XMFLOAT3), D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 };
-
-	const UINT64 vBufferSize = sizeof(vList);
-
-	m_vertexBufferGPU = CreateDefaultBuffer(vList, vBufferSize, m_vertexBufferUploader);
-
-	m_vertexBufferView.BufferLocation = m_vertexBufferGPU->GetGPUVirtualAddress();
-	m_vertexBufferView.StrideInBytes = sizeof(Vertex);
-	m_vertexBufferView.SizeInBytes = sizeof(Vertex) * _countof(vList);
-
+	
 	UINT16 iList[] = { 0, 1, 2, 0, 2, 3, 0, 3, 4, 0, 4, 1 };
 
 	const UINT64 iBufferSize = sizeof(iList);
+	const UINT64 vBufferSize = sizeof(vList);
 
-	m_indexBufferGPU = CreateDefaultBuffer(iList, iBufferSize, m_indexBufferUploader);
+	m_geometry = std::make_unique<MeshGeometry>();
+	m_geometry->Name = "Pyramid";
 
-	m_indexBufferView.BufferLocation = m_indexBufferGPU->GetGPUVirtualAddress();
-	m_indexBufferView.Format = DXGI_FORMAT_R16_UINT;
-	m_indexBufferView.SizeInBytes = sizeof(iList);
+	D3DCreateBlob(vBufferSize, &m_geometry->VertexBufferCPU);
+	CopyMemory(m_geometry->VertexBufferCPU->GetBufferPointer(), vList, vBufferSize);
+
+	D3DCreateBlob(iBufferSize, &m_geometry->IndexBufferCPU);
+	CopyMemory(m_geometry->IndexBufferCPU->GetBufferPointer(), iList, iBufferSize);
+
+	m_geometry->VertexBufferGPU = CreateDefaultBuffer(vList, vBufferSize, m_geometry->VertexBufferUploader);
+	m_geometry->VertexByteStride = sizeof(Vertex);
+	m_geometry->VertexBufferByteSize = sizeof(Vertex) * _countof(vList);
+	
+	m_geometry->IndexBufferGPU = CreateDefaultBuffer(iList, iBufferSize, m_geometry->IndexBufferUploader);
+	m_geometry->IndexFormat = DXGI_FORMAT_R16_UINT;
+	m_geometry->IndexBufferByteSize = iBufferSize;
+
+	SubmeshGeometry submesh;
+	submesh.IndexCount = _countof(iList);
+	submesh.StartIndexLocation = 0;
+	submesh.BaseVertexLocation = 0;
+	m_geometry->DrawArgs["Pyramid"] = submesh;
 }
 
 void D3DApp::CreateConstantBuffers()
@@ -540,7 +540,7 @@ void D3DApp::CreateConstantBuffers()
 void D3DApp::UpdateConstantBuffers()
 {
 	// When we want to update the constant buffer we will Map() the buffer to get a CPU virtual address to the start of the buffer.
-	m_constantBuffer->GetResource()->Map(0, nullptr, reinterpret_cast<void**>(&m_constantBuffer->GetMappedData()));
+	m_constantBuffer->GetResource()->Map(0, nullptr, reinterpret_cast<void**>(m_constantBuffer->GetMappedData()));
 
 	ObjectConstants objConstants;
 

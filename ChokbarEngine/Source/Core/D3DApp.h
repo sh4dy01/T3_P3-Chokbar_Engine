@@ -6,10 +6,12 @@
 #endif
 
 #include "Engine/GameTimer.h"
-
 #include "Engine/Simulation.h"
-#include "Core/UploadBuffer.h"
+
+#include "UploadBuffer.h"
 #include <iostream>
+
+class MeshGeometry;
 
 
 
@@ -19,13 +21,13 @@
 #pragma region Helper Structs
 struct CHOKBAR_API Vertex
 {
-	DirectX::XMFLOAT3 Pos;
+	XMFLOAT3 Pos;
 	UINT32 Color;
 };
 
 struct CHOKBAR_API ObjectConstants
 {
-	DirectX::XMMATRIX WorldViewProj = DirectX::XMMatrixIdentity();
+	XMMATRIX WorldViewProj = XMMatrixIdentity();
 };
 #pragma endregion
 
@@ -153,17 +155,7 @@ private:
 	ID3D12Resource* m_pDepthStencilBuffer;
 	DXGI_FORMAT m_DepthStencilFormat;
 	
-	/* D3D12 Resource : A resource usable by the GPU
-	The vertex buffer stores all the vertices we want to be drawn */
-	ID3D12Resource* m_vertexBufferGPU;
-	ID3D12Resource* m_vertexBufferUploader;
-	D3D12_VERTEX_BUFFER_VIEW m_vertexBufferView;
-
-	/* D3D12 Resource : A resource usable by the GPU
-	The index buffer stores all the indices that are going to be used to draw our vertices as triangles */
-	ID3D12Resource* m_indexBufferGPU;
-	ID3D12Resource* m_indexBufferUploader;
-	D3D12_INDEX_BUFFER_VIEW m_indexBufferView;
+	std::unique_ptr<MeshGeometry> m_geometry;
 
 	/* Upload buffer used to give the GPU information at runtime with the CPU.
 	This buffer uses the GPU Upload Heap that allows the CPu to upload data to the GPU at runtime */

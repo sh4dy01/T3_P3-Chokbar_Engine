@@ -1,19 +1,6 @@
 #pragma once
 
-#pragma comment(lib,"d3dcompiler.lib")
-#pragma comment(lib, "D3D12.lib")
-#pragma comment(lib, "dxgi.lib")
-
-#include <d3d12.h>
-#include <Core/d3dx12.h>
-#include <dxgi1_6.h>
-#include <DirectXMath.h>
-#include <d3dcompiler.h>
-using namespace DirectX;
-
 #include <memory>
-
-
 
 template<typename T>
 class UploadBuffer
@@ -27,7 +14,7 @@ public:
 
 	UINT GetElementByteSize() const { return m_elementByteSize; }
 	ID3D12Resource* GetResource() const { return m_uploadBuffer; }
-	BYTE*& GetMappedData() { return m_mappedData; }
+	BYTE* GetMappedData() { return m_mappedData; }
 
 	void CopyData(int elementIndex, const void* data);
 
