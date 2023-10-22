@@ -1,22 +1,6 @@
 #pragma once
 
-#pragma comment(lib,"d3dcompiler.lib")
-#pragma comment(lib, "D3D12.lib")
-#pragma comment(lib, "dxgi.lib")
-
-#include <d3d12.h>
-#include <Core/d3dx12.h>
-#include <dxgi1_6.h>
-#include <DirectXMath.h>
-#include <d3dcompiler.h>
-using namespace DirectX;
-
-#include <wrl.h>
-using namespace Microsoft::WRL;
-
 #include <memory>
-
-
 
 template<typename T>
 class UploadBuffer
@@ -29,13 +13,13 @@ public:
 	UploadBuffer& operator=(const UploadBuffer& rhs) = delete;
 
 	UINT GetElementByteSize() const { return m_elementByteSize; }
-	ID3D12Resource* GetResource() const { return m_uploadBuffer.Get(); }
-	BYTE*& GetMappedData() { return m_mappedData; }
+	ID3D12Resource* GetResource() const { return m_uploadBuffer; }
+	BYTE* GetMappedData() { return m_mappedData; }
 
 	void CopyData(int elementIndex, const void* data);
 
 private:
-	ComPtr<ID3D12Resource> m_uploadBuffer;
+	ID3D12Resource* m_uploadBuffer;
 	UINT m_elementByteSize;
 	BYTE* m_mappedData;
 	BOOL m_isConstantBuffer;
