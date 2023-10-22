@@ -12,7 +12,10 @@ namespace Win32
 		~Window();
 
 		void Initialize() override;
+		void PollEvent();
 
+
+		virtual bool NeedsToClose() { return needsToClose; }
 
 	protected:
 
@@ -26,10 +29,12 @@ namespace Win32
 
 		SIZE			Size() { return m_Size; }
 
-	public:
-
 		void			Size(SIZE size) { m_Size = size; }
 		void			Size(INT cx, INT cy) { m_Size.cx = cx; m_Size.cy = cy; }
+
+	private:
+
+		bool			needsToClose = false;
 
 	};
 }

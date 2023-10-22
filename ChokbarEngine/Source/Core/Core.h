@@ -2,5 +2,5 @@
 
 #include "CoreMinimal.h"
 
-#include "D3DApp.h"
-#include "D3DUtils.h"
+#include "Engine/GameTimer.h"
+#include "Core/D3DApp.h"

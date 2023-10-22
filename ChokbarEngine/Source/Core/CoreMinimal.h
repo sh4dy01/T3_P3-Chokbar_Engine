@@ -2,8 +2,6 @@
 
 #include "Core/CoreDefinitions.h"
 
-#include "Engine/Engine.h"
-
 #include "Core/PerGameSettings.h"
 #include "Common/Logger.h"
 #include "Common/Time.h"

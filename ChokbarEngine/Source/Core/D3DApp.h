@@ -5,12 +5,8 @@
 #include <crtdbg.h>
 #endif
 
-#include "Engine/GameTimer.h"
-
-#include "Engine/Simulation.h"
 #include "Core/UploadBuffer.h"
 #include <iostream>
-
 
 
 /* ------------------------------------------------------------------------- */
@@ -30,33 +26,25 @@ struct CHOKBAR_API ObjectConstants
 #pragma endregion
 
 
-class CHOKBAR_API D3DApp : public Chokbar::Simulation {
+class CHOKBAR_API D3DApp {
 
 public:
 
 	D3DApp();
 	~D3DApp();
 
-
 public:
 
 	static D3DApp* GetInstance() { return m_pApp; }
 
-	void Initialize() override;
+	void InitializeD3D12(SIZE windowSize, HWND handle);
+	void OnResize(SIZE windowSize);
+	void Update(const float dt);
+	void Render();
 
-	void Run() override;
-
-	void OnResize();
-
-protected:
-	
-	void Update(const float dt) override;
-	void Render() override;
 
 private:
 
-	void InitializeD3D12();
-	void InitializeWindow();
 
 	void EnableDebugLayer();
 	
@@ -68,7 +56,7 @@ private:
 	void CreateCommandObjects();
 	void FlushCommandQueue();
 
-	void CreateSwapChain();
+	void CreateSwapChain(HWND windowHandle);
 
 	void RegisterInitCommands_In_CommandList();
 	void CreateRtvAndDsvDescriptorHeaps();
@@ -80,7 +68,6 @@ private:
 	void CreateRootSignature();
 	void CreatePipelineStateObject();
 
-	void CalculateFrameStats();
 
 	ComPtr<ID3D12Resource> CreateDefaultBuffer(const void* initData, UINT64 byteSize, ComPtr<ID3D12Resource>& uploadBuffer);
 	D3D12_CPU_DESCRIPTOR_HANDLE CurrentBackBufferView() const;
@@ -90,18 +77,18 @@ private:
 	/* Creates an ID3D12InfoQueue to catch any error within the Command Queue.
 	Any error will break the code */
 	void DEBUG_CreateInfoQueue();
+
 private:
 
 	static D3DApp *m_pApp;
-
-	// TODO : Move this instance out of this class
-	// Move this to the Simulation class
-	GameTimer m_GameTimer;
 
 	HINSTANCE m_pInstance;
 
 	bool		m_4xMsaaState;		// 4X MSAA (4.1.8) enabled. Default is false.
 	UINT		m_4xMsaaQuality;	// quality level of 4X MSAA
+
+	int m_bufferWidth;
+	int m_bufferHeight;
 
 	/* D3D12 Factory : Used to create the swap chain */
 	Microsoft::WRL::ComPtr<IDXGIFactory4> m_pDxgiFactory;

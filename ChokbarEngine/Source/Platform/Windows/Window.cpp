@@ -33,12 +33,24 @@ namespace Win32
 		UpdateWindow(m_hWnd);
 	}
 
+	void Window::PollEvent()
+	{
+		MSG msg;
+		while (PeekMessage(&msg, m_hWnd, 0, 0, PM_REMOVE))
+		{
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+	}
+
+
 	LRESULT Window::MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 
 		switch (message) 
 		{
 		case WM_QUIT:
+			break;
 		case WM_CLOSE:
 		case WM_DESTROY:
 			PostQuitMessage(0);

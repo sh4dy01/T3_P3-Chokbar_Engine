@@ -105,7 +105,6 @@
     <ClCompile Include="Source\Core\UpdloadBuffer.cpp" />
     <ClCompile Include="Source\Engine\Engine.cpp" />
     <ClCompile Include="Source\Engine\GameTimer.cpp" />
-    <ClCompile Include="Source\Engine\Simulation.cpp" />
     <ClCompile Include="Source\Engine\SplashScreen.cpp" />
     <ClCompile Include="Source\Platform\Windows\IApplication.cpp" />
     <ClCompile Include="Source\Platform\Windows\SubObject.cpp" />
@@ -125,7 +124,6 @@
     <ClInclude Include="Source\Core\UploadBuffer.h" />
     <ClInclude Include="Source\Engine\Engine.h" />
     <ClInclude Include="Source\Engine\GameTimer.h" />
-    <ClInclude Include="Source\Engine\Simulation.h" />
     <ClInclude Include="Source\Engine\SplashScreen.h" />
     <ClInclude Include="Source\Platform\Windows\IApplication.h" />
     <ClInclude Include="Source\Platform\Windows\SubObject.h" />

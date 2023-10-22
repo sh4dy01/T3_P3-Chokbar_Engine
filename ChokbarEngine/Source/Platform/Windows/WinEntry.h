@@ -1,6 +1,7 @@
 #include "Chokbar.h"
 
 #include "IApplication.h"
+#include "Core/D3DUtils.h"
 
 extern Win32::IApplication* EntryApplication();
 
@@ -13,12 +14,14 @@ int CALLBACK WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
 		PerGameSettings GameSettings;
 		EntryApp->SetupPerGameSettings();
 
-		Logger logger;
+		//Logger logger;
 
 		EntryApp->PreInitialize();
 		EntryApp->Initialize();
 
 		EntryApp->Run();
+
+		EntryApp->Shutdown();
 
 	}
 	catch (DxException& e)
