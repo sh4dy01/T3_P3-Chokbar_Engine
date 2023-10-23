@@ -9,17 +9,20 @@ namespace Win32
 	public:
 
 		Window(WSTRING title, HICON icon, WindowType type = RESIZABLE);
+		Window(WSTRING title, HICON icon, int width, int height, WindowType type = RESIZABLE);
 		~Window();
 
-		void Initialize() override;
-		void PollEvent();
-
-
-		virtual bool NeedsToClose() { return needsToClose; }
 
 	protected:
 
-		SIZE			m_Size;
+		void Initialize() override;
+		void PollEvent();
+		virtual bool NeedsToClose() { return needsToClose; }
+
+
+		int				m_Width;
+		int				m_Height;
+
 		WindowType 		m_Type;
 
 		LRESULT MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override;
@@ -27,10 +30,10 @@ namespace Win32
 
 	public:
 
-		SIZE			Size() { return m_Size; }
+		HWND			Handle() const { return m_hWnd; }
 
-		void			Size(SIZE size) { m_Size = size; }
-		void			Size(INT cx, INT cy) { m_Size.cx = cx; m_Size.cy = cy; }
+		int 			Width() const { return m_Width; }
+		int 			Height() const { return m_Height; }
 
 	private:
 

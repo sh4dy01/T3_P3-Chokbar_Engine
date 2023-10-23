@@ -5,7 +5,6 @@
 #endif
 
 
-
 #include <string>
 
 #include "Core/Core.h"

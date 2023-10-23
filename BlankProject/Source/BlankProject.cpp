@@ -4,7 +4,7 @@
 #include "Platform/Windows/WinEntry.h"
 
 
-class Application : public Chokbar::Engine {
+class Application : public Win32::IApplication {
 
 public:
 
@@ -13,10 +13,12 @@ public:
 
 public:
 
-	void SetupPerGameSettings();
+	void SetupPerGameSettings() override;
 
 	/* Initialize the application */
 	void Initialize() override;
+
+	void PreInitialize() override {};
 
 	/* Game Loop */
 	void Update(const float dt) override;
@@ -36,33 +38,24 @@ void Application::SetupPerGameSettings()
 	PerGameSettings::SetMainIcon(IDI_MAINICON);
 }
 
+// Init engine
 void Application::Initialize()
 {
-	Engine::Initialize();
+	Chokbar::Engine::GetInstance().Initialize();
 }
 
-
+// Main loop
 void Application::Run()
 {
-	Engine::ResetTimer();
-
-	while (!Engine::NeedsToClose())
-	{
-		Window::PollEvent();
-
-		Engine::Tick();
-
-		Update(GetDeltaTime());
-		Engine::Render();
-	}
+	Chokbar::Engine::GetInstance().Run();
 }
 
 void Application::Update(const float dt)
 {
-	Engine::Update(dt);
+	Chokbar::Engine::GetInstance().Update(dt);
 }
 
 void Application::Shutdown()
 {
-	Engine::Shutdown();
+	Chokbar::Engine::GetInstance().Shutdown();
 }

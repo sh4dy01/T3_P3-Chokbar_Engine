@@ -4,39 +4,42 @@
 namespace Chokbar
 {
 	Engine::Engine()
-		: Window(L"Application", NULL)
+		: Window(PerGameSettings::GameName(), PerGameSettings::MainIcon())
 	{
 	}
 
 	Engine::~Engine()
-	{
-		
-	}
+	= default;
+
 
 	void Engine::PreInitialize()
 	{
-
+		/*
 		Logger::PrintDebugSeperator();
 		Logger::PrintLog(L"Application Starting...\n");
 		Logger::PrintLog(L"Game Name: %s\n", PerGameSettings::GameName());
 		Logger::PrintLog(L"Boot Time: %s\n", Time::GetDateTimeString().c_str());
 
 		Logger::PrintDebugSeperator();
+		*/
 
 		//SplashScreen::Open();
 	}
 
 	void Engine::Initialize()
 	{
+		PreInitialize();
+
 		Window::RegisterNewClass();
 		Window::Initialize();
 
-		m_D3DApp.InitializeD3D12(Size(), Handle());
+		D3DApp::GetInstance()->InitializeD3D12(this);
 	}
 
 	void Engine::Update(float dt)
 	{
-		m_D3DApp.Update(dt);
+		D3DApp::GetInstance()->Update(dt);
+
 		CalculateFrameStats();
 	}
 
@@ -52,12 +55,17 @@ namespace Chokbar
 
 	void Engine::OnResize()
 	{
-		m_D3DApp.OnResize(Size());
+		//D3DApp::GetInstance()->OnResize(m_Window.Size());
+	}
+
+	void Engine::Run()
+	{
+
 	}
 
 	void Engine::Render()
 	{
-		m_D3DApp.Render();
+		D3DApp::GetInstance()->Render();
 	}
 
 	void Engine::CalculateFrameStats()
@@ -100,12 +108,20 @@ namespace Chokbar
 		m_GameTimer.Reset();
 	}
 
-
 	LRESULT Engine::MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 		switch (message)
 		{
+		case WM_CLOSE:
+			break;
 
+		case WM_MOUSEMOVE:
+
+			break;
+
+			// Prevent Alt key from triggering menu, which freezes the application.
+		case WM_SYSCOMMAND:
+			break;
 		}
 
 		return Window::MessageHandler(hwnd, message, wParam, lParam);

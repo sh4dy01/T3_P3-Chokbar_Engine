@@ -48,9 +48,9 @@ public:
 
 public:
 
-	static D3DApp* GetInstance() { return m_pApp; }
+	static D3DApp* GetInstance();
 
-	void InitializeD3D12(SIZE windowSize, HWND handle);
+	void InitializeD3D12(Win32::Window* window);
 	void OnResize(SIZE windowSize);
 	void Update(const float dt);
 	void Render();

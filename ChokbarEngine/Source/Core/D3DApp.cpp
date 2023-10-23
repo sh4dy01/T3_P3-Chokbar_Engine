@@ -139,20 +139,30 @@ void D3DApp::OnResize(SIZE windowSize)
 	m_bufferHeight = windowSize.cy;
 }
 
-void D3DApp::InitializeD3D12(SIZE windowSize, HWND handle)
+D3DApp* D3DApp::GetInstance()
+{
+	if (m_pApp == nullptr)
+	{
+		m_pApp = new D3DApp();
+	}
+
+	return m_pApp;
+}
+
+void D3DApp::InitializeD3D12(Win32::Window* window)
 {
 #if defined(DEBUG) || defined(_DEBUG)
 	EnableDebugLayer();
 #endif
 
-	m_bufferWidth = windowSize.cx;
-	m_bufferHeight = windowSize.cy;
+	m_bufferWidth = window->Width();
+	m_bufferHeight = window->Height();
 
 	CreateDevice();
 	CreateFenceAndGetDescriptorsSizes();
 	CheckMSAAQualitySupport();
 	CreateCommandObjects();
-	CreateSwapChain(handle);
+	CreateSwapChain(window->Handle());
 
 	RegisterInitCommands_In_CommandList();
 }

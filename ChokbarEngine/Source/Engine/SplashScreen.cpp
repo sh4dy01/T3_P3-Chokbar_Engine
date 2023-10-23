@@ -37,7 +37,7 @@ SplashWindow::SplashWindow()
 	wcscpy_s(m_OutputMessage, L"Starting Splash Screen...");
 
 	Window::RegisterNewClass();
-	Size(500, 600);
+	//Size(500, 600);
 	Window::Initialize();
 }
 
@@ -62,7 +62,7 @@ LRESULT SplashWindow::MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPA
 		SetTextColor(hdc, RGB(255, 255, 255));
 		SetTextAlign(hdc, TA_CENTER);
 
-		TextOut(hdc, Size().cx / 2, Size().cy - 30, m_OutputMessage, wcslen(m_OutputMessage));
+		TextOut(hdc, m_Width / 2, m_Height - 30, m_OutputMessage, wcslen(m_OutputMessage));
 		EndPaint(hwnd, &ps);
 	}
 	break;

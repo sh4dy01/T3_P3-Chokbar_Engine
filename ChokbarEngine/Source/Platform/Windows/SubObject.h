@@ -9,12 +9,12 @@ namespace Win32 {
 		SubObject(WSTRING className, WSTRING titleName, HICON icon);
 		~SubObject();
 
-		virtual void RegisterNewClass();
-		virtual void Initialize() = 0;
 
 
 	protected:
 
+		virtual void RegisterNewClass();
+		virtual void Initialize() = 0;
 
 		static			LRESULT CALLBACK	SetupMessageHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 		static			LRESULT				AssignMessageHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -27,11 +27,6 @@ namespace Win32 {
 
 		HICON		m_hIcon;
 		HWND		m_hWnd;
-
-	public:
-
-		HWND		Handle() const { return m_hWnd; }
-		void		Handle(HWND hwnd) { m_hWnd = hwnd; }
 
 	};
 }

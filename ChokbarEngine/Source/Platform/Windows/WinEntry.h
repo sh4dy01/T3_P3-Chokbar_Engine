@@ -1,5 +1,3 @@
-#include "Chokbar.h"
-
 #include "IApplication.h"
 #include "Core/D3DUtils.h"
 
