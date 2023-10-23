@@ -1,5 +1,6 @@
 #pragma once
 
+#include "MeshGeometry.h"
 
 inline CHOKBAR_API std::wstring AnsiToWString(const std::string& str)
 {
@@ -57,6 +58,8 @@ XMFLOAT4X4 Identity4x4();
 /* HELPER STRUCTS                                                            */
 /* ------------------------------------------------------------------------- */
 #pragma region Helper Structs
+enum TRANSFORMATION_TYPE { TRANSLATION, ROTATION, SCALE };
+	
 struct CHOKBAR_API Vertex
 {
 	XMFLOAT3 Pos;
@@ -89,6 +92,7 @@ struct CHOKBAR_API PassConstants
 
 struct CHOKBAR_API RenderItem
 {
+
 	RenderItem() = default;
 	
 	XMFLOAT4X4 World = Identity4x4();
@@ -104,5 +108,7 @@ struct CHOKBAR_API RenderItem
 	UINT IndexCount = 0;
 	UINT StartIndexLocation = 0;
 	INT BaseVertexLocation = 0;
+
+	TRANSFORMATION_TYPE TransformationType = TRANSLATION;
 };
 #pragma endregion

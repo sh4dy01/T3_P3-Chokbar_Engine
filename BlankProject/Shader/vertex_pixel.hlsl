@@ -1,6 +1,6 @@
 cbuffer cbPerObject : register(b0)
 {
-	row_major float4x4 gWorldViewProj;
+	float4x4 gWorld;
 };
 
 cbuffer cbPass : register(b1)
@@ -37,11 +37,11 @@ PS_INPUT vs_main(VS_INPUT input)
 {
     PS_INPUT output;
 
-    float4 posW = mul(float4(input.pos, 1.0f), gWorldViewProj);
+    float4 posW = mul(float4(input.pos, 1.0f), gWorld);
     output.pos = mul(posW, gViewProj);
     
     output.color = input.color / 255.0F;
-
+    
     return output;
 }
 

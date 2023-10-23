@@ -118,7 +118,7 @@
     <ClCompile Include="Source\Core\MeshGeometry.cpp">
       <Filter>Source\Core\Private</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Core\FrameResource.cpp">
+    <ClCompile Include="Source\Core\D3DMath.cpp">
       <Filter>Source\Core\Private</Filter>
     </ClCompile>
   </ItemGroup>
@@ -183,7 +183,7 @@
     <ClInclude Include="Source\Core\MeshGeometry.h">
       <Filter>Source\Core\Classes</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Core\FrameResource.h">
+    <ClInclude Include="Source\Core\D3DMath.h">
       <Filter>Source\Core\Classes</Filter>
     </ClInclude>
   </ItemGroup>

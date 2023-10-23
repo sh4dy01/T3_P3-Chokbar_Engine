@@ -2,8 +2,6 @@
 #include "D3DApp.h"
 #include <cassert>
 
-#include "MeshGeometry.h"
-#include "FrameResource.h"
 
 D3DApp* D3DApp::m_pApp = nullptr;
 
@@ -26,7 +24,7 @@ D3DApp::D3DApp() :
 	m_4xMsaaState(false), m_4xMsaaQuality(0),
 	m_RtvDescriptorSize(0), m_DsvDescriptorSize(0), m_CbvSrvUavDescriptorSize(0),
 	m_D3dDriverType(D3D_DRIVER_TYPE_HARDWARE), m_BackBufferFormat(DXGI_FORMAT_R8G8B8A8_UNORM), m_DepthStencilFormat(DXGI_FORMAT_D24_UNORM_S8_UINT),
-	m_zRotation(0), m_CurrentFenceValue(0), m_pInstance(nullptr), m_currBackBuffer(0), m_eyePosition(0, 0, 0)
+	m_yRotation(0), m_CurrentFenceValue(0), m_pInstance(nullptr), m_currBackBuffer(0), m_eyePosition(0, 0, 0), m_xPosition(0)
 {
 	m_pDebugController = nullptr;
 
@@ -36,14 +34,15 @@ D3DApp::D3DApp() :
 
 	m_pCommandQueue = nullptr;
 	m_pCommandAllocator = nullptr;
-	m_pCurrentFrameResource = nullptr;
 	m_pCommandList = nullptr;
 
 	m_pRtvHeap = nullptr;
 	m_pDsvHeap = nullptr;
 	m_pCbvHeap = nullptr;
 
-	m_geometry = nullptr;
+	m_mainPassCB = nullptr;
+
+	m_pyramidGeometry = nullptr;
 
 	m_pSwapChain = nullptr;
 	m_pSwapChainBuffer[0] = nullptr;
@@ -127,19 +126,9 @@ void D3DApp::Run()
 
 void D3DApp::Update(const float dt)
 {
-	m_zRotation += 1.0f * dt;
+	m_yRotation += 1.0f * dt;
+	m_xPosition -= 1.0f * dt;
 	CalculateFrameStats();
-
-	m_CurrentFrameResourceIndex = (m_CurrentFrameResourceIndex + 1) % FRAME_RESOURCE_COUNT;
-	m_pCurrentFrameResource = m_pFrameResources[m_CurrentFrameResourceIndex];
-
-	if (m_pCurrentFrameResource->Fence != 0 && m_pCommandList->GetLastCompletedFence() < m_pCurrentFrameResource->Fence)
-	{
-		HANDLE eventHandle = CreateEventEx(nullptr, false, false, EVENT_ALL_ACCESS);
-		m_pFence->SetEventOnCompletion(m_pCurrentFrameResource->Fence, eventHandle);
-		WaitForSingleObject(eventHandle, INFINITE);
-		CloseHandle(eventHandle);
-	}
 
 	UpdateObjectCB(dt);
 	UpdateMainPassCB(dt, m_GameTimer.GetTotalTime());
@@ -147,12 +136,10 @@ void D3DApp::Update(const float dt)
 
 void D3DApp::Render()
 {
-	auto cmdListAlloc = m_pCurrentFrameResource->CmdListAlloc;
 	// Reset the commandQueue and prepare it for the next frame
-	cmdListAlloc->Reset();
+	m_pCommandAllocator->Reset();
 
-	if (m_isWireframe) m_pCommandList->Reset(cmdListAlloc, m_PSOs["opaque_wireframe"]);
-	else m_pCommandList->Reset(cmdListAlloc, m_PSOs["opaque"]);
+	m_pCommandList->Reset(m_pCommandAllocator, nullptr);
 
 	// Set resource barrier to transition the back buffer from present to render target
 	// This allows to draw to the back buffer (D3D12_RESOURCE_STATE_RENDER_TARGET state)
@@ -177,22 +164,13 @@ void D3DApp::Render()
 
 	// Bind the root signature
 	m_pCommandList->SetGraphicsRootSignature(m_rootSignature);
+	m_pCommandList->SetPipelineState(m_PSOs[PSO_OPAQUE]);
 
 	// Create the descriptor heap for our updated constant buffers
 	ID3D12DescriptorHeap* descriptorHeaps[] = { m_pCbvHeap };
 	m_pCommandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
-	CD3DX12_GPU_DESCRIPTOR_HANDLE cbvHandle(m_pCbvHeap->GetGPUDescriptorHandleForHeapStart());
-	cbvHandle.Offset(0, m_CbvSrvUavDescriptorSize);
-	m_pCommandList->SetGraphicsRootDescriptorTable(0, cbvHandle);
 
-	// Bind the vertex and indices buffers to the IA (Input Assembler) stage
-	m_pCommandList->IASetVertexBuffers(0, 1, &m_geometry->VertexBufferView());
-	m_pCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	m_pCommandList->IASetIndexBuffer(&m_geometry->IndexBufferView());
-
-	// Draw call to render our bound vertex and index buffers
-	UINT numTriangleIndices = m_geometry->DrawArgs["Pyramid"].IndexCount;
-	m_pCommandList->DrawIndexedInstanced(numTriangleIndices, 1, 0, 0, 0);
+	DrawRenderItems(m_pCommandList, m_OpaqueRenderItems);
 
 	// Set resource barrier to transition the back buffer from render target to present
 	// This allows to present the back buffer (D3D12_RESOURCE_STATE_PRESENT state)
@@ -207,21 +185,12 @@ void D3DApp::Render()
 	// Refer to the m_pFence member to understand how the command queue is flushed
 	ID3D12CommandList* cmdLists[] = { m_pCommandList };
 	m_pCommandQueue->ExecuteCommandLists(_countof(cmdLists), cmdLists);
-	FlushCommandQueue();
 
 	// Present the back buffer to the screen and swap the front/back buffer
-	m_pSwapChain->Present(1, 0);
+	m_pSwapChain->Present(0, 0);
 	m_currBackBuffer = (m_currBackBuffer + 1) % SWAP_CHAIN_BUFFER_COUNT;
 
-	// Advance the fence value to mark commands up to this fence point
-	m_pCurrentFrameResource->Fence = ++m_CurrentFenceValue;
-
-	/*
-	 * Add an instruction to the command queue to set a new fence point.
-	 * Because we are on the GPU timeline, the new fence point won't be
-	 * set until the GPU finishes processing all the commands prior to this Signal().
-	 */
-	m_pCommandQueue->Signal(m_pFence, m_CurrentFenceValue);
+	FlushCommandQueue();
 }
 
 void D3DApp::OnResize()
@@ -249,7 +218,15 @@ void D3DApp::InitializeD3D12()
 	CreateCommandObjects();
 	CreateSwapChain();
 
+	CreateRtvAndDsvDescriptorHeaps();
+	CreateRenderTargetView();
+
+	CreateVertexAndIndexBuffers();
+	CreateRenderItems();
+
 	RegisterInitCommands_In_CommandList();
+
+	CreatePipelineStateObject();
 }
 
 void D3DApp::EnableDebugLayer()
@@ -328,15 +305,6 @@ void D3DApp::CreateCommandObjects()
 	// refer to the command list we will Reset it, and it needs to be
 	// closed before calling Reset.
 	m_pCommandList->Close();
-}
-
-void D3DApp::CreateFrameResources()
-{
-	m_pFrameResources.resize(SWAP_CHAIN_BUFFER_COUNT);
-	for (int i = 0; i < FRAME_RESOURCE_COUNT; ++i)
-	{
-		m_pFrameResources[i] = new FrameResource(m_pD3dDevice, 1, (UINT)m_AllRenderItems.size());
-	}
 }
 
 void D3DApp::CreateSwapChain()
@@ -424,16 +392,10 @@ void D3DApp::RegisterInitCommands_In_CommandList()
 	m_pCommandAllocator->Reset();
 	m_pCommandList->Reset(m_pCommandAllocator, nullptr);
 
-	CreateRtvAndDsvDescriptorHeaps();
-	CreateRenderTargetView();
 	CreateDepthStencilBuffer();
-
-	CreateVertexAndIndexBuffers();
-
 	CreateConstantBuffers();
-	CreateRootSignature();
 
-	CreatePipelineStateObject();
+	CreateRootSignature();
 
 	HRESULT hr = m_pCommandList->Close();
 
@@ -460,6 +422,15 @@ void D3DApp::CreateRtvAndDsvDescriptorHeaps()
 	dsvHeapDesc.NodeMask = 0;
 
 	m_pD3dDevice->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(&m_pDsvHeap));
+
+	D3D12_DESCRIPTOR_HEAP_DESC cbvHeapDesc;
+	cbvHeapDesc.NumDescriptors = m_ObjectCount + 1;
+	cbvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+	cbvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+	cbvHeapDesc.NodeMask = 0;
+
+	m_pD3dDevice->CreateDescriptorHeap(&cbvHeapDesc, IID_PPV_ARGS(&m_pCbvHeap));
+
 }
 
 void D3DApp::CreateDepthStencilBuffer()
@@ -495,6 +466,9 @@ void D3DApp::CreateDepthStencilBuffer()
 	// Create descriptor to mip level 0 of entire resource using the
 	// format of the resource.
 	m_pD3dDevice->CreateDepthStencilView(m_pDepthStencilBuffer, nullptr, DepthStencilView());
+
+	CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(m_pDepthStencilBuffer, D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_DEPTH_WRITE);
+	m_pCommandList->ResourceBarrier(1, &barrier);
 }
 
 void D3DApp::CreateRenderTargetView()
@@ -529,31 +503,34 @@ void D3DApp::CreateVertexAndIndexBuffers()
 
 	UINT16 iList[] = { 0, 1, 2, 0, 2, 3, 0, 3, 4, 0, 4, 1 };
 
+	m_pCommandAllocator->Reset();
+	m_pCommandList->Reset(m_pCommandAllocator, nullptr);
+
 	const UINT64 iBufferSize = sizeof(iList);
 	const UINT64 vBufferSize = sizeof(vList);
 
-	m_geometry = std::make_unique<MeshGeometry>();
-	m_geometry->Name = "Pyramid";
+	m_pyramidGeometry = std::make_unique<MeshGeometry>();
+	m_pyramidGeometry->Name = "Pyramid";
 
-	D3DCreateBlob(vBufferSize, &m_geometry->VertexBufferCPU);
-	CopyMemory(m_geometry->VertexBufferCPU->GetBufferPointer(), vList, vBufferSize);
+	m_pyramidGeometry->VertexBufferGPU = CreateDefaultBuffer(vList, vBufferSize, m_pyramidGeometry->VertexBufferUploader);
+	m_pyramidGeometry->VertexByteStride = sizeof(Vertex);
+	m_pyramidGeometry->VertexBufferByteSize = sizeof(Vertex) * _countof(vList);
 
-	D3DCreateBlob(iBufferSize, &m_geometry->IndexBufferCPU);
-	CopyMemory(m_geometry->IndexBufferCPU->GetBufferPointer(), iList, iBufferSize);
-
-	m_geometry->VertexBufferGPU = CreateDefaultBuffer(vList, vBufferSize, m_geometry->VertexBufferUploader);
-	m_geometry->VertexByteStride = sizeof(Vertex);
-	m_geometry->VertexBufferByteSize = sizeof(Vertex) * _countof(vList);
-
-	m_geometry->IndexBufferGPU = CreateDefaultBuffer(iList, iBufferSize, m_geometry->IndexBufferUploader);
-	m_geometry->IndexFormat = DXGI_FORMAT_R16_UINT;
-	m_geometry->IndexBufferByteSize = iBufferSize;
+	m_pyramidGeometry->IndexBufferGPU = CreateDefaultBuffer(iList, iBufferSize, m_pyramidGeometry->IndexBufferUploader);
+	m_pyramidGeometry->IndexFormat = DXGI_FORMAT_R16_UINT;
+	m_pyramidGeometry->IndexBufferByteSize = iBufferSize;
 
 	SubmeshGeometry submesh;
 	submesh.IndexCount = _countof(iList);
 	submesh.StartIndexLocation = 0;
 	submesh.BaseVertexLocation = 0;
-	m_geometry->DrawArgs["Pyramid"] = submesh;
+	m_pyramidGeometry->DrawArgs["Pyramid"] = submesh;
+
+	HRESULT hr = m_pCommandList->Close();
+
+	ID3D12CommandList* cmdLists[] = { m_pCommandList };
+	m_pCommandQueue->ExecuteCommandLists(_countof(cmdLists), cmdLists);
+	FlushCommandQueue();
 }
 
 void D3DApp::CreateConstantBuffers()
@@ -561,87 +538,158 @@ void D3DApp::CreateConstantBuffers()
 	const UINT64 cBufferSize = (sizeof(ObjectConstants) + 255) & ~255;
 	const UINT numCB = 1;
 
-	D3D12_DESCRIPTOR_HEAP_DESC cbvHeapDesc;
-	cbvHeapDesc.NumDescriptors = 1;
-	cbvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-	cbvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-	cbvHeapDesc.NodeMask = 0;
+	for (int i = 0; i < m_AllRenderItems.size(); i++)
+	{
+		m_mainObjectCB.push_back(std::make_unique<UploadBuffer<ObjectConstants>>(m_pD3dDevice, numCB, true));
+		D3D12_GPU_VIRTUAL_ADDRESS cbAddress = m_mainObjectCB[i]->GetResource()->GetGPUVirtualAddress();
 
-	m_pD3dDevice->CreateDescriptorHeap(&cbvHeapDesc, IID_PPV_ARGS(&m_pCbvHeap));
+		D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc;
+		cbvDesc.BufferLocation = cbAddress;
+		cbvDesc.SizeInBytes = (UINT)cBufferSize;
 
-	m_mainObjectCB = std::make_unique<UploadBuffer<ObjectConstants>>(m_pD3dDevice, numCB, true);
-	D3D12_GPU_VIRTUAL_ADDRESS cbAddress = m_mainObjectCB->GetResource()->GetGPUVirtualAddress();
+		CD3DX12_CPU_DESCRIPTOR_HANDLE cbvHeapHandle(m_pCbvHeap->GetCPUDescriptorHandleForHeapStart());
+		cbvHeapHandle.Offset(i + 1, m_CbvSrvUavDescriptorSize);
+
+		m_pD3dDevice->CreateConstantBufferView(&cbvDesc, cbvHeapHandle);
+	}
+
+	m_mainPassCB = std::make_unique<UploadBuffer<PassConstants>>(m_pD3dDevice, 1, true);
+	D3D12_GPU_VIRTUAL_ADDRESS passCBAddress = m_mainPassCB->GetResource()->GetGPUVirtualAddress();
+	D3D12_CONSTANT_BUFFER_VIEW_DESC passCBVDesc;
+	passCBVDesc.BufferLocation = passCBAddress;
+	passCBVDesc.SizeInBytes = (UINT)cBufferSize;
+	m_pD3dDevice->CreateConstantBufferView(&passCBVDesc, m_pCbvHeap->GetCPUDescriptorHandleForHeapStart());
+
+	UpdateObjectCB(0);
+	UpdateMainPassCB(0, 0);
 
 	// Offset to the ith object constant buffer in the buffer here.
 
-	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc;
-	cbvDesc.BufferLocation = cbAddress;
-	cbvDesc.SizeInBytes = (UINT)cBufferSize;
-
-	m_pD3dDevice->CreateConstantBufferView(&cbvDesc, m_pCbvHeap->GetCPUDescriptorHandleForHeapStart());
 }
 
 void D3DApp::UpdateObjectCB(const float dt)
 {
-	auto currObjectCB = m_pCurrentFrameResource->ObjectConstantBuffer;
-	for (auto& item : m_AllRenderItems)
+
+	for (int i = 0; i < m_mainObjectCB.size(); i++)
 	{
-		if (item->NumFramesDirty > 0)
+		ObjectConstants objConstants;
+		switch (m_AllRenderItems[i]->TransformationType)
 		{
-			XMMATRIX world = XMLoadFloat4x4(&item->World);
-
-			ObjectConstants objConstants;
-			XMStoreFloat4x4(&objConstants.World, XMMatrixTranspose(world));
-
-			currObjectCB->CopyData(item->ObjCBIndex, &objConstants);
-
-			item->NumFramesDirty--;
+		case TRANSFORMATION_TYPE::ROTATION:
+		{
+			XMStoreFloat4x4(&objConstants.World, XMMatrixRotationY(m_yRotation));
+			break;
 		}
+		case TRANSFORMATION_TYPE::TRANSLATION:
+			XMStoreFloat4x4(&objConstants.World, XMMatrixTranspose(XMMatrixRotationY(m_yRotation) * XMMatrixTranslation(m_xPosition, 0.0f, 0.0f)));
+			break;
+		default:
+			break;
+		}
+		m_mainObjectCB[i]->CopyData(0, &objConstants);
 	}
 }
 
 void D3DApp::UpdateMainPassCB(const float dt, const float totalTime)
 {
+	m_eyePosition = { 0.0f, 1.0f, -2.0f };
+	XMVECTOR pos = XMVectorSet(m_eyePosition.x, m_eyePosition.y, m_eyePosition.z, 1.0F);
+	XMVECTOR target = XMVectorSet(0.0F, 0.5F, 0.0F, 0.0F);
+	XMVECTOR up = XMVectorSet(0.0F, 1.0F, 0.0F, 0.0F);
+
 	XMMATRIX view = XMLoadFloat4x4(&m_view);
 	XMMATRIX proj = XMLoadFloat4x4(&m_proj);
+	view = XMMatrixLookAtLH(pos, target, up);
+	proj = XMMatrixPerspectiveFovLH(XMConvertToRadians(70.0F), (float)Window::Size().cx / (float)Window::Size().cy, 0.05F, 1000.0F);
 
 	XMMATRIX viewProj = XMMatrixMultiply(view, proj);
 	XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(view), view);
 	XMMATRIX invProj = XMMatrixInverse(&XMMatrixDeterminant(proj), proj);
 	XMMATRIX invViewProj = XMMatrixInverse(&XMMatrixDeterminant(viewProj), viewProj);
-	
-	XMStoreFloat4x4(&m_mainPassCB.View, XMMatrixTranspose(view));
-	XMStoreFloat4x4(&m_mainPassCB.InvView, XMMatrixTranspose(invView));
-	XMStoreFloat4x4(&m_mainPassCB.Proj, XMMatrixTranspose(proj));
-	XMStoreFloat4x4(&m_mainPassCB.InvProj, XMMatrixTranspose(invProj));
-	XMStoreFloat4x4(&m_mainPassCB.ViewProj, XMMatrixTranspose(viewProj));
-	XMStoreFloat4x4(&m_mainPassCB.InvViewProj, XMMatrixTranspose(invViewProj));
-	
-	m_mainPassCB.EyePosW = m_eyePosition;
-	m_mainPassCB.RenderTargetSize = XMFLOAT2(Window::Size().cx, Window::Size().cy);
-	m_mainPassCB.InvRenderTargetSize = XMFLOAT2(1.0f / Window::Size().cx, 1.0f / Window::Size().cy);
-	m_mainPassCB.NearZ = 1.0f;
-	m_mainPassCB.FarZ = 1000.0f;
-	m_mainPassCB.TotalTime = totalTime;
-	m_mainPassCB.DeltaTime = dt;
 
-	auto currPassCB = m_pCurrentFrameResource->PassConstantBuffer;
-	currPassCB->CopyData(0, &m_mainPassCB);
+	PassConstants mainPassCB;
+	XMStoreFloat4x4(&mainPassCB.View, XMMatrixTranspose(view));
+	XMStoreFloat4x4(&mainPassCB.InvView, XMMatrixTranspose(invView));
+	XMStoreFloat4x4(&mainPassCB.Proj, XMMatrixTranspose(proj));
+	XMStoreFloat4x4(&mainPassCB.InvProj, XMMatrixTranspose(invProj));
+	XMStoreFloat4x4(&mainPassCB.ViewProj, XMMatrixTranspose(viewProj));
+	XMStoreFloat4x4(&mainPassCB.InvViewProj, XMMatrixTranspose(invViewProj));
+
+	mainPassCB.EyePosW = m_eyePosition;
+	mainPassCB.RenderTargetSize = XMFLOAT2(Window::Size().cx, Window::Size().cy);
+	mainPassCB.InvRenderTargetSize = XMFLOAT2(1.0f / Window::Size().cx, 1.0f / Window::Size().cy);
+	mainPassCB.NearZ = 0.05F;
+	mainPassCB.FarZ = 1000.0f;
+	mainPassCB.TotalTime = totalTime;
+	mainPassCB.DeltaTime = dt;
+
+	m_mainPassCB->CopyData(0, &mainPassCB);
+}
+
+void D3DApp::CreateObject()
+{
+
+}
+
+void D3DApp::CreateRenderItems()
+{
+	for (int i = 0; i < m_ObjectCount; i++)
+	{
+		auto pyramidRenderItem = std::make_unique<RenderItem>();
+		pyramidRenderItem->ObjCBIndex = m_AllRenderItems.size();
+		pyramidRenderItem->Geo = m_pyramidGeometry.get();
+		pyramidRenderItem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+		pyramidRenderItem->IndexCount = pyramidRenderItem->Geo->DrawArgs["Pyramid"].IndexCount;
+		pyramidRenderItem->StartIndexLocation = pyramidRenderItem->Geo->DrawArgs["Pyramid"].StartIndexLocation;
+		pyramidRenderItem->BaseVertexLocation = pyramidRenderItem->Geo->DrawArgs["Pyramid"].BaseVertexLocation;
+		if (i == 0) pyramidRenderItem->TransformationType = TRANSFORMATION_TYPE::ROTATION;
+		else pyramidRenderItem->TransformationType = TRANSFORMATION_TYPE::TRANSLATION;
+			
+		m_AllRenderItems.push_back(std::move(pyramidRenderItem));
+	}
+
+	for (auto& ri : m_AllRenderItems)
+	{
+		m_OpaqueRenderItems.push_back(ri.get());
+	}
+}
+
+void D3DApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItem*>& renderItems)
+{
+	cmdList->SetGraphicsRootConstantBufferView(1, m_mainPassCB->GetResource()->GetGPUVirtualAddress());
+
+	const UINT64 cBufferSize = (sizeof(ObjectConstants) + 255) & ~255;
+	for (int i = 0; i < renderItems.size(); i++)
+	{
+		auto renderItem = renderItems[i];
+
+		cmdList->IASetVertexBuffers(0, 1, &renderItem->Geo->VertexBufferView());
+		cmdList->IASetIndexBuffer(&renderItem->Geo->IndexBufferView());
+		cmdList->IASetPrimitiveTopology(renderItem->PrimitiveType);
+
+		UINT cbvIndex = renderItem->ObjCBIndex;
+		auto cbvHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(m_pCbvHeap->GetGPUDescriptorHandleForHeapStart());
+		cbvHandle.Offset(cbvIndex, m_CbvSrvUavDescriptorSize);
+
+		cmdList->SetGraphicsRootConstantBufferView(0, m_mainObjectCB[i]->GetResource()->GetGPUVirtualAddress());
+
+		cmdList->DrawIndexedInstanced(renderItem->IndexCount, 1, renderItem->StartIndexLocation, renderItem->BaseVertexLocation, 0);
+	}
 }
 
 void D3DApp::CreateRootSignature()
 {
-	CD3DX12_DESCRIPTOR_RANGE cbvTable0;
-	cbvTable0.Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 0);
+	//CD3DX12_DESCRIPTOR_RANGE cbvTable0;
+	//cbvTable0.Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 0);
 
-	CD3DX12_DESCRIPTOR_RANGE cbvTable1;
-	cbvTable1.Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 1);
+	//CD3DX12_DESCRIPTOR_RANGE cbvTable1;
+	//cbvTable1.Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 1);
 
 	CD3DX12_ROOT_PARAMETER slotRootParameter[2];
-	slotRootParameter[0].InitAsDescriptorTable(1, &cbvTable0);
-	slotRootParameter[1].InitAsDescriptorTable(1, &cbvTable1);
+	slotRootParameter[0].InitAsConstantBufferView(0);
+	slotRootParameter[1].InitAsConstantBufferView(1);
 
-	CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc(2, slotRootParameter, 0, nullptr, D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
+	CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc(_countof(slotRootParameter), slotRootParameter, 0, nullptr, D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
 	ID3DBlob* serializedRootSignature = nullptr;
 	ID3DBlob* errorBlob = nullptr;
@@ -677,10 +725,7 @@ void D3DApp::CreatePipelineStateObject()
 	psoDesc.SampleDesc.Quality = 0;
 	psoDesc.DSVFormat = m_DepthStencilFormat;
 
-	for (int i = 0; i < m_PSOs.size(); i++)
-	{
-		m_pD3dDevice->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&m_PSOs[i]));
-	}
+	m_pD3dDevice->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&m_PSOs[PSO_OPAQUE]));
 }
 
 ID3D12Resource* D3DApp::CreateDefaultBuffer(const void* initData, UINT64 byteSize, ID3D12Resource* uploadBuffer)

@@ -11,8 +11,10 @@
 #include "UploadBuffer.h"
 #include <iostream>
 #include <vector>
+#include <unordered_map>
 
-class MeshGeometry;
+#include "D3DUtils.h"
+
 class FrameResource;
 
 
@@ -52,7 +54,6 @@ private:
 	void CreateFenceAndGetDescriptorsSizes();
 
 	void CreateCommandObjects();
-	void CreateFrameResources();
 	void FlushCommandQueue();
 
 	void CreateSwapChain();
@@ -61,15 +62,23 @@ private:
 	void CreateRtvAndDsvDescriptorHeaps();
 	void CreateRenderTargetView();
 	void CreateDepthStencilBuffer();
+	
 	void CreateVertexAndIndexBuffers();
 	void CreateConstantBuffers();
 	void UpdateObjectCB(const float dt);
 	void UpdateMainPassCB(const float dt, const float totalTime);
+	
+	void CreateObject();
+	void CreateRenderItems();
+	void DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItem*>& renderItems);
+	
 	void CreateRootSignature();
 	void CreatePipelineStateObject();
 
 	void CalculateFrameStats();
 
+	/* /!\ Be careful, this method uses the commandList component.
+	Therefore, it must be called within a command list Reset() and ExecuteCommandList() scope */
 	ID3D12Resource* CreateDefaultBuffer(const void* initData, UINT64 byteSize, ID3D12Resource* uploadBuffer);
 	D3D12_CPU_DESCRIPTOR_HANDLE CurrentBackBufferView() const;
 	D3D12_CPU_DESCRIPTOR_HANDLE DepthStencilView() const;
@@ -109,9 +118,6 @@ private:
 	ID3D12CommandQueue* m_pCommandQueue;
 	/* D3D12 CommandAllocator : Represents a chunk of memory on the GPU that stores commands */
 	ID3D12CommandAllocator* m_pCommandAllocator;
-	std::vector<FrameResource*> m_pFrameResources;
-	FrameResource* m_pCurrentFrameResource;
-	int m_CurrentFrameResourceIndex;
 	/* D3D12 GraphicsCommandList : Represents a list of commands that will be sent to the GPU command queue */
 	ID3D12GraphicsCommandList* m_pCommandList;
 	/* D3D12 RenderTargetView DescriptorHeap :  */
@@ -146,12 +152,13 @@ private:
 	std::vector<RenderItem*> m_OpaqueRenderItems;
 	std::vector<RenderItem*> m_TransparentRenderItems;
 	
-	std::unique_ptr<MeshGeometry> m_geometry;
+	std::unique_ptr<MeshGeometry> m_pyramidGeometry;
 
 	/* Upload buffer used to give the GPU information at runtime with the CPU.
 	This buffer uses the GPU Upload Heap that allows the CPu to upload data to the GPU at runtime */
-	std::unique_ptr<UploadBuffer<ObjectConstants>> m_mainObjectCB;
-	PassConstants m_mainPassCB;
+	const int m_ObjectCount = 2;
+	std::vector<std::unique_ptr<UploadBuffer<ObjectConstants>>> m_mainObjectCB;
+	std::unique_ptr<UploadBuffer<PassConstants>>                m_mainPassCB;
 	/* Compile code of the vertex shader */
 	ID3DBlob* m_vsByteCode;
 	/* Compile code of the pixel shader */
@@ -163,10 +170,12 @@ private:
 
 	XMFLOAT3 m_eyePosition;
 	XMFLOAT4X4 m_view, m_proj;
-	float m_zRotation;
+	float m_yRotation;
+	float m_xPosition;
 
 	/* D3D12 PipelineStateObject : (PSO : Pipeline State Object) Represents the state of the pipeline
 	We use a PSO to define the state of the pipeline. This includes the shaders, the input layout, the render targets, the depth stencil buffer, etc... */
-	std::unordered_map<std::string, ID3D12PipelineState*> m_PSOs;
+	enum PSO_TYPE { PSO_OPAQUE, PSO_TRANSPARENT, PSO_COUNT };
+	std::unordered_map<PSO_TYPE, ID3D12PipelineState*> m_PSOs;
 	bool m_isWireframe;
 };
