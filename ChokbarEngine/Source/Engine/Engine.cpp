@@ -60,7 +60,17 @@ namespace Chokbar
 
 	void Engine::Run()
 	{
+		ResetTimer();
 
+		while (!NeedsToClose())
+		{
+			PollEvent();
+
+			Tick();
+
+			Update(GetDeltaTime());
+			Render();
+		}
 	}
 
 	void Engine::Render()

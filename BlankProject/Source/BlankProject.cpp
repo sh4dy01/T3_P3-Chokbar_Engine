@@ -41,21 +41,27 @@ void Application::SetupPerGameSettings()
 // Init engine
 void Application::Initialize()
 {
-	Chokbar::Engine::GetInstance().Initialize();
+	
 }
 
 // Main loop
 void Application::Run()
 {
-	Chokbar::Engine::GetInstance().Run();
+	Chokbar::Engine& engine = Chokbar::Engine::GetInstance();
+
+	engine.Initialize();
+
+	// Main loop
+	engine.Run();
+	engine.Shutdown();
 }
 
 void Application::Update(const float dt)
 {
-	Chokbar::Engine::GetInstance().Update(dt);
+	
 }
 
 void Application::Shutdown()
 {
-	Chokbar::Engine::GetInstance().Shutdown();
+	
 }
