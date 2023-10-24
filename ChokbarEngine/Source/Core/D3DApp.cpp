@@ -5,26 +5,11 @@
 
 D3DApp* D3DApp::m_pApp = nullptr;
 
-/* ------------------------------------------------------------------------- */
-/* HELPER STRUCTS                                                            */
-/* ------------------------------------------------------------------------- */
-#pragma region HelperFunctions
-XMFLOAT4X4 Identity4x4()
-{
-	return XMFLOAT4X4(
-		1.0f, 0.0f, 0.0f, 0.0f,
-		0.0f, 1.0f, 0.0f, 0.0f,
-		0.0f, 0.0f, 1.0f, 0.0f,
-		0.0f, 0.0f, 0.0f, 1.0f
-	);
-}
-#pragma endregion
-
 D3DApp::D3DApp() :
 	m_4xMsaaState(false), m_4xMsaaQuality(0),
 	m_RtvDescriptorSize(0), m_DsvDescriptorSize(0), m_CbvSrvUavDescriptorSize(0),
 	m_D3dDriverType(D3D_DRIVER_TYPE_HARDWARE), m_BackBufferFormat(DXGI_FORMAT_R8G8B8A8_UNORM), m_DepthStencilFormat(DXGI_FORMAT_D24_UNORM_S8_UINT),
-	m_yRotation(0), m_CurrentFenceValue(0), m_pInstance(nullptr), m_currBackBuffer(0), m_eyePosition(0, 0, 0), m_xPosition(0)
+	m_CurrentFenceValue(0), m_pInstance(nullptr), m_currBackBuffer(0)
 {
 	m_pDebugController = nullptr;
 
@@ -90,6 +75,11 @@ D3DApp::~D3DApp()
 	m_vsByteCode->Release();
 	m_psByteCode->Release();
 
+	for (int i = 0; i < m_mainObjectCB.size(); i++)
+	{
+		delete m_mainObjectCB[i];
+	}
+	delete m_mainPassCB;
 	m_rootSignature->Release();
 
 	m_pDebugController->Release();
@@ -126,12 +116,11 @@ void D3DApp::Run()
 
 void D3DApp::Update(const float dt)
 {
-	m_yRotation += 1.0f * dt;
-	m_xPosition -= 1.0f * dt;
 	CalculateFrameStats();
 
-	UpdateObjectCB(dt);
-	UpdateMainPassCB(dt, m_GameTimer.GetTotalTime());
+	float totalTime = m_GameTimer.GetTotalTime();
+	UpdateObjectCB(dt, totalTime);
+	UpdateMainPassCB(dt, totalTime);
 }
 
 void D3DApp::Render()
@@ -538,9 +527,16 @@ void D3DApp::CreateConstantBuffers()
 	const UINT64 cBufferSize = (sizeof(ObjectConstants) + 255) & ~255;
 	const UINT numCB = 1;
 
+	m_mainPassCB = new UploadBuffer<PassConstants>(m_pD3dDevice, 1, true);
+	D3D12_GPU_VIRTUAL_ADDRESS passCBAddress = m_mainPassCB->GetResource()->GetGPUVirtualAddress();
+	D3D12_CONSTANT_BUFFER_VIEW_DESC passCBVDesc;
+	passCBVDesc.BufferLocation = passCBAddress;
+	passCBVDesc.SizeInBytes = (UINT)cBufferSize;
+	m_pD3dDevice->CreateConstantBufferView(&passCBVDesc, m_pCbvHeap->GetCPUDescriptorHandleForHeapStart());
+
 	for (int i = 0; i < m_AllRenderItems.size(); i++)
 	{
-		m_mainObjectCB.push_back(std::make_unique<UploadBuffer<ObjectConstants>>(m_pD3dDevice, numCB, true));
+		m_mainObjectCB.push_back(new UploadBuffer<ObjectConstants>(m_pD3dDevice, numCB, true));
 		D3D12_GPU_VIRTUAL_ADDRESS cbAddress = m_mainObjectCB[i]->GetResource()->GetGPUVirtualAddress();
 
 		D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc;
@@ -553,73 +549,73 @@ void D3DApp::CreateConstantBuffers()
 		m_pD3dDevice->CreateConstantBufferView(&cbvDesc, cbvHeapHandle);
 	}
 
-	m_mainPassCB = std::make_unique<UploadBuffer<PassConstants>>(m_pD3dDevice, 1, true);
-	D3D12_GPU_VIRTUAL_ADDRESS passCBAddress = m_mainPassCB->GetResource()->GetGPUVirtualAddress();
-	D3D12_CONSTANT_BUFFER_VIEW_DESC passCBVDesc;
-	passCBVDesc.BufferLocation = passCBAddress;
-	passCBVDesc.SizeInBytes = (UINT)cBufferSize;
-	m_pD3dDevice->CreateConstantBufferView(&passCBVDesc, m_pCbvHeap->GetCPUDescriptorHandleForHeapStart());
-
-	UpdateObjectCB(0);
+	UpdateObjectCB(0, 0);
 	UpdateMainPassCB(0, 0);
 
 	// Offset to the ith object constant buffer in the buffer here.
 
 }
 
-void D3DApp::UpdateObjectCB(const float dt)
+void D3DApp::UpdateObjectCB(const float dt, const float totalTime)
 {
 
-	for (int i = 0; i < m_mainObjectCB.size(); i++)
+	for (auto& item : m_AllRenderItems)
 	{
-		ObjectConstants objConstants;
-		switch (m_AllRenderItems[i]->TransformationType)
+		auto assiociatedCB = m_mainObjectCB[item->ObjCBIndex];
+		XMMATRIX world = XMLoadFloat4x4(&item->World);
+
+		switch (item->TransformationType)
 		{
 		case TRANSFORMATION_TYPE::ROTATION:
 		{
-			XMStoreFloat4x4(&objConstants.World, XMMatrixRotationY(m_yRotation));
+			item->Transform.Rotation.y += 1.0f * dt;
+			world = XMMatrixRotationY(item->Transform.Rotation.y);
 			break;
 		}
 		case TRANSFORMATION_TYPE::TRANSLATION:
-			XMStoreFloat4x4(&objConstants.World, XMMatrixTranspose(XMMatrixRotationY(m_yRotation) * XMMatrixTranslation(m_xPosition, 0.0f, 0.0f)));
+		{
+			item->Transform.Position.y = sinf(totalTime) * 2.0f;
+			world = XMMatrixTranslationFromVector(XMLoadFloat3(&item->Transform.Position));
 			break;
+		}
 		default:
 			break;
 		}
-		m_mainObjectCB[i]->CopyData(0, &objConstants);
+
+		XMStoreFloat4x4(&item->World, XMMatrixTranspose(world));
+
+		ObjectConstants objConstants;
+		XMStoreFloat4x4(&objConstants.World, XMLoadFloat4x4(&item->World));
+		assiociatedCB->CopyData(0, &objConstants);
 	}
 }
 
 void D3DApp::UpdateMainPassCB(const float dt, const float totalTime)
 {
-	m_eyePosition = { 0.0f, 1.0f, -2.0f };
-	XMVECTOR pos = XMVectorSet(m_eyePosition.x, m_eyePosition.y, m_eyePosition.z, 1.0F);
-	XMVECTOR target = XMVectorSet(0.0F, 0.5F, 0.0F, 0.0F);
-	XMVECTOR up = XMVectorSet(0.0F, 1.0F, 0.0F, 0.0F);
+	m_camera.UpdateProjMatrix((float) Window::Size().cx, (float) Window::Size().cy);
+	m_camera.UpdateViewMatrix();
 
-	XMMATRIX view = XMLoadFloat4x4(&m_view);
-	XMMATRIX proj = XMLoadFloat4x4(&m_proj);
-	view = XMMatrixLookAtLH(pos, target, up);
-	proj = XMMatrixPerspectiveFovLH(XMConvertToRadians(70.0F), (float)Window::Size().cx / (float)Window::Size().cy, 0.05F, 1000.0F);
+	XMMATRIX camView = XMLoadFloat4x4(&m_camera.View);
+	XMMATRIX camProj = XMLoadFloat4x4(&m_camera.Proj);
 
-	XMMATRIX viewProj = XMMatrixMultiply(view, proj);
-	XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(view), view);
-	XMMATRIX invProj = XMMatrixInverse(&XMMatrixDeterminant(proj), proj);
+	XMMATRIX viewProj = XMMatrixMultiply(camView, camProj);
+	XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(camView), camView);
+	XMMATRIX invProj = XMMatrixInverse(&XMMatrixDeterminant(camProj), camProj);
 	XMMATRIX invViewProj = XMMatrixInverse(&XMMatrixDeterminant(viewProj), viewProj);
 
 	PassConstants mainPassCB;
-	XMStoreFloat4x4(&mainPassCB.View, XMMatrixTranspose(view));
+	XMStoreFloat4x4(&mainPassCB.View, XMMatrixTranspose(camView));
 	XMStoreFloat4x4(&mainPassCB.InvView, XMMatrixTranspose(invView));
-	XMStoreFloat4x4(&mainPassCB.Proj, XMMatrixTranspose(proj));
+	XMStoreFloat4x4(&mainPassCB.Proj, XMMatrixTranspose(camProj));
 	XMStoreFloat4x4(&mainPassCB.InvProj, XMMatrixTranspose(invProj));
 	XMStoreFloat4x4(&mainPassCB.ViewProj, XMMatrixTranspose(viewProj));
 	XMStoreFloat4x4(&mainPassCB.InvViewProj, XMMatrixTranspose(invViewProj));
 
-	mainPassCB.EyePosW = m_eyePosition;
+	mainPassCB.EyePosW = m_camera.Position;
 	mainPassCB.RenderTargetSize = XMFLOAT2(Window::Size().cx, Window::Size().cy);
 	mainPassCB.InvRenderTargetSize = XMFLOAT2(1.0f / Window::Size().cx, 1.0f / Window::Size().cy);
-	mainPassCB.NearZ = 0.05F;
-	mainPassCB.FarZ = 1000.0f;
+	mainPassCB.NearZ = m_camera.NearZ;
+	mainPassCB.FarZ = m_camera.FarZ;
 	mainPassCB.TotalTime = totalTime;
 	mainPassCB.DeltaTime = dt;
 
@@ -635,17 +631,27 @@ void D3DApp::CreateRenderItems()
 {
 	for (int i = 0; i < m_ObjectCount; i++)
 	{
-		auto pyramidRenderItem = std::make_unique<RenderItem>();
-		pyramidRenderItem->ObjCBIndex = m_AllRenderItems.size();
-		pyramidRenderItem->Geo = m_pyramidGeometry.get();
-		pyramidRenderItem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-		pyramidRenderItem->IndexCount = pyramidRenderItem->Geo->DrawArgs["Pyramid"].IndexCount;
-		pyramidRenderItem->StartIndexLocation = pyramidRenderItem->Geo->DrawArgs["Pyramid"].StartIndexLocation;
-		pyramidRenderItem->BaseVertexLocation = pyramidRenderItem->Geo->DrawArgs["Pyramid"].BaseVertexLocation;
-		if (i == 0) pyramidRenderItem->TransformationType = TRANSFORMATION_TYPE::ROTATION;
-		else pyramidRenderItem->TransformationType = TRANSFORMATION_TYPE::TRANSLATION;
+		auto pyrItem = std::make_unique<RenderItem>();
+		pyrItem->ObjCBIndex = m_AllRenderItems.size();
+		pyrItem->Geo = m_pyramidGeometry.get();
+		pyrItem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+		pyrItem->IndexCount = pyrItem->Geo->DrawArgs["Pyramid"].IndexCount;
+		pyrItem->StartIndexLocation = pyrItem->Geo->DrawArgs["Pyramid"].StartIndexLocation;
+		pyrItem->BaseVertexLocation = pyrItem->Geo->DrawArgs["Pyramid"].BaseVertexLocation;
+		pyrItem->Transform = Transform();
+		if (i == 0) 
+		{
+			pyrItem->TransformationType = TRANSFORMATION_TYPE::ROTATION;
+			pyrItem->Transform.Position = XMFLOAT3(1.0f, 0.0f, 0.0f);
+		}
+		else 
+		{
+			pyrItem->TransformationType = TRANSFORMATION_TYPE::TRANSLATION;
+			pyrItem->Transform.Position = XMFLOAT3(-1.0f, 0.0f, 0.0f);
+		}
+		XMStoreFloat4x4(&pyrItem->World, XMMatrixTranspose(XMMatrixTranslationFromVector(XMLoadFloat3(&pyrItem->Transform.Position))));
 			
-		m_AllRenderItems.push_back(std::move(pyramidRenderItem));
+		m_AllRenderItems.push_back(std::move(pyrItem));
 	}
 
 	for (auto& ri : m_AllRenderItems)

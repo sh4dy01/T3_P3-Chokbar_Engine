@@ -9,13 +9,18 @@
 #include "Engine/Simulation.h"
 
 #include "UploadBuffer.h"
+#include "MeshGeometry.h"
 #include <iostream>
 #include <vector>
 #include <unordered_map>
 
-#include "D3DUtils.h"
+/* ------------------------------------------------------------------------- */
+/* GLOBAL VARIABLES                                                          */
+/* ------------------------------------------------------------------------- */
+#pragma region GlobalVariables
+static const int SWAP_CHAIN_BUFFER_COUNT = 2;
+#pragma endregion
 
-class FrameResource;
 
 
 class CHOKBAR_API D3DApp : public Chokbar::Simulation {
@@ -65,7 +70,7 @@ private:
 	
 	void CreateVertexAndIndexBuffers();
 	void CreateConstantBuffers();
-	void UpdateObjectCB(const float dt);
+	void UpdateObjectCB(const float dt, const float totalTime);
 	void UpdateMainPassCB(const float dt, const float totalTime);
 	
 	void CreateObject();
@@ -157,8 +162,8 @@ private:
 	/* Upload buffer used to give the GPU information at runtime with the CPU.
 	This buffer uses the GPU Upload Heap that allows the CPu to upload data to the GPU at runtime */
 	const int m_ObjectCount = 2;
-	std::vector<std::unique_ptr<UploadBuffer<ObjectConstants>>> m_mainObjectCB;
-	std::unique_ptr<UploadBuffer<PassConstants>>                m_mainPassCB;
+	std::vector<UploadBuffer<ObjectConstants>*> m_mainObjectCB;
+	UploadBuffer<PassConstants>*                m_mainPassCB;
 	/* Compile code of the vertex shader */
 	ID3DBlob* m_vsByteCode;
 	/* Compile code of the pixel shader */
@@ -168,10 +173,7 @@ private:
 	Therefore, the root signature will be created with an array of RootParameter that express where the exprected resource by the shader is located */
 	ID3D12RootSignature* m_rootSignature;
 
-	XMFLOAT3 m_eyePosition;
-	XMFLOAT4X4 m_view, m_proj;
-	float m_yRotation;
-	float m_xPosition;
+	Camera m_camera{};
 
 	/* D3D12 PipelineStateObject : (PSO : Pipeline State Object) Represents the state of the pipeline
 	We use a PSO to define the state of the pipeline. This includes the shaders, the input layout, the render targets, the depth stencil buffer, etc... */

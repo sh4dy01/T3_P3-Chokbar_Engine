@@ -1,6 +1,16 @@
 #pragma once 
 
 #include <unordered_map>
+#include "D3DMath.h"
+#include "D3DUtils.h"
+
+enum TRANSFORMATION_TYPE { TRANSLATION, ROTATION, SCALE };
+
+struct CHOKBAR_API Vertex
+{
+	XMFLOAT3 Pos;
+	UINT32 Color;
+};
 
 struct CHOKBAR_API SubmeshGeometry
 {
@@ -38,5 +48,26 @@ public:
 	D3D12_INDEX_BUFFER_VIEW IndexBufferView() const;
 	
 	void DisposeUploaders();
+};
+
+
+struct CHOKBAR_API RenderItem
+{
+	RenderItem() = default;
+	
+	Transform Transform;
+	XMFLOAT4X4 World = Identity4x4();
+
+	UINT ObjCBIndex = -1;
+
+	MeshGeometry* Geo = nullptr;
+
+	D3D12_PRIMITIVE_TOPOLOGY PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+
+	UINT IndexCount = 0;
+	UINT StartIndexLocation = 0;
+	INT BaseVertexLocation = 0;
+
+	TRANSFORMATION_TYPE TransformationType = TRANSLATION;
 };
 	
