@@ -4,30 +4,38 @@
 
 namespace Win32
 {
-	Window::Window(WSTRING title, HICON icon, WindowType type)
-		: SubObject(title, title, icon), m_Type(type)
+	Window::Window()
+		: SubObject(L"Default", L"Default", nullptr), m_Type(RESIZABLE)
 	{
-		Size(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+		m_Width = DEFAULT_WIDTH;
+		m_Height = DEFAULT_HEIGHT;
 	}
 
 	Window::~Window()
 	= default;
 
 
-
-	void Window::Initialize()
+	void Window::CreateNewWindow(int width, int height, const WSTRING& title, HICON icon, WindowType type)
 	{
+		m_Type = type;
+		m_Title = title;
+		m_Class = title;
+		m_hIcon = icon;
+
+		m_Width = width;
+		m_Height = height;
+
+		RegisterNewClass();
+
 		RECT desktop;
 		const HWND hDesktop = GetDesktopWindow();
 		GetWindowRect(hDesktop, &desktop);
 
-		RECT R = { 0, 0, Size().cx, Size().cy};
+		RECT R = { 0, 0, m_Width, m_Height };
 		AdjustWindowRect(&R, WS_OVERLAPPEDWINDOW, false);
-		int width = R.right - R.left;
-		int height = R.bottom - R.top;
 
 		m_hWnd = CreateWindow(m_Class.c_str(), m_Title.c_str(),
-			m_Type, ((desktop.right / 2) - (Size().cx / 2)), ((desktop.bottom / 2) - (Size().cy / 2)), Size().cx, Size().cy, 0, 0, HInstance(), (void*)this);
+			m_Type, ((desktop.right / 2) - (m_Width / 2)), ((desktop.bottom / 2) - (m_Height / 2)), m_Width, m_Height, nullptr, nullptr, HInstance(), (void*)this);
 
 		ShowWindow(m_hWnd, SW_SHOW);
 		UpdateWindow(m_hWnd);
@@ -52,14 +60,20 @@ namespace Win32
 		case WM_QUIT:
 			break;
 		case WM_CLOSE:
-		case WM_DESTROY:
+			needsToClose = true;
 			PostQuitMessage(0);
+			break;
+		case WM_DESTROY:
 			break;
 		}
 
 		return SubObject::MessageHandler(hwnd, message, wParam, lParam);
 	}
 
-
+	void Window::SetNewSize(int newWidth, int newHeight)
+	{
+		m_Width = newWidth;
+		m_Height = newHeight;
+	}
 
 }

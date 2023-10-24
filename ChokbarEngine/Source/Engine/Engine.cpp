@@ -5,7 +5,6 @@
 namespace Chokbar
 {
 	Engine::Engine()
-		: Window(PerGameSettings::GameName(), PerGameSettings::MainIcon())
 	{
 	}
 
@@ -32,8 +31,7 @@ namespace Chokbar
 	{
 		PreInitialize();
 
-		Window::RegisterNewClass();
-		Window::Initialize();
+		CreateNewWindow(DEFAULT_WIDTH, DEFAULT_HEIGHT, PerGameSettings::GameName(), PerGameSettings::MainIcon());
 
 		D3DApp::GetInstance()->InitializeD3D12(this);
 	}
@@ -109,7 +107,7 @@ namespace Chokbar
 
 	void Engine::OnResize()
 	{
-		D3DApp::GetInstance()->OnResize(Size());
+		D3DApp::GetInstance()->OnResize(GetWidth(), GetHeight());
 	}
 
 	void Engine::Shutdown()

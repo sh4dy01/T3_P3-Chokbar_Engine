@@ -4,14 +4,12 @@
 namespace Win32 {
 
 	SubObject::SubObject(std::wstring className, std::wstring titleName, HICON icon)
-		: m_Class(className), m_Title(titleName), m_hIcon(icon)
+		: m_Class(className), m_Title(titleName), m_hIcon(icon), m_hWnd(nullptr)
 	{
-
 	}
 
 	SubObject::~SubObject()
-	{
-	}
+	= default;
 
 	void SubObject::RegisterNewClass()
 	{

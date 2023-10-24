@@ -9,11 +9,10 @@ namespace Win32 {
 		SubObject(WSTRING className, WSTRING titleName, HICON icon);
 		~SubObject();
 
-		virtual void RegisterNewClass();
-		virtual void Initialize() = 0;
-
 
 	protected:
+
+		void RegisterNewClass();
 
 
 		static			LRESULT CALLBACK	SetupMessageHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);

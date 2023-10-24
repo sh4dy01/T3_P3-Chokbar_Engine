@@ -8,10 +8,10 @@ namespace Win32
 	{
 	public:
 
-		Window(WSTRING title, HICON icon, WindowType type = RESIZABLE);
+		Window();
 		~Window();
 
-		void Initialize() override;
+		void CreateNewWindow(int width, int height, const WSTRING& title, HICON icon = nullptr, WindowType type = RESIZABLE);
 		void PollEvent();
 
 
@@ -19,7 +19,9 @@ namespace Win32
 
 	protected:
 
-		SIZE			m_Size;
+		int m_Width;
+		int m_Height;
+
 		WindowType 		m_Type;
 
 		LRESULT MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override;
@@ -27,10 +29,10 @@ namespace Win32
 
 	public:
 
-		SIZE			Size() { return m_Size; }
+		int			GetWidth() const { return m_Width; }
+		int			GetHeight() const { return m_Height; }
 
-		void			Size(SIZE size) { m_Size = size; }
-		void			Size(INT cx, INT cy) { m_Size.cx = cx; m_Size.cy = cy; }
+		void SetNewSize(int newWidth, int newHeight);
 
 	private:
 
