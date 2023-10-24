@@ -1,6 +1,6 @@
 #pragma once 
 
-class CHOKBAR_API GeometryGenerator
+class GeometryGenerator
 {
 	public:
 	struct Vertex
@@ -38,7 +38,7 @@ class CHOKBAR_API GeometryGenerator
 	MeshData CreatePyramid(float width, float height, float depth);
 };
 
-struct CHOKBAR_API Transform
+struct Transform
 {
 	XMFLOAT3 Position = { 0.0f, 0.0f, 0.0f };
 	XMFLOAT3 Rotation = { 0.0f, 0.0f, 0.0f };

@@ -41,7 +41,7 @@ public:
 /* HELPER FONCTIONS                                                          */
 /* ------------------------------------------------------------------------- */
 #pragma region HelperFunctions
-inline CHOKBAR_API XMFLOAT4X4 Identity4x4();
+inline XMFLOAT4X4 Identity4x4();
 #pragma endregion
 
 /* ------------------------------------------------------------------------- */
@@ -49,12 +49,12 @@ inline CHOKBAR_API XMFLOAT4X4 Identity4x4();
 /* ------------------------------------------------------------------------- */
 #pragma region Helper Structs
 	
-struct CHOKBAR_API ObjectConstants
+struct ObjectConstants
 {
 	XMFLOAT4X4 World = Identity4x4();
 };
 
-struct CHOKBAR_API PassConstants
+struct PassConstants
 {
 	XMFLOAT4X4 View = Identity4x4();
 	XMFLOAT4X4 InvView = Identity4x4();
@@ -73,7 +73,7 @@ struct CHOKBAR_API PassConstants
 	float DeltaTime = 0.0f;
 };
 
-struct CHOKBAR_API Camera
+struct Camera
 {
 	XMFLOAT3 Position = { 0.0f, 3.0f, -6.0f };
 	XMFLOAT3 Look = { 0.0f, 0.0f, 1.0f };

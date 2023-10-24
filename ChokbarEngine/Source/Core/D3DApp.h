@@ -27,19 +27,6 @@ using namespace DirectX;
 
 static const int SWAP_CHAIN_BUFFER_COUNT = 2;
 
-#pragma region Helper Structs
-struct Vertex
-{
-	XMFLOAT3 Pos;
-	UINT32 Color;
-};
-
-struct ObjectConstants
-{
-	XMMATRIX WorldViewProj = XMMatrixIdentity();
-};
-#pragma endregion
-
 
 class D3DApp {
 public:
@@ -53,7 +40,7 @@ public:
 
 	void InitializeD3D12(Win32::Window* window);
 	void OnResize(SIZE windowSize);
-	void Update(const float dt);
+	void Update(const float dt, const float totalTime);
 	void Render();
 
 

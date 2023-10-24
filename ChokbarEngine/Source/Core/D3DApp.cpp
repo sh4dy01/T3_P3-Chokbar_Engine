@@ -9,7 +9,7 @@ D3DApp::D3DApp() :
 	m_4xMsaaState(false), m_4xMsaaQuality(0),
 	m_RtvDescriptorSize(0), m_DsvDescriptorSize(0), m_CbvSrvUavDescriptorSize(0),
 	m_D3dDriverType(D3D_DRIVER_TYPE_HARDWARE), m_BackBufferFormat(DXGI_FORMAT_R8G8B8A8_UNORM), m_DepthStencilFormat(DXGI_FORMAT_D24_UNORM_S8_UINT),
-	m_CurrentFenceValue(0), m_pInstance(nullptr), m_currBackBuffer(0)
+	m_CurrentFenceValue(0), m_pInstance(nullptr), m_currBackBuffer(0), m_bufferWidth(DEFAULT_WIDTH), m_bufferHeight(DEFAULT_HEIGHT)
 {
 	m_pDebugController = nullptr;
 
@@ -87,9 +87,8 @@ D3DApp::~D3DApp() {
 	m_pDebugController->Release(); 
 }
 
-void D3DApp::Update(const float dt)
+void D3DApp::Update(const float dt, const float totalTime)
 {
-	float totalTime = m_GameTimer.GetTotalTime();
 	UpdateObjectCB(dt, totalTime);
 	UpdateMainPassCB(dt, totalTime);
 }
@@ -571,7 +570,7 @@ void D3DApp::UpdateObjectCB(const float dt, const float totalTime)
 
 void D3DApp::UpdateMainPassCB(const float dt, const float totalTime)
 {
-	m_camera.UpdateProjMatrix((float) Window::Size().cx, (float) Window::Size().cy);
+	m_camera.UpdateProjMatrix(m_bufferWidth, m_bufferHeight);
 	m_camera.UpdateViewMatrix();
 
 	XMMATRIX camView = XMLoadFloat4x4(&m_camera.View);
@@ -591,8 +590,8 @@ void D3DApp::UpdateMainPassCB(const float dt, const float totalTime)
 	XMStoreFloat4x4(&mainPassCB.InvViewProj,	XMMatrixTranspose(invViewProj));
 
 	mainPassCB.EyePosW = m_camera.Position;
-	mainPassCB.RenderTargetSize = XMFLOAT2(Window::Size().cx, Window::Size().cy);
-	mainPassCB.InvRenderTargetSize = XMFLOAT2(1.0f / Window::Size().cx, 1.0f / Window::Size().cy);
+	mainPassCB.RenderTargetSize = XMFLOAT2(m_bufferWidth, m_bufferHeight);
+	mainPassCB.InvRenderTargetSize = XMFLOAT2(1.0f / m_bufferWidth, 1.0f / m_bufferHeight);
 	mainPassCB.NearZ = m_camera.NearZ;
 	mainPassCB.FarZ = m_camera.FarZ;
 	mainPassCB.TotalTime = totalTime;

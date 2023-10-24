@@ -6,7 +6,7 @@
 
 enum TRANSFORMATION_TYPE { TRANSLATION, ROTATION, SCALE };
 
-struct CHOKBAR_API Vertex
+struct Vertex
 {
 	XMFLOAT3 Pos;
 	UINT32 Color;
@@ -51,7 +51,7 @@ public:
 };
 
 
-struct CHOKBAR_API RenderItem
+struct RenderItem
 {
 	RenderItem() = default;
 	
