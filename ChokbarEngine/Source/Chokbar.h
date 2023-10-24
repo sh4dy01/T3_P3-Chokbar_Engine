@@ -4,7 +4,8 @@
 	#include <windows.h>
 #endif
 
-
 #include <string>
+#include <cassert>
+#include <iostream>
 
 #include "Core/Core.h"

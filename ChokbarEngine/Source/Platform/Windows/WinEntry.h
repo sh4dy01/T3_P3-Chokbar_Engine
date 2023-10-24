@@ -1,7 +1,7 @@
 #pragma once
 
 #include "IApplication.h"
-#include "Core/D3DUtils.h"
+#include "Core/DebugUtils.h"
 
 extern Win32::IApplication* EntryApplication();
 

@@ -1,4 +1,5 @@
 #pragma once 
+#include <DirectXMath.h>
 
 class GeometryGenerator
 {
@@ -7,10 +8,10 @@ class GeometryGenerator
 	{
 		Vertex() {}
 		Vertex(
-			const XMFLOAT3& position,
-			const XMFLOAT3& normal,
-			const XMFLOAT3& tangent,
-			const XMFLOAT2& uv
+			const DirectX::XMFLOAT3& position,
+			const DirectX::XMFLOAT3& normal,
+			const DirectX::XMFLOAT3& tangent,
+			const DirectX::XMFLOAT2& uv
 		);
 		Vertex(
 			float px, float py, float pz,
@@ -18,10 +19,10 @@ class GeometryGenerator
 			float tx, float ty, float tz,
 			float u, float v
 		);
-		XMFLOAT3 Position;
-		XMFLOAT3 Normal;
-		XMFLOAT3 TangentU;
-		XMFLOAT2 TexC;
+		DirectX::XMFLOAT3 Position;
+		DirectX::XMFLOAT3 Normal;
+		DirectX::XMFLOAT3 TangentU;
+		DirectX::XMFLOAT2 TexC;
 	};
 
 	struct MeshData
@@ -40,7 +41,7 @@ class GeometryGenerator
 
 struct Transform
 {
-	XMFLOAT3 Position = { 0.0f, 0.0f, 0.0f };
-	XMFLOAT3 Rotation = { 0.0f, 0.0f, 0.0f };
-	XMFLOAT3 Scale = { 1.0f, 1.0f, 1.0f };
+	DirectX::XMFLOAT3 Position = { 0.0f, 0.0f, 0.0f };
+	DirectX::XMFLOAT3 Rotation = { 0.0f, 0.0f, 0.0f };
+	DirectX::XMFLOAT3 Scale = { 1.0f, 1.0f, 1.0f };
 };

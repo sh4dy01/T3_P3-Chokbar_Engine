@@ -1,6 +1,7 @@
 #include "Chokbar.h"
 #include "MeshGeometry.h"
 
+
 MeshGeometry::MeshGeometry() : VertexByteStride(0), VertexBufferByteSize(0), IndexFormat(DXGI_FORMAT_R16_UINT), IndexBufferByteSize(0)
 {
 	VertexBufferCPU = nullptr;
@@ -13,7 +14,7 @@ MeshGeometry::MeshGeometry() : VertexByteStride(0), VertexBufferByteSize(0), Ind
 	IndexBufferUploader = nullptr;
 }
 
-MeshGeometry::~MeshGeometry() 
+MeshGeometry::~MeshGeometry()
 {
 	VertexBufferUploader->Release();
 	IndexBufferUploader->Release();
@@ -43,8 +44,9 @@ D3D12_INDEX_BUFFER_VIEW MeshGeometry::IndexBufferView() const {
 	return ibv;
 }
 
-void MeshGeometry::DisposeUploaders() 
+void MeshGeometry::DisposeUploaders()
 {
 	VertexBufferUploader->Release();
 	IndexBufferUploader->Release();
 }
+

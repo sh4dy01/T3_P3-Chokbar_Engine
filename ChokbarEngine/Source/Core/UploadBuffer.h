@@ -1,7 +1,5 @@
 #pragma once
 
-#include <memory>
-
 template<typename T>
 class UploadBuffer
 {
@@ -30,7 +28,7 @@ UploadBuffer<T>::UploadBuffer(ID3D12Device* device, UINT elementCount, BOOL isCo
 	m_isConstantBuffer(isConstantBuffer), m_mappedData(nullptr), m_elementByteSize(0)
 {
 	m_elementByteSize = sizeof(T);
-	
+
 	if (isConstantBuffer)
 		m_elementByteSize = (sizeof(T) + 255) & ~255;
 
@@ -60,4 +58,3 @@ void UploadBuffer<T>::CopyData(int elementIndex, const void* data)
 {
 	memcpy(&m_mappedData[elementIndex * m_elementByteSize], data, sizeof(T));
 }
-
