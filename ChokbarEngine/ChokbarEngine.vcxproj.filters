@@ -103,6 +103,9 @@
     <ClCompile Include="Source\Core\DebugUtils.cpp">
       <Filter>Source\Core\Private</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Engine\ECS\EntityManager.cpp">
+      <Filter>Source\Engine\Public</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Chokbar.h">
@@ -161,6 +164,15 @@
     </ClInclude>
     <ClInclude Include="Source\Core\DebugUtils.h">
       <Filter>Source\Core\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\ECS\ComponentArray.h">
+      <Filter>Source\Engine\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\ECS\EntityManager.h">
+      <Filter>Source\Engine\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\ECS\TypeDef.h">
+      <Filter>Source\Engine\Public</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

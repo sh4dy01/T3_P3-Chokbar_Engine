@@ -1,6 +1,7 @@
 #include "Chokbar.h"
 #include "Engine.h"
 #include "Core/Core.h"
+#include "ECS/EntityManager.h"
 
 namespace Chokbar
 {
@@ -35,6 +36,9 @@ namespace Chokbar
 	void Engine::Initialize()
 	{
 		PreInitialize();
+
+		EntityManager em;
+		em.CreateEntity();
 
 		m_Window.CreateNewWindow(DEFAULT_WIDTH, DEFAULT_HEIGHT, PerGameSettings::GameName(), PerGameSettings::MainIcon(), Win32::RESIZABLE);
 
