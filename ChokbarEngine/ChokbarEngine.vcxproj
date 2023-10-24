@@ -15,18 +15,18 @@
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{4de1ace2-32a3-4adf-b2ca-c91a283b8dd3}</ProjectGuid>
     <RootNamespace>Crunch</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.22000.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.18362.0</WindowsTargetPlatformVersion>
     <ProjectName>ChokbarEngine</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -62,7 +62,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <PrecompiledHeader>Create</PrecompiledHeader>
       <PrecompiledHeaderFile>Chokbar.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)\ChokbarEngine\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -82,7 +82,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <PrecompiledHeader>Create</PrecompiledHeader>
       <PrecompiledHeaderFile>Chokbar.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)\ChokbarEngine\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -93,12 +93,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Chokbar.cpp" />
     <ClCompile Include="Source\Common\Logger.cpp" />
     <ClCompile Include="Source\Common\Time.cpp" />
-    <ClCompile Include="Source\Core\Core.cpp" />
-    <ClCompile Include="Source\Core\CoreDefinitions.cpp" />
-    <ClCompile Include="Source\Core\CoreMinimal.cpp" />
     <ClCompile Include="Source\Core\D3DApp.cpp" />
     <ClCompile Include="Source\Core\D3DMath.cpp" />
     <ClCompile Include="Source\Core\D3DUtils.cpp" />
@@ -107,7 +103,6 @@
     <ClCompile Include="Source\Core\UpdloadBuffer.cpp" />
     <ClCompile Include="Source\Engine\Engine.cpp" />
     <ClCompile Include="Source\Engine\GameTimer.cpp" />
-    <ClCompile Include="Source\Engine\Simulation.cpp" />
     <ClCompile Include="Source\Engine\SplashScreen.cpp" />
     <ClCompile Include="Source\Platform\Windows\IApplication.cpp" />
     <ClCompile Include="Source\Platform\Windows\SubObject.cpp" />
@@ -129,7 +124,6 @@
     <ClInclude Include="Source\Core\UploadBuffer.h" />
     <ClInclude Include="Source\Engine\Engine.h" />
     <ClInclude Include="Source\Engine\GameTimer.h" />
-    <ClInclude Include="Source\Engine\Simulation.h" />
     <ClInclude Include="Source\Engine\SplashScreen.h" />
     <ClInclude Include="Source\Platform\Windows\IApplication.h" />
     <ClInclude Include="Source\Platform\Windows\SubObject.h" />

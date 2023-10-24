@@ -1,7 +1,7 @@
 #pragma once
 
 
-class CHOKBAR_API PerGameSettings
+class PerGameSettings
 {
 private:
 

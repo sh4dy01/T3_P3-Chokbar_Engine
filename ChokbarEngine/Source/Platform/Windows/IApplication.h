@@ -4,7 +4,7 @@
 
 namespace Win32
 {
-	class CHOKBAR_API IApplication
+	class IApplication
 	{
 
 	public:
@@ -25,11 +25,13 @@ namespace Win32
 
 		virtual void Run() = 0;
 
+		virtual void Shutdown() = 0;
+
 	protected:
+
 		/* Game Loop */
 		virtual void Update(const float dt) = 0;
 
-		virtual void Render() = 0;
 	};
 
 	IApplication* EntryApplication();

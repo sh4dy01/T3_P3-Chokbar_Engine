@@ -1,11 +1,10 @@
 #include "BlankProject.h"
-#include "Engine/Simulation.h"
-#include "Platform/Windows//WinEntry.h"
 
-#include "Core/D3DApp.h"
+#include "Engine/Engine.h"
+#include "Platform/Windows/WinEntry.h"
 
 
-class Application : public D3DApp {
+class Application : public Chokbar::Engine {
 
 public:
 
@@ -22,7 +21,9 @@ public:
 	/* Game Loop */
 	void Update(const float dt) override;
 
-	void Render() override;
+	void Run() override;
+
+	void Shutdown() override;
 };
 
 
@@ -37,15 +38,23 @@ void Application::SetupPerGameSettings()
 
 void Application::Initialize()
 {
-	D3DApp::Initialize();
+
+}
+
+
+void Application::Run()
+{
+	Engine::Initialize();
+	Engine::Run();
+	Engine::Shutdown();
 }
 
 void Application::Update(const float dt)
 {
-	D3DApp::Update(dt);
+	Engine::Update(dt);
 }
 
-void Application::Render()
+void Application::Shutdown()
 {
-	D3DApp::Render();
+
 }

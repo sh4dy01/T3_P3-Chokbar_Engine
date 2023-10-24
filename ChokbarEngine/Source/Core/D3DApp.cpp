@@ -49,9 +49,8 @@ D3DApp::D3DApp() :
 	m_pInstance = HInstance();
 }
 
-D3DApp::~D3DApp()
-{
-	m_pDxgiFactory->Release();
+D3DApp::~D3DApp() {
+ 	m_pDxgiFactory->Release();
 	m_pD3dDevice->Release();
 
 	m_pFence->Release();
@@ -85,42 +84,11 @@ D3DApp::~D3DApp()
 
 	m_rootSignature->Release();
 
-	m_pDebugController->Release();
-}
-
-void D3DApp::Initialize()
-{
-	InitializeWindow();
-	InitializeD3D12();
-}
-
-void D3DApp::Run()
-{
-	MSG msg = { 0 };
-
-	m_GameTimer.Reset();
-
-	while (msg.message != WM_QUIT)
-	{
-		while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
-		{
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-		}
-
-		m_GameTimer.Tick();
-
-		{
-			Update(m_GameTimer.GetDeltaTime());
-			Render();
-		}
-	}
+	m_pDebugController->Release(); 
 }
 
 void D3DApp::Update(const float dt)
 {
-	CalculateFrameStats();
-
 	float totalTime = m_GameTimer.GetTotalTime();
 	UpdateObjectCB(dt, totalTime);
 	UpdateMainPassCB(dt, totalTime);
@@ -140,9 +108,8 @@ void D3DApp::Render()
 	m_pCommandList->ResourceBarrier(1, &bPresentToTarget);
 
 	// Create Viewport and ScissorRect for the current back buffer rendering 
-	SIZE winSize = Window::Size();
-	D3D12_VIEWPORT viewport = { 0.0f, 0.0f, winSize.cx, winSize.cy, 0.0f, 1.0f };
-	D3D12_RECT scissorRect = { 0, 0, winSize.cx, winSize.cy };
+	D3D12_VIEWPORT viewport = { 0.0f, 0.0f, static_cast<float>(m_bufferWidth), static_cast<float>(m_bufferHeight), 0.0f, 1.0f };
+	D3D12_RECT scissorRect = { 0, 0, m_bufferWidth, m_bufferHeight };
 	m_pCommandList->RSSetViewports(1, &viewport);
 	m_pCommandList->RSSetScissorRects(1, &scissorRect);
 
@@ -185,30 +152,36 @@ void D3DApp::Render()
 	FlushCommandQueue();
 }
 
-void D3DApp::OnResize()
+void D3DApp::OnResize(SIZE windowSize)
 {
-	RECT clientR;
-	GetClientRect(Handle(), &clientR);
-	Window::Size(clientR.right - clientR.left, clientR.bottom - clientR.top);
+	m_bufferWidth = windowSize.cx;
+	m_bufferHeight = windowSize.cy;
 }
 
-void D3DApp::InitializeWindow()
+D3DApp* D3DApp::GetInstance()
 {
-	Window::RegisterNewClass();
-	Window::Initialize();
+	if (m_pApp == nullptr)
+	{
+		m_pApp = new D3DApp();
+	}
+
+	return m_pApp;
 }
 
-void D3DApp::InitializeD3D12()
+void D3DApp::InitializeD3D12(Win32::Window* window)
 {
 #if defined(DEBUG) || defined(_DEBUG)
 	EnableDebugLayer();
 #endif
 
+	m_bufferWidth = window->Size().cx;
+	m_bufferHeight = window->Size().cy;
+
 	CreateDevice();
 	CreateFenceAndGetDescriptorsSizes();
 	CheckMSAAQualitySupport();
 	CreateCommandObjects();
-	CreateSwapChain();
+	CreateSwapChain(window->Handle());
 
 	CreateRtvAndDsvDescriptorHeaps();
 	CreateRenderTargetView();
@@ -299,14 +272,14 @@ void D3DApp::CreateCommandObjects()
 	m_pCommandList->Close();
 }
 
-void D3DApp::CreateSwapChain()
+void D3DApp::CreateSwapChain(HWND windowHandle)
 {
 	// Release the previous swapchain we will be recreating.
 	if (m_pSwapChain != nullptr) m_pSwapChain->Release();
 
 	DXGI_SWAP_CHAIN_DESC sd;
-	sd.BufferDesc.Width = Size().cx;
-	sd.BufferDesc.Height = Size().cy;
+	sd.BufferDesc.Width = m_bufferWidth;
+	sd.BufferDesc.Height = m_bufferHeight;
 	sd.BufferDesc.RefreshRate.Numerator = 60;
 	sd.BufferDesc.RefreshRate.Denominator = 1;
 	sd.BufferDesc.Format = m_BackBufferFormat;
@@ -316,7 +289,7 @@ void D3DApp::CreateSwapChain()
 	sd.SampleDesc.Quality = 0;
 	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	sd.BufferCount = SWAP_CHAIN_BUFFER_COUNT;
-	sd.OutputWindow = Handle();
+	sd.OutputWindow = windowHandle;
 	sd.Windowed = true;
 	sd.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 	sd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
@@ -346,36 +319,6 @@ void D3DApp::FlushCommandQueue()
 		// Wait until the GPU hits current fence event is fired.
 		WaitForSingleObject(eventHandle, INFINITE);
 		CloseHandle(eventHandle);
-	}
-}
-
-void D3DApp::CalculateFrameStats()
-{
-	// Code computes the average frames per second, and also the
-	// average time it takes to render one frame.  These stats
-	// are appended to the window caption bar.
-
-	static int frameCnt = 0;
-	static float timeElapsed = 0.0f;
-
-	frameCnt++;
-
-	// Compute averages over one second period.
-	if ((m_GameTimer.GetTotalTime() - timeElapsed) >= 1.0f)
-	{
-		float fps = (float)frameCnt; // fps = frameCnt / 1
-		float mspf = 1000.0f / fps;
-
-		std::wstring fpsStr = std::to_wstring(fps);
-		std::wstring mspfStr = std::to_wstring(mspf);
-
-		std::wstring windowText = L"    fps: " + fpsStr + L"   mspf: " + mspfStr;
-
-		SetWindowText(Handle(), windowText.c_str());
-
-		// Reset for next average.
-		frameCnt = 0;
-		timeElapsed += 1.0f;
 	}
 }
 
@@ -431,8 +374,8 @@ void D3DApp::CreateDepthStencilBuffer()
 	D3D12_RESOURCE_DESC depthStencilDesc;
 	depthStencilDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
 	depthStencilDesc.Alignment = 0;
-	depthStencilDesc.Width = Size().cx;
-	depthStencilDesc.Height = Size().cy;
+	depthStencilDesc.Width = m_bufferWidth;
+	depthStencilDesc.Height = m_bufferHeight;
 	depthStencilDesc.DepthOrArraySize = 1;
 	depthStencilDesc.MipLevels = 1;
 	depthStencilDesc.Format = m_DepthStencilFormat;

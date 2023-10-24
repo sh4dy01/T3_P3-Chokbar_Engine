@@ -12,14 +12,14 @@ struct CHOKBAR_API Vertex
 	UINT32 Color;
 };
 
-struct CHOKBAR_API SubmeshGeometry
+struct SubmeshGeometry
 {
 	UINT IndexCount = 0;
 	UINT StartIndexLocation = 0;
 	INT BaseVertexLocation = 0;
 };
 
-class CHOKBAR_API MeshGeometry
+class MeshGeometry
 {
 public:
 	MeshGeometry();
