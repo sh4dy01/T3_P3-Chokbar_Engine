@@ -64,22 +64,25 @@ D3DApp::~D3DApp()
 	m_pDsvHeap->Release();
 	m_pCbvHeap->Release();
 
-	for (int i = 0; i < SWAP_CHAIN_BUFFER_COUNT; ++i)
-	{
+	for (int i = 0; i < SWAP_CHAIN_BUFFER_COUNT; ++i) 
 		m_pSwapChainBuffer[i]->Release();
-	}
 	m_pSwapChain->Release();
 
 	m_pDepthStencilBuffer->Release();
 
+	for (auto& item : m_OpaqueRenderItems)
+		delete item;
+
+	for (auto& item : m_TransparentRenderItems)
+		delete item;
+	
+	for (int i = 0; i < m_mainObjectCB.size(); i++)
+		delete m_mainObjectCB[i];
+	delete m_mainPassCB;
+
 	m_vsByteCode->Release();
 	m_psByteCode->Release();
 
-	for (int i = 0; i < m_mainObjectCB.size(); i++)
-	{
-		delete m_mainObjectCB[i];
-	}
-	delete m_mainPassCB;
 	m_rootSignature->Release();
 
 	m_pDebugController->Release();
@@ -210,7 +213,7 @@ void D3DApp::InitializeD3D12()
 	CreateRtvAndDsvDescriptorHeaps();
 	CreateRenderTargetView();
 
-	CreateVertexAndIndexBuffers();
+	CreateGeometry();
 	CreateRenderItems();
 
 	RegisterInitCommands_In_CommandList();
@@ -476,7 +479,7 @@ void D3DApp::CreateRenderTargetView()
 	}
 }
 
-void D3DApp::CreateVertexAndIndexBuffers()
+void D3DApp::CreateGeometry()
 {
 	Vertex vList[] =
 	{
@@ -498,7 +501,7 @@ void D3DApp::CreateVertexAndIndexBuffers()
 	const UINT64 iBufferSize = sizeof(iList);
 	const UINT64 vBufferSize = sizeof(vList);
 
-	m_pyramidGeometry = std::make_unique<MeshGeometry>();
+	m_pyramidGeometry = new MeshGeometry();
 	m_pyramidGeometry->Name = "Pyramid";
 
 	m_pyramidGeometry->VertexBufferGPU = CreateDefaultBuffer(vList, vBufferSize, m_pyramidGeometry->VertexBufferUploader);
@@ -520,6 +523,39 @@ void D3DApp::CreateVertexAndIndexBuffers()
 	ID3D12CommandList* cmdLists[] = { m_pCommandList };
 	m_pCommandQueue->ExecuteCommandLists(_countof(cmdLists), cmdLists);
 	FlushCommandQueue();
+}
+
+void D3DApp::CreateRenderItems()
+{
+	for (int i = 0; i < m_ObjectCount; i++)
+	{
+		auto pyrItem = RenderItem();
+		pyrItem.ObjCBIndex = m_AllRenderItems.size();
+		pyrItem.Geo = m_pyramidGeometry;
+		pyrItem.PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+		pyrItem.IndexCount = pyrItem.Geo->DrawArgs["Pyramid"].IndexCount;
+		pyrItem.StartIndexLocation = pyrItem.Geo->DrawArgs["Pyramid"].StartIndexLocation;
+		pyrItem.BaseVertexLocation = pyrItem.Geo->DrawArgs["Pyramid"].BaseVertexLocation;
+		pyrItem.Transform = Transform();
+		if (i == 0) 
+		{
+			pyrItem.TransformationType = TRANSFORMATION_TYPE::ROTATION;
+			pyrItem.Transform.Position = XMFLOAT3(1.0f, 0.0f, 0.0f);
+		}
+		else 
+		{
+			pyrItem.TransformationType = TRANSFORMATION_TYPE::TRANSLATION;
+			pyrItem.Transform.Position = XMFLOAT3(-1.0f, 0.0f, 0.0f);
+		}
+		XMStoreFloat4x4(&pyrItem.World, XMMatrixTranspose(XMMatrixTranslationFromVector(XMLoadFloat3(&pyrItem.Transform.Position))));
+			
+		m_AllRenderItems.push_back(std::move(pyrItem));
+	}
+
+	for (auto& ri : m_AllRenderItems)
+	{
+		m_OpaqueRenderItems.push_back(&ri);
+	}
 }
 
 void D3DApp::CreateConstantBuffers()
@@ -561,31 +597,31 @@ void D3DApp::UpdateObjectCB(const float dt, const float totalTime)
 
 	for (auto& item : m_AllRenderItems)
 	{
-		auto assiociatedCB = m_mainObjectCB[item->ObjCBIndex];
-		XMMATRIX world = XMLoadFloat4x4(&item->World);
+		auto assiociatedCB = m_mainObjectCB[item.ObjCBIndex];
+		XMMATRIX world = XMLoadFloat4x4(&item.World);
 
-		switch (item->TransformationType)
+		switch (item.TransformationType)
 		{
 		case TRANSFORMATION_TYPE::ROTATION:
 		{
-			item->Transform.Rotation.y += 1.0f * dt;
-			world = XMMatrixRotationY(item->Transform.Rotation.y);
+			item.Transform.Rotation.y += 1.0f * dt;
+			world = XMMatrixRotationY(item.Transform.Rotation.y);
 			break;
 		}
 		case TRANSFORMATION_TYPE::TRANSLATION:
 		{
-			item->Transform.Position.y = sinf(totalTime) * 2.0f;
-			world = XMMatrixTranslationFromVector(XMLoadFloat3(&item->Transform.Position));
+			item.Transform.Position.y = sinf(totalTime) * 2.0f;
+			world = XMMatrixTranslationFromVector(XMLoadFloat3(&item.Transform.Position));
 			break;
 		}
 		default:
 			break;
 		}
 
-		XMStoreFloat4x4(&item->World, XMMatrixTranspose(world));
+		XMStoreFloat4x4(&item.World, XMMatrixTranspose(world));
 
 		ObjectConstants objConstants;
-		XMStoreFloat4x4(&objConstants.World, XMLoadFloat4x4(&item->World));
+		XMStoreFloat4x4(&objConstants.World, XMLoadFloat4x4(&item.World));
 		assiociatedCB->CopyData(0, &objConstants);
 	}
 }
@@ -598,18 +634,18 @@ void D3DApp::UpdateMainPassCB(const float dt, const float totalTime)
 	XMMATRIX camView = XMLoadFloat4x4(&m_camera.View);
 	XMMATRIX camProj = XMLoadFloat4x4(&m_camera.Proj);
 
-	XMMATRIX viewProj = XMMatrixMultiply(camView, camProj);
-	XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(camView), camView);
-	XMMATRIX invProj = XMMatrixInverse(&XMMatrixDeterminant(camProj), camProj);
-	XMMATRIX invViewProj = XMMatrixInverse(&XMMatrixDeterminant(viewProj), viewProj);
+	XMMATRIX viewProj		= XMMatrixMultiply(camView, camProj);
+	XMMATRIX invView		= XMMatrixInverse(&XMMatrixDeterminant(camView), camView);
+	XMMATRIX invProj		= XMMatrixInverse(&XMMatrixDeterminant(camProj), camProj);
+	XMMATRIX invViewProj	= XMMatrixInverse(&XMMatrixDeterminant(viewProj), viewProj);
 
 	PassConstants mainPassCB;
-	XMStoreFloat4x4(&mainPassCB.View, XMMatrixTranspose(camView));
-	XMStoreFloat4x4(&mainPassCB.InvView, XMMatrixTranspose(invView));
-	XMStoreFloat4x4(&mainPassCB.Proj, XMMatrixTranspose(camProj));
-	XMStoreFloat4x4(&mainPassCB.InvProj, XMMatrixTranspose(invProj));
-	XMStoreFloat4x4(&mainPassCB.ViewProj, XMMatrixTranspose(viewProj));
-	XMStoreFloat4x4(&mainPassCB.InvViewProj, XMMatrixTranspose(invViewProj));
+	XMStoreFloat4x4(&mainPassCB.View,			XMMatrixTranspose(camView));
+	XMStoreFloat4x4(&mainPassCB.InvView,		XMMatrixTranspose(invView));
+	XMStoreFloat4x4(&mainPassCB.Proj,			XMMatrixTranspose(camProj));
+	XMStoreFloat4x4(&mainPassCB.InvProj,		XMMatrixTranspose(invProj));
+	XMStoreFloat4x4(&mainPassCB.ViewProj,		XMMatrixTranspose(viewProj));
+	XMStoreFloat4x4(&mainPassCB.InvViewProj,	XMMatrixTranspose(invViewProj));
 
 	mainPassCB.EyePosW = m_camera.Position;
 	mainPassCB.RenderTargetSize = XMFLOAT2(Window::Size().cx, Window::Size().cy);
@@ -625,39 +661,6 @@ void D3DApp::UpdateMainPassCB(const float dt, const float totalTime)
 void D3DApp::CreateObject()
 {
 
-}
-
-void D3DApp::CreateRenderItems()
-{
-	for (int i = 0; i < m_ObjectCount; i++)
-	{
-		auto pyrItem = std::make_unique<RenderItem>();
-		pyrItem->ObjCBIndex = m_AllRenderItems.size();
-		pyrItem->Geo = m_pyramidGeometry.get();
-		pyrItem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-		pyrItem->IndexCount = pyrItem->Geo->DrawArgs["Pyramid"].IndexCount;
-		pyrItem->StartIndexLocation = pyrItem->Geo->DrawArgs["Pyramid"].StartIndexLocation;
-		pyrItem->BaseVertexLocation = pyrItem->Geo->DrawArgs["Pyramid"].BaseVertexLocation;
-		pyrItem->Transform = Transform();
-		if (i == 0) 
-		{
-			pyrItem->TransformationType = TRANSFORMATION_TYPE::ROTATION;
-			pyrItem->Transform.Position = XMFLOAT3(1.0f, 0.0f, 0.0f);
-		}
-		else 
-		{
-			pyrItem->TransformationType = TRANSFORMATION_TYPE::TRANSLATION;
-			pyrItem->Transform.Position = XMFLOAT3(-1.0f, 0.0f, 0.0f);
-		}
-		XMStoreFloat4x4(&pyrItem->World, XMMatrixTranspose(XMMatrixTranslationFromVector(XMLoadFloat3(&pyrItem->Transform.Position))));
-			
-		m_AllRenderItems.push_back(std::move(pyrItem));
-	}
-
-	for (auto& ri : m_AllRenderItems)
-	{
-		m_OpaqueRenderItems.push_back(ri.get());
-	}
 }
 
 void D3DApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItem*>& renderItems)

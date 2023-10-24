@@ -68,7 +68,7 @@ private:
 	void CreateRenderTargetView();
 	void CreateDepthStencilBuffer();
 	
-	void CreateVertexAndIndexBuffers();
+	void CreateGeometry();
 	void CreateConstantBuffers();
 	void UpdateObjectCB(const float dt, const float totalTime);
 	void UpdateMainPassCB(const float dt, const float totalTime);
@@ -153,17 +153,33 @@ private:
 	ID3D12Resource* m_pDepthStencilBuffer;
 	DXGI_FORMAT m_DepthStencilFormat;
 	
-	std::vector<std::unique_ptr<RenderItem>> m_AllRenderItems;
-	std::vector<RenderItem*> m_OpaqueRenderItems;
-	std::vector<RenderItem*> m_TransparentRenderItems;
+	/* All our items to be rendered in our world. They are not sorted by shader.*/
+	std::vector<RenderItem> m_AllRenderItems{};
+	/* All opaque item in our world. They might not use the same shader as well. 
+	RenderItem* points to a render item in m_AllRenderItems
+	/!\ Do not create an object directly into this list, you need to create it in m_AllItem and add the reference in this list */
+	std::vector<RenderItem*> m_OpaqueRenderItems{};
+	/* All transparent item in our world. They might not use the same shader as well.
+	RenderItem* points to a render item in m_AllRenderItems
+	/!\ Do not create an object directly into this list, you need to create it in m_AllItem and add the reference in this list */
+	std::vector<RenderItem*> m_TransparentRenderItems{};
 	
-	std::unique_ptr<MeshGeometry> m_pyramidGeometry;
+	/* Reference to our pyramid geometry. It is instanciated once and can be used by any RenderItem */
+	MeshGeometry* m_pyramidGeometry;
 
-	/* Upload buffer used to give the GPU information at runtime with the CPU.
-	This buffer uses the GPU Upload Heap that allows the CPu to upload data to the GPU at runtime */
 	const int m_ObjectCount = 2;
+
+	/* Upload buffers are used to give the GPU information at runtime with the CPU.
+	Those buffers uses the GPU Upload Heap that allows the CPU to upload data to the GPU at runtime */
+
+	/* The Main Object Constant Buffer stocks every constant buffer. Each constant buffer is associated to an unique RenderItem 
+	To find the associated RenderItem, you can use the index of the used object constant buffer
+	NOTE : The object constant buffer is associated to the b0 cbuffer in the shader (only true in our project) */
 	std::vector<UploadBuffer<ObjectConstants>*> m_mainObjectCB;
-	UploadBuffer<PassConstants>*                m_mainPassCB;
+	/* The Main Pass Constant Buffer stores every information the shader might need about our camera 
+	NOTE : The main pass constant buffer is associated to the b1 cbuffer in the shader (only true in our project) */
+	UploadBuffer<PassConstants>* m_mainPassCB;
+
 	/* Compile code of the vertex shader */
 	ID3DBlob* m_vsByteCode;
 	/* Compile code of the pixel shader */
@@ -173,10 +189,12 @@ private:
 	Therefore, the root signature will be created with an array of RootParameter that express where the exprected resource by the shader is located */
 	ID3D12RootSignature* m_rootSignature;
 
+	/* First implementation of a Camera object */
 	Camera m_camera{};
 
 	/* D3D12 PipelineStateObject : (PSO : Pipeline State Object) Represents the state of the pipeline
-	We use a PSO to define the state of the pipeline. This includes the shaders, the input layout, the render targets, the depth stencil buffer, etc... */
+	We use a PSO to define the state of the pipeline. This includes the shaders, the input layout, the render targets, the depth stencil buffer, etc...
+	For each shader, we need to create another PSO, this sytem will be implemented later on */
 	enum PSO_TYPE { PSO_OPAQUE, PSO_TRANSPARENT, PSO_COUNT };
 	std::unordered_map<PSO_TYPE, ID3D12PipelineState*> m_PSOs;
 	bool m_isWireframe;
