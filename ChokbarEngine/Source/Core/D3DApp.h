@@ -5,9 +5,6 @@
 #include <crtdbg.h>
 #endif
 
-#pragma comment(lib,"d3dcompiler.lib")
-#pragma comment(lib, "D3D12.lib")
-#pragma comment(lib, "dxgi.lib")
 
 #include <Core/d3dx12.h>
 #include <dxgi1_6.h>
