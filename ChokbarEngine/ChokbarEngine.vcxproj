@@ -96,6 +96,7 @@
     <ClCompile Include="Source\Common\Logger.cpp" />
     <ClCompile Include="Source\Common\Time.cpp" />
     <ClCompile Include="Source\Core\D3DApp.cpp" />
+    <ClCompile Include="Source\Core\D3DMath.cpp" />
     <ClCompile Include="Source\Core\D3DUtils.cpp" />
     <ClCompile Include="Source\Core\MeshGeometry.cpp" />
     <ClCompile Include="Source\Core\PerGameSettings.cpp" />
@@ -114,6 +115,7 @@
     <ClInclude Include="Source\Core\CoreDefinitions.h" />
     <ClInclude Include="Source\Core\CoreMinimal.h" />
     <ClInclude Include="Source\Core\D3DApp.h" />
+    <ClInclude Include="Source\Core\D3DMath.h" />
     <ClInclude Include="Source\Core\D3DUtils.h" />
     <ClInclude Include="Source\Core\MeshGeometry.h" />
     <ClInclude Include="Source\Core\PerGameSettings.h" />

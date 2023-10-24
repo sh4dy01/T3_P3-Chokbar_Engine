@@ -16,31 +16,19 @@
 using namespace DirectX;
 
 #include "UploadBuffer.h"
+#include "MeshGeometry.h"
 #include <iostream>
-
-class MeshGeometry;
-
-
+#include <vector>
+#include <unordered_map>
 
 /* ------------------------------------------------------------------------- */
-/* HELPER STRUCTS                                                            */
+/* GLOBAL VARIABLES                                                          */
 /* ------------------------------------------------------------------------- */
-#pragma region Helper Structs
-struct Vertex
-{
-	XMFLOAT3 Pos;
-	UINT32 Color;
-};
 
-struct ObjectConstants
-{
-	XMMATRIX WorldViewProj = XMMatrixIdentity();
-};
-#pragma endregion
+static const int SWAP_CHAIN_BUFFER_COUNT = 2;
 
 
 class D3DApp {
-
 public:
 
 	D3DApp();
@@ -52,7 +40,7 @@ public:
 
 	void InitializeD3D12(Win32::Window* window);
 	void OnResize(int, int);
-	void Update(const float dt);
+	void Update(const float dt, const float totalTime);
 	void Render();
 
 
@@ -75,13 +63,22 @@ private:
 	void CreateRtvAndDsvDescriptorHeaps();
 	void CreateRenderTargetView();
 	void CreateDepthStencilBuffer();
-	void CreateVertexAndIndexBuffers();
+	
+	void CreateGeometry();
 	void CreateConstantBuffers();
-	void UpdateConstantBuffers();
+	void UpdateObjectCB(const float dt, const float totalTime);
+	void UpdateMainPassCB(const float dt, const float totalTime);
+	
+	void CreateObject();
+	void CreateRenderItems();
+	void DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItem*>& renderItems);
+	
 	void CreateRootSignature();
 	void CreatePipelineStateObject();
 
 
+	/* /!\ Be careful, this method uses the commandList component.
+	Therefore, it must be called within a command list Reset() and ExecuteCommandList() scope */
 	ID3D12Resource* CreateDefaultBuffer(const void* initData, UINT64 byteSize, ID3D12Resource* uploadBuffer);
 	D3D12_CPU_DESCRIPTOR_HANDLE CurrentBackBufferView() const;
 	D3D12_CPU_DESCRIPTOR_HANDLE DepthStencilView() const;
@@ -116,7 +113,7 @@ private:
 	The other one will be put on hold */
 	ID3D12Fence* m_pFence;
 	int m_CurrentFenceValue;
-	
+
 	/* D3D12 CommandQueue : Represents the actual command queue of the GPU */
 	ID3D12CommandQueue* m_pCommandQueue;
 	/* D3D12 CommandAllocator : Represents a chunk of memory on the GPU that stores commands */
@@ -138,8 +135,6 @@ private:
 	/* This struct helps the GPU identifying how our Vertex class is composed */
 	D3D12_INPUT_ELEMENT_DESC m_inputLayout[2];
 
-	/* Number of buffer in the swapchain */
-	static const int SWAP_CHAIN_BUFFER_COUNT = 2;
 	/* D3D12 SwapChain : Used to swap the back buffer */
 	IDXGISwapChain* m_pSwapChain;
 	/* Buffer used by the swap chain (contains our two buffers that will serve for the Present() method) */
@@ -153,11 +148,33 @@ private:
 	ID3D12Resource* m_pDepthStencilBuffer;
 	DXGI_FORMAT m_DepthStencilFormat;
 	
-	std::unique_ptr<MeshGeometry> m_geometry;
+	/* All our items to be rendered in our world. They are not sorted by shader.*/
+	std::vector<RenderItem> m_AllRenderItems{};
+	/* All opaque item in our world. They might not use the same shader as well. 
+	RenderItem* points to a render item in m_AllRenderItems
+	/!\ Do not create an object directly into this list, you need to create it in m_AllItem and add the reference in this list */
+	std::vector<RenderItem*> m_OpaqueRenderItems{};
+	/* All transparent item in our world. They might not use the same shader as well.
+	RenderItem* points to a render item in m_AllRenderItems
+	/!\ Do not create an object directly into this list, you need to create it in m_AllItem and add the reference in this list */
+	std::vector<RenderItem*> m_TransparentRenderItems{};
+	
+	/* Reference to our pyramid geometry. It is instanciated once and can be used by any RenderItem */
+	MeshGeometry* m_pyramidGeometry;
 
-	/* Upload buffer used to give the GPU information at runtime with the CPU.
-	This buffer uses the GPU Upload Heap that allows the CPu to upload data to the GPU at runtime */
-	std::unique_ptr<UploadBuffer<ObjectConstants>> m_constantBuffer;
+	const int m_ObjectCount = 2;
+
+	/* Upload buffers are used to give the GPU information at runtime with the CPU.
+	Those buffers uses the GPU Upload Heap that allows the CPU to upload data to the GPU at runtime */
+
+	/* The Main Object Constant Buffer stocks every constant buffer. Each constant buffer is associated to an unique RenderItem 
+	To find the associated RenderItem, you can use the index of the used object constant buffer
+	NOTE : The object constant buffer is associated to the b0 cbuffer in the shader (only true in our project) */
+	std::vector<UploadBuffer<ObjectConstants>*> m_mainObjectCB;
+	/* The Main Pass Constant Buffer stores every information the shader might need about our camera 
+	NOTE : The main pass constant buffer is associated to the b1 cbuffer in the shader (only true in our project) */
+	UploadBuffer<PassConstants>* m_mainPassCB;
+
 	/* Compile code of the vertex shader */
 	ID3DBlob* m_vsByteCode;
 	/* Compile code of the pixel shader */
@@ -166,9 +183,14 @@ private:
 	We use a root signature to define the resources that are going to be used by the shaders
 	Therefore, the root signature will be created with an array of RootParameter that express where the exprected resource by the shader is located */
 	ID3D12RootSignature* m_rootSignature;
-	float m_zRotation;
+
+	/* First implementation of a Camera object */
+	Camera m_camera{};
 
 	/* D3D12 PipelineStateObject : (PSO : Pipeline State Object) Represents the state of the pipeline
-	We use a PSO to define the state of the pipeline. This includes the shaders, the input layout, the render targets, the depth stencil buffer, etc... */
-	ID3D12PipelineState* m_pipelineStateObject;
+	We use a PSO to define the state of the pipeline. This includes the shaders, the input layout, the render targets, the depth stencil buffer, etc...
+	For each shader, we need to create another PSO, this sytem will be implemented later on */
+	enum PSO_TYPE { PSO_OPAQUE, PSO_TRANSPARENT, PSO_COUNT };
+	std::unordered_map<PSO_TYPE, ID3D12PipelineState*> m_PSOs;
+	bool m_isWireframe;
 };
