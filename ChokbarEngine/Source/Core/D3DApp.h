@@ -5,25 +5,23 @@
 #include <crtdbg.h>
 #endif
 
-
 #include <Core/d3dx12.h>
 #include <dxgi1_6.h>
-#include <DirectXMath.h>
 #include <d3dcompiler.h>
-using namespace DirectX;
 
 #include "UploadBuffer.h"
 #include "MeshGeometry.h"
-#include <iostream>
+
 #include <vector>
 #include <unordered_map>
 
-/* ------------------------------------------------------------------------- */
-/* GLOBAL VARIABLES                                                          */
-/* ------------------------------------------------------------------------- */
+
+
+#pragma region GLOBAL VARIABLES
 
 static const int SWAP_CHAIN_BUFFER_COUNT = 2;
 
+#pragma endregion
 
 class D3DApp {
 public:
@@ -45,10 +43,10 @@ private:
 
 
 	void EnableDebugLayer();
-	
+
 	void CreateDevice();
 	void CheckMSAAQualitySupport();
-	
+
 	void CreateFenceAndGetDescriptorsSizes();
 
 	void CreateCommandObjects();
@@ -60,16 +58,16 @@ private:
 	void CreateRtvAndDsvDescriptorHeaps();
 	void CreateRenderTargetView();
 	void CreateDepthStencilBuffer();
-	
+
 	void CreateGeometry();
 	void CreateConstantBuffers();
 	void UpdateObjectCB(const float dt, const float totalTime);
 	void UpdateMainPassCB(const float dt, const float totalTime);
-	
+
 	void CreateObject();
 	void CreateRenderItems();
 	void DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItem*>& renderItems);
-	
+
 	void CreateRootSignature();
 	void CreatePipelineStateObject();
 
@@ -87,7 +85,7 @@ private:
 
 private:
 
-	static D3DApp *m_pApp;
+	static D3DApp* m_pApp;
 
 	HINSTANCE m_pInstance;
 
@@ -106,7 +104,7 @@ private:
 	ID3D12Device* m_pD3dDevice;
 	D3D_DRIVER_TYPE m_D3dDriverType;
 	/* D3D12 Fence : Used to synchronize the CPU and GPU
-	We use the fence to wait for the CPU or GPU to finish their work. 
+	We use the fence to wait for the CPU or GPU to finish their work.
 	The other one will be put on hold */
 	ID3D12Fence* m_pFence;
 	int m_CurrentFenceValue;
@@ -123,12 +121,12 @@ private:
 	ID3D12DescriptorHeap* m_pDsvHeap;
 	/* D3D12 ConstantBufferView DescriptorHeap :  */
 	ID3D12DescriptorHeap* m_pCbvHeap;
-	
+
 	/* Speaks for itself I guess */
 	UINT m_RtvDescriptorSize;
 	UINT m_DsvDescriptorSize;
 	UINT m_CbvSrvUavDescriptorSize;
-	
+
 	/* This struct helps the GPU identifying how our Vertex class is composed */
 	D3D12_INPUT_ELEMENT_DESC m_inputLayout[2];
 
@@ -139,15 +137,15 @@ private:
 	/* Index of the current back buffer */
 	int m_currBackBuffer;
 	DXGI_FORMAT m_BackBufferFormat;
-	
+
 	/* The depth stencil buffer is used to render perspective given the object position
 	This results with objects appearing to be behind each others */
 	ID3D12Resource* m_pDepthStencilBuffer;
 	DXGI_FORMAT m_DepthStencilFormat;
-	
+
 	/* All our items to be rendered in our world. They are not sorted by shader.*/
 	std::vector<RenderItem> m_AllRenderItems{};
-	/* All opaque item in our world. They might not use the same shader as well. 
+	/* All opaque item in our world. They might not use the same shader as well.
 	RenderItem* points to a render item in m_AllRenderItems
 	/!\ Do not create an object directly into this list, you need to create it in m_AllItem and add the reference in this list */
 	std::vector<RenderItem*> m_OpaqueRenderItems{};
@@ -155,7 +153,7 @@ private:
 	RenderItem* points to a render item in m_AllRenderItems
 	/!\ Do not create an object directly into this list, you need to create it in m_AllItem and add the reference in this list */
 	std::vector<RenderItem*> m_TransparentRenderItems{};
-	
+
 	/* Reference to our pyramid geometry. It is instanciated once and can be used by any RenderItem */
 	MeshGeometry* m_pyramidGeometry;
 
@@ -164,11 +162,11 @@ private:
 	/* Upload buffers are used to give the GPU information at runtime with the CPU.
 	Those buffers uses the GPU Upload Heap that allows the CPU to upload data to the GPU at runtime */
 
-	/* The Main Object Constant Buffer stocks every constant buffer. Each constant buffer is associated to an unique RenderItem 
+	/* The Main Object Constant Buffer stocks every constant buffer. Each constant buffer is associated to an unique RenderItem
 	To find the associated RenderItem, you can use the index of the used object constant buffer
 	NOTE : The object constant buffer is associated to the b0 cbuffer in the shader (only true in our project) */
 	std::vector<UploadBuffer<ObjectConstants>*> m_mainObjectCB;
-	/* The Main Pass Constant Buffer stores every information the shader might need about our camera 
+	/* The Main Pass Constant Buffer stores every information the shader might need about our camera
 	NOTE : The main pass constant buffer is associated to the b1 cbuffer in the shader (only true in our project) */
 	UploadBuffer<PassConstants>* m_mainPassCB;
 
@@ -191,3 +189,4 @@ private:
 	std::unordered_map<PSO_TYPE, ID3D12PipelineState*> m_PSOs;
 	bool m_isWireframe;
 };
+

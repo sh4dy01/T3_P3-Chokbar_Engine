@@ -8,7 +8,7 @@ enum TRANSFORMATION_TYPE { TRANSLATION, ROTATION, SCALE };
 
 struct Vertex
 {
-	XMFLOAT3 Pos;
+	DirectX::XMFLOAT3 Pos;
 	UINT32 Color;
 };
 
@@ -46,7 +46,7 @@ public:
 public:
 	D3D12_VERTEX_BUFFER_VIEW VertexBufferView() const;
 	D3D12_INDEX_BUFFER_VIEW IndexBufferView() const;
-	
+
 	void DisposeUploaders();
 };
 
@@ -54,9 +54,9 @@ public:
 struct RenderItem
 {
 	RenderItem() = default;
-	
+
 	Transform Transform;
-	XMFLOAT4X4 World = Identity4x4();
+	DirectX::XMFLOAT4X4 World = Identity4x4();
 
 	UINT ObjCBIndex = -1;
 
@@ -70,4 +70,3 @@ struct RenderItem
 
 	TRANSFORMATION_TYPE TransformationType = TRANSLATION;
 };
-	
