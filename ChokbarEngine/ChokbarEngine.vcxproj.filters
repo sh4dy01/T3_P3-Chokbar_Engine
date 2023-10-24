@@ -103,6 +103,9 @@
     <ClCompile Include="Source\Core\MeshGeometry.cpp">
       <Filter>Source\Core\Private</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Core\D3DMath.cpp">
+      <Filter>Source\Core\Private</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Chokbar.h">
@@ -160,6 +163,9 @@
       <Filter>Source\Core\Classes</Filter>
     </ClInclude>
     <ClInclude Include="Source\Core\MeshGeometry.h">
+      <Filter>Source\Core\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Core\D3DMath.h">
       <Filter>Source\Core\Classes</Filter>
     </ClInclude>
   </ItemGroup>
