@@ -26,20 +26,20 @@ class MeshGeometry;
 /* HELPER STRUCTS                                                            */
 /* ------------------------------------------------------------------------- */
 #pragma region Helper Structs
-struct CHOKBAR_API Vertex
+struct Vertex
 {
 	XMFLOAT3 Pos;
 	UINT32 Color;
 };
 
-struct CHOKBAR_API ObjectConstants
+struct ObjectConstants
 {
 	XMMATRIX WorldViewProj = XMMatrixIdentity();
 };
 #pragma endregion
 
 
-class CHOKBAR_API D3DApp {
+class D3DApp {
 
 public:
 
@@ -48,9 +48,9 @@ public:
 
 public:
 
-	static D3DApp* GetInstance() { return m_pApp; }
+	static D3DApp* GetInstance();
 
-	void InitializeD3D12(SIZE windowSize, HWND handle);
+	void InitializeD3D12(Win32::Window* window);
 	void OnResize(SIZE windowSize);
 	void Update(const float dt);
 	void Render();
