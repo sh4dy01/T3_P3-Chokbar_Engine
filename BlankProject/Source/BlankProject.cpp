@@ -38,23 +38,15 @@ void Application::SetupPerGameSettings()
 
 void Application::Initialize()
 {
-	Engine::Initialize();
+
 }
 
 
 void Application::Run()
 {
-	Engine::ResetTimer();
-
-	while (!Engine::NeedsToClose())
-	{
-		Window::PollEvent();
-
-		Engine::Tick();
-
-		Update(GetDeltaTime());
-		Engine::Render();
-	}
+	Engine::Initialize();
+	Engine::Run();
+	Engine::Shutdown();
 }
 
 void Application::Update(const float dt)
@@ -64,5 +56,5 @@ void Application::Update(const float dt)
 
 void Application::Shutdown()
 {
-	Engine::Shutdown();
+
 }

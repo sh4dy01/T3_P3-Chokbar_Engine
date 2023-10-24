@@ -1,43 +1,60 @@
 #include "Chokbar.h"
 #include "Engine.h"
+#include "Core/Core.h"
 
 namespace Chokbar
 {
 	Engine::Engine()
-		: Window(L"Application", NULL)
+		: Window(PerGameSettings::GameName(), PerGameSettings::MainIcon())
 	{
 	}
 
 	Engine::~Engine()
-	{
-		
-	}
+	= default;
+
+#pragma region INIT
 
 	void Engine::PreInitialize()
 	{
-
+		/*
 		Logger::PrintDebugSeperator();
 		Logger::PrintLog(L"Application Starting...\n");
 		Logger::PrintLog(L"Game Name: %s\n", PerGameSettings::GameName());
 		Logger::PrintLog(L"Boot Time: %s\n", Time::GetDateTimeString().c_str());
 
 		Logger::PrintDebugSeperator();
+		*/
 
 		//SplashScreen::Open();
 	}
 
 	void Engine::Initialize()
 	{
+		PreInitialize();
+
 		Window::RegisterNewClass();
 		Window::Initialize();
 
-		m_D3DApp.InitializeD3D12(Size(), Handle());
+		D3DApp::GetInstance()->InitializeD3D12(this);
 	}
 
-	void Engine::Update(float dt)
+#pragma endregion
+
+#pragma region MAIN
+
+	void Engine::Run()
 	{
-		m_D3DApp.Update(dt);
-		CalculateFrameStats();
+		m_GameTimer.Reset();
+
+		while (!NeedsToClose())
+		{
+			PollEvent();
+
+			m_GameTimer.Tick();
+
+			Update(GetDeltaTime());
+			Render();
+		}
 	}
 
 	bool Engine::NeedsToClose()
@@ -45,20 +62,20 @@ namespace Chokbar
 		return Window::NeedsToClose();
 	}
 
-	void Engine::Shutdown()
+	void Engine::Update(float dt)
 	{
-		
-	}
-
-	void Engine::OnResize()
-	{
-		m_D3DApp.OnResize(Size());
+		D3DApp::GetInstance()->Update(dt);
+		CalculateFrameStats();
 	}
 
 	void Engine::Render()
 	{
-		m_D3DApp.Render();
+		D3DApp::GetInstance()->Render();
 	}
+
+#pragma endregion
+
+
 
 	void Engine::CalculateFrameStats()
 	{
@@ -90,14 +107,14 @@ namespace Chokbar
 		}
 	}
 
-	void Engine::Tick()
+	void Engine::OnResize()
 	{
-		m_GameTimer.Tick();
+		D3DApp::GetInstance()->OnResize(Size());
 	}
 
-	void Engine::ResetTimer()
+	void Engine::Shutdown()
 	{
-		m_GameTimer.Reset();
+
 	}
 
 
