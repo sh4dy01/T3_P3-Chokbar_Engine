@@ -1,10 +1,9 @@
 #pragma once
-#include "SubObject.h"
 #include "Win32Utils.h"
 
 namespace Win32
 {
-	class Window : public SubObject
+	class Window
 	{
 	public:
 
@@ -13,20 +12,30 @@ namespace Win32
 
 		void CreateNewWindow(int width, int height, const WSTRING& title, HICON icon = nullptr, WindowType type = RESIZABLE);
 		void PollEvent();
-		virtual bool NeedsToClose() { return needsToClose; }
+		bool NeedsToClose() const { return needsToClose; }
 
+	protected:
 
-		int				m_Width;
-		int				m_Height;
+		static LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
+
+	private:
+
+		void RegisterNewClass();
+
 
 	protected:
 
 		int m_Width;
 		int m_Height;
 
-		WindowType 		m_Type;
+		WindowType 	m_Type;
+		HWND		m_Hwnd;
+		WSTRING		m_Title;
+		HICON 		m_hIcon;
 
-		LRESULT MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override;
+	private:
+
+		bool			needsToClose = false;
 
 
 	public:
@@ -34,11 +43,9 @@ namespace Win32
 		int			GetWidth() const { return m_Width; }
 		int			GetHeight() const { return m_Height; }
 
+		HWND 		GetHandle() const { return m_Hwnd; }
+
 		void SetNewSize(int newWidth, int newHeight);
-
-	private:
-
-		bool			needsToClose = false;
 
 	};
 }

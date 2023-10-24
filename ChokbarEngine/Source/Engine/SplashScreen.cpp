@@ -25,7 +25,7 @@ namespace SplashScreen
 
 	void SetMessage(const WCHAR* message)
 	{
-		PostMessage(m_SplashWindow->Handle(), WM_OUTPUTMESSAGE, (WPARAM)message, 0);
+		PostMessage(m_SplashWindow->GetHandle(), WM_OUTPUTMESSAGE, (WPARAM)message, 0);
 	}
 
 
@@ -68,7 +68,7 @@ LRESULT SplashWindow::MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPA
 			WCHAR* message = (WCHAR*)wParam;
 
 			wcscpy_s(m_OutputMessage, message);
-			RedrawWindow(Handle(), NULL, NULL, RDW_INVALIDATE);
+			RedrawWindow(GetHandle(), NULL, NULL, RDW_INVALIDATE);
 
 			return 0;
 		}

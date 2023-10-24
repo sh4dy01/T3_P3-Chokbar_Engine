@@ -5,11 +5,16 @@
 namespace Chokbar
 {
 	Engine::Engine()
-	{
-	}
+	= default;
 
 	Engine::~Engine()
 	= default;
+
+	Engine& Engine::GetInstance()
+	{
+		static Engine engine;
+		return engine;
+	}
 
 #pragma region INIT
 
@@ -31,9 +36,9 @@ namespace Chokbar
 	{
 		PreInitialize();
 
-		CreateNewWindow(DEFAULT_WIDTH, DEFAULT_HEIGHT, PerGameSettings::GameName(), PerGameSettings::MainIcon());
+		m_Window.CreateNewWindow(DEFAULT_WIDTH, DEFAULT_HEIGHT, PerGameSettings::GameName(), PerGameSettings::MainIcon(), Win32::RESIZABLE);
 
-		D3DApp::GetInstance()->InitializeD3D12(this);
+		D3DApp::GetInstance()->InitializeD3D12(&m_Window);
 	}
 
 #pragma endregion
@@ -46,7 +51,7 @@ namespace Chokbar
 
 		while (!NeedsToClose())
 		{
-			PollEvent();
+			m_Window.PollEvent();
 
 			m_GameTimer.Tick();
 
@@ -57,7 +62,7 @@ namespace Chokbar
 
 	bool Engine::NeedsToClose()
 	{
-		return Window::NeedsToClose();
+		return m_Window.NeedsToClose();
 	}
 
 	void Engine::Update(float dt)
@@ -97,7 +102,7 @@ namespace Chokbar
 
 			std::wstring windowText = L"    fps: " + fpsStr + L"   mspf: " + mspfStr;
 
-			SetWindowText(Handle(), windowText.c_str());
+			SetWindowText(m_Window.GetHandle(), windowText.c_str());
 
 			// Reset for next average.
 			frameCnt = 0;
@@ -107,7 +112,7 @@ namespace Chokbar
 
 	void Engine::OnResize()
 	{
-		D3DApp::GetInstance()->OnResize(GetWidth(), GetHeight());
+		D3DApp::GetInstance()->OnResize(m_Window.GetWidth(), m_Window.GetHeight());
 	}
 
 	void Engine::Shutdown()
@@ -115,22 +120,5 @@ namespace Chokbar
 
 	}
 
-	LRESULT Engine::MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
-	{
-		switch (message)
-		{
-		case WM_CLOSE:
-			break;
 
-		case WM_MOUSEMOVE:
-
-			break;
-
-			// Prevent Alt key from triggering menu, which freezes the application.
-		case WM_SYSCOMMAND:
-			break;
-		}
-
-		return Window::MessageHandler(hwnd, message, wParam, lParam);
-	}
 }

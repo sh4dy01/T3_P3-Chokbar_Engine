@@ -38,21 +38,18 @@ void Application::SetupPerGameSettings()
 	PerGameSettings::SetMainIcon(IDI_MAINICON);
 }
 
-// Init engine
 void Application::Initialize()
 {
 
 }
 
-// Main loop
 void Application::Run()
 {
 	Chokbar::Engine& engine = Chokbar::Engine::GetInstance();
 
 	engine.Initialize();
-
-	// Main loop
-	engine.Run();
+	
+	engine.Run(); // Main loop
 	engine.Shutdown();
 }
 

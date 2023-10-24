@@ -162,7 +162,7 @@ void D3DApp::InitializeD3D12(Win32::Window* window)
 	CreateFenceAndGetDescriptorsSizes();
 	CheckMSAAQualitySupport();
 	CreateCommandObjects();
-	CreateSwapChain(window->Handle());
+	CreateSwapChain(window->GetHandle());
 
 	RegisterInitCommands_In_CommandList();
 }
