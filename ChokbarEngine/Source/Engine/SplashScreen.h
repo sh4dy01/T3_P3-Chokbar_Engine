@@ -4,13 +4,13 @@
 
 namespace SplashScreen {
 
-	void CHOKBAR_API Open();
-	void CHOKBAR_API Close();
-	void CHOKBAR_API SetMessage(const WCHAR* message);
+	void Open();
+	void Close();
+	void SetMessage(const WCHAR* message);
 
 }
 
-class CHOKBAR_API SplashWindow : public Win32::Window {
+class SplashWindow : public Win32::Window {
 
 public:
 

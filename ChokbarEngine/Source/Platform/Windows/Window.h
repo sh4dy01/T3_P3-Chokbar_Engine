@@ -4,7 +4,7 @@
 
 namespace Win32
 {
-	class CHOKBAR_API Window : public SubObject
+	class Window : public SubObject
 	{
 	public:
 
