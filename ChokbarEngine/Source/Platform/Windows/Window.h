@@ -1,40 +1,51 @@
 #pragma once
-#include "SubObject.h"
 #include "Win32Utils.h"
 
 namespace Win32
 {
-	class Window : public SubObject
+	class Window
 	{
 	public:
 
-		Window(WSTRING title, HICON icon, WindowType type = RESIZABLE);
+		Window();
 		~Window();
 
-		void Initialize() override;
+		void CreateNewWindow(int width, int height, const WSTRING& title, HICON icon = nullptr, WindowType type = RESIZABLE);
 		void PollEvent();
-
-
-		virtual bool NeedsToClose() { return needsToClose; }
+		bool NeedsToClose() const { return needsToClose; }
 
 	protected:
 
-		SIZE			m_Size;
-		WindowType 		m_Type;
+		static LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 
-		LRESULT MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override;
+	private:
+
+		void RegisterNewClass();
 
 
-	public:
+	protected:
 
-		SIZE			Size() { return m_Size; }
+		int m_Width;
+		int m_Height;
 
-		void			Size(SIZE size) { m_Size = size; }
-		void			Size(INT cx, INT cy) { m_Size.cx = cx; m_Size.cy = cy; }
+		WindowType 	m_Type;
+		HWND		m_Hwnd;
+		WSTRING		m_Title;
+		HICON 		m_hIcon;
 
 	private:
 
 		bool			needsToClose = false;
+
+
+	public:
+
+		int			GetWidth() const { return m_Width; }
+		int			GetHeight() const { return m_Height; }
+
+		HWND 		GetHandle() const { return m_Hwnd; }
+
+		void SetNewSize(int newWidth, int newHeight);
 
 	};
 }

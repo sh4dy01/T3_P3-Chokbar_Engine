@@ -34,7 +34,7 @@ public:
 	static D3DApp* GetInstance();
 
 	void InitializeD3D12(Win32::Window* window);
-	void OnResize(SIZE windowSize);
+	void OnResize(int, int);
 	void Update(const float dt, const float totalTime);
 	void Render();
 

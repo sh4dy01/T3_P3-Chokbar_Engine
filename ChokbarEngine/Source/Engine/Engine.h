@@ -4,21 +4,25 @@
 
 namespace Chokbar {
 
-	class Engine : public Win32::IApplication, public Win32::Window {
+	class Engine {
 
 	public:
 
 		Engine();
 		~Engine();
 
+		static Engine& GetInstance();
+
+		void Initialize();
+		void Run();
+		void Shutdown();
+
 	protected:
 
-		void PreInitialize() override;
-		void Initialize() override;
-		void Run() override;
-		void Shutdown() override;
+		void PreInitialize();
 
-		void Update(float dt) override;
+
+		void Update(float dt);
 
 
 		virtual void OnResize();
@@ -27,15 +31,15 @@ namespace Chokbar {
 
 		void Render();
 		void CalculateFrameStats();
-		bool NeedsToClose() override;
+		bool NeedsToClose();
 
 		float GetDeltaTime() const { return m_GameTimer.GetDeltaTime(); }
 
-		LRESULT MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override;
 
 	private:
 
 		GameTimer m_GameTimer;
+		Win32::Window m_Window;
 
 	};
 }

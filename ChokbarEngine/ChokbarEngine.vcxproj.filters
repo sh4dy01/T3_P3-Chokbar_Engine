@@ -73,9 +73,6 @@
     <ClCompile Include="Source\Engine\Engine.cpp">
       <Filter>Source\Engine\Private</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\SplashScreen.cpp">
-      <Filter>Source\Engine\Private</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Common\Logger.cpp">
       <Filter>Source\Common\Private</Filter>
     </ClCompile>
@@ -86,9 +83,6 @@
       <Filter>Source\Engine\Private</Filter>
     </ClCompile>
     <ClCompile Include="Source\Platform\Windows\Window.cpp">
-      <Filter>Source\Platform\Windows\Private</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Platform\Windows\SubObject.cpp">
       <Filter>Source\Platform\Windows\Private</Filter>
     </ClCompile>
     <ClCompile Include="Source\Platform\Windows\Win32Utils.cpp">
@@ -135,9 +129,6 @@
     <ClInclude Include="Source\Engine\Engine.h">
       <Filter>Source\Engine\Classes</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\SplashScreen.h">
-      <Filter>Source\Engine\Public</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Common\Logger.h">
       <Filter>Source\Common\Public</Filter>
     </ClInclude>
@@ -154,9 +145,6 @@
       <Filter>Source\Platform\Windows\Public</Filter>
     </ClInclude>
     <ClInclude Include="Source\Platform\Windows\Win32Utils.h">
-      <Filter>Source\Platform\Windows\Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Platform\Windows\SubObject.h">
       <Filter>Source\Platform\Windows\Public</Filter>
     </ClInclude>
     <ClInclude Include="Source\Platform\Windows\IApplication.h">
