@@ -1,15 +1,17 @@
 #include "Chokbar.h"
-#include "D3DApp.h"
-#include <cassert>
 
+#include "D3DApp.h"
+#include "DebugUtils.h"
+
+using namespace DirectX;
 
 D3DApp* D3DApp::m_pApp = nullptr;
 
 D3DApp::D3DApp() :
-	m_4xMsaaState(false), m_4xMsaaQuality(0),
-	m_RtvDescriptorSize(0), m_DsvDescriptorSize(0), m_CbvSrvUavDescriptorSize(0),
-	m_D3dDriverType(D3D_DRIVER_TYPE_HARDWARE), m_BackBufferFormat(DXGI_FORMAT_R8G8B8A8_UNORM), m_DepthStencilFormat(DXGI_FORMAT_D24_UNORM_S8_UINT),
-	m_CurrentFenceValue(0), m_pInstance(nullptr), m_currBackBuffer(0), m_bufferWidth(DEFAULT_WIDTH), m_bufferHeight(DEFAULT_HEIGHT)
+	m_pInstance(nullptr), m_4xMsaaState(false),
+	m_4xMsaaQuality(0), m_bufferWidth(DEFAULT_WIDTH), m_bufferHeight(DEFAULT_HEIGHT),
+	m_D3dDriverType(D3D_DRIVER_TYPE_HARDWARE), m_CurrentFenceValue(0), m_RtvDescriptorSize(0),
+	m_DsvDescriptorSize(0), m_CbvSrvUavDescriptorSize(0), m_currBackBuffer(0), m_BackBufferFormat(DXGI_FORMAT_R8G8B8A8_UNORM), m_DepthStencilFormat(DXGI_FORMAT_D24_UNORM_S8_UINT)
 {
 	m_pDebugController = nullptr;
 
@@ -50,7 +52,7 @@ D3DApp::D3DApp() :
 }
 
 D3DApp::~D3DApp() {
- 	m_pDxgiFactory->Release();
+	m_pDxgiFactory->Release();
 	m_pD3dDevice->Release();
 
 	m_pFence->Release();
@@ -63,7 +65,7 @@ D3DApp::~D3DApp() {
 	m_pDsvHeap->Release();
 	m_pCbvHeap->Release();
 
-	for (int i = 0; i < SWAP_CHAIN_BUFFER_COUNT; ++i) 
+	for (int i = 0; i < SWAP_CHAIN_BUFFER_COUNT; ++i)
 		m_pSwapChainBuffer[i]->Release();
 	m_pSwapChain->Release();
 
@@ -74,7 +76,7 @@ D3DApp::~D3DApp() {
 
 	for (auto& item : m_TransparentRenderItems)
 		delete item;
-	
+
 	for (int i = 0; i < m_mainObjectCB.size(); i++)
 		delete m_mainObjectCB[i];
 	delete m_mainPassCB;
@@ -84,7 +86,7 @@ D3DApp::~D3DApp() {
 
 	m_rootSignature->Release();
 
-	m_pDebugController->Release(); 
+	m_pDebugController->Release();
 }
 
 void D3DApp::Update(const float dt, const float totalTime)
@@ -479,18 +481,18 @@ void D3DApp::CreateRenderItems()
 		pyrItem.StartIndexLocation = pyrItem.Geo->DrawArgs["Pyramid"].StartIndexLocation;
 		pyrItem.BaseVertexLocation = pyrItem.Geo->DrawArgs["Pyramid"].BaseVertexLocation;
 		pyrItem.Transform = Transform();
-		if (i == 0) 
+		if (i == 0)
 		{
 			pyrItem.TransformationType = TRANSFORMATION_TYPE::ROTATION;
 			pyrItem.Transform.Position = XMFLOAT3(1.0f, 0.0f, 0.0f);
 		}
-		else 
+		else
 		{
 			pyrItem.TransformationType = TRANSFORMATION_TYPE::TRANSLATION;
 			pyrItem.Transform.Position = XMFLOAT3(-1.0f, 0.0f, 0.0f);
 		}
 		XMStoreFloat4x4(&pyrItem.World, XMMatrixTranspose(XMMatrixTranslationFromVector(XMLoadFloat3(&pyrItem.Transform.Position))));
-			
+
 		m_AllRenderItems.push_back(std::move(pyrItem));
 	}
 
@@ -576,18 +578,18 @@ void D3DApp::UpdateMainPassCB(const float dt, const float totalTime)
 	XMMATRIX camView = XMLoadFloat4x4(&m_camera.View);
 	XMMATRIX camProj = XMLoadFloat4x4(&m_camera.Proj);
 
-	XMMATRIX viewProj		= XMMatrixMultiply(camView, camProj);
-	XMMATRIX invView		= XMMatrixInverse(&XMMatrixDeterminant(camView), camView);
-	XMMATRIX invProj		= XMMatrixInverse(&XMMatrixDeterminant(camProj), camProj);
-	XMMATRIX invViewProj	= XMMatrixInverse(&XMMatrixDeterminant(viewProj), viewProj);
+	XMMATRIX viewProj = XMMatrixMultiply(camView, camProj);
+	XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(camView), camView);
+	XMMATRIX invProj = XMMatrixInverse(&XMMatrixDeterminant(camProj), camProj);
+	XMMATRIX invViewProj = XMMatrixInverse(&XMMatrixDeterminant(viewProj), viewProj);
 
 	PassConstants mainPassCB;
-	XMStoreFloat4x4(&mainPassCB.View,			XMMatrixTranspose(camView));
-	XMStoreFloat4x4(&mainPassCB.InvView,		XMMatrixTranspose(invView));
-	XMStoreFloat4x4(&mainPassCB.Proj,			XMMatrixTranspose(camProj));
-	XMStoreFloat4x4(&mainPassCB.InvProj,		XMMatrixTranspose(invProj));
-	XMStoreFloat4x4(&mainPassCB.ViewProj,		XMMatrixTranspose(viewProj));
-	XMStoreFloat4x4(&mainPassCB.InvViewProj,	XMMatrixTranspose(invViewProj));
+	XMStoreFloat4x4(&mainPassCB.View, XMMatrixTranspose(camView));
+	XMStoreFloat4x4(&mainPassCB.InvView, XMMatrixTranspose(invView));
+	XMStoreFloat4x4(&mainPassCB.Proj, XMMatrixTranspose(camProj));
+	XMStoreFloat4x4(&mainPassCB.InvProj, XMMatrixTranspose(invProj));
+	XMStoreFloat4x4(&mainPassCB.ViewProj, XMMatrixTranspose(viewProj));
+	XMStoreFloat4x4(&mainPassCB.InvViewProj, XMMatrixTranspose(invViewProj));
 
 	mainPassCB.EyePosW = m_camera.Position;
 	mainPassCB.RenderTargetSize = XMFLOAT2(m_bufferWidth, m_bufferHeight);

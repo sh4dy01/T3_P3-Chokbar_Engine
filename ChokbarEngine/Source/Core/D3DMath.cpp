@@ -1,6 +1,8 @@
 #include "Chokbar.h"
 #include "D3Dmath.h"
 
+using namespace DirectX;
+
 GeometryGenerator::Vertex::Vertex(
 	const XMFLOAT3& position,
 	const XMFLOAT3& normal,
@@ -38,7 +40,9 @@ GeometryGenerator::MeshData GeometryGenerator::CreatePyramid(float width, float 
 {
 	MeshData meshData;
 
-	
+
 
 	return meshData;
 }
+
+

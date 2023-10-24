@@ -69,6 +69,9 @@
       <SubSystem>NotSet</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Lib>
+      <AdditionalDependencies>d3dcompiler.lib;D3D12.lib;dxgi.lib</AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -91,6 +94,9 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Lib>
+      <AdditionalDependencies>d3dcompiler.lib;D3D12.lib;dxgi.lib</AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Source\Common\Logger.cpp" />
@@ -98,6 +104,7 @@
     <ClCompile Include="Source\Core\D3DApp.cpp" />
     <ClCompile Include="Source\Core\D3DMath.cpp" />
     <ClCompile Include="Source\Core\D3DUtils.cpp" />
+    <ClCompile Include="Source\Core\DebugUtils.cpp" />
     <ClCompile Include="Source\Core\MeshGeometry.cpp" />
     <ClCompile Include="Source\Core\PerGameSettings.cpp" />
     <ClCompile Include="Source\Core\UpdloadBuffer.cpp" />
@@ -119,6 +126,7 @@
     <ClInclude Include="Source\Core\D3DApp.h" />
     <ClInclude Include="Source\Core\D3DMath.h" />
     <ClInclude Include="Source\Core\D3DUtils.h" />
+    <ClInclude Include="Source\Core\DebugUtils.h" />
     <ClInclude Include="Source\Core\MeshGeometry.h" />
     <ClInclude Include="Source\Core\PerGameSettings.h" />
     <ClInclude Include="Source\Core\UploadBuffer.h" />
