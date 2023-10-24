@@ -4,7 +4,7 @@
 
 namespace Win32
 {
-	class CHOKBAR_API IApplication
+	class IApplication
 	{
 
 	public:

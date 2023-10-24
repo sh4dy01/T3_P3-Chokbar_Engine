@@ -1,3 +1,5 @@
+#pragma once
+
 #include "IApplication.h"
 #include "Core/D3DUtils.h"
 
@@ -7,9 +9,10 @@ int CALLBACK WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
 {
 	try
 	{
+		PerGameSettings GameSettings;
+
 		auto EntryApp = EntryApplication();
 
-		PerGameSettings GameSettings;
 		EntryApp->SetupPerGameSettings();
 
 		//Logger logger;

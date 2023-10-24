@@ -1,28 +1,33 @@
 #pragma once
 
 #include "Core/CoreMinimal.h"
-#include "Engine/GameTimer.h"
 
 namespace Chokbar {
 
-	class CHOKBAR_API Engine : public Win32::Window {
+	class Engine {
 
 	public:
 
 		Engine();
 		~Engine();
 
-		static Engine& GetInstance() { static Engine m_Instance; return m_Instance; }
+	protected:
 
+		void PreInitialize() override;
 		void Initialize() override;
-		bool NeedsToClose();
+		void Run() override;
+		void Shutdown() override;
+
+		void Update(float dt) override;
+
 
 		virtual void OnResize();
 
-		void Update(const float dt);
-		void Run();
-		void Shutdown();
+	private:
 
+		void Render();
+		void CalculateFrameStats();
+		bool NeedsToClose() override;
 
 		float GetDeltaTime() const { return m_GameTimer.GetDeltaTime(); }
 
@@ -34,13 +39,6 @@ namespace Chokbar {
 	private:
 
 		GameTimer m_GameTimer;
-
-		void PreInitialize();
-		void Render();
-		void CalculateFrameStats();
-		void Tick();
-		void ResetTimer();
-
 
 	};
 }

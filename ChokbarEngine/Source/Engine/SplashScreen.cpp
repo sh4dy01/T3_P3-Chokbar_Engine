@@ -32,13 +32,10 @@ namespace SplashScreen
 }
 
 SplashWindow::SplashWindow()
-	: Window(L"SplashScreen", NULL, Win32::POPUP)
 {
 	wcscpy_s(m_OutputMessage, L"Starting Splash Screen...");
 
-	Window::RegisterNewClass();
-	//Size(500, 600);
-	Window::Initialize();
+	CreateNewWindow(500, 300, L"Splash", nullptr, Win32::WindowType::POPUP);
 }
 
 SplashWindow::~SplashWindow()

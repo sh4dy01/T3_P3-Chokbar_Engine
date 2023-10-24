@@ -41,7 +41,7 @@ void Application::SetupPerGameSettings()
 // Init engine
 void Application::Initialize()
 {
-	
+
 }
 
 // Main loop
@@ -63,5 +63,5 @@ void Application::Update(const float dt)
 
 void Application::Shutdown()
 {
-	
+
 }

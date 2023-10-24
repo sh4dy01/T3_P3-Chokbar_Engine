@@ -1,7 +1,7 @@
 #pragma once
 
 
-inline CHOKBAR_API std::wstring AnsiToWString(const std::string& str)
+inline std::wstring AnsiToWString(const std::string& str)
 {
     WCHAR buffer[512];
     MultiByteToWideChar(CP_ACP, 0, str.c_str(), -1, buffer, 512);
@@ -9,7 +9,7 @@ inline CHOKBAR_API std::wstring AnsiToWString(const std::string& str)
 }
 
 #ifndef ThrowIfFailed
-class CHOKBAR_API DxException
+class DxException
 {
 public:
 

@@ -61,15 +61,17 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <PrecompiledHeader>Create</PrecompiledHeader>
       <PrecompiledHeaderFile>BlankProject.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)\ChokbarEngine\Source;$(SolutionDir)\BlankProject\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)ChokbarEngine\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>copy $(SolutionDir)Build\ChokbarEngine\$(Configuration)\ChokbarEngine.dll $(OutDir)</Command>
+      <Command>
+      </Command>
       <Message>Updating DLL</Message>
     </PreBuildEvent>
   </ItemDefinitionGroup>
@@ -81,7 +83,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\ChokbarEngine\Source;$(SolutionDir)\BlankProject\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)ChokbarEngine\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <PrecompiledHeader>Create</PrecompiledHeader>
@@ -93,9 +95,11 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>copy $(SolutionDir)Build\ChokbarEngine\$(Configuration)\ChokbarEngine.dll $(OutDir)</Command>
+      <Command>
+      </Command>
       <Message>Updating DLL</Message>
     </PreBuildEvent>
   </ItemDefinitionGroup>

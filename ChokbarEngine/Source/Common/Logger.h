@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 
-class CHOKBAR_API Logger
+class Logger
 {
 
 private:

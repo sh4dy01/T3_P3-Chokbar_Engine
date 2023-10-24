@@ -4,24 +4,25 @@
 
 namespace Win32
 {
-	class CHOKBAR_API Window : public SubObject
+	class Window : public SubObject
 	{
 	public:
 
-		Window(WSTRING title, HICON icon, WindowType type = RESIZABLE);
-		Window(WSTRING title, HICON icon, int width, int height, WindowType type = RESIZABLE);
+		Window();
 		~Window();
 
-
-	protected:
-
-		void Initialize() override;
+		void CreateNewWindow(int width, int height, const WSTRING& title, HICON icon = nullptr, WindowType type = RESIZABLE);
 		void PollEvent();
 		virtual bool NeedsToClose() { return needsToClose; }
 
 
 		int				m_Width;
 		int				m_Height;
+
+	protected:
+
+		int m_Width;
+		int m_Height;
 
 		WindowType 		m_Type;
 
@@ -30,10 +31,10 @@ namespace Win32
 
 	public:
 
-		HWND			Handle() const { return m_hWnd; }
+		int			GetWidth() const { return m_Width; }
+		int			GetHeight() const { return m_Height; }
 
-		int 			Width() const { return m_Width; }
-		int 			Height() const { return m_Height; }
+		void SetNewSize(int newWidth, int newHeight);
 
 	private:
 

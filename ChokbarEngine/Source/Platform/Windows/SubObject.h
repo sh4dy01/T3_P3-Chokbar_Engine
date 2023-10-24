@@ -2,7 +2,7 @@
 
 namespace Win32 {
 
-	class CHOKBAR_API SubObject {
+	class SubObject {
 
 	public:
 
@@ -10,8 +10,9 @@ namespace Win32 {
 		~SubObject();
 
 
-
 	protected:
+
+		void RegisterNewClass();
 
 		virtual void RegisterNewClass();
 		virtual void Initialize() = 0;

@@ -14,7 +14,7 @@ namespace Win32 {
 
     namespace Utils {
 
-        BOOL CHOKBAR_API AddBitmap(CONST WCHAR* szFileName, HDC hWinDC, INT x = 0, INT y = 0);
+        BOOL AddBitmap(CONST WCHAR* szFileName, HDC hWinDC, INT x = 0, INT y = 0);
 
     }
 }
