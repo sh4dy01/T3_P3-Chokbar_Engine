@@ -6,8 +6,8 @@
 using namespace DirectX;
 
 #pragma region SHADER BASE
-ShaderBase::ShaderBase(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, std::wstring& filepath)
-	: m_generalDevice(device), m_generalCBVHeap(cbvHeap), m_filepath(filepath)
+ShaderBase::ShaderBase(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, UINT cbvDescriptorSize, std::wstring& filepath)
+	: m_generalDevice(device), m_generalCBVHeap(cbvHeap), m_cbvDescriptorSize(cbvDescriptorSize), m_filepath(filepath)
 {
 	m_passCB = nullptr;
 
@@ -35,7 +35,7 @@ ShaderBase::~ShaderBase()
 
 void ShaderBase::Init()
 {
-
+	CreatePassCB();
 }
 
 void ShaderBase::SetInputLayout(VertexType vertexType)
@@ -51,6 +51,12 @@ void ShaderBase::SetInputLayout(VertexType vertexType)
 	default:
 		break;
 	}
+}
+
+ShaderBase* ShaderBase::Bind()
+{
+	AddObjectCB();
+	return this;
 }
 
 void ShaderBase::CreatePassCB()
@@ -97,7 +103,7 @@ void ShaderBase::UpdatePassCB(const float dt, const float totalTime)
 	m_passCB->CopyData(0, &mainPassCB);
 }
 
-void ShaderBase::CompileShader(const D3D_SHADER_MACRO* defines, const std::string& entrypoint, const std::string& target, ID3DBlob* uploader)
+void ShaderBase::CompileShader(const D3D_SHADER_MACRO* defines, const std::string& entrypoint, const std::string& target, ID3DBlob** uploader)
 {
 	UINT compileFlags = 0;
 #if defined(DEBUG) || defined(_DEBUG)
@@ -108,7 +114,7 @@ void ShaderBase::CompileShader(const D3D_SHADER_MACRO* defines, const std::strin
 
 	ID3DBlob* errors = nullptr;
 
-	hr = D3DCompileFromFile(m_filepath.c_str(), defines, D3D_COMPILE_STANDARD_FILE_INCLUDE, entrypoint.c_str(), target.c_str(), compileFlags, 0, &uploader, &errors);
+	hr = D3DCompileFromFile(m_filepath.c_str(), defines, D3D_COMPILE_STANDARD_FILE_INCLUDE, entrypoint.c_str(), target.c_str(), compileFlags, 0, uploader, &errors);
 
 	if (errors != nullptr)
 	{
@@ -120,7 +126,8 @@ void ShaderBase::CompileShader(const D3D_SHADER_MACRO* defines, const std::strin
 #pragma endregion 
 
 #pragma region SHADER SIMPLE
-ShaderSimple::ShaderSimple(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, std::wstring& filepath) : ShaderBase(device, cbvHeap, filepath)
+ShaderSimple::ShaderSimple(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, UINT cbvDescriptorSize, std::wstring& filepath)
+	: ShaderBase(device, cbvHeap, cbvDescriptorSize, filepath)
 {
 	m_generalCamera = nullptr;
 }
@@ -131,8 +138,11 @@ ShaderSimple::~ShaderSimple()
 
 void ShaderSimple::Init()
 {
-	CompileShader(nullptr, "VS", "vs_5_0", m_vsByteCode);
-	CompileShader(nullptr, "PS", "ps_5_0", m_vsByteCode);
+	ShaderBase::Init();
+	CompileShader(nullptr, "vs_main", "vs_5_0", &m_vsByteCode);
+	CompileShader(nullptr, "ps_main", "ps_5_0", &m_psByteCode);
+
+	m_generalCamera = &D3DApp::GetInstance()->m_camera;
 }
 
 void ShaderSimple::CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT& rtvFormat, DXGI_FORMAT& dsvFormat)
@@ -142,6 +152,8 @@ void ShaderSimple::CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT&
 
 	//CD3DX12_DESCRIPTOR_RANGE cbvTable1;
 	//cbvTable1.Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 1);
+
+	SetInputLayout(vertexType);
 
 	CD3DX12_ROOT_PARAMETER slotRootParameter[2];
 	slotRootParameter[0].InitAsConstantBufferView(0);
@@ -157,9 +169,6 @@ void ShaderSimple::CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT&
 
 	if (errorBlob != nullptr) errorBlob->Release();
 	serializedRootSignature->Release();
-
-	CompileShader(nullptr, "vs_main", "vs_5_0", m_vsByteCode);
-	CompileShader(nullptr, "ps_main", "ps_5_0", m_psByteCode);
 
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc;
 	ZeroMemory(&psoDesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
@@ -181,6 +190,34 @@ void ShaderSimple::CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT&
 	m_generalDevice->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&m_pipelineState));
 }
 
+void ShaderSimple::AddObjectCB()
+{
+	const UINT64 cBufferSize = (sizeof(ObjConstants) + 255) & ~255;
+	const int index = (int)m_objectCBs.size();
+
+	auto cb = new UploadBuffer<ObjConstants>(m_generalDevice, 1, true);
+
+	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc;
+	cbvDesc.BufferLocation = cb->GetResource()->GetGPUVirtualAddress();
+	cbvDesc.SizeInBytes = (UINT)cBufferSize;
+
+	CD3DX12_CPU_DESCRIPTOR_HANDLE cbvHeapHandle(m_generalCBVHeap->GetCPUDescriptorHandleForHeapStart());
+	cbvHeapHandle.Offset(index + 1, m_cbvDescriptorSize);
+
+	m_generalDevice->CreateConstantBufferView(&cbvDesc, cbvHeapHandle);
+	m_objectCBs.push_back(cb);
+}
+
+void ShaderSimple::UpdateObjectCB(DirectX::XMMATRIX& itemWorldMatrix, UINT cbIndex)
+{
+	if (cbIndex >= m_objectCBs.size())
+		AddObjectCB();
+
+	ObjConstants objConstants;
+	XMStoreFloat4x4(&objConstants.World, itemWorldMatrix);
+	m_objectCBs[cbIndex]->CopyData(0, &objConstants);
+}
+
 void ShaderSimple::BeginDraw(ID3D12GraphicsCommandList* cmdList)
 {
 	cmdList->SetGraphicsRootSignature(m_rootSignature);
@@ -190,4 +227,24 @@ void ShaderSimple::BeginDraw(ID3D12GraphicsCommandList* cmdList)
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
+void ShaderSimple::Draw(ShaderDrawArguments& args)
+{
+	if (args.RenderItemCBIndex >= m_objectCBs.size())
+		AddObjectCB();
+
+	args.CmdList->IASetVertexBuffers(0, 1, &args.RenderItemGeometry->VertexBufferView());
+	args.CmdList->IASetIndexBuffer(&args.RenderItemGeometry->IndexBufferView());
+
+	auto cbvHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(m_generalCBVHeap->GetGPUDescriptorHandleForHeapStart());
+	cbvHandle.Offset(args.RenderItemCBIndex, m_cbvDescriptorSize);
+
+	args.CmdList->SetGraphicsRootConstantBufferView(0, m_objectCBs[args.RenderItemCBIndex]->GetResource()->GetGPUVirtualAddress());
+
+	args.CmdList->DrawIndexedInstanced(args.RenderItemGeometry->IndexCount, 1, args.RenderItemGeometry->StartIndexLocation, args.RenderItemGeometry->BaseVertexLocation, 0);
+}
+
+void ShaderSimple::EndDraw(ID3D12GraphicsCommandList* cmdList)
+{
+	
+}
 #pragma endregion

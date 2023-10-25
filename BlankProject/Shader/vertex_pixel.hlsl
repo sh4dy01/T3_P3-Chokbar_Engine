@@ -24,7 +24,7 @@ cbuffer cbPass : register(b1)
 struct VS_INPUT
 {
     float3 pos : POSITION;
-    uint4 color : COLOR;
+    float4 color : COLOR;
 };
 
 struct PS_INPUT
@@ -40,7 +40,7 @@ PS_INPUT vs_main(VS_INPUT input)
     float4 posW = mul(float4(input.pos, 1.0f), gWorld);
     output.pos = mul(posW, gViewProj);
     
-    output.color = input.color / 255.0F;
+    output.color = input.color;
     
     return output;
 }
