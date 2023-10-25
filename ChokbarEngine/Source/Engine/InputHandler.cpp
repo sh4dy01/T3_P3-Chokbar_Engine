@@ -11,7 +11,7 @@ InputHandler::InputHandler()
 	}
 }
 
-void InputHandler::Update()
+void InputHandler::CheckInput()
 {
 	for (size_t i = 0; i < m_KeyboardInput.size(); ++i)
 	{

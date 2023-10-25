@@ -17,7 +17,7 @@ public:
 public:
 	InputHandler();
 
-	void Update();
+	void CheckInput();
 
 
 private:

@@ -12,7 +12,6 @@
 
 #include "UploadBuffer.h"
 #include "MeshGeometry.h"
-#include "Engine/InputHandler.h"
 
 #include <vector>
 #include <map>
@@ -189,7 +188,5 @@ private:
 	};
 	std::unordered_map<PSO_TYPE, ID3D12PipelineState *> m_PSOs;
 	bool m_isWireframe;
-
-	InputHandler m_InputHandler;
 
 };
