@@ -92,6 +92,7 @@ D3DApp::~D3DApp() {
 
 void D3DApp::Update(const float dt, const float totalTime)
 {
+	
 	UpdateObjectCB(dt, totalTime);
 	UpdateMainPassCB(dt, totalTime);
 }

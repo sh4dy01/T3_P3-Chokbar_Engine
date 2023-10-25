@@ -1,17 +1,14 @@
 ﻿#include "Chokbar.h"
 #include "Window.h"
 
-
 namespace Win32
 {
 	Window::Window()
-			: m_Width(DEFAULT_WIDTH), m_Height(DEFAULT_HEIGHT), m_Type(RESIZABLE), m_Hwnd(nullptr), m_Title(L"ChokbarEngine"), m_hIcon(nullptr)
+		: m_Width(DEFAULT_WIDTH), m_Height(DEFAULT_HEIGHT), m_Type(RESIZABLE), m_Hwnd(nullptr), m_Title(L"ChokbarEngine"), m_hIcon(nullptr)
 	{
 	}
 
-	Window::~Window()
-	= default;
-
+	Window::~Window() = default;
 
 	void Window::CreateNewWindow(int width, int height, const WSTRING& title, HICON icon, WindowType type)
 	{
@@ -34,7 +31,8 @@ namespace Win32
 		m_Hwnd = CreateWindow(m_Title.c_str(), m_Title.c_str(),
 			m_Type, ((desktop.right / 2) - (m_Width / 2)), ((desktop.bottom / 2) - (m_Height / 2)), m_Width, m_Height, nullptr, nullptr, HInstance(), (void*)this);
 
-		if (m_Hwnd == NULL) {
+		if (m_Hwnd == NULL)
+		{
 			OutputDebugString(L"Window Creation Failed!\n");
 			assert(false);
 		}
@@ -55,22 +53,21 @@ namespace Win32
 		}
 	}
 
-
 	void Window::RegisterNewClass()
 	{
 		WNDCLASSEX wcex;
 
-		wcex.cbSize = sizeof(WNDCLASSEX);							// define the size of the window class (init)
-		wcex.style = CS_HREDRAW | CS_VREDRAW;						// Redraw on Horizontal or Vertical movement/resize
-		wcex.cbClsExtra = 0;										// Extra bytes to allocate following the window-class structure
-		wcex.cbWndExtra = 0;										// Set to 0 because we doesn't need extra memory for now
-		wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);		// Load the default arrow cursor
+		wcex.cbSize = sizeof(WNDCLASSEX);			   // define the size of the window class (init)
+		wcex.style = CS_HREDRAW | CS_VREDRAW;		   // Redraw on Horizontal or Vertical movement/resize
+		wcex.cbClsExtra = 0;						   // Extra bytes to allocate following the window-class structure
+		wcex.cbWndExtra = 0;						   // Set to 0 because we doesn't need extra memory for now
+		wcex.hCursor = LoadCursor(nullptr, IDC_ARROW); // Load the default arrow cursor
 		wcex.hbrBackground = (HBRUSH)CreateSolidBrush(RGB(46, 46, 46));
 		wcex.hIcon = m_hIcon;
 		wcex.hIconSm = m_hIcon;
 		wcex.lpszClassName = m_Title.c_str();
 		wcex.lpszMenuName = nullptr;
-		wcex.hInstance = HInstance();								// Set the instance that we have created
+		wcex.hInstance = HInstance(); // Set the instance that we have created
 		wcex.lpfnWndProc = WindowProcedure;
 
 		RegisterClassEx(&wcex);
@@ -90,9 +87,18 @@ namespace Win32
 			break;
 		case WM_DESTROY:
 			break;
+			switch (message)
+			{
+			case WM_QUIT:
+				break;
+			case WM_CLOSE:
+			case WM_DESTROY:
+				PostQuitMessage(0);
+				break;
+			}
 		}
 
-		return DefWindowProc(hwnd, message, wParam, lParam);
+		return DefWindowProcW(hwnd, message, wParam, lParam);
 	}
 
 	void Window::SetNewSize(int newWidth, int newHeight)
@@ -100,6 +106,4 @@ namespace Win32
 		m_Width = newWidth;
 		m_Height = newHeight;
 	}
-
-
 }

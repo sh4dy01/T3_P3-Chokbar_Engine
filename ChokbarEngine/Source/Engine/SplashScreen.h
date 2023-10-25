@@ -17,8 +17,6 @@ public:
 	SplashWindow();
 	~SplashWindow();
 
-	LRESULT MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override;
-
 
 private:
 
