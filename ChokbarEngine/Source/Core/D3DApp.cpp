@@ -91,6 +91,7 @@ D3DApp::~D3DApp() {
 
 void D3DApp::Update(const float dt, const float totalTime)
 {
+	m_InputHandler.Update();
 	UpdateObjectCB(dt, totalTime);
 	UpdateMainPassCB(dt, totalTime);
 }
