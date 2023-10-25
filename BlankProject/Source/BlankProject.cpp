@@ -2,7 +2,9 @@
 
 #include "Engine/Engine.h"
 #include "Platform/Windows/WinEntry.h"
+#include "Engine/ECS/Base/GameObject.h"
 
+using namespace Chokbar;
 
 class Application : public Win32::IApplication {
 
@@ -18,7 +20,7 @@ public:
 	/* Initialize the application */
 	void Initialize() override;
 
-	void PreInitialize() override {};
+	void PreInitialize() override;
 
 	/* Game Loop */
 	void Update(const float dt) override;
@@ -38,18 +40,19 @@ void Application::SetupPerGameSettings()
 	PerGameSettings::SetMainIcon(IDI_MAINICON);
 }
 
+void Application::PreInitialize()
+{
+	Engine::GetInstance().Initialize();
+}
+
 void Application::Initialize()
 {
-	
+	GameObject test = GameObject("test");
 }
 
 void Application::Run()
 {
-	Chokbar::Engine& engine = Chokbar::Engine::GetInstance();
-
-	engine.Initialize();
-	engine.Run(); // Main loop
-	engine.Shutdown();
+	Engine::GetInstance().Run();
 }
 
 void Application::Update(const float dt)
@@ -59,5 +62,5 @@ void Application::Update(const float dt)
 
 void Application::Shutdown()
 {
-
+	Engine::GetInstance().Shutdown();
 }
