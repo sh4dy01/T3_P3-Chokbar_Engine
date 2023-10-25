@@ -59,6 +59,12 @@
     <Filter Include="Source\Platform\Windows\Classes">
       <UniqueIdentifier>{882579c6-83b9-4bbb-936b-97c1f57ccd7a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Engine\Private\Collision">
+      <UniqueIdentifier>{291c2ba8-5999-4dc8-9e19-79c1e6ee2c57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\Public\Collision">
+      <UniqueIdentifier>{7466ece3-e13f-4fa9-91e5-365426024392}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Core\D3DApp.cpp">
@@ -107,6 +113,15 @@
       <Filter>Source\Core\Private</Filter>
     </ClCompile>
     <ClCompile Include="Source\Engine\SplashScreen.cpp" />
+    <ClCompile Include="Source\Engine\SphereCollision.cpp">
+      <Filter>Source\Engine\Private\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\RectCollision.cpp">
+      <Filter>Source\Engine\Private\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Collision\TriangleCollision.cpp">
+      <Filter>Source\Engine\Private\Collision</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Chokbar.h">
@@ -170,5 +185,14 @@
       <Filter>Source\Core\Public</Filter>
     </ClInclude>
     <ClInclude Include="Source\Engine\SplashScreen.h" />
+    <ClInclude Include="Source\Engine\RectCollision.h">
+      <Filter>Source\Engine\Public\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\SphereCollision.h">
+      <Filter>Source\Engine\Public\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Collision\TriangleCollision.h">
+      <Filter>Source\Engine\Public\Collision</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

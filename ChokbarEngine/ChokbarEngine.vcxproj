@@ -108,6 +108,9 @@
     <ClCompile Include="Source\Core\MeshGeometry.cpp" />
     <ClCompile Include="Source\Core\PerGameSettings.cpp" />
     <ClCompile Include="Source\Core\UpdloadBuffer.cpp" />
+    <ClCompile Include="Source\Engine\Collision\TriangleCollision.cpp" />
+    <ClCompile Include="Source\Engine\RectCollision.cpp" />
+    <ClCompile Include="Source\Engine\SphereCollision.cpp" />
     <ClCompile Include="Source\Engine\Engine.cpp" />
     <ClCompile Include="Source\Engine\GameTimer.cpp" />
     <ClCompile Include="Source\Engine\InputHandler.cpp" />
@@ -130,6 +133,9 @@
     <ClInclude Include="Source\Core\MeshGeometry.h" />
     <ClInclude Include="Source\Core\PerGameSettings.h" />
     <ClInclude Include="Source\Core\UploadBuffer.h" />
+    <ClInclude Include="Source\Engine\Collision\TriangleCollision.h" />
+    <ClInclude Include="Source\Engine\RectCollision.h" />
+    <ClInclude Include="Source\Engine\SphereCollision.h" />
     <ClInclude Include="Source\Engine\Engine.h" />
     <ClInclude Include="Source\Engine\GameTimer.h" />
     <ClInclude Include="Source\Engine\InputHandler.h" />
