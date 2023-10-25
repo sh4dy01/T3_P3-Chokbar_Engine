@@ -1,19 +1,16 @@
 ﻿#include "Chokbar.h"
 #include "Window.h"
 
-
 namespace Win32
 {
 	Window::Window()
-			: m_Width(DEFAULT_WIDTH), m_Height(DEFAULT_HEIGHT), m_Type(RESIZABLE), m_Hwnd(nullptr), m_Title(L"ChokbarEngine"), m_hIcon(nullptr)
+		: m_Width(DEFAULT_WIDTH), m_Height(DEFAULT_HEIGHT), m_Type(RESIZABLE), m_Hwnd(nullptr), m_Title(L"ChokbarEngine"), m_hIcon(nullptr)
 	{
 	}
 
-	Window::~Window()
-	= default;
+	Window::~Window() = default;
 
-
-	void Window::CreateNewWindow(int width, int height, const WSTRING& title, HICON icon, WindowType type)
+	void Window::CreateNewWindow(int width, int height, const WSTRING &title, HICON icon, WindowType type)
 	{
 		m_Type = type;
 		m_Title = title;
@@ -28,13 +25,14 @@ namespace Win32
 		const HWND hDesktop = GetDesktopWindow();
 		GetWindowRect(hDesktop, &desktop);
 
-		RECT R = { 0, 0, m_Width, m_Height };
+		RECT R = {0, 0, m_Width, m_Height};
 		AdjustWindowRect(&R, WS_OVERLAPPEDWINDOW, false);
 
 		m_Hwnd = CreateWindow(m_Title.c_str(), m_Title.c_str(),
-			m_Type, ((desktop.right / 2) - (m_Width / 2)), ((desktop.bottom / 2) - (m_Height / 2)), m_Width, m_Height, nullptr, nullptr, HInstance(), (void*)this);
+							  m_Type, ((desktop.right / 2) - (m_Width / 2)), ((desktop.bottom / 2) - (m_Height / 2)), m_Width, m_Height, nullptr, nullptr, HInstance(), (void *)this);
 
-		if (m_Hwnd == NULL) {
+		if (m_Hwnd == NULL)
+		{
 			OutputDebugString(L"Window Creation Failed!\n");
 			assert(false);
 		}
@@ -55,22 +53,21 @@ namespace Win32
 		}
 	}
 
-
 	void Window::RegisterNewClass()
 	{
 		WNDCLASSEX wcex;
 
-		wcex.cbSize = sizeof(WNDCLASSEX);							// define the size of the window class (init)
-		wcex.style = CS_HREDRAW | CS_VREDRAW;						// Redraw on Horizontal or Vertical movement/resize
-		wcex.cbClsExtra = 0;										// Extra bytes to allocate following the window-class structure
-		wcex.cbWndExtra = 0;										// Set to 0 because we doesn't need extra memory for now
-		wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);		// Load the default arrow cursor
+		wcex.cbSize = sizeof(WNDCLASSEX);			   // define the size of the window class (init)
+		wcex.style = CS_HREDRAW | CS_VREDRAW;		   // Redraw on Horizontal or Vertical movement/resize
+		wcex.cbClsExtra = 0;						   // Extra bytes to allocate following the window-class structure
+		wcex.cbWndExtra = 0;						   // Set to 0 because we doesn't need extra memory for now
+		wcex.hCursor = LoadCursor(nullptr, IDC_ARROW); // Load the default arrow cursor
 		wcex.hbrBackground = (HBRUSH)CreateSolidBrush(RGB(46, 46, 46));
 		wcex.hIcon = m_hIcon;
 		wcex.hIconSm = m_hIcon;
 		wcex.lpszClassName = m_Title.c_str();
 		wcex.lpszMenuName = nullptr;
-		wcex.hInstance = HInstance();								// Set the instance that we have created
+		wcex.hInstance = HInstance(); // Set the instance that we have created
 		wcex.lpfnWndProc = WindowProcedure;
 
 		RegisterClassEx(&wcex);
@@ -78,7 +75,7 @@ namespace Win32
 
 	LRESULT CALLBACK Window::WindowProcedure(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
-		Window* window = reinterpret_cast<Window*>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
+		Window *window = reinterpret_cast<Window *>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
 
 		switch (message)
 		{
@@ -90,16 +87,71 @@ namespace Win32
 			break;
 		case WM_DESTROY:
 			break;
+			switch (message)
+			{
+			case WM_QUIT:
+				break;
+			case WM_CLOSE:
+			case WM_DESTROY:
+				PostQuitMessage(0);
+				break;
+				/*			Mouse Events			*/
+			case WM_MOUSEMOVE:
+			{
+				const POINTS pt = MAKEPOINTS(lParam);
+				m_Mouse.OnMouseMove(pt.x, pt.y);
+			}
+			case WM_LBUTTONDOWN:
+			{
+				const POINTS pt = MAKEPOINTS(lParam);
+				m_Mouse.OnLeftPressed(pt.x, pt.y);
+				break;
+			}
+			case WM_RBUTTONDOWN:
+			{
+				const POINTS pt = MAKEPOINTS(lParam);
+				m_Mouse.OnRightPressed(pt.x, pt.y);
+				break;
+			}
+			case WM_LBUTTONUP:
+			{
+				const POINTS pt = MAKEPOINTS(lParam);
+				m_Mouse.OnLeftReleased(pt.x, pt.y);
+				break;
+			}
+			case WM_RBUTTONUP:
+			{
+				const POINTS pt = MAKEPOINTS(lParam);
+				m_Mouse.OnRightReleased(pt.x, pt.y);
+				break;
+			}
+				/*			KeyBoard Events			*/
+
+			case WM_KEYDOWN:
+			{
+				const unsigned char keycode = static_cast<unsigned char>(wParam);
+				if (m_Keyboard.IsKeysAutoRepeat())
+				{
+					m_Keyboard.OnKeyPressed(keycode);
+				}
+				else
+				{
+					const bool wasPressed = lParam & 0x40000000;
+					if (!wasPressed)
+					{
+						m_Keyboard.OnKeyPressed(keycode);
+					}
+				}
+				break;
+			}
+			}
+
+			return DefWindowProc(hwnd, message, wParam, lParam);
 		}
 
-		return DefWindowProc(hwnd, message, wParam, lParam);
+		void Window::SetNewSize(int newWidth, int newHeight)
+		{
+			m_Width = newWidth;
+			m_Height = newHeight;
+		}
 	}
-
-	void Window::SetNewSize(int newWidth, int newHeight)
-	{
-		m_Width = newWidth;
-		m_Height = newHeight;
-	}
-
-
-}
