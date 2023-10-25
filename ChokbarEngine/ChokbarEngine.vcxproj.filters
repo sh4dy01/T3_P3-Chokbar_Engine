@@ -116,10 +116,13 @@
     <ClCompile Include="Source\Engine\SphereCollision.cpp">
       <Filter>Source\Engine\Private\Collision</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\RectCollision.cpp">
+    <ClCompile Include="Source\Engine\Collision\TriangleCollision.cpp">
       <Filter>Source\Engine\Private\Collision</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Collision\TriangleCollision.cpp">
+    <ClCompile Include="Source\Engine\Collision\BoundingBoxCollision.cpp">
+      <Filter>Source\Engine\Private\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Collision\SphereCollision.cpp">
       <Filter>Source\Engine\Private\Collision</Filter>
     </ClCompile>
   </ItemGroup>
@@ -185,13 +188,16 @@
       <Filter>Source\Core\Public</Filter>
     </ClInclude>
     <ClInclude Include="Source\Engine\SplashScreen.h" />
-    <ClInclude Include="Source\Engine\RectCollision.h">
-      <Filter>Source\Engine\Public\Collision</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Engine\SphereCollision.h">
       <Filter>Source\Engine\Public\Collision</Filter>
     </ClInclude>
     <ClInclude Include="Source\Engine\Collision\TriangleCollision.h">
+      <Filter>Source\Engine\Public\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Collision\BoundingBoxCollision.h">
+      <Filter>Source\Engine\Public\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Collision\PyramidCollision.h">
       <Filter>Source\Engine\Public\Collision</Filter>
     </ClInclude>
   </ItemGroup>
