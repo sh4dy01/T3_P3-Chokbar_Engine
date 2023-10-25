@@ -91,6 +91,41 @@ D3DApp::~D3DApp() {
 
 void D3DApp::Update(const float dt, const float totalTime)
 {
+	for (int key : m_KeyboardInput) {
+		bool currentlyDown = IsKeyDown(key);
+
+		if (m_KeyStates.find(key) == m_KeyStates.end()) {
+			m_KeyStates[key] = KeyState();
+		}
+
+		// Si la touche est nouvellement enfoncée
+		if (currentlyDown && !m_KeyStates[key].wasPreviouslyDown) {
+			switch (key) {
+			case 'Z':
+				// TODO
+				break;
+			case 'S':
+				// TODO
+				break;
+			case 'Q':
+				// TODO
+				break;
+			case 'D':
+				// TODO
+				break;
+			}
+			std::cout << "Position: (" << 'x' << ", " << 'y' << ")\n";
+		}
+
+		// Si la touche vient d'être relâchée
+		if (!currentlyDown && m_KeyStates[key].wasPreviouslyDown) {
+			std::cout << "Key " << (char)key << " released!\n";
+		}
+
+		m_KeyStates[key].wasPreviouslyDown = m_KeyStates[key].isCurrentlyDown;
+		m_KeyStates[key].isCurrentlyDown = currentlyDown;
+	}
+
 	UpdateObjectCB(dt, totalTime);
 	UpdateMainPassCB(dt, totalTime);
 }
@@ -745,4 +780,28 @@ ID3DBlob* D3DApp::CompileShader(const std::wstring& filename, const D3D_SHADER_M
 	ThrowIfFailed(hr);
 
 	return byteCode;
+}
+
+bool D3DApp::IsKeyAllowed(int key)
+{
+	for (char m_KeyboardInput : m_KeyboardInput) {
+		if (m_KeyboardInput == toupper(key) || m_KeyboardInput == tolower(key)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool D3DApp::GetAsyncKey(int key)
+{
+	return GetAsyncKeyState(key) & 0x8000;
+}
+
+bool D3DApp::IsKeyDown(int key)
+{
+	return (GetAsyncKeyState(key) & 0x8000) != 0;
+}
+
+bool D3DApp::IsKeyUp(int key) {
+	return m_KeyStates[key].wasPreviouslyDown && !m_KeyStates[key].isCurrentlyDown;
 }

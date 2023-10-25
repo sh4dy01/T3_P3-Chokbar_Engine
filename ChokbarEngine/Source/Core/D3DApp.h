@@ -8,11 +8,13 @@
 #include <Core/d3dx12.h>
 #include <dxgi1_6.h>
 #include <d3dcompiler.h>
+#include <WinUser.h>
 
 #include "UploadBuffer.h"
 #include "MeshGeometry.h"
 
 #include <vector>
+#include <map>
 #include <unordered_map>
 
 #pragma region GLOBAL VARIABLES
@@ -20,6 +22,13 @@
 static const int SWAP_CHAIN_BUFFER_COUNT = 2;
 
 #pragma endregion
+
+
+struct KeyState
+{
+	bool wasPreviouslyDown = false;
+	bool isCurrentlyDown = false;
+};
 
 class D3DApp
 {
@@ -75,6 +84,11 @@ private:
 	/* Creates an ID3D12InfoQueue to catch any error within the Command Queue.
 	Any error will break the code */
 	void DEBUG_CreateInfoQueue();
+
+	bool IsKeyAllowed(int key);
+	bool GetAsyncKey(int key);
+	bool IsKeyDown(int key);
+	bool IsKeyUp(int key);
 
 private:
 	static D3DApp *m_pApp;
@@ -185,4 +199,8 @@ private:
 	};
 	std::unordered_map<PSO_TYPE, ID3D12PipelineState *> m_PSOs;
 	bool m_isWireframe;
+
+	/* Keyboard Input */
+	std::vector<char> m_KeyboardInput = { 'Z', 'Q', 'S', 'D', 'z', 'q', 's', 'd' };
+	std::map<int, KeyState> m_KeyStates;
 };

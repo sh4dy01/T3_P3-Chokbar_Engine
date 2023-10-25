@@ -99,61 +99,33 @@ namespace Win32
 			case WM_MOUSEMOVE:
 			{
 				const POINTS pt = MAKEPOINTS(lParam);
-				m_Mouse.OnMouseMove(pt.x, pt.y);
+				window->m_Mouse.OnMouseMove(pt.x, pt.y);
 			}
 			case WM_LBUTTONDOWN:
 			{
 				const POINTS pt = MAKEPOINTS(lParam);
-				m_Mouse.OnLeftPressed(pt.x, pt.y);
+				window->m_Mouse.OnLeftPressed(pt.x, pt.y);
 				break;
 			}
 			case WM_RBUTTONDOWN:
 			{
 				const POINTS pt = MAKEPOINTS(lParam);
-				m_Mouse.OnRightPressed(pt.x, pt.y);
+				window->m_Mouse.OnRightPressed(pt.x, pt.y);
 				break;
 			}
 			case WM_LBUTTONUP:
 			{
 				const POINTS pt = MAKEPOINTS(lParam);
-				m_Mouse.OnLeftReleased(pt.x, pt.y);
+				window->m_Mouse.OnLeftReleased(pt.x, pt.y);
 				break;
 			}
 			case WM_RBUTTONUP:
 			{
 				const POINTS pt = MAKEPOINTS(lParam);
-				m_Mouse.OnRightReleased(pt.x, pt.y);
+				window->m_Mouse.OnRightReleased(pt.x, pt.y);
 				break;
 			}
-			/*			KeyBoard Events			*/
-
-			case WM_KEYDOWN:
-			{
-				const unsigned char keycode = static_cast<unsigned char>(wParam);
-				if (m_Keyboard.IsKeysAutoRepeat())
-				{
-					m_Keyboard.OnKeyPressed(keycode);
-				}
-				else
-				{
-					const bool wasPressed = lParam & 0x40000000;
-					if (!wasPressed)
-					{
-						m_Keyboard.OnKeyPressed(keycode);
-					}
-				}
-				break;
 			}
-			case WM_KEYUP:
-			{
-				const unsigned char keycode = static_cast<unsigned char>(wParam);
-				m_Keyboard.OnKeyReleased(keycode);
-				break;
-			}
-
-			return DefWindowProc(hwnd, message, wParam, lParam);
-			}
-
 		}
 	}
 

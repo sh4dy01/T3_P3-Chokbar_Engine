@@ -97,9 +97,6 @@
     <ClCompile Include="Source\Core\MeshGeometry.cpp">
       <Filter>Source\Core\Private</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\KeyBoardClass.cpp">
-      <Filter>Source\Engine\Private</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Engine\MouseClass.cpp">
       <Filter>Source\Engine\Private</Filter>
     </ClCompile>
@@ -109,6 +106,7 @@
     <ClCompile Include="Source\Core\DebugUtils.cpp">
       <Filter>Source\Core\Private</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Engine\SplashScreen.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Chokbar.h">
@@ -162,9 +160,6 @@
     <ClInclude Include="Source\Core\MeshGeometry.h">
       <Filter>Source\Core\Classes</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\KeyBoardClass.h">
-      <Filter>Source\Engine\Public</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Engine\MouseClass.h">
       <Filter>Source\Engine\Public</Filter>
     </ClInclude>
@@ -174,5 +169,6 @@
     <ClInclude Include="Source\Core\DebugUtils.h">
       <Filter>Source\Core\Public</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Engine\SplashScreen.h" />
   </ItemGroup>
 </Project>
