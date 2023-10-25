@@ -2,7 +2,6 @@
 
 #include "TypeDef.h"
 #include "ComponentArray.h"
-#include "Component.h"
 
 
 namespace Chokbar {
@@ -16,10 +15,10 @@ namespace Chokbar {
 
 	public:
 
-		template<class IComponent>
+		template<class T>
 		void RegisterComponent()
 		{
-			const char* typeName = typeid(IComponent).name();
+			const char* typeName = typeid(T).name();
 
 			assert(m_ComponentTypes.find(typeName) == m_ComponentTypes.end() && "Registering component type more than once.");
 
@@ -29,14 +28,16 @@ namespace Chokbar {
 			// Create a ComponentArray pointer and add it to the component arrays map
 			m_ComponentArrays.insert({ typeName, std::make_shared<ComponentArray<T>>() });
 
+			DEBUG_LOG("Registered " << typeName << " component to system.");
+
 			// Increment the value so that the next component registered will be different
 			++m_NextComponentType;
 		}
 
-		template<class IComponent>
+		template<class T>
 		ComponentType GetComponentType()
 		{
-			const char* typeName = typeid(IComponent).name();
+			const char* typeName = typeid(T).name();
 
 			assert(m_ComponentTypes.find(typeName) != m_ComponentTypes.end() && "Component not registered before use.");
 
@@ -44,25 +45,28 @@ namespace Chokbar {
 			return m_ComponentTypes[typeName];
 		}
 
-		template<class IComponent>
-		void AddComponent(Entity entity, IComponent component)
+		template<class T>
+		void AddComponent(Entity entity, T component)
 		{
+			const char* typeName = typeid(T).name();
+			DEBUG_LOG("Adding " << typeName << " to entity.");
+
 			// Add a component to the array for an entity
-			GetComponentArray<IComponent>()->InsertData(entity, component);
+			GetComponentArray<T>()->InsertData(entity, component);
 		}
 
 		template<class T>
 		void RemoveComponent(Entity entity)
 		{
 			// Remove a component from the array for an entity
-			GetComponentArray<IComponent>()->RemoveData(entity);
+			GetComponentArray<T>()->RemoveData(entity);
 		}
 
-		template<class IComponent>
-		IComponent& GetComponent(Entity entity)
+		template<class T>
+		T& GetComponent(Entity entity)
 		{
 			// Get a reference to a component from the array for an entity
-			return GetComponentArray<IComponent>()->GetData(entity);
+			return GetComponentArray<T>()->GetData(entity);
 		}
 
 		// Notify each component array that an entity has been destroyed
@@ -72,14 +76,14 @@ namespace Chokbar {
 	private:
 
 		// Convenience function to get the statically casted pointer to the ComponentArray of type T.
-		template<class IComponent>
-		std::shared_ptr<ComponentArray<IComponent>> GetComponentArray()
+		template<class T>
+		std::shared_ptr<ComponentArray<T>> GetComponentArray()
 		{
-			const char* typeName = typeid(IComponent).name();
+			const char* typeName = typeid(T).name();
 
 			assert(m_ComponentTypes.find(typeName) != m_ComponentTypes.end() && "Component not registered before use.");
 
-			return std::static_pointer_cast<ComponentArray<IComponent>>(m_ComponentArrays[typeName]);
+			return std::static_pointer_cast<ComponentArray<T>>(m_ComponentArrays[typeName]);
 		}
 
 	private:

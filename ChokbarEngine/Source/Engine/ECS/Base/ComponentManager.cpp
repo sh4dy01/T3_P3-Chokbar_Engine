@@ -3,8 +3,10 @@
 
 namespace Chokbar {
 	ComponentManager::ComponentManager()
-		: m_ComponentArrays(), m_ComponentTypes(), m_NextComponentType(0)
+		: m_NextComponentType(0)
 	{
+		m_ComponentArrays = {};
+		m_ComponentTypes = {};
 	}
 
 	ComponentManager::~ComponentManager()

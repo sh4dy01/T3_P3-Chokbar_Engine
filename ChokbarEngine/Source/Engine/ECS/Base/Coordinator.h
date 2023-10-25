@@ -17,6 +17,7 @@ namespace Chokbar {
 
 		void Init();
 		Entity CreateEntity();
+		void UpdateSystems();
 		void DestroyEntity(Entity entity);
 
 	public:

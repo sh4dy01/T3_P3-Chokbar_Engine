@@ -2,6 +2,7 @@
 
 #include "System.h"
 
+#include "Core/DebugUtils.h"
 #include <memory>
 #include <unordered_map>
 #include <cassert>
@@ -16,6 +17,8 @@ namespace Chokbar {
 		SystemManager();
 		~SystemManager();
 
+		void UpdateAllSystems();
+
 	public:
 		template<typename T>
 		std::shared_ptr<T> RegisterSystem()
@@ -23,6 +26,8 @@ namespace Chokbar {
 			const char* typeName = typeid(T).name();
 
 			assert(m_Systems.find(typeName) == m_Systems.end() && "Registering system more than once.");
+
+			DEBUG_LOG("Registered " << typeName << " to system manager");
 
 			// Create a pointer to the system and return it so it can be used externally
 			auto system = std::make_shared<T>();

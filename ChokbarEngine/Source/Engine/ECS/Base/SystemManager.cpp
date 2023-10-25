@@ -7,6 +7,22 @@ namespace Chokbar {
 	{
 	}
 
+	SystemManager::~SystemManager()
+	{
+		m_Systems.clear();
+		m_Signatures.clear();
+	}
+
+	void SystemManager::UpdateAllSystems()
+	{
+		for (auto const& pair : m_Systems)
+		{
+			auto const& system = pair.second;
+
+			system->Update();
+		}
+	}
+
 
 	void SystemManager::EntityDestroyed(Entity entity)
 	{
@@ -14,7 +30,7 @@ namespace Chokbar {
 		{
 			auto const& system = pair.second;
 
-			system->mEntities.erase(entity);
+			system->m_AllEntities.erase(entity);
 		}
 	}
 
@@ -30,12 +46,12 @@ namespace Chokbar {
 			// Entity signature matches system signature - insert into set
 			if ((entitySignature & systemSignature) == systemSignature)
 			{
-				system->mEntities.insert(entity);
+				system->m_AllEntities.insert(entity);
 			}
 			// Entity signature does not match system signature - erase from set
 			else
 			{
-				system->mEntities.erase(entity);
+				system->m_AllEntities.erase(entity);
 			}
 		}
 	}

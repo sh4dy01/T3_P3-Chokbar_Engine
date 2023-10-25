@@ -40,7 +40,7 @@ void Application::SetupPerGameSettings()
 
 void Application::Initialize()
 {
-
+	
 }
 
 void Application::Run()
@@ -48,7 +48,6 @@ void Application::Run()
 	Chokbar::Engine& engine = Chokbar::Engine::GetInstance();
 
 	engine.Initialize();
-	
 	engine.Run(); // Main loop
 	engine.Shutdown();
 }

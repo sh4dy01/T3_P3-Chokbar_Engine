@@ -99,6 +99,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="MeshRenderer.cpp" />
     <ClCompile Include="Source\Common\Logger.cpp" />
     <ClCompile Include="Source\Common\Time.cpp" />
     <ClCompile Include="Source\Core\D3DApp.cpp" />
@@ -108,10 +109,12 @@
     <ClCompile Include="Source\Core\MeshGeometry.cpp" />
     <ClCompile Include="Source\Core\PerGameSettings.cpp" />
     <ClCompile Include="Source\Core\UpdloadBuffer.cpp" />
-    <ClCompile Include="Source\Engine\ECS\ComponentManager.cpp" />
-    <ClCompile Include="Source\Engine\ECS\Coordinator.cpp" />
-    <ClCompile Include="Source\Engine\ECS\EntityManager.cpp" />
-    <ClCompile Include="Source\Engine\ECS\SystemManager.cpp" />
+    <ClCompile Include="Source\Engine\ECS\Base\ComponentManager.cpp" />
+    <ClCompile Include="Source\Engine\ECS\Base\Coordinator.cpp" />
+    <ClCompile Include="Source\Engine\ECS\Base\EntityManager.cpp" />
+    <ClCompile Include="Source\Engine\ECS\Base\SystemManager.cpp" />
+    <ClCompile Include="Source\Engine\ECS\Components\Transform.cpp" />
+    <ClCompile Include="Source\Engine\ECS\Systems\TransformSystem.cpp" />
     <ClCompile Include="Source\Engine\Engine.cpp" />
     <ClCompile Include="Source\Engine\GameTimer.cpp" />
     <ClCompile Include="Source\Platform\Windows\IApplication.cpp" />
@@ -119,6 +122,7 @@
     <ClCompile Include="Source\Platform\Windows\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="MeshRenderer.h" />
     <ClInclude Include="Source\Chokbar.h" />
     <ClInclude Include="Source\Common\Logger.h" />
     <ClInclude Include="Source\Common\Time.h" />
@@ -132,14 +136,15 @@
     <ClInclude Include="Source\Core\MeshGeometry.h" />
     <ClInclude Include="Source\Core\PerGameSettings.h" />
     <ClInclude Include="Source\Core\UploadBuffer.h" />
-    <ClInclude Include="Source\Engine\ECS\Component.h" />
-    <ClInclude Include="Source\Engine\ECS\ComponentArray.h" />
-    <ClInclude Include="Source\Engine\ECS\ComponentManager.h" />
-    <ClInclude Include="Source\Engine\ECS\Coordinator.h" />
-    <ClInclude Include="Source\Engine\ECS\EntityManager.h" />
-    <ClInclude Include="Source\Engine\ECS\System.h" />
-    <ClInclude Include="Source\Engine\ECS\SystemManager.h" />
-    <ClInclude Include="Source\Engine\ECS\TypeDef.h" />
+    <ClInclude Include="Source\Engine\ECS\Base\ComponentArray.h" />
+    <ClInclude Include="Source\Engine\ECS\Base\ComponentManager.h" />
+    <ClInclude Include="Source\Engine\ECS\Base\Coordinator.h" />
+    <ClInclude Include="Source\Engine\ECS\Base\EntityManager.h" />
+    <ClInclude Include="Source\Engine\ECS\Base\System.h" />
+    <ClInclude Include="Source\Engine\ECS\Base\SystemManager.h" />
+    <ClInclude Include="Source\Engine\ECS\Base\TypeDef.h" />
+    <ClInclude Include="Source\Engine\ECS\Components\Transform.h" />
+    <ClInclude Include="Source\Engine\ECS\Systems\TransformSystem.h" />
     <ClInclude Include="Source\Engine\Engine.h" />
     <ClInclude Include="Source\Engine\GameTimer.h" />
     <ClInclude Include="Source\Platform\Windows\IApplication.h" />

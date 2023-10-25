@@ -1,7 +1,6 @@
 #pragma once
 
 #include "TypeDef.h"
-#include "Component.h"
 
 #include <cassert>
 #include <unordered_map>
@@ -18,12 +17,12 @@ namespace Chokbar {
 
 	};
 
-	template<class IComponent>
+	template<class T>
 	class ComponentArray : public IComponentArray {
 
 	public:
 
-		void InsertData(Entity entity, IComponent component) {
+		void InsertData(Entity entity, T component) {
 			size_t newIndex = m_Size;
 			m_EntityToIndexMap[entity] = newIndex;
 			m_IndexToEntityMap[newIndex] = entity;
@@ -49,7 +48,7 @@ namespace Chokbar {
 			
 		}
 
-		IComponent& GetData(Entity entity)
+		T& GetData(Entity entity)
 		{
 			assert(m_EntityToIndexMap.contains(entity) && "Retrieving non-existent component.");
 
@@ -72,7 +71,7 @@ namespace Chokbar {
 		// set to a specified maximum amount, matching the maximum number
 		// of entities allowed to exist simultaneously, so that each entity
 		// has a unique spot.
-		std::array<IComponent, MAX_ENTITIES> m_ComponentArray = {};
+		std::array<T, MAX_ENTITIES> m_ComponentArray = {};
 
 		// Map from an entity ID to an array index.
 		std::unordered_map<Entity, size_t> m_EntityToIndexMap = {};

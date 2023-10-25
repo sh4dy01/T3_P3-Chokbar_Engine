@@ -25,7 +25,12 @@ namespace Chokbar {
 
 	Entity Coordinator::CreateEntity()
 	{
-		m_EntityManager->CreateEntity();
+		return m_EntityManager->CreateEntity();
+	}
+
+	void Coordinator::UpdateSystems()
+	{
+		m_SystemManager->UpdateAllSystems();
 	}
 
 	void Coordinator::DestroyEntity(Entity entity)

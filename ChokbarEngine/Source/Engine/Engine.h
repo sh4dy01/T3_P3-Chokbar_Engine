@@ -2,6 +2,9 @@
 
 #include "Core/CoreMinimal.h"
 
+#include "Engine/ECS/Base/Coordinator.h"
+
+
 namespace Chokbar {
 
 	class Engine {
@@ -12,6 +15,7 @@ namespace Chokbar {
 		~Engine();
 
 		static Engine& GetInstance();
+		static Coordinator& GetCoordinator();
 
 		void Initialize();
 		void Run();
@@ -39,6 +43,9 @@ namespace Chokbar {
 	private:
 
 		GameTimer m_GameTimer;
+		Coordinator m_Coordinator;
+
+		//physic
 		Win32::Window m_Window;
 
 	};

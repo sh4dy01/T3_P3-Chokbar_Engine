@@ -14,9 +14,6 @@
     <Filter Include="Source\Engine">
       <UniqueIdentifier>{6b2b109d-57f1-4756-b751-fce63a39b182}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\Engine\Classes">
-      <UniqueIdentifier>{77803344-ad3c-4d2e-9140-0969ec0f0585}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source\Engine\Public">
       <UniqueIdentifier>{d10e78b5-8ad6-499a-98f1-a891eeb6b030}</UniqueIdentifier>
     </Filter>
@@ -58,6 +55,27 @@
     </Filter>
     <Filter Include="Source\Engine\Core\Public">
       <UniqueIdentifier>{bd8f5847-f1a6-497f-9b49-debe0ccdf6bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\ECS">
+      <UniqueIdentifier>{88daf8bd-1eed-4f52-a000-8bc1c48319d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\ECS\Public">
+      <UniqueIdentifier>{93efd9b1-04f1-4bf8-9879-783f87cf1c66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\ECS\Private">
+      <UniqueIdentifier>{b9d43283-e074-4eac-bd53-2e07b02f25a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\ECS\Components">
+      <UniqueIdentifier>{4eed304e-fc24-487e-8e80-37925701c4e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\ECS\Systems">
+      <UniqueIdentifier>{778d6514-45f2-45f3-a39b-41c3b4fa5b9b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\ECS\Systems\Public">
+      <UniqueIdentifier>{121fe308-dd95-4e94-a84c-66edf098e8a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\ECS\Systems\Private">
+      <UniqueIdentifier>{6a4126f7-7ee7-4c41-be5c-52a5185ea94a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -103,18 +121,25 @@
     <ClCompile Include="Source\Core\DebugUtils.cpp">
       <Filter>Source\Engine\Core\Private</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\ECS\EntityManager.cpp">
-      <Filter>Source\Engine\Private</Filter>
+    <ClCompile Include="Source\Engine\ECS\Base\ComponentManager.cpp">
+      <Filter>Source\Engine\ECS\Private</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\ECS\ComponentManager.cpp">
-      <Filter>Source\Engine\Private</Filter>
+    <ClCompile Include="Source\Engine\ECS\Base\Coordinator.cpp">
+      <Filter>Source\Engine\ECS\Private</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\ECS\Coordinator.cpp">
-      <Filter>Source\Engine\Private</Filter>
+    <ClCompile Include="Source\Engine\ECS\Base\EntityManager.cpp">
+      <Filter>Source\Engine\ECS\Private</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\ECS\SystemManager.cpp">
-      <Filter>Source\Engine\Private</Filter>
+    <ClCompile Include="Source\Engine\ECS\Base\SystemManager.cpp">
+      <Filter>Source\Engine\ECS\Private</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Engine\ECS\Components\Transform.cpp">
+      <Filter>Source\Engine\ECS\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\ECS\Systems\TransformSystem.cpp">
+      <Filter>Source\Engine\ECS\Systems\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Chokbar.h">
@@ -137,9 +162,6 @@
     </ClInclude>
     <ClInclude Include="Source\Core\CoreDefinitions.h">
       <Filter>Source\Engine\Core\Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Engine\Engine.h">
-      <Filter>Source\Engine\Classes</Filter>
     </ClInclude>
     <ClInclude Include="Source\Common\Logger.h">
       <Filter>Source\Common\Public</Filter>
@@ -174,29 +196,36 @@
     <ClInclude Include="Source\Core\DebugUtils.h">
       <Filter>Source\Engine\Core\Public</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\ECS\ComponentArray.h">
+    <ClInclude Include="Source\Engine\ECS\Base\ComponentArray.h">
+      <Filter>Source\Engine\ECS\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\ECS\Base\ComponentManager.h">
+      <Filter>Source\Engine\ECS\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\ECS\Base\Coordinator.h">
+      <Filter>Source\Engine\ECS\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\ECS\Base\EntityManager.h">
+      <Filter>Source\Engine\ECS\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\ECS\Base\SystemManager.h">
+      <Filter>Source\Engine\ECS\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\ECS\Base\TypeDef.h">
+      <Filter>Source\Engine\ECS\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\ECS\Components\Transform.h">
+      <Filter>Source\Engine\ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\ECS\Systems\TransformSystem.h">
+      <Filter>Source\Engine\ECS\Systems\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\ECS\Base\System.h">
+      <Filter>Source\Engine\ECS\Systems\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Engine.h">
       <Filter>Source\Engine\Public</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\ECS\EntityManager.h">
-      <Filter>Source\Engine\Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Engine\ECS\TypeDef.h">
-      <Filter>Source\Engine\Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Engine\ECS\ComponentManager.h">
-      <Filter>Source\Engine\Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Engine\ECS\Coordinator.h">
-      <Filter>Source\Engine\Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Engine\ECS\System.h">
-      <Filter>Source\Engine\Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Engine\ECS\SystemManager.h">
-      <Filter>Source\Engine\Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Engine\ECS\Component.h">
-      <Filter>Source\Engine\Public</Filter>
-    </ClInclude>
+    <ClInclude Include="MeshRenderer.h" />
   </ItemGroup>
 </Project>

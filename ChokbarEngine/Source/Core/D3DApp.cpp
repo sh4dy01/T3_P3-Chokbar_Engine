@@ -2,6 +2,7 @@
 
 #include "D3DApp.h"
 #include "DebugUtils.h"
+#include "Engine/ECS/Components/Transform.h"
 
 using namespace DirectX;
 
