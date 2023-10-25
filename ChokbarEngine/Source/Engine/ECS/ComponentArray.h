@@ -1,9 +1,12 @@
 #pragma once
 
 #include "TypeDef.h"
+#include "Component.h"
+
 #include <cassert>
 #include <unordered_map>
 #include <array>
+
 
 namespace Chokbar {
 	class IComponentArray {
@@ -15,12 +18,12 @@ namespace Chokbar {
 
 	};
 
-	template<typename T>
+	template<class IComponent>
 	class ComponentArray : public IComponentArray {
 
 	public:
 
-		void InsertData(Entity entity, T component) {
+		void InsertData(Entity entity, IComponent component) {
 			size_t newIndex = m_Size;
 			m_EntityToIndexMap[entity] = newIndex;
 			m_IndexToEntityMap[newIndex] = entity;
@@ -46,7 +49,7 @@ namespace Chokbar {
 			
 		}
 
-		T& GetData(Entity entity)
+		IComponent& GetData(Entity entity)
 		{
 			assert(m_EntityToIndexMap.contains(entity) && "Retrieving non-existent component.");
 
@@ -69,16 +72,16 @@ namespace Chokbar {
 		// set to a specified maximum amount, matching the maximum number
 		// of entities allowed to exist simultaneously, so that each entity
 		// has a unique spot.
-		std::array<T, MAX_ENTITIES> m_ComponentArray;
+		std::array<IComponent, MAX_ENTITIES> m_ComponentArray = {};
 
 		// Map from an entity ID to an array index.
-		std::unordered_map<Entity, size_t> m_EntityToIndexMap;
+		std::unordered_map<Entity, size_t> m_EntityToIndexMap = {};
 
 		// Map from an array index to an entity ID.
-		std::unordered_map<size_t, Entity> m_IndexToEntityMap;
+		std::unordered_map<size_t, Entity> m_IndexToEntityMap = {};
 
 		// Total size of valid entries in the array.
-		size_t m_Size;
+		size_t m_Size = 0;
 	};
 
 }

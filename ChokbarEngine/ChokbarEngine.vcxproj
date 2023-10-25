@@ -108,7 +108,10 @@
     <ClCompile Include="Source\Core\MeshGeometry.cpp" />
     <ClCompile Include="Source\Core\PerGameSettings.cpp" />
     <ClCompile Include="Source\Core\UpdloadBuffer.cpp" />
+    <ClCompile Include="Source\Engine\ECS\ComponentManager.cpp" />
+    <ClCompile Include="Source\Engine\ECS\Coordinator.cpp" />
     <ClCompile Include="Source\Engine\ECS\EntityManager.cpp" />
+    <ClCompile Include="Source\Engine\ECS\SystemManager.cpp" />
     <ClCompile Include="Source\Engine\Engine.cpp" />
     <ClCompile Include="Source\Engine\GameTimer.cpp" />
     <ClCompile Include="Source\Platform\Windows\IApplication.cpp" />
@@ -129,8 +132,13 @@
     <ClInclude Include="Source\Core\MeshGeometry.h" />
     <ClInclude Include="Source\Core\PerGameSettings.h" />
     <ClInclude Include="Source\Core\UploadBuffer.h" />
+    <ClInclude Include="Source\Engine\ECS\Component.h" />
     <ClInclude Include="Source\Engine\ECS\ComponentArray.h" />
+    <ClInclude Include="Source\Engine\ECS\ComponentManager.h" />
+    <ClInclude Include="Source\Engine\ECS\Coordinator.h" />
     <ClInclude Include="Source\Engine\ECS\EntityManager.h" />
+    <ClInclude Include="Source\Engine\ECS\System.h" />
+    <ClInclude Include="Source\Engine\ECS\SystemManager.h" />
     <ClInclude Include="Source\Engine\ECS\TypeDef.h" />
     <ClInclude Include="Source\Engine\Engine.h" />
     <ClInclude Include="Source\Engine\GameTimer.h" />

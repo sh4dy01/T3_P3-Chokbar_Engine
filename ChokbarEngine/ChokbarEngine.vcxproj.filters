@@ -11,18 +11,6 @@
     <Filter Include="Source\pch">
       <UniqueIdentifier>{9139896d-d27c-4485-9c72-f0f6f0575ef2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\Core">
-      <UniqueIdentifier>{1ce36a97-6b74-4b35-856f-9c6c0a5549b1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Core\Classes">
-      <UniqueIdentifier>{7a244edb-eb54-4868-91cd-2db9045495b5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Core\Private">
-      <UniqueIdentifier>{e3d8a183-e744-4770-bbab-dd0bc6bd8376}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Core\Public">
-      <UniqueIdentifier>{bd8f5847-f1a6-497f-9b49-debe0ccdf6bf}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source\Engine">
       <UniqueIdentifier>{6b2b109d-57f1-4756-b751-fce63a39b182}</UniqueIdentifier>
     </Filter>
@@ -59,16 +47,28 @@
     <Filter Include="Source\Platform\Windows\Classes">
       <UniqueIdentifier>{882579c6-83b9-4bbb-936b-97c1f57ccd7a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Engine\Core">
+      <UniqueIdentifier>{1ce36a97-6b74-4b35-856f-9c6c0a5549b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\Core\Classes">
+      <UniqueIdentifier>{7a244edb-eb54-4868-91cd-2db9045495b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\Core\Private">
+      <UniqueIdentifier>{e3d8a183-e744-4770-bbab-dd0bc6bd8376}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\Core\Public">
+      <UniqueIdentifier>{bd8f5847-f1a6-497f-9b49-debe0ccdf6bf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Core\D3DApp.cpp">
-      <Filter>Source\Core\Private</Filter>
+      <Filter>Source\Engine\Core\Private</Filter>
     </ClCompile>
     <ClCompile Include="Source\Core\D3DUtils.cpp">
-      <Filter>Source\Core\Private</Filter>
+      <Filter>Source\Engine\Core\Private</Filter>
     </ClCompile>
     <ClCompile Include="Source\Core\PerGameSettings.cpp">
-      <Filter>Source\Core\Private</Filter>
+      <Filter>Source\Engine\Core\Private</Filter>
     </ClCompile>
     <ClCompile Include="Source\Engine\Engine.cpp">
       <Filter>Source\Engine\Private</Filter>
@@ -92,19 +92,28 @@
       <Filter>Source\Platform\Windows\Private</Filter>
     </ClCompile>
     <ClCompile Include="Source\Core\UpdloadBuffer.cpp">
-      <Filter>Source\Core\Private</Filter>
+      <Filter>Source\Engine\Core\Private</Filter>
     </ClCompile>
     <ClCompile Include="Source\Core\MeshGeometry.cpp">
-      <Filter>Source\Core\Private</Filter>
+      <Filter>Source\Engine\Core\Private</Filter>
     </ClCompile>
     <ClCompile Include="Source\Core\D3DMath.cpp">
-      <Filter>Source\Core\Private</Filter>
+      <Filter>Source\Engine\Core\Private</Filter>
     </ClCompile>
     <ClCompile Include="Source\Core\DebugUtils.cpp">
-      <Filter>Source\Core\Private</Filter>
+      <Filter>Source\Engine\Core\Private</Filter>
     </ClCompile>
     <ClCompile Include="Source\Engine\ECS\EntityManager.cpp">
-      <Filter>Source\Engine\Public</Filter>
+      <Filter>Source\Engine\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\ECS\ComponentManager.cpp">
+      <Filter>Source\Engine\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\ECS\Coordinator.cpp">
+      <Filter>Source\Engine\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\ECS\SystemManager.cpp">
+      <Filter>Source\Engine\Private</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -112,22 +121,22 @@
       <Filter>Source\pch</Filter>
     </ClInclude>
     <ClInclude Include="Source\Core\PerGameSettings.h">
-      <Filter>Source\Core\Classes</Filter>
+      <Filter>Source\Engine\Core\Classes</Filter>
     </ClInclude>
     <ClInclude Include="Source\Core\D3DApp.h">
-      <Filter>Source\Core\Classes</Filter>
+      <Filter>Source\Engine\Core\Classes</Filter>
     </ClInclude>
     <ClInclude Include="Source\Core\D3DUtils.h">
-      <Filter>Source\Core\Classes</Filter>
+      <Filter>Source\Engine\Core\Classes</Filter>
     </ClInclude>
     <ClInclude Include="Source\Core\Core.h">
-      <Filter>Source\Core\Public</Filter>
+      <Filter>Source\Engine\Core\Public</Filter>
     </ClInclude>
     <ClInclude Include="Source\Core\CoreMinimal.h">
-      <Filter>Source\Core\Public</Filter>
+      <Filter>Source\Engine\Core\Public</Filter>
     </ClInclude>
     <ClInclude Include="Source\Core\CoreDefinitions.h">
-      <Filter>Source\Core\Public</Filter>
+      <Filter>Source\Engine\Core\Public</Filter>
     </ClInclude>
     <ClInclude Include="Source\Engine\Engine.h">
       <Filter>Source\Engine\Classes</Filter>
@@ -154,16 +163,16 @@
       <Filter>Source\Platform\Windows\Classes</Filter>
     </ClInclude>
     <ClInclude Include="Source\Core\UploadBuffer.h">
-      <Filter>Source\Core\Classes</Filter>
+      <Filter>Source\Engine\Core\Classes</Filter>
     </ClInclude>
     <ClInclude Include="Source\Core\MeshGeometry.h">
-      <Filter>Source\Core\Classes</Filter>
+      <Filter>Source\Engine\Core\Classes</Filter>
     </ClInclude>
     <ClInclude Include="Source\Core\D3DMath.h">
-      <Filter>Source\Core\Classes</Filter>
+      <Filter>Source\Engine\Core\Classes</Filter>
     </ClInclude>
     <ClInclude Include="Source\Core\DebugUtils.h">
-      <Filter>Source\Core\Public</Filter>
+      <Filter>Source\Engine\Core\Public</Filter>
     </ClInclude>
     <ClInclude Include="Source\Engine\ECS\ComponentArray.h">
       <Filter>Source\Engine\Public</Filter>
@@ -172,6 +181,21 @@
       <Filter>Source\Engine\Public</Filter>
     </ClInclude>
     <ClInclude Include="Source\Engine\ECS\TypeDef.h">
+      <Filter>Source\Engine\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\ECS\ComponentManager.h">
+      <Filter>Source\Engine\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\ECS\Coordinator.h">
+      <Filter>Source\Engine\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\ECS\System.h">
+      <Filter>Source\Engine\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\ECS\SystemManager.h">
+      <Filter>Source\Engine\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\ECS\Component.h">
       <Filter>Source\Engine\Public</Filter>
     </ClInclude>
   </ItemGroup>

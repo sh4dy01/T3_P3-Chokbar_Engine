@@ -7,6 +7,7 @@
 namespace Chokbar {
 
 	EntityManager::EntityManager()
+		: m_LivingEntityCount(0)
 	{
 		for (Entity entity = 0; entity < MAX_ENTITIES; ++entity)
 		{
@@ -14,13 +15,17 @@ namespace Chokbar {
 		}
 	}
 
+	EntityManager::~EntityManager()
+	{
+	}
+
 	Entity EntityManager::CreateEntity()
 	{
-		assert(m_LivingEntityCoount < MAX_ENTITIES && "Entities limit exceeded");
+		assert(m_LivingEntityCount < MAX_ENTITIES && "Entities limit exceeded");
 
 		Entity id = m_AvailableEntities.front();
 		m_AvailableEntities.pop();
-		++m_LivingEntityCoount;
+		++m_LivingEntityCount;
 
 		return id;
 	}
@@ -31,7 +36,7 @@ namespace Chokbar {
 
 		m_AllSignatures[entity].reset();	// Reset the signature == reset the entity
 		m_AvailableEntities.push(entity);	// entity's id now available
-		--m_LivingEntityCoount;
+		--m_LivingEntityCount;
 	}
 
 	void EntityManager::SetSignature(Entity entity, Signature signature)

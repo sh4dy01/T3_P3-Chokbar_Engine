@@ -1,8 +1,10 @@
 #pragma once
 
+#include "TypeDef.h"
+
 #include <array>
 #include <queue>
-#include "TypeDef.h"
+
 
 namespace Chokbar {
 
@@ -12,7 +14,10 @@ namespace Chokbar {
 
 		// Initialize the queue with all the entities
 		EntityManager(); 
+		~EntityManager();
 	
+	public:
+
 		Entity CreateEntity();
 		void DestroyEntity(Entity entity);
 		void SetSignature(Entity entity, Signature signature);
@@ -27,7 +32,7 @@ namespace Chokbar {
 		std::array<Signature, MAX_ENTITIES> m_AllSignatures;
 
 		// Keep track of the number of living entities
-		uint32_t m_LivingEntityCoount;
+		uint32_t m_LivingEntityCount;
 	};
 
 }
