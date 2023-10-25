@@ -19,16 +19,6 @@
 
 static const int SWAP_CHAIN_BUFFER_COUNT = 2;
 
-/* ------------------------------------------------------------------------- */
-/* HELPER STRUCTS                                                            */
-/* ------------------------------------------------------------------------- */
-#pragma region Helper Structs
-struct CHOKBAR_API Vertex
-{
-	XMFLOAT3 Pos;
-	UINT32 Color;
-};
-
 #pragma endregion
 
 class D3DApp

@@ -75,7 +75,7 @@ namespace Win32
 
 	LRESULT CALLBACK Window::WindowProcedure(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
-		Window *window = reinterpret_cast<Window *>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
+		Window* window = reinterpret_cast<Window*>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
 
 		switch (message)
 		{
@@ -125,7 +125,7 @@ namespace Win32
 				m_Mouse.OnRightReleased(pt.x, pt.y);
 				break;
 			}
-				/*			KeyBoard Events			*/
+			/*			KeyBoard Events			*/
 
 			case WM_KEYDOWN:
 			{
@@ -152,11 +152,13 @@ namespace Win32
 			}
 
 			return DefWindowProc(hwnd, message, wParam, lParam);
-		}
+			}
 
-		void Window::SetNewSize(int newWidth, int newHeight)
-		{
-			m_Width = newWidth;
-			m_Height = newHeight;
 		}
-		}
+	}
+
+	void Window::SetNewSize(int newWidth, int newHeight)
+	{
+		m_Width = newWidth;
+		m_Height = newHeight;
+	}
