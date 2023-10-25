@@ -144,6 +144,11 @@ namespace Win32
 				}
 				break;
 			}
+			case WM_KEYUP:
+			{
+				const unsigned char keycode = static_cast<unsigned char>(wParam);
+				m_Keyboard.OnKeyReleased(keycode);
+				break;
 			}
 
 			return DefWindowProc(hwnd, message, wParam, lParam);
@@ -154,4 +159,4 @@ namespace Win32
 			m_Width = newWidth;
 			m_Height = newHeight;
 		}
-	}
+		}
