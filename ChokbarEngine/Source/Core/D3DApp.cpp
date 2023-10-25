@@ -410,11 +410,11 @@ void D3DApp::CreateGeometry()
 {
 	Vertex vList[] =
 	{
-		{ XMFLOAT3(0.0f, 1.0f, 0.0f),   XMFLOAT4(1.0f, 0.8f, 0.1f, 0.1f) },
-		{ XMFLOAT3(-0.5f, 0.0f, -0.5f), XMFLOAT4(1.0f, 0.1f, 0.1f, 0.8f) },
-		{ XMFLOAT3(-0.5f, 0.0f, 0.5f),  XMFLOAT4(1.0f, 0.1f, 0.1f, 0.8f) },
-		{ XMFLOAT3(0.5f, 0.0f, 0.5f),   XMFLOAT4(1.0f, 0.1f, 0.1f, 0.8f) },
-		{ XMFLOAT3(0.5f, 0.0f, -0.5f),  XMFLOAT4(1.0f, 0.1f, 0.1f, 0.8f) },
+		{ XMFLOAT3(0.0f, 1.0f, 0.0f),   XMFLOAT4(0.8f, 0.1f, 0.1f, 1.0f) },
+		{ XMFLOAT3(-0.5f, 0.0f, -0.5f), XMFLOAT4(0.1f, 0.8f, 0.1f, 1.0f) },
+		{ XMFLOAT3(-0.5f, 0.0f, 0.5f),  XMFLOAT4(0.1f, 0.8f, 0.1f, 1.0f) },
+		{ XMFLOAT3(0.5f, 0.0f, 0.5f),   XMFLOAT4(0.1f, 0.8f, 0.1f, 1.0f) },
+		{ XMFLOAT3(0.5f, 0.0f, -0.5f),  XMFLOAT4(0.1f, 0.8f, 0.1f, 1.0f) },
 	};
 
 	UINT16 iList[] = { 0, 1, 2, 0, 2, 3, 0, 3, 4, 0, 4, 1 };
