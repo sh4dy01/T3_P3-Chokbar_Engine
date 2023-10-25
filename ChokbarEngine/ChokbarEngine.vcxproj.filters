@@ -133,13 +133,27 @@
     <ClCompile Include="Source\Engine\ECS\Base\SystemManager.cpp">
       <Filter>Source\Engine\ECS\Private</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\ECS\Components\Transform.cpp">
+    <ClCompile Include="Source\Engine\ECS\Components\TransformComponent.cpp">
       <Filter>Source\Engine\ECS\Components</Filter>
     </ClCompile>
     <ClCompile Include="Source\Engine\ECS\Systems\TransformSystem.cpp">
       <Filter>Source\Engine\ECS\Systems\Private</Filter>
     </ClCompile>
-    <ClCompile Include="MeshRenderer.cpp" />
+    <ClCompile Include="Source\Engine\ECS\Components\MeshRenderer.cpp">
+      <Filter>Source\Engine\ECS\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\ECS\Components\PlayerComponent.cpp">
+      <Filter>Source\Engine\ECS\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\ECS\Base\Object.cpp">
+      <Filter>Source\Engine\ECS\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\ECS\Base\GameObject.cpp">
+      <Filter>Source\Engine\ECS\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\ECS\Components\Component.cpp">
+      <Filter>Source\Engine\ECS\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Chokbar.h">
@@ -214,7 +228,7 @@
     <ClInclude Include="Source\Engine\ECS\Base\TypeDef.h">
       <Filter>Source\Engine\ECS\Public</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\ECS\Components\Transform.h">
+    <ClInclude Include="Source\Engine\ECS\Components\TransformComponent.h">
       <Filter>Source\Engine\ECS\Components</Filter>
     </ClInclude>
     <ClInclude Include="Source\Engine\ECS\Systems\TransformSystem.h">
@@ -226,6 +240,20 @@
     <ClInclude Include="Source\Engine\Engine.h">
       <Filter>Source\Engine\Public</Filter>
     </ClInclude>
-    <ClInclude Include="MeshRenderer.h" />
+    <ClInclude Include="Source\Engine\ECS\Components\MeshRenderer.h">
+      <Filter>Source\Engine\ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\ECS\Components\PlayerComponent.h">
+      <Filter>Source\Engine\ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\ECS\Base\GameObject.h">
+      <Filter>Source\Engine\ECS\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\ECS\Base\Object.h">
+      <Filter>Source\Engine\ECS\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\ECS\Components\Component.h">
+      <Filter>Source\Engine\ECS\Components</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -99,7 +99,6 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="MeshRenderer.cpp" />
     <ClCompile Include="Source\Common\Logger.cpp" />
     <ClCompile Include="Source\Common\Time.cpp" />
     <ClCompile Include="Source\Core\D3DApp.cpp" />
@@ -112,8 +111,13 @@
     <ClCompile Include="Source\Engine\ECS\Base\ComponentManager.cpp" />
     <ClCompile Include="Source\Engine\ECS\Base\Coordinator.cpp" />
     <ClCompile Include="Source\Engine\ECS\Base\EntityManager.cpp" />
+    <ClCompile Include="Source\Engine\ECS\Base\GameObject.cpp" />
+    <ClCompile Include="Source\Engine\ECS\Base\Object.cpp" />
     <ClCompile Include="Source\Engine\ECS\Base\SystemManager.cpp" />
-    <ClCompile Include="Source\Engine\ECS\Components\Transform.cpp" />
+    <ClCompile Include="Source\Engine\ECS\Components\Component.cpp" />
+    <ClCompile Include="Source\Engine\ECS\Components\MeshRenderer.cpp" />
+    <ClCompile Include="Source\Engine\ECS\Components\PlayerComponent.cpp" />
+    <ClCompile Include="Source\Engine\ECS\Components\TransformComponent.cpp" />
     <ClCompile Include="Source\Engine\ECS\Systems\TransformSystem.cpp" />
     <ClCompile Include="Source\Engine\Engine.cpp" />
     <ClCompile Include="Source\Engine\GameTimer.cpp" />
@@ -122,7 +126,6 @@
     <ClCompile Include="Source\Platform\Windows\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="MeshRenderer.h" />
     <ClInclude Include="Source\Chokbar.h" />
     <ClInclude Include="Source\Common\Logger.h" />
     <ClInclude Include="Source\Common\Time.h" />
@@ -140,10 +143,15 @@
     <ClInclude Include="Source\Engine\ECS\Base\ComponentManager.h" />
     <ClInclude Include="Source\Engine\ECS\Base\Coordinator.h" />
     <ClInclude Include="Source\Engine\ECS\Base\EntityManager.h" />
+    <ClInclude Include="Source\Engine\ECS\Base\GameObject.h" />
+    <ClInclude Include="Source\Engine\ECS\Base\Object.h" />
     <ClInclude Include="Source\Engine\ECS\Base\System.h" />
     <ClInclude Include="Source\Engine\ECS\Base\SystemManager.h" />
     <ClInclude Include="Source\Engine\ECS\Base\TypeDef.h" />
-    <ClInclude Include="Source\Engine\ECS\Components\Transform.h" />
+    <ClInclude Include="Source\Engine\ECS\Components\Component.h" />
+    <ClInclude Include="Source\Engine\ECS\Components\MeshRenderer.h" />
+    <ClInclude Include="Source\Engine\ECS\Components\PlayerComponent.h" />
+    <ClInclude Include="Source\Engine\ECS\Components\TransformComponent.h" />
     <ClInclude Include="Source\Engine\ECS\Systems\TransformSystem.h" />
     <ClInclude Include="Source\Engine\Engine.h" />
     <ClInclude Include="Source\Engine\GameTimer.h" />

@@ -3,6 +3,8 @@
 #include "Core/CoreMinimal.h"
 
 #include "Engine/ECS/Base/Coordinator.h"
+#include "GameTimer.h"
+#include "Platform/Windows/Window.h"
 
 
 namespace Chokbar {
@@ -36,9 +38,6 @@ namespace Chokbar {
 		void Render();
 		void CalculateFrameStats();
 		bool NeedsToClose();
-
-		float GetDeltaTime() const { return m_GameTimer.GetDeltaTime(); }
-
 
 	private:
 

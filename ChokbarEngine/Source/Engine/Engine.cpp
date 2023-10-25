@@ -40,6 +40,7 @@ namespace Chokbar
 	{
 		PreInitialize();
 
+		//TODO : Move to a better place
 		m_Coordinator.Init();
 		m_Coordinator.RegisterComponent<Transform>();
 
@@ -48,10 +49,6 @@ namespace Chokbar
 			Signature signature;
 			signature.set(m_Coordinator.GetComponentType<Transform>());
 		}
-		
-		Entity test = m_Coordinator.CreateEntity();
-		m_Coordinator.AddComponent(test, Transform());
-
 		
 
 		m_Window.CreateNewWindow(DEFAULT_WIDTH, DEFAULT_HEIGHT, PerGameSettings::GameName(), PerGameSettings::MainIcon(), Win32::RESIZABLE);
@@ -73,7 +70,7 @@ namespace Chokbar
 
 			m_GameTimer.Tick();
 
-			Update(GetDeltaTime());
+			Update(m_GameTimer.GetDeltaTime());
 			Render();
 		}
 	}
