@@ -10,7 +10,7 @@ namespace Win32
 
 	Window::~Window() = default;
 
-	void Window::CreateNewWindow(int width, int height, const WSTRING &title, HICON icon, WindowType type)
+	void Window::CreateNewWindow(int width, int height, const WSTRING& title, HICON icon, WindowType type)
 	{
 		m_Type = type;
 		m_Title = title;
@@ -25,11 +25,11 @@ namespace Win32
 		const HWND hDesktop = GetDesktopWindow();
 		GetWindowRect(hDesktop, &desktop);
 
-		RECT R = {0, 0, m_Width, m_Height};
+		RECT R = { 0, 0, m_Width, m_Height };
 		AdjustWindowRect(&R, WS_OVERLAPPEDWINDOW, false);
 
 		m_Hwnd = CreateWindow(m_Title.c_str(), m_Title.c_str(),
-							  m_Type, ((desktop.right / 2) - (m_Width / 2)), ((desktop.bottom / 2) - (m_Height / 2)), m_Width, m_Height, nullptr, nullptr, HInstance(), (void *)this);
+			m_Type, ((desktop.right / 2) - (m_Width / 2)), ((desktop.bottom / 2) - (m_Height / 2)), m_Width, m_Height, nullptr, nullptr, HInstance(), (void*)this);
 
 		if (m_Hwnd == NULL)
 		{
@@ -95,38 +95,10 @@ namespace Win32
 			case WM_DESTROY:
 				PostQuitMessage(0);
 				break;
-				/*			Mouse Events			*/
-			case WM_MOUSEMOVE:
-			{
-				const POINTS pt = MAKEPOINTS(lParam);
-				window->m_Mouse.OnMouseMove(pt.x, pt.y);
-			}
-			case WM_LBUTTONDOWN:
-			{
-				const POINTS pt = MAKEPOINTS(lParam);
-				window->m_Mouse.OnLeftPressed(pt.x, pt.y);
-				break;
-			}
-			case WM_RBUTTONDOWN:
-			{
-				const POINTS pt = MAKEPOINTS(lParam);
-				window->m_Mouse.OnRightPressed(pt.x, pt.y);
-				break;
-			}
-			case WM_LBUTTONUP:
-			{
-				const POINTS pt = MAKEPOINTS(lParam);
-				window->m_Mouse.OnLeftReleased(pt.x, pt.y);
-				break;
-			}
-			case WM_RBUTTONUP:
-			{
-				const POINTS pt = MAKEPOINTS(lParam);
-				window->m_Mouse.OnRightReleased(pt.x, pt.y);
-				break;
-			}
 			}
 		}
+
+		return DefWindowProcW(hwnd, message, wParam, lParam);
 	}
 
 	void Window::SetNewSize(int newWidth, int newHeight)
@@ -134,3 +106,4 @@ namespace Win32
 		m_Width = newWidth;
 		m_Height = newHeight;
 	}
+}

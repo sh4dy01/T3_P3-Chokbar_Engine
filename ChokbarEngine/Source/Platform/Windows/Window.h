@@ -1,6 +1,5 @@
 #pragma once
 #include "Win32Utils.h"
-#include "Engine/MouseClass.h"
 
 namespace Win32
 {
@@ -48,6 +47,5 @@ namespace Win32
 
 		void SetNewSize(int newWidth, int newHeight);
 
-		Mouse		m_Mouse;
 	};
 }
