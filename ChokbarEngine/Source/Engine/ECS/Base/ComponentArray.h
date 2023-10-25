@@ -13,7 +13,7 @@ namespace Chokbar {
 	public:
 
 		virtual ~IComponentArray() = default;
-		virtual void EntityDestroyed(Entity entity) = 0;
+		virtual void EntityDestroyed(InstanceID entity) = 0;
 
 	};
 
@@ -22,7 +22,7 @@ namespace Chokbar {
 
 	public:
 
-		void InsertData(Entity entity, T component) {
+		void InsertData(InstanceID entity, T component) {
 			size_t newIndex = m_Size;
 			m_EntityToIndexMap[entity] = newIndex;
 			m_IndexToEntityMap[newIndex] = entity;
@@ -30,14 +30,14 @@ namespace Chokbar {
 			m_Size++;
 		}
 
-		void RemoveData(Entity entity)
+		void RemoveData(InstanceID entity)
 		{
 			const size_t indexOfRemovedEntity = m_EntityToIndexMap[entity];
 			const size_t indexOfLastElement = m_Size - 1;
 			m_ComponentArray[indexOfRemovedEntity] = m_ComponentArray[indexOfLastElement];
 
 			// Update map to point to moved spot
-			Entity entityOfLastElement = m_IndexToEntityMap[indexOfLastElement];
+			InstanceID entityOfLastElement = m_IndexToEntityMap[indexOfLastElement];
 			m_EntityToIndexMap[entityOfLastElement] = indexOfRemovedEntity;
 			m_IndexToEntityMap[indexOfRemovedEntity] = entityOfLastElement;
 
@@ -48,14 +48,19 @@ namespace Chokbar {
 			
 		}
 
-		T& GetData(Entity entity)
+		T& GetData(InstanceID entity)
 		{
 			assert(m_EntityToIndexMap.contains(entity) && "Retrieving non-existent component.");
 
 			return m_ComponentArray[m_EntityToIndexMap[entity]];
 		}
 
-		void EntityDestroyed(Entity entity) override
+		bool HasData(InstanceID entity) const
+		{
+			return m_EntityToIndexMap.contains(entity);
+		}
+
+		void EntityDestroyed(InstanceID entity) override
 		{
 			if (m_EntityToIndexMap.contains(entity))
 			{
@@ -74,10 +79,10 @@ namespace Chokbar {
 		std::array<T, MAX_ENTITIES> m_ComponentArray = {};
 
 		// Map from an entity ID to an array index.
-		std::unordered_map<Entity, size_t> m_EntityToIndexMap = {};
+		std::unordered_map<InstanceID, size_t> m_EntityToIndexMap = {};
 
 		// Map from an array index to an entity ID.
-		std::unordered_map<size_t, Entity> m_IndexToEntityMap = {};
+		std::unordered_map<size_t, InstanceID> m_IndexToEntityMap = {};
 
 		// Total size of valid entries in the array.
 		size_t m_Size = 0;

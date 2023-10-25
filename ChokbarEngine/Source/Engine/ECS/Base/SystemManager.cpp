@@ -24,7 +24,7 @@ namespace Chokbar {
 	}
 
 
-	void SystemManager::EntityDestroyed(Entity entity)
+	void SystemManager::EntityDestroyed(InstanceID entity)
 	{
 		for (auto const& pair : m_Systems)
 		{
@@ -34,7 +34,7 @@ namespace Chokbar {
 		}
 	}
 
-	void SystemManager::EntitySignatureChanged(Entity entity, Signature entitySignature)
+	void SystemManager::EntitySignatureChanged(InstanceID entity, Signature entitySignature)
 	{
 		// Notify each system that an entity's signature changed
 		for (auto const& pair : m_Systems)
@@ -43,12 +43,12 @@ namespace Chokbar {
 			auto const& system = pair.second;
 			auto const& systemSignature = m_Signatures[type];
 
-			// Entity signature matches system signature - insert into set
+			// InstanceID signature matches system signature - insert into set
 			if ((entitySignature & systemSignature) == systemSignature)
 			{
 				system->m_AllEntities.insert(entity);
 			}
-			// Entity signature does not match system signature - erase from set
+			// InstanceID signature does not match system signature - erase from set
 			else
 			{
 				system->m_AllEntities.erase(entity);

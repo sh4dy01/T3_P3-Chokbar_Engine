@@ -13,7 +13,7 @@ namespace Chokbar {
 	{
 	}
 
-	void ComponentManager::EntityDestroyed(Entity entity)
+	void ComponentManager::EntityDestroyed(InstanceID entity)
 	{
 		for (auto const& pair : m_ComponentArrays)
 		{

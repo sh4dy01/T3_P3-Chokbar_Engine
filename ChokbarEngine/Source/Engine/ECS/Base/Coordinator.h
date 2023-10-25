@@ -15,22 +15,26 @@ namespace Chokbar {
 
 	public:
 
+		// Initialize the coordinator and all its managers
 		void Init();
-		Entity CreateEntity();
+		// Create a new game object ID and add a default transform component
+		InstanceID CreateNewGameObjectID();
+		// Create a new game object ID and add a copied transform component
+		InstanceID CreateNewGameObjectID(const Transform& transform);
 		void UpdateSystems();
-		void DestroyEntity(Entity entity);
+		void DestroyEntity(InstanceID entity);
 
 	public:
 
 		// Component methods
 		template<typename T>
-		void RegisterComponent()
+		void RegisterComponent() const
 		{
 			m_ComponentManager->RegisterComponent<T>();
 		}
 
 		template<typename T>
-		void AddComponent(Entity entity, T component)
+		void AddComponent(InstanceID entity, T component)
 		{
 			m_ComponentManager->AddComponent<T>(entity, component);
 
@@ -42,7 +46,7 @@ namespace Chokbar {
 		}
 
 		template<typename T>
-		void RemoveComponent(Entity entity)
+		void RemoveComponent(InstanceID entity) const
 		{
 			m_ComponentManager->RemoveComponent<T>(entity);
 
@@ -54,13 +58,19 @@ namespace Chokbar {
 		}
 
 		template<typename T>
-		T& GetComponent(Entity entity)
+		T& GetComponent(InstanceID entity)
 		{
 			return m_ComponentManager->GetComponent<T>(entity);
 		}
 
 		template<typename T>
-		ComponentType GetComponentType()
+		bool HasComponent(InstanceID entity) const
+		{
+			return m_ComponentManager->HasComponent<T>(entity);
+		}
+
+		template<typename T>
+		ComponentType GetComponentType() const
 		{
 			return m_ComponentManager->GetComponentType<T>();
 		}
@@ -74,7 +84,7 @@ namespace Chokbar {
 		}
 
 		template<typename T>
-		void SetSystemSignature(Signature signature)
+		void SetSystemSignature(Signature signature) const
 		{
 			m_SystemManager->SetSignature<T>(signature);
 		}

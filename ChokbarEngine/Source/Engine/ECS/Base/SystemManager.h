@@ -40,7 +40,7 @@ namespace Chokbar {
 		{
 			const char* typeName = typeid(T).name();
 
-			assert(m_Systems.find(typeName) != m_Systems.end() && "System used before registered.");
+			assert(m_Systems.contains(typeName) && "System used before registered.");
 
 			// Set the signature for this system
 			m_Signatures.insert({ typeName, signature });
@@ -49,9 +49,9 @@ namespace Chokbar {
 	public:
 
 		// Erase a destroyed entity from all system lists
-		void EntityDestroyed(Entity entity);
+		void EntityDestroyed(InstanceID entity);
 
-		void EntitySignatureChanged(Entity entity, Signature entitySignature);
+		void EntitySignatureChanged(InstanceID entity, Signature entitySignature);
 
 	private:
 

@@ -12,7 +12,7 @@ namespace Chokbar {
 
 	public:
 
-		std::set<Entity> m_AllEntities;
+		std::set<InstanceID> m_AllEntities;
 
 	};
 }

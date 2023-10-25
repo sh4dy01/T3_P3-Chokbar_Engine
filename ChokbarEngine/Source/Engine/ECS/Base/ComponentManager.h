@@ -46,7 +46,7 @@ namespace Chokbar {
 		}
 
 		template<class T>
-		void AddComponent(Entity entity, T component)
+		void AddComponent(InstanceID entity, T component)
 		{
 			const char* typeName = typeid(T).name();
 			DEBUG_LOG("Adding " << typeName << " to entity.");
@@ -56,22 +56,29 @@ namespace Chokbar {
 		}
 
 		template<class T>
-		void RemoveComponent(Entity entity)
+		void RemoveComponent(InstanceID entity)
 		{
 			// Remove a component from the array for an entity
 			GetComponentArray<T>()->RemoveData(entity);
 		}
 
 		template<class T>
-		T& GetComponent(Entity entity)
+		T& GetComponent(InstanceID entity)
 		{
 			// Get a reference to a component from the array for an entity
 			return GetComponentArray<T>()->GetData(entity);
 		}
 
+		template<class T>
+		bool HasComponent(InstanceID entity)
+		{
+			// Check if an entity has a component by checking if the component type's bit is set
+			return GetComponentArray<T>()->HasData(entity);
+		}
+
 		// Notify each component array that an entity has been destroyed
 		// If it has a component for that entity, it will remove it
-		void EntityDestroyed(Entity entity);
+		void EntityDestroyed(InstanceID entity);
 
 	private:
 
