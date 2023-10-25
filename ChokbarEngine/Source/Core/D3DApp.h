@@ -38,6 +38,8 @@ public:
 	void Update(const float dt, const float totalTime);
 	void Render();
 
+	int m_bufferWidth;
+	int m_bufferHeight;
 
 private:
 
@@ -94,8 +96,6 @@ private:
 	bool		m_4xMsaaState;		// 4X MSAA (4.1.8) enabled. Default is false.
 	UINT		m_4xMsaaQuality;	// quality level of 4X MSAA
 
-	int m_bufferWidth;
-	int m_bufferHeight;
 
 	/* D3D12 Factory : Used to create the swap chain */
 	IDXGIFactory4* m_pDxgiFactory;

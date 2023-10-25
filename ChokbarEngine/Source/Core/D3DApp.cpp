@@ -360,7 +360,7 @@ void D3DApp::CreateRtvAndDsvDescriptorHeaps()
 	m_pD3dDevice->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(&m_pDsvHeap));
 
 	D3D12_DESCRIPTOR_HEAP_DESC cbvHeapDesc;
-	cbvHeapDesc.NumDescriptors = m_ObjectCount + 1;
+	cbvHeapDesc.NumDescriptors = 10; 
 	cbvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 	cbvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	cbvHeapDesc.NodeMask = 0;
@@ -630,6 +630,7 @@ void D3DApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vect
 	}
 }
 
+// Moved
 void D3DApp::CreateRootSignature()
 {
 	//CD3DX12_DESCRIPTOR_RANGE cbvTable0;
@@ -656,6 +657,7 @@ void D3DApp::CreateRootSignature()
 	serializedRootSignature->Release();
 }
 
+// Moved
 void D3DApp::CreatePipelineStateObject()
 {
 	m_vsByteCode = CompileShader(L"Shader/vertex_pixel.hlsl", nullptr, "vs_main", "vs_5_0");
@@ -723,6 +725,7 @@ D3D12_CPU_DESCRIPTOR_HANDLE D3DApp::DepthStencilView() const
 	return m_pDsvHeap->GetCPUDescriptorHandleForHeapStart();
 }
 
+// Moved
 ID3DBlob* D3DApp::CompileShader(const std::wstring& filename, const D3D_SHADER_MACRO* defines, const std::string& entrypoint, const std::string& target)
 {
 	UINT compileFlags = 0;

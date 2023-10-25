@@ -9,7 +9,7 @@ enum TRANSFORMATION_TYPE { TRANSLATION, ROTATION, SCALE };
 struct Vertex
 {
 	DirectX::XMFLOAT3 Pos;
-	UINT32 Color;
+	DirectX::XMFLOAT3 Color;
 };
 
 struct SubmeshGeometry
