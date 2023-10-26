@@ -3,6 +3,8 @@
 #include "Engine/Engine.h"
 #include "Platform/Windows/WinEntry.h"
 #include "Engine/ECS/Base/GameObject.h"
+#include "Engine/ECS/Components/MeshRenderer.h"
+#include "Engine/ECS/Components/PlayerComponent.h"
 
 using namespace Chokbar;
 
@@ -47,7 +49,8 @@ void Application::PreInitialize()
 
 void Application::Initialize()
 {
-	GameObject test = GameObject("test");
+	GameObject test = GameObject("player");
+	GameObject player = GameObject("player", PlayerComponent());
 }
 
 void Application::Run()

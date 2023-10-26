@@ -40,7 +40,6 @@ namespace Chokbar
 	{
 		PreInitialize();
 
-		//TODO : Move to a better place
 		m_Coordinator.Init();
 		
 
