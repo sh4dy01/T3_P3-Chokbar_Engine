@@ -22,8 +22,6 @@ public:
 	ShaderBase(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, UINT cbvDescriptorSize, std::wstring& filepath);
 	virtual ~ShaderBase();
 
-	const ShaderType Type;
-
 protected:
 
 	struct ObjConstants
@@ -50,7 +48,11 @@ protected:
 		float DeltaTime = 0.0f;
 	};
 
+
 protected:
+
+	const ShaderType Type;
+
 	std::wstring& m_filepath;
 
 	/* Upload buffers are used to give the GPU information at runtime with the CPU.

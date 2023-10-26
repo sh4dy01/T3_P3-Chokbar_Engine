@@ -116,6 +116,8 @@
     <ClCompile Include="Source\Engine\GameTimer.cpp" />
     <ClCompile Include="Source\Engine\IResourceObject.cpp" />
     <ClCompile Include="Source\Engine\Resource.cpp" />
+    <ClCompile Include="Source\Engine\InputHandler.cpp" />
+    <ClCompile Include="Source\Engine\SplashScreen.cpp" />
     <ClCompile Include="Source\Platform\Windows\IApplication.cpp" />
     <ClCompile Include="Source\Platform\Windows\Win32Utils.cpp" />
     <ClCompile Include="Source\Platform\Windows\Window.cpp" />
@@ -142,6 +144,8 @@
     <ClInclude Include="Source\Engine\GameTimer.h" />
     <ClInclude Include="Source\Engine\IResourceObject.h" />
     <ClInclude Include="Source\Engine\Resource.h" />
+    <ClInclude Include="Source\Engine\InputHandler.h" />
+    <ClInclude Include="Source\Engine\SplashScreen.h" />
     <ClInclude Include="Source\Platform\Windows\IApplication.h" />
     <ClInclude Include="Source\Platform\Windows\Win32Utils.h" />
     <ClInclude Include="Source\Platform\Windows\Window.h" />

@@ -6,6 +6,7 @@
 #include "Common/Time.h"
 
 #include "Engine/GameTimer.h"
+#include "Engine/InputHandler.h"
 
 #ifdef WIN32
 	#include "Platform/Windows/Win32Utils.h"

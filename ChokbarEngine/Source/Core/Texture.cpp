@@ -21,6 +21,7 @@ Texture::~Texture()
 
 void Texture::Load(const std::wstring& filepath)
 {
+	// TODO Remove D3DApp sigleton
 	D3DApp::GetInstance()->BeginList();
 	LoadTexture(D3DApp::GetInstance()->GetDevice(), D3DApp::GetInstance()->GetCommandList());
 	D3DApp::GetInstance()->UpdateTextureHeap(this);
