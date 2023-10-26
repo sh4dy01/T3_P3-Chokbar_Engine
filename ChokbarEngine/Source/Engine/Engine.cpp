@@ -1,6 +1,5 @@
 #include "Chokbar.h"
 #include "Engine.h"
-#include "Core/Core.h"
 
 namespace Chokbar
 {
@@ -14,6 +13,11 @@ namespace Chokbar
 	{
 		static Engine engine;
 		return engine;
+	}
+
+	Coordinator& Engine::GetCoordinator()
+	{
+		return GetInstance().m_Coordinator;
 	}
 
 #pragma region INIT
@@ -36,6 +40,9 @@ namespace Chokbar
 	{
 		PreInitialize();
 
+		m_Coordinator.Init();
+		
+
 		m_Window.CreateNewWindow(DEFAULT_WIDTH, DEFAULT_HEIGHT, PerGameSettings::GameName(), PerGameSettings::MainIcon(), Win32::RESIZABLE);
 
 		D3DApp::GetInstance()->InitializeD3D12(&m_Window);
@@ -55,7 +62,7 @@ namespace Chokbar
 
 			m_GameTimer.Tick();
 
-			Update(GetDeltaTime());
+			Update(m_GameTimer.GetDeltaTime());
 			Render();
 		}
 	}
@@ -68,6 +75,8 @@ namespace Chokbar
 	void Engine::Update(float dt)
 	{
 		m_InputHandler.CheckInput();
+    m_Coordinator.UpdateSystems();
+
 		D3DApp::GetInstance()->Update(dt, m_GameTimer.GetTotalTime());
 		CalculateFrameStats();
 	}
