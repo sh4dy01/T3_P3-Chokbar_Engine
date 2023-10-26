@@ -19,6 +19,9 @@ public:
 
 	void CheckInput();
 
+	bool IsKeyDown(char key) const;
+	bool IsKeyUp(char key) const;
+	bool IsKeyHeld(char key) const;
 
 private:
 

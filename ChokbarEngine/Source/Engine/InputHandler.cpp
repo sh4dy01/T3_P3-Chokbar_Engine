@@ -45,3 +45,39 @@ void InputHandler::CheckInput()
 		}
 	}
 }
+
+bool InputHandler::IsKeyDown(char key) const
+{
+	for (size_t i = 0; i < m_KeyboardInput.size(); ++i)
+	{
+		if (m_KeyboardInput[i] == key)
+		{
+			return m_KeyStates[i] == KeyState::Down;
+		}
+	}
+	return false;
+}
+
+bool InputHandler::IsKeyUp(char key) const
+{
+	for (size_t i = 0; i < m_KeyboardInput.size(); ++i)
+	{
+		if (m_KeyboardInput[i] == key)
+		{
+			return m_KeyStates[i] == KeyState::Up;
+		}
+	}
+	return false;
+}
+
+bool InputHandler::IsKeyHeld(char key) const
+{
+	for (size_t i = 0; i < m_KeyboardInput.size(); ++i)
+	{
+		if (m_KeyboardInput[i] == key)
+		{
+			return m_KeyStates[i] == KeyState::Held;
+		}
+	}
+	return false;
+}
