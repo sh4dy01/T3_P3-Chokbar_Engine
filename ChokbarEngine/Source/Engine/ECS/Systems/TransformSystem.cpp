@@ -8,12 +8,12 @@ namespace Chokbar {
 
 	void TransformSystem::Update()
 	{
-		for (auto entity : m_AllEntities)
+		for (const auto entity : m_RegisteredEntities)
 		{
-			auto& transform = Engine::GetCoordinator().GetComponent<Transform>(entity);
-			auto& position = transform.Position;
-			auto& rotation = transform.Rotation;
-			auto& scale = transform.Scale;
+			const auto transform = Engine::GetCoordinator().GetComponent<Transform>(entity);
+			transform->Position;
+			transform->Rotation;
+			transform->Scale;
 		}
 	}
 }

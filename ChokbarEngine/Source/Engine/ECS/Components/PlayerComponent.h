@@ -1,7 +1,7 @@
 #pragma once
 #include "Component.h"
 
-struct PlayerComponent : Component
+struct PlayerComponent : Chokbar::Component
 {
 	
 };

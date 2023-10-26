@@ -30,7 +30,7 @@ namespace Chokbar {
 		{
 			auto const& system = pair.second;
 
-			system->m_AllEntities.erase(entity);
+			system->m_RegisteredEntities.erase(entity);
 		}
 	}
 
@@ -46,12 +46,12 @@ namespace Chokbar {
 			// InstanceID signature matches system signature - insert into set
 			if ((entitySignature & systemSignature) == systemSignature)
 			{
-				system->m_AllEntities.insert(entity);
+				system->m_RegisteredEntities.insert(entity);
 			}
 			// InstanceID signature does not match system signature - erase from set
 			else
 			{
-				system->m_AllEntities.erase(entity);
+				system->m_RegisteredEntities.erase(entity);
 			}
 		}
 	}
