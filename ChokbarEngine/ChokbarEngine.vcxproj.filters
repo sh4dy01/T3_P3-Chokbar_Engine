@@ -188,7 +188,7 @@
       <Filter>Source\Core\Public</Filter>
     </ClInclude>
     <ClInclude Include="Source\Engine\SplashScreen.h" />
-    <ClInclude Include="Source\Engine\SphereCollision.h">
+    <ClInclude Include="Source\Engine\Collision\SphereCollision.h">
       <Filter>Source\Engine\Public\Collision</Filter>
     </ClInclude>
     <ClInclude Include="Source\Engine\Collision\TriangleCollision.h">
