@@ -47,5 +47,7 @@ namespace Chokbar {
 		//physic
 		Win32::Window m_Window;
 
+		InputHandler m_InputHandler;
+
 	};
 }

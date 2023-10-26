@@ -107,6 +107,8 @@
     <ClCompile Include="Source\Core\DebugUtils.cpp" />
     <ClCompile Include="Source\Core\MeshGeometry.cpp" />
     <ClCompile Include="Source\Core\PerGameSettings.cpp" />
+    <ClCompile Include="Source\Core\RenderItem.cpp" />
+    <ClCompile Include="Source\Core\ShaderBase.cpp" />
     <ClCompile Include="Source\Core\UpdloadBuffer.cpp" />
     <ClCompile Include="Source\Engine\ECS\Base\ComponentManager.cpp" />
     <ClCompile Include="Source\Engine\ECS\Base\Coordinator.cpp" />
@@ -121,6 +123,8 @@
     <ClCompile Include="Source\Engine\ECS\Systems\TransformSystem.cpp" />
     <ClCompile Include="Source\Engine\Engine.cpp" />
     <ClCompile Include="Source\Engine\GameTimer.cpp" />
+    <ClCompile Include="Source\Engine\InputHandler.cpp" />
+    <ClCompile Include="Source\Engine\SplashScreen.cpp" />
     <ClCompile Include="Source\Platform\Windows\IApplication.cpp" />
     <ClCompile Include="Source\Platform\Windows\Win32Utils.cpp" />
     <ClCompile Include="Source\Platform\Windows\Window.cpp" />
@@ -138,6 +142,8 @@
     <ClInclude Include="Source\Core\DebugUtils.h" />
     <ClInclude Include="Source\Core\MeshGeometry.h" />
     <ClInclude Include="Source\Core\PerGameSettings.h" />
+    <ClInclude Include="Source\Core\RenderItem.h" />
+    <ClInclude Include="Source\Core\ShaderBase.h" />
     <ClInclude Include="Source\Core\UploadBuffer.h" />
     <ClInclude Include="Source\Engine\ECS\Base\ComponentArray.h" />
     <ClInclude Include="Source\Engine\ECS\Base\ComponentManager.h" />
@@ -155,6 +161,8 @@
     <ClInclude Include="Source\Engine\ECS\Systems\TransformSystem.h" />
     <ClInclude Include="Source\Engine\Engine.h" />
     <ClInclude Include="Source\Engine\GameTimer.h" />
+    <ClInclude Include="Source\Engine\InputHandler.h" />
+    <ClInclude Include="Source\Engine\SplashScreen.h" />
     <ClInclude Include="Source\Platform\Windows\IApplication.h" />
     <ClInclude Include="Source\Platform\Windows\Win32Utils.h" />
     <ClInclude Include="Source\Platform\Windows\Window.h" />

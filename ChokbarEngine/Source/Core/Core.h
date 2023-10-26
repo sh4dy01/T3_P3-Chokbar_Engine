@@ -1,5 +1,8 @@
 #pragma once
 
+#include <vector>
+
+
 #include "CoreMinimal.h"
 
 #include "Engine/ECS/Base/Coordinator.h"
@@ -9,6 +12,3 @@
 #include "Engine/GameTimer.h"
 
 #include "Core/D3DApp.h"
-#include "Core/D3DMath.h"
-
-#include "DebugUtils.h"
