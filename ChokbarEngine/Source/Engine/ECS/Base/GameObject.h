@@ -10,9 +10,29 @@ namespace Chokbar
 
 		GameObject();
 		GameObject(const std::string& name);
+
+		template<typename... Component>
+		GameObject(const std::string& name, Component... components)
+		{
+			m_Name = name;
+
+
+			(AddComponent<Component>(), ...);       
+		}
+
 		~GameObject();
 
-		void AddComponent(Component component) const;
+		template<class Component>
+		void AddComponent()
+		{
+			Component component;
+			component.gameObject = this;
+			component.transform = transform;
+
+			DEBUG_LOG("Adding component: " + std::string(typeid(Component).name()) + " to " + m_Name + " entity");
+
+			Engine::GetCoordinator().AddComponent<Component>(m_InstanceID, component);
+		}
 
 		template<class T>
 		T* GetComponent()
@@ -21,7 +41,7 @@ namespace Chokbar
 		}
 
 		template<class T>
-		bool TryGetComponent(T)
+		bool HasComponent()
 		{
 			return Engine::GetCoordinator().HasComponent<T>(m_InstanceID);
 		}
@@ -29,7 +49,7 @@ namespace Chokbar
 
 	public:
 
-		Transform m_Transform;
+		Transform* transform;
 	};
 }
 

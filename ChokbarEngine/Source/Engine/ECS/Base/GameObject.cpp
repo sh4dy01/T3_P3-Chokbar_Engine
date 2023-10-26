@@ -2,20 +2,19 @@
 #include "GameObject.h"
 
 Chokbar::GameObject::GameObject()
-= default;
+{
+	transform = Engine::GetCoordinator().GetComponent<Transform>(m_InstanceID);
+}
 
 Chokbar::GameObject::GameObject(const std::string& name)
 	: Object(name)
 {
-
+	transform = Engine::GetCoordinator().GetComponent<Transform>(m_InstanceID);
 }
+
 
 Chokbar::GameObject::~GameObject()
 = default;
 
-void Chokbar::GameObject::AddComponent(Component component) const
-{
-	Engine::GetCoordinator().AddComponent(m_InstanceID, component);
-}
 
 

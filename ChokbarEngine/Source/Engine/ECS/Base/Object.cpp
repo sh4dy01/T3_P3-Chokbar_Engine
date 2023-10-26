@@ -7,13 +7,13 @@ namespace Chokbar
 	Object::Object()
 		: m_Name("DefaultName")
 	{
-		m_InstanceID = Engine::GetCoordinator().CreateNewGameObjectID();
+		m_InstanceID = Engine::GetCoordinator().CreateNewGameObjectWithTransform();
 	}
 
 	Object::Object(const std::string& name)
 		: m_Name(name)
 	{
-		m_InstanceID = Engine::GetCoordinator().CreateNewGameObjectID();
+		m_InstanceID = Engine::GetCoordinator().CreateNewGameObjectWithTransform();
 		DEBUG_LOG("Object created with name: " + name);
 	}
 
@@ -46,12 +46,12 @@ namespace Chokbar
 	{
 		Object clone = Instantiate(original);
 
-		Transform newTransform;
-		newTransform.Position = position;
-		newTransform.Rotation = rotation;
-		newTransform.Scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
+		const auto transform = Engine::GetCoordinator().GetComponent<Transform>(clone.m_InstanceID);
+		transform->Position = position;
+		transform->Rotation = rotation;
 
-		Engine::GetCoordinator().AddComponent<Transform>(clone.m_InstanceID, newTransform);
+		//TODO: assign parent transform
+
 
 		return clone;
 	}

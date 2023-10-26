@@ -25,6 +25,7 @@ namespace Chokbar
 	public:
 
 		std::string GetName() { return m_Name; }
+		void SetName(const std::string& name) { m_Name = name; }
 
 	protected:
 
