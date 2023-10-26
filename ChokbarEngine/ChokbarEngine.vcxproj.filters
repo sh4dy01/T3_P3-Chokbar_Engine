@@ -106,6 +106,12 @@
     <ClCompile Include="Source\Core\DebugUtils.cpp">
       <Filter>Source\Core\Private</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Core\ShaderBase.cpp">
+      <Filter>Source\Core\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Core\RenderItem.cpp">
+      <Filter>Source\Core\Private</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Engine\SplashScreen.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -168,6 +174,12 @@
     </ClInclude>
     <ClInclude Include="Source\Core\DebugUtils.h">
       <Filter>Source\Core\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Core\ShaderBase.h">
+      <Filter>Source\Core\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Core\RenderItem.h">
+      <Filter>Source\Core\Classes</Filter>
     </ClInclude>
     <ClInclude Include="Source\Engine\SplashScreen.h" />
   </ItemGroup>

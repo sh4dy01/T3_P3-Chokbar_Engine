@@ -10,12 +10,7 @@
 #include <d3dcompiler.h>
 #include <WinUser.h>
 
-#include "UploadBuffer.h"
-#include "MeshGeometry.h"
-
-#include <vector>
-#include <map>
-#include <unordered_map>
+#include "RenderItem.h"
 
 #pragma region GLOBAL VARIABLES
 
@@ -38,6 +33,10 @@ public:
 	void Update(const float dt, const float totalTime);
 	void Render();
 
+	int m_bufferWidth;
+	int m_bufferHeight;
+
+	Camera m_camera;
 private:
 	void EnableDebugLayer();
 
@@ -57,16 +56,11 @@ private:
 	void CreateDepthStencilBuffer();
 
 	void CreateGeometry();
-	void CreateConstantBuffers();
-	void UpdateObjectCB(const float dt, const float totalTime);
-	void UpdateMainPassCB(const float dt, const float totalTime);
+	void CreateShaders();
 
-	void CreateObject();
 	void CreateRenderItems();
-	void DrawRenderItems(ID3D12GraphicsCommandList *cmdList, const std::vector<RenderItem *> &renderItems);
-
-	void CreateRootSignature();
-	void CreatePipelineStateObject();
+	void DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItem*>& renderItems);
+	void UpdateRenderItems(const float dt, const float totalTime);
 
 	/* /!\ Be careful, this method uses the commandList component.
 	Therefore, it must be called within a command list Reset() and ExecuteCommandList() scope */
@@ -89,8 +83,6 @@ private:
 	bool m_4xMsaaState;	  // 4X MSAA (4.1.8) enabled. Default is false.
 	UINT m_4xMsaaQuality; // quality level of 4X MSAA
 
-	int m_bufferWidth;
-	int m_bufferHeight;
 
 	/* D3D12 Factory : Used to create the swap chain */
 	IDXGIFactory4 *m_pDxgiFactory;
@@ -152,41 +144,7 @@ private:
 	/* Reference to our pyramid geometry. It is instanciated once and can be used by any RenderItem */
 	MeshGeometry *m_pyramidGeometry;
 
+	ShaderBase* m_pShader;
+
 	const int m_ObjectCount = 2;
-
-	/* Upload buffers are used to give the GPU information at runtime with the CPU.
-	Those buffers uses the GPU Upload Heap that allows the CPU to upload data to the GPU at runtime */
-
-	/* The Main Object Constant Buffer stocks every constant buffer. Each constant buffer is associated to an unique RenderItem
-	To find the associated RenderItem, you can use the index of the used object constant buffer
-	NOTE : The object constant buffer is associated to the b0 cbuffer in the shader (only true in our project) */
-	std::vector<UploadBuffer<ObjectConstants> *> m_mainObjectCB;
-	/* The Main Pass Constant Buffer stores every information the shader might need about our camera
-	NOTE : The main pass constant buffer is associated to the b1 cbuffer in the shader (only true in our project) */
-	UploadBuffer<PassConstants> *m_mainPassCB;
-
-	/* Compile code of the vertex shader */
-	ID3DBlob *m_vsByteCode;
-	/* Compile code of the pixel shader */
-	ID3DBlob *m_psByteCode;
-	/* D3D12RootSignature : Defines where the resources bound to the rendering pipeline can be found by the shader
-	We use a root signature to define the resources that are going to be used by the shaders
-	Therefore, the root signature will be created with an array of RootParameter that express where the exprected resource by the shader is located */
-	ID3D12RootSignature *m_rootSignature;
-
-	/* First implementation of a Camera object */
-	Camera m_camera{};
-
-	/* D3D12 PipelineStateObject : (PSO : Pipeline State Object) Represents the state of the pipeline
-	We use a PSO to define the state of the pipeline. This includes the shaders, the input layout, the render targets, the depth stencil buffer, etc...
-	For each shader, we need to create another PSO, this sytem will be implemented later on */
-	enum PSO_TYPE
-	{
-		PSO_OPAQUE,
-		PSO_TRANSPARENT,
-		PSO_COUNT
-	};
-	std::unordered_map<PSO_TYPE, ID3D12PipelineState *> m_PSOs;
-	bool m_isWireframe;
-
 };

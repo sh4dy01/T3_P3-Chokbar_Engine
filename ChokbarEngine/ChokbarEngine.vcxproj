@@ -107,6 +107,8 @@
     <ClCompile Include="Source\Core\DebugUtils.cpp" />
     <ClCompile Include="Source\Core\MeshGeometry.cpp" />
     <ClCompile Include="Source\Core\PerGameSettings.cpp" />
+    <ClCompile Include="Source\Core\RenderItem.cpp" />
+    <ClCompile Include="Source\Core\ShaderBase.cpp" />
     <ClCompile Include="Source\Core\UpdloadBuffer.cpp" />
     <ClCompile Include="Source\Engine\Engine.cpp" />
     <ClCompile Include="Source\Engine\GameTimer.cpp" />
@@ -129,6 +131,8 @@
     <ClInclude Include="Source\Core\DebugUtils.h" />
     <ClInclude Include="Source\Core\MeshGeometry.h" />
     <ClInclude Include="Source\Core\PerGameSettings.h" />
+    <ClInclude Include="Source\Core\RenderItem.h" />
+    <ClInclude Include="Source\Core\ShaderBase.h" />
     <ClInclude Include="Source\Core\UploadBuffer.h" />
     <ClInclude Include="Source\Engine\Engine.h" />
     <ClInclude Include="Source\Engine\GameTimer.h" />
