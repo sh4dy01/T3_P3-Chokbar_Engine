@@ -14,13 +14,15 @@ namespace Chokbar {
 		~Coordinator();
 
 	public:
-
 		// Initialize the coordinator and all its managers
 		void Init();
+		void RegisterComponents();
+		void RegisterSystems();
+
 		// Create a new game object ID and add a default transform component
-		InstanceID CreateNewGameObjectID();
+		InstanceID CreateNewGameObjectWithTransform();
 		// Create a new game object ID and add a copied transform component
-		InstanceID CreateNewGameObjectID(const Transform& transform);
+		InstanceID CreateNewGameObjectWithTransform(const Transform& transform);
 		void UpdateSystems();
 		void DestroyEntity(InstanceID entity);
 

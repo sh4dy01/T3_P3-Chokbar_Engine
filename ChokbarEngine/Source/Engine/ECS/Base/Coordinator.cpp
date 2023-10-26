@@ -1,6 +1,9 @@
 #include "Chokbar.h"
 #include "Coordinator.h"
 
+#include "Engine/ECS/Components/MeshRenderer.h"
+#include "Engine/ECS/Components/PlayerComponent.h"
+
 namespace Chokbar {
 
 	Coordinator::Coordinator()
@@ -21,9 +24,32 @@ namespace Chokbar {
 		m_ComponentManager = std::make_unique<ComponentManager>();
 		m_EntityManager = std::make_unique<EntityManager>();
 		m_SystemManager = std::make_unique<SystemManager>();
+
+		RegisterComponents();
+		RegisterSystems();
 	}
 
-	InstanceID Coordinator::CreateNewGameObjectID()
+	void Coordinator::RegisterComponents()
+	{
+		//TODO: Automatize this
+
+		RegisterComponent<Transform>();
+		RegisterComponent<MeshRenderer>();
+		RegisterComponent<PlayerComponent>();
+	}
+
+	void Coordinator::RegisterSystems()
+	{
+		//TODO: Automatize this
+		RegisterSystem<TransformSystem>();
+		{
+			Signature signature;
+			signature.set(GetComponentType<Transform>());
+		}
+	}
+
+
+	InstanceID Coordinator::CreateNewGameObjectWithTransform()
 	{
 		const InstanceID newId = m_EntityManager->CreateEntity();
 		m_ComponentManager->AddComponent<Transform>(newId, Transform());
@@ -31,7 +57,7 @@ namespace Chokbar {
 		return newId;
 	}
 
-	InstanceID Coordinator::CreateNewGameObjectID(const Transform& transform)
+	InstanceID Coordinator::CreateNewGameObjectWithTransform(const Transform& transform)
 	{
 		const InstanceID newId = m_EntityManager->CreateEntity();
 		const Transform copiedTransform = transform;
