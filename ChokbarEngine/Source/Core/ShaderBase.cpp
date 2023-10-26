@@ -208,14 +208,13 @@ void ShaderSimple::AddObjectCB()
 	m_objectCBs.push_back(cb);
 }
 
-void ShaderSimple::UpdateObjectCB(DirectX::XMMATRIX& itemWorldMatrix, UINT cbIndex)
+void ShaderSimple::UpdateObjectCB(DirectX::XMFLOAT4X4& itemWorldMatrix, UINT cbIndex)
 {
 	if (cbIndex >= m_objectCBs.size())
 		AddObjectCB();
 
 	ObjConstants objConstants;
-	XMStoreFloat4x4(&objConstants.World, itemWorldMatrix);
-	m_objectCBs[cbIndex]->CopyData(0, &objConstants);
+	m_objectCBs[cbIndex]->CopyData(0, &itemWorldMatrix);
 }
 
 void ShaderSimple::BeginDraw(ID3D12GraphicsCommandList* cmdList)

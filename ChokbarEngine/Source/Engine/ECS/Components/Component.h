@@ -1,14 +1,14 @@
 #pragma once
 
 
-struct Transform;
-
 namespace Chokbar
 {
+	class Transform;
 	class GameObject;
 
-	struct Component
+	class Component
 	{
+	public:
 		GameObject* gameObject;
 		Transform* transform;
 	};

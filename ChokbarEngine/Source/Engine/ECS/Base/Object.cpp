@@ -47,8 +47,8 @@ namespace Chokbar
 		Object clone = Instantiate(original);
 
 		const auto transform = Engine::GetCoordinator().GetComponent<Transform>(clone.m_InstanceID);
-		transform->Position = position;
-		transform->Rotation = rotation;
+		transform->SetPosition(position);
+		transform->Rotate(rotation);
 
 		//TODO: assign parent transform
 

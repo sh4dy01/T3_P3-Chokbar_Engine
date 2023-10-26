@@ -1,6 +1,7 @@
 #pragma once
 #include "Object.h"
 #include "Engine/Engine.h"
+#include "Engine/ECS/Components/Component.h"
 
 namespace Chokbar
 {
