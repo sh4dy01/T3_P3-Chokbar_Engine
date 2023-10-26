@@ -41,5 +41,7 @@ namespace Chokbar {
 		GameTimer m_GameTimer;
 		Win32::Window m_Window;
 
+		InputHandler m_InputHandler;
+
 	};
 }

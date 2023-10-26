@@ -67,6 +67,7 @@ namespace Chokbar
 
 	void Engine::Update(float dt)
 	{
+		m_InputHandler.CheckInput();
 		D3DApp::GetInstance()->Update(dt, m_GameTimer.GetTotalTime());
 		CalculateFrameStats();
 	}
