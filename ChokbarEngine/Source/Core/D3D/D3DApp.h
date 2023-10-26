@@ -5,13 +5,10 @@
 #include <crtdbg.h>
 #endif
 
-#include <Core/d3dx12.h>
+#include <Core/D3D/External/d3dx12.h>
 #include <dxgi1_6.h>
 #include <d3dcompiler.h>
 #include <WinUser.h>
-
-#include "RenderItem.h"
-#include <unordered_map>
 
 #pragma region GLOBAL VARIABLES
 
@@ -71,9 +68,6 @@ private:
 	void DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItem*>& renderItems);
 	void UpdateRenderItems(const float dt, const float totalTime);
 
-	/* /!\ Be careful, this method uses the commandList component.
-	Therefore, it must be called within a command list Reset() and ExecuteCommandList() scope */
-	ID3D12Resource *CreateDefaultBuffer(const void *initData, UINT64 byteSize, ID3D12Resource *uploadBuffer);
 	D3D12_CPU_DESCRIPTOR_HANDLE CurrentBackBufferView() const;
 	D3D12_CPU_DESCRIPTOR_HANDLE DepthStencilView() const;
 
@@ -150,7 +144,7 @@ private:
 	std::vector<RenderItem *> m_TransparentRenderItems{};
 
 	/* Reference to our pyramid geometry. It is instanciated once and can be used by any RenderItem */
-	MeshGeometry *m_pyramidGeometry;
+	D3DMesh *m_pyramidGeometry;
 
 	UINT m_texIndex;
 	ShaderBase* m_pShader[2];

@@ -10,10 +10,10 @@ enum ShaderType { BASE, SIMPLE, TEXTURE };
 
 struct ShaderDrawArguments
 {
-	ShaderDrawArguments(ID3D12GraphicsCommandList* cmdList, UINT renderItemCBIndex, MeshGeometry* renderItemGeometry) : CmdList(cmdList), RenderItemCBIndex(renderItemCBIndex), RenderItemGeometry(renderItemGeometry) { }
+	ShaderDrawArguments(ID3D12GraphicsCommandList* cmdList, UINT renderItemCBIndex, D3DMesh* renderItemGeometry) : CmdList(cmdList), RenderItemCBIndex(renderItemCBIndex), RenderItemGeometry(renderItemGeometry) { }
 	ID3D12GraphicsCommandList* CmdList;
 	UINT RenderItemCBIndex;
-	MeshGeometry* RenderItemGeometry;
+	D3DMesh* RenderItemGeometry;
 };
 
 class ShaderBase

@@ -105,7 +105,8 @@
     <ClCompile Include="Source\Core\D3D\D3DMath.cpp" />
     <ClCompile Include="Source\Core\D3D\D3DUtils.cpp" />
     <ClCompile Include="Source\Core\D3D\External\DDSTextureLoader.cpp" />
-    <ClCompile Include="Source\Core\D3D\Internal\MeshGeometry.cpp" />
+    <ClCompile Include="Source\Core\D3D\Internal\D3DMesh.cpp" />
+    <ClCompile Include="Source\Core\D3D\Internal\MeshRenderer.cpp" />
     <ClCompile Include="Source\Core\D3D\Internal\RenderItem.cpp" />
     <ClCompile Include="Source\Core\D3D\Internal\ShaderBase.cpp" />
     <ClCompile Include="Source\Core\D3D\Internal\Texture.cpp" />
@@ -145,7 +146,8 @@
     <ClInclude Include="Source\Core\D3D\D3DUtils.h" />
     <ClInclude Include="Source\Core\D3D\External\d3dx12.h" />
     <ClInclude Include="Source\Core\D3D\External\DDSTextureLoader.h" />
-    <ClInclude Include="Source\Core\D3D\Internal\MeshGeometry.h" />
+    <ClInclude Include="Source\Core\D3D\Internal\D3DMesh.h" />
+    <ClInclude Include="Source\Core\D3D\Internal\MeshRenderer.h" />
     <ClInclude Include="Source\Core\D3D\Internal\RenderItem.h" />
     <ClInclude Include="Source\Core\D3D\Internal\ShaderBase.h" />
     <ClInclude Include="Source\Core\D3D\Internal\Texture.h" />

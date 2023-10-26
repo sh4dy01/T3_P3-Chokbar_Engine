@@ -184,7 +184,7 @@
     <ClCompile Include="Source\Core\External\DDSTextureLoader.cpp">
       <Filter>Source\Engine\External\Private</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Core\D3D\Internal\MeshGeometry.cpp">
+    <ClCompile Include="Source\Core\D3D\Internal\D3DMesh.cpp">
       <Filter>Source\Engine\Core\D3D\Internal\Private</Filter>
     </ClCompile>
     <ClCompile Include="Source\Core\D3D\Internal\RenderItem.cpp">
@@ -210,6 +210,9 @@
     </ClCompile>
     <ClCompile Include="Source\Core\D3D\D3DUtils.cpp">
       <Filter>Source\Engine\Core\D3D\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Core\D3D\Internal\MeshRenderer.cpp">
+      <Filter>Source\Engine\Core\D3D\Internal\Private</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -306,7 +309,7 @@
     <ClInclude Include="Source\Engine\Resource.h">
       <Filter>Source\Engine\Public</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Core\D3D\Internal\MeshGeometry.h">
+    <ClInclude Include="Source\Core\D3D\Internal\D3DMesh.h">
       <Filter>Source\Engine\Core\D3D\Internal\Public</Filter>
     </ClInclude>
     <ClInclude Include="Source\Core\D3D\Internal\RenderItem.h">
@@ -338,6 +341,9 @@
     </ClInclude>
     <ClInclude Include="Source\Core\D3D\D3DUtils.h">
       <Filter>Source\Engine\Core\D3D\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Core\D3D\Internal\MeshRenderer.h">
+      <Filter>Source\Engine\Core\D3D\Internal\Public</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

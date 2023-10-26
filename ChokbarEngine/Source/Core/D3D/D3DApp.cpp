@@ -1,7 +1,7 @@
 #include "Chokbar.h"
 
 #include "D3DApp.h"
-#include "DebugUtils.h"
+#include "Core/DebugUtils.h"
 #include "Texture.h"
 #include "Engine/ECS/Components/TransformComponent.h"
 
@@ -430,28 +430,6 @@ void D3DApp::CreateGeometry()
 	};
 
 	UINT16 iList[] = { 0, 1, 2, 0, 2, 3, 0, 3, 4, 0, 4, 1 };
-
-	BeginList();
-
-	const UINT64 iBufferSize = sizeof(iList);
-	const UINT64 vBufferSize = sizeof(vList);
-
-	m_pyramidGeometry = new MeshGeometry();
-	m_pyramidGeometry->Name = "Pyramid";
-
-	m_pyramidGeometry->VertexBufferGPU = CreateDefaultBuffer(vList, vBufferSize, m_pyramidGeometry->VertexBufferUploader);
-	m_pyramidGeometry->VertexByteStride = sizeof(Vertex_PosColor);
-	m_pyramidGeometry->VertexBufferByteSize = sizeof(Vertex_PosColor) * _countof(vList);
-
-	m_pyramidGeometry->IndexBufferGPU = CreateDefaultBuffer(iList, iBufferSize, m_pyramidGeometry->IndexBufferUploader);
-	m_pyramidGeometry->IndexFormat = DXGI_FORMAT_R16_UINT;
-	m_pyramidGeometry->IndexBufferByteSize = iBufferSize;
-
-	m_pyramidGeometry->IndexCount = _countof(iList);
-	m_pyramidGeometry->StartIndexLocation = 0;
-	m_pyramidGeometry->BaseVertexLocation = 0;
-
-	EndList();
 }
 
 void D3DApp::CreateShaders()
@@ -557,32 +535,6 @@ void D3DApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vect
 
 		item.Shader->EndDraw(cmdList);
 	}
-}
-
-ID3D12Resource* D3DApp::CreateDefaultBuffer(const void* initData, UINT64 byteSize, ID3D12Resource* uploadBuffer)
-{
-	ID3D12Resource* defaultBuffer = nullptr;
-
-	CD3DX12_HEAP_PROPERTIES heapProperties(D3D12_HEAP_TYPE_DEFAULT);
-	CD3DX12_RESOURCE_DESC resourceDesc = CD3DX12_RESOURCE_DESC::Buffer(byteSize);
-	m_pD3dDevice->CreateCommittedResource(&heapProperties, D3D12_HEAP_FLAG_NONE, &resourceDesc, D3D12_RESOURCE_STATE_COMMON, nullptr, IID_PPV_ARGS(&defaultBuffer));
-	if (defaultBuffer == nullptr) return nullptr;
-
-	CD3DX12_HEAP_PROPERTIES uploadHeapProperties(D3D12_HEAP_TYPE_UPLOAD);
-	m_pD3dDevice->CreateCommittedResource(&uploadHeapProperties, D3D12_HEAP_FLAG_NONE, &resourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&uploadBuffer));
-	if (uploadBuffer == nullptr) return nullptr;
-
-	D3D12_SUBRESOURCE_DATA subresourceData = {};
-	subresourceData.pData = initData;
-	subresourceData.RowPitch = byteSize;
-	subresourceData.SlicePitch = subresourceData.RowPitch;
-
-	CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(defaultBuffer, D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_COPY_DEST);
-	m_pCommandList->ResourceBarrier(1, &barrier);
-	UpdateSubresources<1>(m_pCommandList, defaultBuffer, uploadBuffer, 0, 0, 1, &subresourceData);
-	m_pCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(defaultBuffer, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_GENERIC_READ));
-
-	return defaultBuffer;
 }
 
 D3D12_CPU_DESCRIPTOR_HANDLE D3DApp::CurrentBackBufferView() const

@@ -14,7 +14,7 @@ struct RenderItem
 
 	UINT ObjCBIndex = -1;
 
-	MeshGeometry* Geo = nullptr;
+	D3DMesh* Geo = nullptr;
 	ShaderBase* Shader = nullptr;
 	Texture* Texture = nullptr;
 
