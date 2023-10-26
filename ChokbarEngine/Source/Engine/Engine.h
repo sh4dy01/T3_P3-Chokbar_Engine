@@ -6,6 +6,7 @@
 #include "Engine/ECS/Base/Coordinator.h"
 #include "GameTimer.h"
 #include "Platform/Windows/Window.h"
+#include "InputHandler.h"
 
 
 namespace Chokbar {

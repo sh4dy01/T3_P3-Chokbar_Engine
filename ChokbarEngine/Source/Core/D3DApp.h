@@ -146,5 +146,5 @@ private:
 
 	ShaderBase* m_pShader;
 
-	const int m_ObjectCount = 2;
+	const int m_ObjectCount = 3;
 };

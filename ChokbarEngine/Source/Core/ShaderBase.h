@@ -91,7 +91,7 @@ public:
 	UINT GetLastIndex() { return (UINT)m_objectCBs.size(); }
 	ShaderBase* Bind();
 	virtual void AddObjectCB() = 0;
-	virtual void UpdateObjectCB(DirectX::XMMATRIX& itemWorldMatrix, UINT cbIndex) = 0;
+	virtual void UpdateObjectCB(DirectX::XMFLOAT4X4& itemWorldMatrix, UINT cbIndex) = 0;
 
 	void CreatePassCB();
 	void UpdatePassCB(const float dt, const float totalTime);
@@ -112,7 +112,7 @@ public:
 	void CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT& rtvFormat, DXGI_FORMAT& dsvFormat) override;
 
 	void AddObjectCB() override;
-	void UpdateObjectCB(DirectX::XMMATRIX& itemWorldMatrix, UINT cbIndex) override;
+	void UpdateObjectCB(DirectX::XMFLOAT4X4& itemWorldMatrix, UINT cbIndex) override;
 
 	void BeginDraw(ID3D12GraphicsCommandList* cmdList) override;
 	void Draw(ShaderDrawArguments& args) override;
