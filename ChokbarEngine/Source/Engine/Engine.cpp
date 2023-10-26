@@ -42,13 +42,6 @@ namespace Chokbar
 
 		//TODO : Move to a better place
 		m_Coordinator.Init();
-		m_Coordinator.RegisterComponent<Transform>();
-
-		m_Coordinator.RegisterSystem<TransformSystem>();
-		{
-			Signature signature;
-			signature.set(m_Coordinator.GetComponentType<Transform>());
-		}
 		
 
 		m_Window.CreateNewWindow(DEFAULT_WIDTH, DEFAULT_HEIGHT, PerGameSettings::GameName(), PerGameSettings::MainIcon(), Win32::RESIZABLE);
