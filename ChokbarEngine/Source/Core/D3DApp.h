@@ -10,6 +10,7 @@
 #include <d3dcompiler.h>
 
 #include "RenderItem.h"
+#include <unordered_map>
 
 
 
@@ -33,6 +34,14 @@ public:
 	void OnResize(int, int);
 	void Update(const float dt, const float totalTime);
 	void Render();
+
+	ID3D12Device* GetDevice() const { return m_pD3dDevice; }
+	ID3D12GraphicsCommandList* GetCommandList() const { return m_pCommandList; }
+	void BeginList();
+	void EndList();
+
+	void UpdateTextureHeap(Texture* tex);
+
 
 	int m_bufferWidth;
 	int m_bufferHeight;
@@ -150,7 +159,8 @@ private:
 	/* Reference to our pyramid geometry. It is instanciated once and can be used by any RenderItem */
 	MeshGeometry* m_pyramidGeometry;
 
-	ShaderBase* m_pShader;
+	UINT m_texIndex;
+	ShaderBase* m_pShader[2];
 
 	const int m_ObjectCount = 2;
 };

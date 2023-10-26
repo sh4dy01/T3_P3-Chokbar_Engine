@@ -2,6 +2,7 @@
 
 #include "D3DApp.h"
 #include "DebugUtils.h"
+#include "Texture.h"
 
 using namespace DirectX;
 
@@ -28,8 +29,6 @@ D3DApp::D3DApp() :
 	m_pCbvHeap = nullptr;
 
 	m_pyramidGeometry = nullptr;
-
-	m_pShader = nullptr;
 
 	m_pSwapChain = nullptr;
 	m_pSwapChainBuffer[0] = nullptr;
@@ -82,7 +81,8 @@ D3DApp::~D3DApp() {
 void D3DApp::Update(const float dt, const float totalTime)
 {
 	UpdateRenderItems(dt, totalTime);
-	m_pShader->UpdatePassCB(dt, totalTime);
+	m_pShader[ShaderType::SIMPLE]->UpdatePassCB(dt, totalTime);
+	m_pShader[ShaderType::TEXTURE]->UpdatePassCB(dt, totalTime);
 }
 
 void D3DApp::Render()
@@ -178,6 +178,21 @@ void D3DApp::InitializeD3D12(Win32::Window* window)
 	CreateRenderItems();
 
 	RegisterInitCommands_In_CommandList();
+}
+
+void D3DApp::BeginList()
+{
+	m_pCommandAllocator->Reset();
+	m_pCommandList->Reset(m_pCommandAllocator, nullptr);
+}
+
+void D3DApp::EndList()
+{
+	HRESULT hr = m_pCommandList->Close();
+
+	ID3D12CommandList* cmdLists[] = { m_pCommandList };
+	m_pCommandQueue->ExecuteCommandLists(_countof(cmdLists), cmdLists);
+	FlushCommandQueue();
 }
 
 void D3DApp::EnableDebugLayer()
@@ -310,17 +325,13 @@ void D3DApp::FlushCommandQueue()
 
 void D3DApp::RegisterInitCommands_In_CommandList()
 {
-	m_pCommandAllocator->Reset();
-	m_pCommandList->Reset(m_pCommandAllocator, nullptr);
+	BeginList();
 
 	CreateDepthStencilBuffer();
-	m_pShader->CreatePsoAndRootSignature(VertexType::POS_COLOR, m_BackBufferFormat, m_DepthStencilFormat);
+	m_pShader[0]->CreatePsoAndRootSignature(VertexType::POS_COLOR, m_BackBufferFormat, m_DepthStencilFormat);
+	m_pShader[1]->CreatePsoAndRootSignature(VertexType::POS_TEX, m_BackBufferFormat, m_DepthStencilFormat);
 
-	HRESULT hr = m_pCommandList->Close();
-
-	ID3D12CommandList* cmdLists[] = { m_pCommandList };
-	m_pCommandQueue->ExecuteCommandLists(_countof(cmdLists), cmdLists);
-	FlushCommandQueue();
+	EndList();
 }
 
 void D3DApp::CreateRtvAndDsvDescriptorHeaps()
@@ -343,7 +354,7 @@ void D3DApp::CreateRtvAndDsvDescriptorHeaps()
 	m_pD3dDevice->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(&m_pDsvHeap));
 
 	D3D12_DESCRIPTOR_HEAP_DESC cbvHeapDesc;
-	cbvHeapDesc.NumDescriptors = 10; 
+	cbvHeapDesc.NumDescriptors = 10;
 	cbvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 	cbvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	cbvHeapDesc.NodeMask = 0;
@@ -408,7 +419,7 @@ void D3DApp::CreateRenderTargetView()
 
 void D3DApp::CreateGeometry()
 {
-	Vertex vList[] =
+	Vertex_PosColor vList[] =
 	{
 		{ XMFLOAT3(0.0f, 1.0f, 0.0f),   XMFLOAT4(0.8f, 0.1f, 0.1f, 1.0f) },
 		{ XMFLOAT3(-0.5f, 0.0f, -0.5f), XMFLOAT4(0.1f, 0.8f, 0.1f, 1.0f) },
@@ -419,8 +430,7 @@ void D3DApp::CreateGeometry()
 
 	UINT16 iList[] = { 0, 1, 2, 0, 2, 3, 0, 3, 4, 0, 4, 1 };
 
-	m_pCommandAllocator->Reset();
-	m_pCommandList->Reset(m_pCommandAllocator, nullptr);
+	BeginList();
 
 	const UINT64 iBufferSize = sizeof(iList);
 	const UINT64 vBufferSize = sizeof(vList);
@@ -429,8 +439,8 @@ void D3DApp::CreateGeometry()
 	m_pyramidGeometry->Name = "Pyramid";
 
 	m_pyramidGeometry->VertexBufferGPU = CreateDefaultBuffer(vList, vBufferSize, m_pyramidGeometry->VertexBufferUploader);
-	m_pyramidGeometry->VertexByteStride = sizeof(Vertex);
-	m_pyramidGeometry->VertexBufferByteSize = sizeof(Vertex) * _countof(vList);
+	m_pyramidGeometry->VertexByteStride = sizeof(Vertex_PosColor);
+	m_pyramidGeometry->VertexBufferByteSize = sizeof(Vertex_PosColor) * _countof(vList);
 
 	m_pyramidGeometry->IndexBufferGPU = CreateDefaultBuffer(iList, iBufferSize, m_pyramidGeometry->IndexBufferUploader);
 	m_pyramidGeometry->IndexFormat = DXGI_FORMAT_R16_UINT;
@@ -440,18 +450,18 @@ void D3DApp::CreateGeometry()
 	m_pyramidGeometry->StartIndexLocation = 0;
 	m_pyramidGeometry->BaseVertexLocation = 0;
 
-	HRESULT hr = m_pCommandList->Close();
-
-	ID3D12CommandList* cmdLists[] = { m_pCommandList };
-	m_pCommandQueue->ExecuteCommandLists(_countof(cmdLists), cmdLists);
-	FlushCommandQueue();
+	EndList();
 }
 
 void D3DApp::CreateShaders()
 {
-	std::wstring shaderPath = L"Shader/vertex_pixel.hlsl";
-	m_pShader = new ShaderSimple(m_pD3dDevice, m_pCbvHeap, m_CbvSrvUavDescriptorSize, shaderPath);
-	m_pShader->Init();
+	std::wstring shaderPathSimple = L"Shader/Simple.hlsl";
+	m_pShader[ShaderType::SIMPLE] = new ShaderSimple(m_pD3dDevice, m_pCbvHeap, m_CbvSrvUavDescriptorSize, shaderPathSimple);
+	m_pShader[ShaderType::SIMPLE]->Init();
+
+	std::wstring shaderPathTex = L"Shader/Texture.hlsl";
+	m_pShader[ShaderType::TEXTURE] = new ShaderTexture(m_pD3dDevice, m_pCbvHeap, m_CbvSrvUavDescriptorSize, shaderPathTex);
+	m_pShader[ShaderType::TEXTURE]->Init();
 }
 
 void D3DApp::CreateRenderItems()
@@ -461,7 +471,7 @@ void D3DApp::CreateRenderItems()
 		auto pyrItem = RenderItem();
 		pyrItem.ObjCBIndex = m_AllRenderItems.size();
 		pyrItem.Geo = m_pyramidGeometry;
-		pyrItem.Shader = m_pShader->Bind();
+		pyrItem.Shader = m_pShader[i]->Bind();
 		pyrItem.PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 		pyrItem.IndexCount = pyrItem.Geo->IndexCount;
 		pyrItem.StartIndexLocation = pyrItem.Geo->StartIndexLocation;
@@ -486,6 +496,26 @@ void D3DApp::CreateRenderItems()
 	{
 		m_OpaqueRenderItems.push_back(&ri);
 	}
+}
+
+void D3DApp::UpdateTextureHeap(Texture* tex)
+{
+	// auto tex = new Texture("Texture01", L"Resources/Textures/4k.dds");
+	// tex = new Texture("Texture02", L"Resources/Textures/angry_winnie.dds");
+
+	CD3DX12_CPU_DESCRIPTOR_HANDLE hDescriptor(m_pCbvHeap->GetCPUDescriptorHandleForHeapStart());
+	hDescriptor.Offset(m_texIndex, m_CbvSrvUavDescriptorSize);
+
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	srvDesc.Format = tex->Resource->GetDesc().Format;
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Texture2D.MostDetailedMip = 0;
+	srvDesc.Texture2D.MipLevels = tex->Resource->GetDesc().MipLevels;
+	srvDesc.Texture2D.ResourceMinLODClamp = 0.0f;
+	m_pD3dDevice->CreateShaderResourceView(tex->Resource, &srvDesc, hDescriptor);
+
+	m_texIndex++;
 }
 
 void D3DApp::UpdateRenderItems(const float dt, const float totalTime)

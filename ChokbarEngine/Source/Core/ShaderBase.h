@@ -3,7 +3,10 @@
 #include "UploadBuffer.h"
 #include "MeshGeometry.h"
 
+struct Texture;
+
 enum VertexType { POS, POS_COLOR, POS_TEX, POS_NORM_TEX, POS_NORM_TEX_TAN };
+enum ShaderType { BASE, SIMPLE, TEXTURE };
 
 struct ShaderDrawArguments
 {
@@ -18,6 +21,8 @@ class ShaderBase
 public:
 	ShaderBase(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, UINT cbvDescriptorSize, std::wstring& filepath);
 	virtual ~ShaderBase();
+
+	const ShaderType Type;
 
 protected:
 
@@ -85,13 +90,14 @@ public:
 	virtual void CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT& rtvFormat, DXGI_FORMAT& dsvFormat) = 0;
 
 	virtual void BeginDraw(ID3D12GraphicsCommandList* cmdList) = 0;
-	virtual void Draw(ShaderDrawArguments& args) = 0;
+	virtual void Draw(ShaderDrawArguments& args, Texture* text = nullptr) = 0;
 	virtual void EndDraw(ID3D12GraphicsCommandList* cmdList) = 0;
 
 	UINT GetLastIndex() { return (UINT)m_objectCBs.size(); }
 	ShaderBase* Bind();
-	virtual void AddObjectCB() = 0;
-	virtual void UpdateObjectCB(DirectX::XMMATRIX& itemWorldMatrix, UINT cbIndex) = 0;
+
+	virtual void AddObjectCB();
+	virtual void UpdateObjectCB(DirectX::XMMATRIX& itemWorldMatrix, UINT cbIndex);
 
 	void CreatePassCB();
 	void UpdatePassCB(const float dt, const float totalTime);
@@ -111,10 +117,27 @@ public:
 	void Init() override;
 	void CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT& rtvFormat, DXGI_FORMAT& dsvFormat) override;
 
-	void AddObjectCB() override;
-	void UpdateObjectCB(DirectX::XMMATRIX& itemWorldMatrix, UINT cbIndex) override;
+	void BeginDraw(ID3D12GraphicsCommandList* cmdList) override;
+	void Draw(ShaderDrawArguments& args, Texture* text = nullptr) override;
+	void EndDraw(ID3D12GraphicsCommandList* cmdList) override;
+};
+
+class ShaderTexture : public ShaderBase
+{
+public:
+	ShaderTexture(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, UINT cbvDescriptorSize, std::wstring& filepath);
+	~ShaderTexture();
+
+	void Init() override;
+	void CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT& rtvFormat, DXGI_FORMAT& dsvFormat) override;
 
 	void BeginDraw(ID3D12GraphicsCommandList* cmdList) override;
-	void Draw(ShaderDrawArguments& args) override;
+	void Draw(ShaderDrawArguments& args, Texture* text = nullptr) override;
 	void EndDraw(ID3D12GraphicsCommandList* cmdList) override;
+
+public:
+	void BindTexture(Texture* tex) { m_texture = tex; }
+
+private:
+	Texture* m_texture;
 };

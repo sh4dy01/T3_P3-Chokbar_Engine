@@ -39,6 +39,8 @@ namespace Chokbar
 		m_Window.CreateNewWindow(DEFAULT_WIDTH, DEFAULT_HEIGHT, PerGameSettings::GameName(), PerGameSettings::MainIcon(), Win32::RESIZABLE);
 
 		D3DApp::GetInstance()->InitializeD3D12(&m_Window);
+
+		
 	}
 
 #pragma endregion

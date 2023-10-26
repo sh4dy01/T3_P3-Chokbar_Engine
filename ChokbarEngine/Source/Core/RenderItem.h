@@ -16,6 +16,7 @@ struct RenderItem
 
 	MeshGeometry* Geo = nullptr;
 	ShaderBase* Shader = nullptr;
+	Texture* Texture = nullptr;
 
 	D3D12_PRIMITIVE_TOPOLOGY PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 

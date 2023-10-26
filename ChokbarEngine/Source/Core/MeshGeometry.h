@@ -7,7 +7,16 @@ enum TRANSFORMATION_TYPE { TRANSLATION, ROTATION, SCALE };
 struct Vertex
 {
 	DirectX::XMFLOAT3 Pos;
+};
+
+struct Vertex_PosColor : public Vertex
+{
 	DirectX::XMFLOAT4 Color;
+};
+
+struct Vertex_PosTex : public Vertex
+{
+	DirectX::XMFLOAT2 UV;
 };
 
 class MeshGeometry
