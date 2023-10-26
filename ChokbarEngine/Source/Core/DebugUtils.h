@@ -1,5 +1,7 @@
 #pragma once
 
+#include <sstream>
+
 inline std::wstring AnsiToWString(const std::string& str)
 {
 	WCHAR buffer[512];
@@ -24,6 +26,13 @@ public:
 	int LineNumber = -1;
 
 };
+
+#define DEBUG_LOG(x)							\
+{												\
+	std::stringstream ss;						\
+	ss << x << "\n";									\
+	OutputDebugStringA(ss.str().c_str());						\
+}
 
 #define ThrowIfFailed(x)                                              \
 {                                                                     \

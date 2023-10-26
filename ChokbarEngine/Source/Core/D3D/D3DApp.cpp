@@ -3,6 +3,7 @@
 #include "D3DApp.h"
 #include "DebugUtils.h"
 #include "Texture.h"
+#include "Engine/ECS/Components/TransformComponent.h"
 
 using namespace DirectX;
 

@@ -2,6 +2,11 @@
 
 #include "Core/CoreMinimal.h"
 
+#include "Engine/ECS/Base/Coordinator.h"
+#include "GameTimer.h"
+#include "Platform/Windows/Window.h"
+
+
 namespace Chokbar {
 
 	class Engine {
@@ -12,6 +17,7 @@ namespace Chokbar {
 		~Engine();
 
 		static Engine& GetInstance();
+		static Coordinator& GetCoordinator();
 
 		void Initialize();
 		void Run();
@@ -33,12 +39,12 @@ namespace Chokbar {
 		void CalculateFrameStats();
 		bool NeedsToClose();
 
-		float GetDeltaTime() const { return m_GameTimer.GetDeltaTime(); }
-
-
 	private:
 
 		GameTimer m_GameTimer;
+		Coordinator m_Coordinator;
+
+		//physic
 		Win32::Window m_Window;
 
 		InputHandler m_InputHandler;

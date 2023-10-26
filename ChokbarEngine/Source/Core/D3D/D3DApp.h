@@ -76,7 +76,6 @@ private:
 	ID3D12Resource *CreateDefaultBuffer(const void *initData, UINT64 byteSize, ID3D12Resource *uploadBuffer);
 	D3D12_CPU_DESCRIPTOR_HANDLE CurrentBackBufferView() const;
 	D3D12_CPU_DESCRIPTOR_HANDLE DepthStencilView() const;
-	ID3DBlob *CompileShader(const std::wstring &filename, const D3D_SHADER_MACRO *defines, const std::string &entrypoint, const std::string &target);
 
 	/* Creates an ID3D12InfoQueue to catch any error within the Command Queue.
 	Any error will break the code */
