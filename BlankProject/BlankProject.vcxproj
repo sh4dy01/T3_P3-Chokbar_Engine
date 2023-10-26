@@ -115,6 +115,8 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Content\Icons\mainIcon.ico" />
+    <Image Include="Resources\Textures\4k.dds" />
+    <Image Include="Resources\Textures\angry_winnie.dds" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ChokbarEngine\ChokbarEngine.vcxproj">
