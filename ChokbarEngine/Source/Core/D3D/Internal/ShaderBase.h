@@ -1,7 +1,7 @@
 #pragma once
 
 #include "UploadBuffer.h"
-#include "MeshGeometry.h"
+#include "Core/D3D/Internal/D3DMesh.h"
 
 struct Texture;
 
@@ -99,7 +99,7 @@ public:
 	ShaderBase* Bind();
 
 	virtual void AddObjectCB();
-	virtual void UpdateObjectCB(DirectX::XMMATRIX& itemWorldMatrix, UINT cbIndex);
+	virtual void UpdateObjectCB(DirectX::XMFLOAT4X4& itemWorldMatrix, UINT cbIndex);
 
 	void CreatePassCB();
 	void UpdatePassCB(const float dt, const float totalTime);

@@ -1,7 +1,7 @@
 #include "Chokbar.h"
 
 #include "ShaderBase.h"
-#include "DebugUtils.h"
+#include "Core/DebugUtils.h"
 #include "Texture.h"
 
 using namespace DirectX;
@@ -87,13 +87,13 @@ void ShaderBase::AddObjectCB()
 	m_objectCBs.push_back(cb);
 }
 
-void ShaderBase::UpdateObjectCB(DirectX::XMMATRIX& itemWorldMatrix, UINT cbIndex)
+void ShaderBase::UpdateObjectCB(DirectX::XMFLOAT4X4& itemWorldMatrix, UINT cbIndex)
 {
 	if (cbIndex >= m_objectCBs.size())
 		AddObjectCB();
 
 	ObjConstants objConstants;
-	XMStoreFloat4x4(&objConstants.World, itemWorldMatrix);
+	objConstants.World = itemWorldMatrix;
 	m_objectCBs[cbIndex]->CopyData(0, &objConstants);
 }
 

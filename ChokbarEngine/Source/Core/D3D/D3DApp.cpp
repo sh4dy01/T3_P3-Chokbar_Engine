@@ -423,10 +423,10 @@ void D3DApp::CreateGeometry()
 	Vertex_PosColor vList[] =
 	{
 		{ XMFLOAT3(0.0f, 1.0f, 0.0f),   XMFLOAT4(0.8f, 0.1f, 0.1f, 1.0f) },
-		{ XMFLOAT3(-0.5f, 0.0f, -0.5f), XMFLOAT4(0.1f, 0.8f, 0.1f, 1.0f) },
-		{ XMFLOAT3(-0.5f, 0.0f, 0.5f),  XMFLOAT4(0.1f, 0.8f, 0.1f, 1.0f) },
-		{ XMFLOAT3(0.5f, 0.0f, 0.5f),   XMFLOAT4(0.1f, 0.8f, 0.1f, 1.0f) },
-		{ XMFLOAT3(0.5f, 0.0f, -0.5f),  XMFLOAT4(0.1f, 0.8f, 0.1f, 1.0f) },
+		{ XMFLOAT3(-0.5f, 0.0f, -0.5f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) },
+		{ XMFLOAT3(-0.5f, 0.0f, 0.5f),  XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) },
+		{ XMFLOAT3(0.5f, 0.0f, 0.5f),   XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) },
+		{ XMFLOAT3(0.5f, 0.0f, -0.5f),  XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f) },
 	};
 
 	UINT16 iList[] = { 0, 1, 2, 0, 2, 3, 0, 3, 4, 0, 4, 1 };
@@ -455,18 +455,22 @@ void D3DApp::CreateRenderItems()
 		pyrItem.IndexCount = pyrItem.Geo->IndexCount;
 		pyrItem.StartIndexLocation = pyrItem.Geo->StartIndexLocation;
 		pyrItem.BaseVertexLocation = pyrItem.Geo->BaseVertexLocation;
-		pyrItem.Transform = Transform();
-		if (i == 0)
+		pyrItem.Transform = Chokbar::Transform();
+		if (i % 3 == 0)
 		{
-			pyrItem.TransformationType = TRANSFORMATION_TYPE::ROTATION;
-			pyrItem.Transform.Position = XMFLOAT3(1.0f, 0.0f, 0.0f);
+			pyrItem.TransformationType = TRANSFORMATION_TYPE::SCALE;
 		}
 		else
-		{
-			pyrItem.TransformationType = TRANSFORMATION_TYPE::TRANSLATION;
-			pyrItem.Transform.Position = XMFLOAT3(-1.0f, 0.0f, 0.0f);
-		}
-		XMStoreFloat4x4(&pyrItem.World, XMMatrixTranspose(XMMatrixTranslationFromVector(XMLoadFloat3(&pyrItem.Transform.Position))));
+			if (i % 2 == 0)
+			{
+				pyrItem.TransformationType = TRANSFORMATION_TYPE::ROTATION;
+				pyrItem.Transform.Translate(XMFLOAT3(2.0f, 0.0f, 0.0f));
+			}
+			else
+			{
+				pyrItem.TransformationType = TRANSFORMATION_TYPE::TRANSLATION;
+				pyrItem.Transform.Translate(XMFLOAT3(-2.0f, 0.0f, 0.0f));
+			}
 
 		m_AllRenderItems.push_back(std::move(pyrItem));
 	}
@@ -501,26 +505,29 @@ void D3DApp::UpdateRenderItems(const float dt, const float totalTime)
 {
 	for (auto& item : m_AllRenderItems)
 	{
-		XMMATRIX world = XMLoadFloat4x4(&item.World);
+		//XMMATRIX world = XMLoadFloat4x4(&item.World);
 
 		switch (item.TransformationType)
 		{
 		case TRANSFORMATION_TYPE::ROTATION:
 		{
-			item.Transform.Rotation.y += 1.0f * dt;
-			world = XMMatrixRotationY(item.Transform.Rotation.y);
+			item.Transform.Rotate(100.0f * dt, 100.0f * dt, 100.0f * dt);
 			break;
 		}
 		case TRANSFORMATION_TYPE::TRANSLATION:
 		{
-			item.Transform.Position.y = sinf(totalTime) * 2.0f;
-			world = XMMatrixTranslationFromVector(XMLoadFloat3(&item.Transform.Position));
+			item.Transform.Translate(XMFLOAT3(sinf(totalTime) * dt, sinf(totalTime) * dt, -sinf(totalTime) * dt));
+			break;
+		}
+		case TRANSFORMATION_TYPE::SCALE:
+		{
+			item.Transform.Scale(1.0f + sinf(totalTime) * dt * 0.5f, 1.0f + sinf(totalTime) * dt * 0.5f, 1.0f + sinf(totalTime) * dt * 0.5f);
 			break;
 		}
 		default:
 			break;
 		}
-		item.Shader->UpdateObjectCB(XMMatrixTranspose(world), item.ObjCBIndex);
+		item.Shader->UpdateObjectCB(item.Transform.GetWorldMatrix(), item.ObjCBIndex);
 	}
 }
 

@@ -9,7 +9,7 @@ struct RenderItem
 {
 	RenderItem() = default;
 
-	Transform Transform;
+	Chokbar::Transform Transform;
 	DirectX::XMFLOAT4X4 World = Identity4x4();
 
 	UINT ObjCBIndex = -1;

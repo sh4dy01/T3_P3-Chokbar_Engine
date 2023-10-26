@@ -149,5 +149,5 @@ private:
 	UINT m_texIndex;
 	ShaderBase* m_pShader[2];
 
-	const int m_ObjectCount = 2;
+	const int m_ObjectCount = 3;
 };

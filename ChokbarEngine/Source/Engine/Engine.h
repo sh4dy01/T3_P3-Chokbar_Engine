@@ -2,9 +2,11 @@
 
 #include "Core/CoreMinimal.h"
 
+#include "Engine/InputHandler.h"
 #include "Engine/ECS/Base/Coordinator.h"
 #include "GameTimer.h"
 #include "Platform/Windows/Window.h"
+#include "InputHandler.h"
 
 
 namespace Chokbar {
@@ -18,6 +20,7 @@ namespace Chokbar {
 
 		static Engine& GetInstance();
 		static Coordinator& GetCoordinator();
+		static InputHandler& GetInput();
 
 		void Initialize();
 		void Run();
