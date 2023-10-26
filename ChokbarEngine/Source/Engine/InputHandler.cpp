@@ -9,8 +9,35 @@ InputHandler::InputHandler()
 	{
 		m_KeyStates.push_back(KeyState::None);
 	}
+
+	GetCursorPos(&m_lastPos);
 }
 
+
+void InputHandler::Init(HWND windowHandle)
+{
+	m_WindowHandle = windowHandle;
+}
+
+/// <summary>
+/// Updates the input handler, checks for inputs, and updates the mouse refresh timer.
+/// </summary>
+/// <param name="dt">Delta time since the last frame.</param>
+void InputHandler::Update(float dt)
+{
+	CheckInput();
+
+	m_timer += dt;
+	if (m_timer > m_mouseRefresh)
+	{
+		GetNormalizedMovement();
+		m_timer = 0.0f;
+	}
+}
+
+/// <summary>
+/// Checks for key presses and updates the key states.
+/// </summary>
 void InputHandler::CheckInput()
 {
 	for (size_t i = 0; i < m_KeyboardInput.size(); ++i)
@@ -46,6 +73,11 @@ void InputHandler::CheckInput()
 	}
 }
 
+/// <summary>
+/// Determines if a specific key is in the Down state.
+/// </summary>
+/// <param name="key">The key to check.</param>
+/// <returns>True if the key is pressed down, otherwise false.</returns>
 bool InputHandler::IsKeyDown(char key) const
 {
 	for (size_t i = 0; i < m_KeyboardInput.size(); ++i)
@@ -58,6 +90,11 @@ bool InputHandler::IsKeyDown(char key) const
 	return false;
 }
 
+/// <summary>
+/// Determines if a specific key is in the Up state.
+/// </summary>
+/// <param name="key">The key to check.</param>
+/// <returns>True if the key is up, otherwise false.</returns>
 bool InputHandler::IsKeyUp(char key) const
 {
 	for (size_t i = 0; i < m_KeyboardInput.size(); ++i)
@@ -70,6 +107,11 @@ bool InputHandler::IsKeyUp(char key) const
 	return false;
 }
 
+/// <summary>
+/// Determines if a specific key is in the Held state.
+/// </summary>
+/// <param name="key">The key to check.</param>
+/// <returns>True if the key is held down, otherwise false.</returns>
 bool InputHandler::IsKeyHeld(char key) const
 {
 	for (size_t i = 0; i < m_KeyboardInput.size(); ++i)
@@ -80,4 +122,51 @@ bool InputHandler::IsKeyHeld(char key) const
 		}
 	}
 	return false;
+}
+
+/// <summary>
+/// Computes the normalized mouse movement based on sensitivity.
+/// </summary>
+void InputHandler::GetNormalizedMovement()
+{
+	POINT currentPos;
+	GetCursorPos(&currentPos);
+
+	ScreenToClient(m_WindowHandle, &currentPos);
+
+	float x = std::clamp((int)((currentPos.x - m_lastPos.x)), -SENSIBILITY, SENSIBILITY);
+	float y = std::clamp((int)((currentPos.y - m_lastPos.y)), -SENSIBILITY, SENSIBILITY);
+
+	m_deltaPosX = x / SENSIBILITY;
+	m_deltaPosY = y / SENSIBILITY;
+
+	m_lastPos = currentPos;
+}
+
+/// <summary>
+/// Retrieves the normalized x-coordinate of the mouse movement.
+/// </summary>
+/// <returns>Normalized x-coordinate of the mouse movement.</returns>
+float InputHandler::GetMouseX() const
+{
+	return m_lastPos.x;
+}
+
+/// <summary>
+/// Retrieves the normalized y-coordinate of the mouse movement.
+/// </summary>
+/// <returns>Normalized y-coordinate of the mouse movement.</returns>
+float InputHandler::GetMouseY() const
+{
+	return m_lastPos.y;
+}
+
+float InputHandler::GetAxisX() const
+{
+	return m_deltaPosX;
+}
+
+float InputHandler::GetAxisY() const
+{
+	return m_deltaPosY;
 }

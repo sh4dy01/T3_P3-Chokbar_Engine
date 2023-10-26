@@ -3,21 +3,24 @@
 
 namespace Chokbar
 {
-	Engine::Engine()
-	= default;
+	Engine::Engine() = default;
 
-	Engine::~Engine()
-	= default;
+	Engine::~Engine() = default;
 
-	Engine& Engine::GetInstance()
+	Engine &Engine::GetInstance()
 	{
 		static Engine engine;
 		return engine;
 	}
 
-	Coordinator& Engine::GetCoordinator()
+	Coordinator &Engine::GetCoordinator()
 	{
 		return GetInstance().m_Coordinator;
+	}
+
+	InputHandler& Engine::GetInput()
+	{
+		return GetInstance().m_InputHandler;
 	}
 
 #pragma region INIT
@@ -33,7 +36,7 @@ namespace Chokbar
 		Logger::PrintDebugSeperator();
 		*/
 
-		//SplashScreen::Open();
+		// SplashScreen::Open();
 	}
 
 	void Engine::Initialize()
@@ -41,9 +44,11 @@ namespace Chokbar
 		PreInitialize();
 
 		m_Coordinator.Init();
-		
 
 		m_Window.CreateNewWindow(DEFAULT_WIDTH, DEFAULT_HEIGHT, PerGameSettings::GameName(), PerGameSettings::MainIcon(), Win32::RESIZABLE);
+		m_InputHandler.Init(m_Window.GetHandle());
+		OnResize();
+
 
 		D3DApp::GetInstance()->InitializeD3D12(&m_Window);
 	}
@@ -74,9 +79,9 @@ namespace Chokbar
 
 	void Engine::Update(float dt)
 	{
-		m_InputHandler.CheckInput();
-    m_Coordinator.UpdateSystems();
+		m_Coordinator.UpdateSystems();
 
+		m_InputHandler.Update(dt);
 		D3DApp::GetInstance()->Update(dt, m_GameTimer.GetTotalTime());
 		CalculateFrameStats();
 	}
@@ -88,10 +93,10 @@ namespace Chokbar
 
 #pragma endregion
 
-
-
 	void Engine::CalculateFrameStats()
 	{
+		std::wstring windowText;
+
 		// Code computes the average frames per second, and also the
 		// average time it takes to render one frame.  These stats
 		// are appended to the window caption bar.
@@ -110,14 +115,19 @@ namespace Chokbar
 			std::wstring fpsStr = std::to_wstring(fps);
 			std::wstring mspfStr = std::to_wstring(mspf);
 
-			std::wstring windowText = L"    fps: " + fpsStr + L"   mspf: " + mspfStr;
-
-			SetWindowText(m_Window.GetHandle(), windowText.c_str());
+			windowText = L"    fps: " + fpsStr + L"   mspf: " + mspfStr;
 
 			// Reset for next average.
 			frameCnt = 0;
 			timeElapsed += 1.0f;
 		}
+
+		std::wstring x = std::to_wstring(m_InputHandler.GetMouseX());
+		std::wstring y = std::to_wstring(m_InputHandler.GetMouseY());
+
+		windowText += L"    MouseX: " + x + L"   MouseY: " + y;
+
+		SetWindowText(m_Window.GetHandle(), windowText.c_str());
 	}
 
 	void Engine::OnResize()
@@ -127,8 +137,6 @@ namespace Chokbar
 
 	void Engine::Shutdown()
 	{
-
 	}
-
 
 }
