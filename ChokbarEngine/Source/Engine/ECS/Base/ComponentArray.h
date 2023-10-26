@@ -2,7 +2,6 @@
 
 #include "TypeDef.h"
 
-#include <cassert>
 #include <unordered_map>
 #include <array>
 
@@ -48,11 +47,12 @@ namespace Chokbar {
 			
 		}
 
-		T& GetData(InstanceID entity)
+		T* GetData(InstanceID entity)
 		{
-			assert(m_EntityToIndexMap.contains(entity) && "Retrieving non-existent component.");
-
-			return m_ComponentArray[m_EntityToIndexMap[entity]];
+			if (HasData(entity))
+				return &m_ComponentArray[m_EntityToIndexMap[entity]];
+			else
+				return nullptr;
 		}
 
 		bool HasData(InstanceID entity) const

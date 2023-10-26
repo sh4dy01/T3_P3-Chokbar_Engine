@@ -58,7 +58,7 @@ namespace Chokbar {
 		}
 
 		template<typename T>
-		T& GetComponent(InstanceID entity)
+		T* GetComponent(InstanceID entity)
 		{
 			return m_ComponentManager->GetComponent<T>(entity);
 		}

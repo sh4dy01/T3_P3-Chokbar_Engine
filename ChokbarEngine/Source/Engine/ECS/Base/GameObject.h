@@ -15,7 +15,7 @@ namespace Chokbar
 		void AddComponent(Component component) const;
 
 		template<class T>
-		T GetComponent()
+		T* GetComponent()
 		{
 			return Engine::GetCoordinator().GetComponent<T>(m_InstanceID);
 		}

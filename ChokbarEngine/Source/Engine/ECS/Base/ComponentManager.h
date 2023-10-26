@@ -39,7 +39,7 @@ namespace Chokbar {
 		{
 			const char* typeName = typeid(T).name();
 
-			assert(m_ComponentTypes.find(typeName) != m_ComponentTypes.end() && "Component not registered before use.");
+			assert(m_ComponentTypes.contains(typeName) && "Component not registered before use.");
 
 			// Return this component's type - used for creating signatures
 			return m_ComponentTypes[typeName];
@@ -63,9 +63,9 @@ namespace Chokbar {
 		}
 
 		template<class T>
-		T& GetComponent(InstanceID entity)
+		T* GetComponent(InstanceID entity)
 		{
-			// Get a reference to a component from the array for an entity
+			// Get a pointer to a component from the array for an entity
 			return GetComponentArray<T>()->GetData(entity);
 		}
 
