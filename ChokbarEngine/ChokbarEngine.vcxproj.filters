@@ -157,6 +157,12 @@
     <ClCompile Include="Source\Engine\ECS\Components\Component.cpp">
       <Filter>Source\Engine\ECS\Components</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Core\ShaderBase.cpp">
+      <Filter>Source\Core\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Core\RenderItem.cpp">
+      <Filter>Source\Core\Private</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Engine\SplashScreen.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -261,6 +267,12 @@
     </ClInclude>
     <ClInclude Include="Source\Engine\ECS\Components\Component.h">
       <Filter>Source\Engine\ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Core\ShaderBase.h">
+      <Filter>Source\Core\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Core\RenderItem.h">
+      <Filter>Source\Core\Classes</Filter>
     </ClInclude>
     <ClInclude Include="Source\Engine\SplashScreen.h" />
   </ItemGroup>
