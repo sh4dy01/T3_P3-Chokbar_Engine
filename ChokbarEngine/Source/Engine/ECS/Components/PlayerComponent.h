@@ -1,8 +1,12 @@
 #pragma once
 #include "Component.h"
 
-struct PlayerComponent : Chokbar::Component
+class PlayerComponent : public Chokbar::Component
 {
-	
+public:
+
+	float Speed = 1.0f;
+
 };
+
 
