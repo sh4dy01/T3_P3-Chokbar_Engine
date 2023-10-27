@@ -4,91 +4,91 @@
 
 using namespace DirectX;
 
-Camera::Camera()
+CameraComponent::CameraComponent()
 {
 }
 
-Camera::~Camera()
+CameraComponent::~CameraComponent()
 {
 }
 
-XMVECTOR Camera::GetRight() const
+XMVECTOR CameraComponent::GetRight() const
 {
 	return XMLoadFloat3(&m_Right);
 }
 
-XMFLOAT3 Camera::GetRight3f() const
+XMFLOAT3 CameraComponent::GetRight3f() const
 {
 	return m_Right;
 }
 
-XMVECTOR Camera::GetUp() const
+XMVECTOR CameraComponent::GetUp() const
 {
 	return XMLoadFloat3(&m_Up);
 }
 
-XMFLOAT3 Camera::GetUp3f() const
+XMFLOAT3 CameraComponent::GetUp3f() const
 {
 	return m_Up;
 }
 
-XMVECTOR Camera::GetLook() const
+XMVECTOR CameraComponent::GetLook() const
 {
 	return XMLoadFloat3(&m_Look);
 }
 
-XMFLOAT3 Camera::GetLook3f() const
+XMFLOAT3 CameraComponent::GetLook3f() const
 {
 	return m_Look;
 }
 
-float Camera::GetNearZ() const
+float CameraComponent::GetNearZ() const
 {
 	return m_NearZ;
 }
 
-float Camera::GetFarZ() const
+float CameraComponent::GetFarZ() const
 {
 	return m_FarZ;
 }
 
-float Camera::GetAspect() const
+float CameraComponent::GetAspect() const
 {
 	return m_Aspect;
 }
 
-float Camera::GetFovY() const
+float CameraComponent::GetFovY() const
 {
 	return m_FovY;
 }
 
-float Camera::GetFovX() const
+float CameraComponent::GetFovX() const
 {
 	float halfWidth = 0.5f * GetNearWindowWidth();
 	return 2.0f * atan(halfWidth / m_NearZ);
 }
 
-float Camera::GetNearWindowWidth() const
+float CameraComponent::GetNearWindowWidth() const
 {
 	return m_Aspect * m_NearWindowHeight;
 }
 
-float Camera::GetNearWindowHeight() const
+float CameraComponent::GetNearWindowHeight() const
 {
 	return m_NearWindowHeight;
 }
 
-float Camera::GetFarWindowWidth() const
+float CameraComponent::GetFarWindowWidth() const
 {
 	return m_Aspect * m_FarWindowHeight;
 }
 
-float Camera::GetFarWindowHeight() const
+float CameraComponent::GetFarWindowHeight() const
 {
 	return m_FarWindowHeight;
 }
 
-void Camera::SetLens(float fovY, float aspect, float zn, float zf)
+void CameraComponent::SetLens(float fovY, float aspect, float zn, float zf)
 {
 	// cache properties
 	m_FovY = fovY;
@@ -103,7 +103,7 @@ void Camera::SetLens(float fovY, float aspect, float zn, float zf)
 	XMStoreFloat4x4(&m_Proj, P);
 }
 
-void Camera::LookAt(FXMVECTOR pos, FXMVECTOR target, FXMVECTOR worldUp)
+void CameraComponent::LookAt(FXMVECTOR pos, FXMVECTOR target, FXMVECTOR worldUp)
 {
 	XMVECTOR L = XMVector3Normalize(XMVectorSubtract(target, pos));
 	XMVECTOR R = XMVector3Normalize(XMVector3Cross(worldUp, L));
@@ -115,7 +115,7 @@ void Camera::LookAt(FXMVECTOR pos, FXMVECTOR target, FXMVECTOR worldUp)
 	XMStoreFloat3(&m_Up, U);
 }
 
-void Camera::LookAt(const XMFLOAT3& pos, const XMFLOAT3& target, const XMFLOAT3& up)
+void CameraComponent::LookAt(const XMFLOAT3& pos, const XMFLOAT3& target, const XMFLOAT3& up)
 {
 	XMVECTOR P = XMLoadFloat3(&pos);
 	XMVECTOR T = XMLoadFloat3(&target);
@@ -124,27 +124,28 @@ void Camera::LookAt(const XMFLOAT3& pos, const XMFLOAT3& target, const XMFLOAT3&
 	LookAt(P, T, U);
 }
 
-XMMATRIX Camera::GetView() const
+
+XMMATRIX CameraComponent::GetView() const
 {
 	return XMLoadFloat4x4(&m_View);
 }
 
-XMMATRIX Camera::GetProj() const
+XMMATRIX CameraComponent::GetProj() const
 {
 	return XMLoadFloat4x4(&m_Proj);
 }
 
-XMFLOAT4X4 Camera::GetView4x4f() const
+XMFLOAT4X4 CameraComponent::GetView4x4f() const
 {
 	return m_View;
 }
 
-XMFLOAT4X4 Camera::GetProj4x4f() const
+XMFLOAT4X4 CameraComponent::GetProj4x4f() const
 {
 	return m_Proj;
 }
 
-void Camera::UpdateViewMatrix()
+void CameraComponent::UpdateViewMatrix()
 {
 	XMFLOAT3 Position = transform->GetPosition();
 
@@ -155,7 +156,7 @@ void Camera::UpdateViewMatrix()
 	XMStoreFloat4x4(&m_View, XMMatrixLookAtLH(pos, target, up));
 }
 
-void Camera::UpdateProjMatrix(const float winWidth, const float winHeight)
+void CameraComponent::UpdateProjMatrix(const float winWidth, const float winHeight)
 {
 	XMFLOAT3 Position = transform->GetPosition();
 
@@ -167,7 +168,7 @@ void Camera::UpdateProjMatrix(const float winWidth, const float winHeight)
 }
 
 /*
-void Camera::UpdateViewMatrix()
+void CameraComponent::UpdateViewMatrix()
 {
 	if (m_ViewDirty)
 	{

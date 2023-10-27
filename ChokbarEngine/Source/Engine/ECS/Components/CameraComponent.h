@@ -1,14 +1,15 @@
 #pragma once
 #include <DirectXMath.h>
 
+#include "Component.h"
 #include "Core/D3D/D3DUtils.h"
 
 
-class Camera : public Chokbar::Component
+class CameraComponent : public Chokbar::Component
 {
 public:
-	Camera();
-	~Camera();
+	CameraComponent();
+	~CameraComponent();
 
 	
 	// Get camera basis vectors.
@@ -52,7 +53,7 @@ public:
 
 private:
 
-	// Camera coordinate system with coordinates relative to world space
+	// CameraComponent coordinate system with coordinates relative to world space
 	DirectX::XMFLOAT3 m_Right = { 1.0f, 0.0f, 0.0f };
 	DirectX::XMFLOAT3 m_Up = { 0.0f, 1.0f, 0.0f };
 	DirectX::XMFLOAT3 m_Look = { 0.0f, 0.0f, 1.0f };
@@ -66,6 +67,8 @@ private:
 	float m_FarWindowHeight = 0.0f;
 
 	bool m_ViewDirty = true;
+
+	Chokbar::Transform* m_Target;
 
 	// Cache View/Proj matrices.
 	DirectX::XMFLOAT4X4 m_View = Identity4x4();
