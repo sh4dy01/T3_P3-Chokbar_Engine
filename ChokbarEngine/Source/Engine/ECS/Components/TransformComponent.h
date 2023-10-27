@@ -34,7 +34,7 @@ public:
 	DirectX::XMFLOAT3 GetPosition() {return m_Position;}
 	DirectX::XMFLOAT3 GetScale() {return m_Scale;}
 
-	DirectX::XMFLOAT4X4 GetWorldMatrix() {return m_WorldMatrix;}
+	DirectX::XMFLOAT4X4* GetWorldMatrix() { return &m_WorldMatrix ;}
 
 	bool IsDirty() {return m_Dirty;}
 
