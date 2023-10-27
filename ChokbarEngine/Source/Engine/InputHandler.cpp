@@ -3,8 +3,12 @@
 
 
 InputHandler::InputHandler()
+	: m_WindowHandle(nullptr), m_deltaPosX(0.0f), m_deltaPosY(0.0f), m_timer(0.0f), m_mouseRefresh(0.1f)
 {
+	m_KeyboardInput = { 'Z', 'Q', 'S', 'D', VK_LBUTTON, VK_RBUTTON };
+
 	m_KeyStates.reserve(m_KeyboardInput.size());
+
 	for (size_t i = 0; i < m_KeyboardInput.size(); ++i)
 	{
 		m_KeyStates.push_back(KeyState::None);
@@ -78,7 +82,7 @@ void InputHandler::CheckInput()
 /// </summary>
 /// <param name="key">The key to check.</param>
 /// <returns>True if the key is pressed down, otherwise false.</returns>
-bool InputHandler::IsKeyDown(char key) const
+bool InputHandler::IsKeyDown(char key)
 {
 	for (size_t i = 0; i < m_KeyboardInput.size(); ++i)
 	{
@@ -95,7 +99,7 @@ bool InputHandler::IsKeyDown(char key) const
 /// </summary>
 /// <param name="key">The key to check.</param>
 /// <returns>True if the key is up, otherwise false.</returns>
-bool InputHandler::IsKeyUp(char key) const
+bool InputHandler::IsKeyUp(char key)
 {
 	for (size_t i = 0; i < m_KeyboardInput.size(); ++i)
 	{
@@ -112,7 +116,7 @@ bool InputHandler::IsKeyUp(char key) const
 /// </summary>
 /// <param name="key">The key to check.</param>
 /// <returns>True if the key is held down, otherwise false.</returns>
-bool InputHandler::IsKeyHeld(char key) const
+bool InputHandler::IsKeyHeld(char key)
 {
 	for (size_t i = 0; i < m_KeyboardInput.size(); ++i)
 	{

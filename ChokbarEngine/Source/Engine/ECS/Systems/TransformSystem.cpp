@@ -6,6 +6,15 @@
 
 namespace Chokbar {
 
+	void TransformSystem::Awake()
+	{
+
+	}
+	void TransformSystem::Start()
+	{
+
+	}
+
 	void TransformSystem::Update()
 	{
 		/*for (const auto entity : m_RegisteredEntities)

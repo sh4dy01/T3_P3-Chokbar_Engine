@@ -9,6 +9,8 @@ namespace Chokbar {
 		~TransformSystem() = default;
 
 	public:
+		void Awake() override;
+		void Start() override;
 		void Update() override;
 	};
 

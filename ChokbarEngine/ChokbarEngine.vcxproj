@@ -125,6 +125,7 @@
     <ClCompile Include="Source\Engine\ECS\Components\MeshRenderer.cpp" />
     <ClCompile Include="Source\Engine\ECS\Components\PlayerComponent.cpp" />
     <ClCompile Include="Source\Engine\ECS\Components\TransformComponent.cpp" />
+    <ClCompile Include="Source\Engine\ECS\Systems\PlayerSystem.cpp" />
     <ClCompile Include="Source\Engine\ECS\Systems\TransformSystem.cpp" />
     <ClCompile Include="Source\Engine\Engine.cpp" />
     <ClCompile Include="Source\Engine\GameTimer.cpp" />
@@ -155,6 +156,7 @@
     <ClInclude Include="Source\Engine\Collision\PyramidCollision.h" />
     <ClInclude Include="Source\Engine\Collision\SphereCollision.h" />
     <ClInclude Include="Source\Engine\Collision\TriangleCollision.h" />
+    <ClInclude Include="Source\Engine\ECS\Systems\PlayerSystem.h" />
     <ClInclude Include="Source\Engine\SphereCollision.h" />
     <ClInclude Include="Source\Engine\ECS\Base\ComponentArray.h" />
     <ClInclude Include="Source\Engine\ECS\Base\ComponentManager.h" />

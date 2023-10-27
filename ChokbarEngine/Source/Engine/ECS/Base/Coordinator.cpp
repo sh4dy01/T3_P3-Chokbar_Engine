@@ -3,6 +3,7 @@
 
 #include "Engine/ECS/Components/MeshRenderer.h"
 #include "Engine/ECS/Components/PlayerComponent.h"
+#include "Engine/ECS/Systems/TransformSystem.h"
 
 namespace Chokbar {
 

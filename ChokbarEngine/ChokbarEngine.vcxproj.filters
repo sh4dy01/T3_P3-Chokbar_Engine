@@ -181,6 +181,9 @@
     <ClCompile Include="Source\Engine\Collision\CollisionShape.cpp">
       <Filter>Source\Engine\Private\Collision</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Engine\ECS\Systems\PlayerSystem.cpp">
+      <Filter>Source\Engine\ECS\Systems\Private</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Chokbar.h">
@@ -303,6 +306,9 @@
     <ClInclude Include="Source\Core\ShaderBase.h" />
     <ClInclude Include="Source\Engine\Collision\CollisionShape.h">
       <Filter>Source\Engine\Public\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\ECS\Systems\PlayerSystem.h">
+      <Filter>Source\Engine\ECS\Systems\Public</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
