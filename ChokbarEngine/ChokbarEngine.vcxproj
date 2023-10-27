@@ -110,6 +110,11 @@
     <ClCompile Include="Source\Core\RenderItem.cpp" />
     <ClCompile Include="Source\Core\ShaderBase.cpp" />
     <ClCompile Include="Source\Core\UpdloadBuffer.cpp" />
+    <ClCompile Include="Source\Engine\Collision\BoundingBoxCollision.cpp" />
+    <ClCompile Include="Source\Engine\Collision\CollisionShape.cpp" />
+    <ClCompile Include="Source\Engine\Collision\PyramidCollision.cpp" />
+    <ClCompile Include="Source\Engine\Collision\SphereCollision.cpp" />
+    <ClCompile Include="Source\Engine\Collision\TriangleCollision.cpp" />
     <ClCompile Include="Source\Engine\ECS\Base\ComponentManager.cpp" />
     <ClCompile Include="Source\Engine\ECS\Base\Coordinator.cpp" />
     <ClCompile Include="Source\Engine\ECS\Base\EntityManager.cpp" />
@@ -145,6 +150,12 @@
     <ClInclude Include="Source\Core\RenderItem.h" />
     <ClInclude Include="Source\Core\ShaderBase.h" />
     <ClInclude Include="Source\Core\UploadBuffer.h" />
+    <ClInclude Include="Source\Engine\Collision\BoundingBoxCollision.h" />
+    <ClInclude Include="Source\Engine\Collision\CollisionShape.h" />
+    <ClInclude Include="Source\Engine\Collision\PyramidCollision.h" />
+    <ClInclude Include="Source\Engine\Collision\SphereCollision.h" />
+    <ClInclude Include="Source\Engine\Collision\TriangleCollision.h" />
+    <ClInclude Include="Source\Engine\SphereCollision.h" />
     <ClInclude Include="Source\Engine\ECS\Base\ComponentArray.h" />
     <ClInclude Include="Source\Engine\ECS\Base\ComponentManager.h" />
     <ClInclude Include="Source\Engine\ECS\Base\Coordinator.h" />
