@@ -1,12 +1,12 @@
 #pragma once
 
-namespace Chokbar
-{
-	class Component
-	{
-	public:
+class GameObject;
+class Transform;
 
-		GameObject* gameObject;
-		Transform* transform;
-	};
-}
+class Component
+{
+public:
+
+	GameObject* gameObject;
+	Transform* transform;
+};

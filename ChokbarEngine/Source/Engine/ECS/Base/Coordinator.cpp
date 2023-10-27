@@ -3,7 +3,8 @@
 
 #include "Engine/ECS/Components/MeshRenderer.h"
 #include "Engine/ECS/Components/PlayerComponent.h"
-#include "Engine/ECS/Systems/TransformSystem.h"
+#include "Engine/ECS/Systems/PlayerSystem.h"
+
 
 namespace Chokbar {
 
@@ -42,10 +43,11 @@ namespace Chokbar {
 	void Coordinator::RegisterSystems()
 	{
 		//TODO: Automatize this
-		RegisterSystem<TransformSystem>();
+		RegisterSystem<PlayerSystem>();
 		{
 			Signature signature;
 			signature.set(GetComponentType<Transform>());
+			signature.set(GetComponentType<PlayerComponent>());
 		}
 	}
 
@@ -68,9 +70,9 @@ namespace Chokbar {
 		return newId;
 	}
 
-	void Coordinator::UpdateSystems()
+	void Coordinator::UpdateSystems(float dt)
 	{
-		m_SystemManager->UpdateAllSystems();
+		m_SystemManager->UpdateAllSystems(dt);
 	}
 
 	void Coordinator::DestroyEntity(InstanceID entity)

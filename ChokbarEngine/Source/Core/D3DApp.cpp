@@ -469,7 +469,7 @@ void D3DApp::CreateRenderItems()
 		pyrItem.IndexCount = pyrItem.Geo->IndexCount;
 		pyrItem.StartIndexLocation = pyrItem.Geo->StartIndexLocation;
 		pyrItem.BaseVertexLocation = pyrItem.Geo->BaseVertexLocation;
-		pyrItem.Transform = Chokbar::Transform();
+		pyrItem.Transform = Transform();
 		if (i % 3 == 0)
 		{
 			pyrItem.TransformationType = TRANSFORMATION_TYPE::SCALE;

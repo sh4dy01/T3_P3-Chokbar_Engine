@@ -1,7 +1,7 @@
 #pragma once
 #include "Component.h"
 
-struct MeshRenderer : Chokbar::Component
+struct MeshRenderer : Component
 {
 
 };

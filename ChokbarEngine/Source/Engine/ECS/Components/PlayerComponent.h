@@ -1,7 +1,7 @@
 #pragma once
 #include "Component.h"
 
-class PlayerComponent : public Chokbar::Component
+class PlayerComponent : public Component
 {
 public:
 

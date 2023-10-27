@@ -7,7 +7,7 @@
 // Transform is a component and is meant to be attached to 3D objects to give them a position, rotation and scale and to be able to move and rotate them around.
 
 
-class Transform : public Chokbar::Component
+class Transform : public Component
 {
 public:
 	Transform();
@@ -18,6 +18,7 @@ public:
 	void RotateYaw(float angle);
 	void RotatePitch(float angle);
 	void RotateRoll(float angle);
+
 	void Rotate(float yaw, float pitch, float roll);
 	void Rotate(DirectX::XMFLOAT3 rotation);
 
@@ -33,18 +34,22 @@ public:
 	DirectX::XMFLOAT3 GetPosition() {return m_Position;}
 	DirectX::XMFLOAT3 GetScale() {return m_Scale;}
 
-	void UpdatePositionMatrix();
-	void UpdateRotationMatrix();
-	void UpdateScaleMatrix();
-	void UpdateWorldMatrix();
-
 	DirectX::XMFLOAT4X4 GetWorldMatrix() {return m_WorldMatrix;}
 
 	bool IsDirty() {return m_Dirty;}
 
+	void UpdateWorldMatrix();
+
+public:
+
+
 private:
 
 	void RotateFromAxisAngle(DirectX::XMFLOAT3 axis, float angle);
+
+	void UpdatePositionMatrix();
+	void UpdateRotationMatrix();
+	void UpdateScaleMatrix();
 
 	bool m_Dirty;
 
