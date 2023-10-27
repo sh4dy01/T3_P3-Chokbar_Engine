@@ -41,9 +41,9 @@ private:
 	static std::vector<char> m_KeyboardInput;
 	static std::vector<KeyState> m_KeyStates;
 
-	POINT m_lastPos;
-	float m_deltaPosX;
-	float m_deltaPosY;
+	static POINT m_lastPos;
+	static float m_deltaPosX;
+	static float m_deltaPosY;
 
 	const int SENSIBILITY = 100;
 

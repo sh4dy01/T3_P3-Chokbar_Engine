@@ -2,12 +2,22 @@
 #include "InputHandler.h"
 
 
+POINT InputHandler::m_lastPos = { 0, 0 };
+
+float InputHandler::m_deltaPosX = 0.0f;
+float InputHandler::m_deltaPosY = 0.0f;
+
+std::vector<char> InputHandler::m_KeyboardInput = { 'Z', 'Q', 'S', 'D', VK_LBUTTON, VK_RBUTTON };
+std::vector<InputHandler::KeyState> InputHandler::m_KeyStates = {};
+
+
 InputHandler::InputHandler()
-	: m_WindowHandle(nullptr), m_deltaPosX(0.0f), m_deltaPosY(0.0f), m_timer(0.0f), m_mouseRefresh(0.1f)
+	: m_WindowHandle(nullptr), m_timer(0.0f), m_mouseRefresh(0.1f)
 {
-	m_KeyboardInput = { 'Z', 'Q', 'S', 'D', VK_LBUTTON, VK_RBUTTON };
 
 	m_KeyStates.reserve(m_KeyboardInput.size());
+
+
 
 	for (size_t i = 0; i < m_KeyboardInput.size(); ++i)
 	{
@@ -152,7 +162,7 @@ void InputHandler::GetNormalizedMovement()
 /// Retrieves the normalized x-coordinate of the mouse movement.
 /// </summary>
 /// <returns>Normalized x-coordinate of the mouse movement.</returns>
-float InputHandler::GetMouseX() const
+float InputHandler::GetMouseX()
 {
 	return m_lastPos.x;
 }
@@ -161,17 +171,17 @@ float InputHandler::GetMouseX() const
 /// Retrieves the normalized y-coordinate of the mouse movement.
 /// </summary>
 /// <returns>Normalized y-coordinate of the mouse movement.</returns>
-float InputHandler::GetMouseY() const
+float InputHandler::GetMouseY()
 {
 	return m_lastPos.y;
 }
 
-float InputHandler::GetAxisX() const
+float InputHandler::GetAxisX()
 {
 	return m_deltaPosX;
 }
 
-float InputHandler::GetAxisY() const
+float InputHandler::GetAxisY()
 {
 	return m_deltaPosY;
 }
