@@ -1,11 +1,13 @@
 #pragma once
 
+#include "CollisionShape.h"
+
 #include <DirectXMath.h>
 #include <DirectXCollision.h>
 
 using namespace DirectX;
 
-class Sphere
+class Sphere : public CollisionShape
 {
 public:
 	Sphere(const XMFLOAT3& center, float radius);
@@ -18,6 +20,7 @@ public:
 
 	bool AreSpheresColliding(const Sphere& other) const;
 
+	bool Intersects(const CollisionShape& other) const override;
 private:
 	BoundingSphere m_sphere;
 };

@@ -53,3 +53,12 @@ bool Rectangle::AreRectanglesColliding(const Rectangle& other) const
 {
 	return m_box.Intersects(other.m_box);
 }
+
+bool Rectangle::Intersects(const CollisionShape& other) const {
+    const Rectangle* otherRectangle = dynamic_cast<const Rectangle*>(&other);
+    if (otherRectangle) {
+        return m_box.Intersects(otherRectangle->m_box);
+    }
+    return false;
+}
+

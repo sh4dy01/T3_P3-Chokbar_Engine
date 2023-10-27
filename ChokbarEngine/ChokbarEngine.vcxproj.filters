@@ -49,6 +49,7 @@
     </Filter>
     <Filter Include="Source\Engine\Public\Collision">
       <UniqueIdentifier>{7466ece3-e13f-4fa9-91e5-365426024392}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Source\Engine\Core">
       <UniqueIdentifier>{1ce36a97-6b74-4b35-856f-9c6c0a5549b1}</UniqueIdentifier>
     </Filter>
@@ -177,6 +178,9 @@
     </ClCompile>
     <ClCompile Include="Source\Core\RenderItem.cpp" />
     <ClCompile Include="Source\Core\ShaderBase.cpp" />
+    <ClCompile Include="Source\Engine\Collision\CollisionShape.cpp">
+      <Filter>Source\Engine\Private\Collision</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Chokbar.h">
@@ -297,5 +301,8 @@
     </ClInclude>
     <ClInclude Include="Source\Core\RenderItem.h" />
     <ClInclude Include="Source\Core\ShaderBase.h" />
+    <ClInclude Include="Source\Engine\Collision\CollisionShape.h">
+      <Filter>Source\Engine\Public\Collision</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

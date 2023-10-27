@@ -37,3 +37,17 @@ bool Pyramid::IsCollidingWith(const Pyramid& other) const
     }
     return false;
 }
+
+bool Pyramid::Intersects(const CollisionShape& other) const {
+    const Pyramid* otherPyramid = dynamic_cast<const Pyramid*>(&other);
+    if (otherPyramid) {
+        for (int i = 0; i < 6; i++) {
+            for (int j = 0; j < 6; j++) {
+                if (m_triangles[i].IsCollidingWith(otherPyramid->m_triangles[j])) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}

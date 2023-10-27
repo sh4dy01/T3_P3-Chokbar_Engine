@@ -1,11 +1,13 @@
 #pragma once
 
+#include "CollisionShape.h"
+
 #include <DirectXMath.h>
 #include <DirectXCollision.h>
 
 using namespace DirectX;
 
-class Rectangle
+class Rectangle : public CollisionShape
 {
 public:
 	Rectangle(const XMFLOAT3& center, const XMFLOAT3& extents);
@@ -17,6 +19,8 @@ public:
 	void setExtents(const XMFLOAT3& extents);
 
 	bool AreRectanglesColliding(const Rectangle& other) const;
+
+	bool Intersects(const CollisionShape& other) const override;
 
 private:
 	BoundingBox m_box;

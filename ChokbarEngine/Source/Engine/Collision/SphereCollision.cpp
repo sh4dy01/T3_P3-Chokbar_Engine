@@ -53,3 +53,11 @@ bool Sphere::AreSpheresColliding(const Sphere& other) const
 {
 	return m_sphere.Intersects(other.m_sphere);
 }
+
+bool Sphere::Intersects(const CollisionShape& other) const {
+    const Sphere* otherSphere = dynamic_cast<const Sphere*>(&other);
+    if (otherSphere) {
+        return AreSpheresColliding(*otherSphere);
+    }
+    return false;
+}
