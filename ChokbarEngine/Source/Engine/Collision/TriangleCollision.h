@@ -8,6 +8,7 @@ using namespace DirectX;
 class Triangle
 {
 public:
+    Triangle();
     Triangle(const XMFLOAT3& v1, const XMFLOAT3& v2, const XMFLOAT3& v3);
 
     bool IsCollidingWith(const Triangle& other) const;

@@ -113,9 +113,6 @@
       <Filter>Source\Core\Private</Filter>
     </ClCompile>
     <ClCompile Include="Source\Engine\SplashScreen.cpp" />
-    <ClCompile Include="Source\Engine\SphereCollision.cpp">
-      <Filter>Source\Engine\Private\Collision</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Engine\Collision\TriangleCollision.cpp">
       <Filter>Source\Engine\Private\Collision</Filter>
     </ClCompile>
@@ -123,6 +120,9 @@
       <Filter>Source\Engine\Private\Collision</Filter>
     </ClCompile>
     <ClCompile Include="Source\Engine\Collision\SphereCollision.cpp">
+      <Filter>Source\Engine\Private\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Collision\PyramidCollision.cpp">
       <Filter>Source\Engine\Private\Collision</Filter>
     </ClCompile>
   </ItemGroup>
@@ -188,9 +188,6 @@
       <Filter>Source\Core\Public</Filter>
     </ClInclude>
     <ClInclude Include="Source\Engine\SplashScreen.h" />
-    <ClInclude Include="Source\Engine\Collision\SphereCollision.h">
-      <Filter>Source\Engine\Public\Collision</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Engine\Collision\TriangleCollision.h">
       <Filter>Source\Engine\Public\Collision</Filter>
     </ClInclude>
@@ -198,6 +195,10 @@
       <Filter>Source\Engine\Public\Collision</Filter>
     </ClInclude>
     <ClInclude Include="Source\Engine\Collision\PyramidCollision.h">
+      <Filter>Source\Engine\Public\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\SphereCollision.h" />
+    <ClInclude Include="Source\Engine\Collision\SphereCollision.h">
       <Filter>Source\Engine\Public\Collision</Filter>
     </ClInclude>
   </ItemGroup>

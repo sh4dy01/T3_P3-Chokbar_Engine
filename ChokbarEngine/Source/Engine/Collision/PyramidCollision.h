@@ -2,6 +2,7 @@
 
 #include <DirectXMath.h>
 #include <DirectXCollision.h>
+#include "TriangleCollision.h"
 
 class Pyramid
 {
