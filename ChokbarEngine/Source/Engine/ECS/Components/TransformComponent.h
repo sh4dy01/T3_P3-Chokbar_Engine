@@ -39,7 +39,7 @@ namespace Chokbar
 		void UpdateScaleMatrix();
 		void UpdateWorldMatrix();
 
-		DirectX::XMFLOAT4X4 GetWorldMatrix() {return m_WorldMatrix;}
+		DirectX::XMFLOAT4X4 GetWorldMatrix() { return m_WorldMatrix; }
 
 		bool IsDirty() {return m_Dirty;}
 

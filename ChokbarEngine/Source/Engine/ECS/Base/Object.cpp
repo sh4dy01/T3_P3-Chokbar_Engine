@@ -7,13 +7,13 @@ namespace Chokbar
 	Object::Object()
 		: m_Name("DefaultName")
 	{
-		m_InstanceID = Engine::GetCoordinator().CreateNewGameObjectWithTransform();
+		m_InstanceID = Engine::GetCoordinator()->CreateNewGameObjectWithTransform();
 	}
 
 	Object::Object(const std::string& name)
 		: m_Name(name)
 	{
-		m_InstanceID = Engine::GetCoordinator().CreateNewGameObjectWithTransform();
+		m_InstanceID = Engine::GetCoordinator()->CreateNewGameObjectWithTransform();
 		DEBUG_LOG("Object created with name: " + name);
 	}
 
@@ -46,7 +46,7 @@ namespace Chokbar
 	{
 		Object clone = Instantiate(original);
 
-		const auto transform = Engine::GetCoordinator().GetComponent<Transform>(clone.m_InstanceID);
+		const auto transform = Engine::GetCoordinator()->GetComponent<Transform>(clone.m_InstanceID);
 		transform->SetPosition(position);
 		transform->Rotate(rotation);
 
@@ -58,7 +58,7 @@ namespace Chokbar
 
 	void Object::Destroy() const
 	{
-		Engine::GetCoordinator().DestroyEntity(m_InstanceID);
+		Engine::GetCoordinator()->DestroyEntity(m_InstanceID);
 	}
 
 }

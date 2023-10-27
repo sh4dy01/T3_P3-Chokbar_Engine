@@ -1,10 +1,11 @@
 #pragma once
 
 
+
 namespace Chokbar
 {
-	class Transform;
 	class GameObject;
+	class Transform;
 
 	class Component
 	{

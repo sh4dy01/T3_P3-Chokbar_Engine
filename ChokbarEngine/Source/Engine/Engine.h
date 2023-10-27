@@ -1,26 +1,26 @@
 #pragma once
 
-#include "Core/CoreMinimal.h"
-#include "Engine/ECS/Components/CameraComponent.h"
-#include "Engine/InputHandler.h"
+#include "Core/Core.h"
+
+#include "Engine/Managers/InputHandler.h"
 #include "Engine/ECS/Base/Coordinator.h"
 #include "GameTimer.h"
 #include "Platform/Windows/Window.h"
-#include "InputHandler.h"
+#include "Engine/Managers/CameraManager.h"
 
 
 namespace Chokbar {
 
 	class Engine {
 
-	public:
-
 		Engine();
 		~Engine();
 
-		static Engine& GetInstance();
-		static Coordinator& GetCoordinator();
-		static InputHandler& GetInput();
+	public:
+
+		static Engine* GetInstance();
+		static Coordinator* GetCoordinator();
+		static InputHandler* GetInput();
 		static Camera* GetMainCamera();
 
 		void Initialize();
@@ -45,9 +45,12 @@ namespace Chokbar {
 
 	private:
 
+		static Engine* m_Instance;
+
 		GameTimer m_GameTimer;
 		Coordinator m_Coordinator;
-		Camera m_MainCamera;
+		CameraManager m_CameraManager;
+
 		//physic
 		Win32::Window m_Window;
 

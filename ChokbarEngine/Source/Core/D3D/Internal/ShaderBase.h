@@ -109,7 +109,7 @@ public:
 	ShaderBase* Bind();
 
 	virtual void AddObjectCB();
-	virtual void UpdateObjectCB(DirectX::XMFLOAT4X4& itemWorldMatrix, UINT cbIndex);
+	virtual void UpdateObjectCB(DirectX::XMFLOAT4X4 itemWorldMatrix, UINT cbIndex);
 
 	void CreatePassCB();
 	void UpdatePassCB(const float dt, const float totalTime);

@@ -89,7 +89,7 @@ void ShaderBase::AddObjectCB()
 	m_objectCBs.push_back(cb);
 }
 
-void ShaderBase::UpdateObjectCB(DirectX::XMFLOAT4X4& itemWorldMatrix, UINT cbIndex)
+void ShaderBase::UpdateObjectCB(DirectX::XMFLOAT4X4 itemWorldMatrix, UINT cbIndex)
 {
 	if (cbIndex >= m_objectCBs.size())
 		AddObjectCB();
@@ -113,8 +113,8 @@ void ShaderBase::CreatePassCB()
 
 void ShaderBase::UpdatePassCB(const float dt, const float totalTime)
 {
-	XMMATRIX& camView = m_MainCamera->GetView();
-	XMMATRIX& camProj = m_MainCamera->GetProj();
+	const XMMATRIX camView = m_MainCamera->GetCameraComponent()->GetView();
+	const XMMATRIX camProj = m_MainCamera->GetCameraComponent()->GetProj();
 
 	XMMATRIX viewProj = XMMatrixMultiply(camView, camProj);
 	// XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(camView), camView);
@@ -129,7 +129,7 @@ void ShaderBase::UpdatePassCB(const float dt, const float totalTime)
 	XMStoreFloat4x4(&mainPassCB.ViewProj, XMMatrixTranspose(viewProj));
 	// XMStoreFloat4x4(&mainPassCB.InvViewProj, XMMatrixTranspose(invViewProj));
 
-	mainPassCB.EyePosW = m_MainCamera->transform->GetPosition();
+	mainPassCB.EyePosW = m_MainCamera->GetCameraComponent()->transform->GetPosition();
 	// mainPassCB.RenderTargetSize = XMFLOAT2(m_bufferWidth, m_bufferHeight);
 	// mainPassCB.InvRenderTargetSize = XMFLOAT2(1.0f / m_bufferWidth, 1.0f / m_bufferHeight);
 	// mainPassCB.NearZ = m_camera.NearZ;

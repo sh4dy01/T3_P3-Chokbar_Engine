@@ -3,10 +3,12 @@
 #include <DirectXMath.h>
 
 #include "TypeDef.h"
-#include "Engine/ECS/Components/TransformComponent.h"
+
 
 namespace Chokbar
 {
+	class Transform;
+
 	class Object
 	{
 	public:

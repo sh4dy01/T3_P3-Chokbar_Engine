@@ -130,9 +130,7 @@ private:
 	ID3D12Resource *m_pDepthStencilBuffer;
 	DXGI_FORMAT m_DepthStencilFormat;
 
-	std::array<MeshRenderer, 1000>* m_meshRenderers;
+	std::array<MeshRenderer, Chokbar::MAX_ENTITIES>* m_meshRenderers;
 
 	UINT m_texIndex;
-
-	const int m_ObjectCount = 3;
 };

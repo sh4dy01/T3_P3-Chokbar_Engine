@@ -1,10 +1,14 @@
 #pragma once
+
 #include "Object.h"
-#include "Engine/Engine.h"
-#include "Engine/ECS/Components/Component.h"
+#include "Core/DebugUtils.h"
+#include "Engine/ECS/Components/TransformComponent.h"
+
 
 namespace Chokbar
 {
+	class Engine;
+
 	class GameObject : public Object
 	{
 	public:
@@ -33,19 +37,19 @@ namespace Chokbar
 
 			DEBUG_LOG("Adding component: " + std::string(typeid(Component).name()) + " to " + m_Name + " entity");
 
-			Engine::GetCoordinator().AddComponent<Component>(m_InstanceID, component);
+			Engine::GetCoordinator()->AddComponent<Component>(m_InstanceID, component);
 		}
 
 		template<class T>
 		T* GetComponent()
 		{
-			return Engine::GetCoordinator().GetComponent<T>(m_InstanceID);
+			return Engine::GetCoordinator()->GetComponent<T>(m_InstanceID);
 		}
 
 		template<class T>
 		bool HasComponent()
 		{
-			return Engine::GetCoordinator().HasComponent<T>(m_InstanceID);
+			return Engine::GetCoordinator()->HasComponent<T>(m_InstanceID);
 		}
 		
 

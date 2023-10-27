@@ -107,6 +107,18 @@
     <Filter Include="Source\Engine\Core\D3D\Public">
       <UniqueIdentifier>{c0b569af-5362-4c9a-a974-a60d015d9153}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\GameObjects">
+      <UniqueIdentifier>{3dcfad3d-fd39-41f5-ac58-24f054d9912c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\Managers">
+      <UniqueIdentifier>{f4b4f6c0-cbf4-45b9-b82a-f4b5416e22b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\Managers\Public">
+      <UniqueIdentifier>{995c0b68-d5ca-4908-a944-fe742e7ee615}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\Managers\Private">
+      <UniqueIdentifier>{b7ac141b-745e-449c-8bfb-11f026716638}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Core\PerGameSettings.cpp">
@@ -132,9 +144,6 @@
     </ClCompile>
     <ClCompile Include="Source\Platform\Windows\IApplication.cpp">
       <Filter>Source\Platform\Windows\Private</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Engine\InputHandler.cpp">
-      <Filter>Source\Engine\Private</Filter>
     </ClCompile>
     <ClCompile Include="Source\Core\DebugUtils.cpp">
       <Filter>Source\Engine\Core\Private</Filter>
@@ -223,6 +232,15 @@
     <ClCompile Include="Source\Engine\ECS\Components\CameraComponent.cpp">
       <Filter>Source\Engine\ECS\Components</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Engine\Managers\CameraManager.cpp">
+      <Filter>Source\Engine\Managers\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GameObjects\Camera.cpp">
+      <Filter>Source\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Managers\InputHandler.cpp">
+      <Filter>Source\Engine\Managers\Private</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Chokbar.h">
@@ -257,9 +275,6 @@
     </ClInclude>
     <ClInclude Include="Source\Platform\Windows\IApplication.h">
       <Filter>Source\Platform\Windows\Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Engine\InputHandler.h">
-      <Filter>Source\Engine\Public</Filter>
     </ClInclude>
     <ClInclude Include="Source\Core\DebugUtils.h">
       <Filter>Source\Engine\Core\Public</Filter>
@@ -366,6 +381,15 @@
     </ClInclude>
     <ClInclude Include="Source\Engine\ECS\Components\CameraComponent.h">
       <Filter>Source\Engine\ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Managers\CameraManager.h">
+      <Filter>Source\Engine\Managers\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GameObjects\Camera.h">
+      <Filter>Source\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Managers\InputHandler.h">
+      <Filter>Source\Engine\Managers\Public</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
