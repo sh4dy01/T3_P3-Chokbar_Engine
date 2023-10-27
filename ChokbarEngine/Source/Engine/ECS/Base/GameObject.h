@@ -16,6 +16,7 @@ public:
 	GameObject(const std::string& name, Component... components)
 	{
 		m_Name = name;
+		transform = Chokbar::Engine::GetCoordinator().GetComponent<Transform>(m_InstanceID);
 
 
 		(AddComponent<Component>(), ...);       
