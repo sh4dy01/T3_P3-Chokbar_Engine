@@ -495,6 +495,7 @@ void D3DApp::UpdateRenderItems(const float dt, const float totalTime)
 			break;
 		} */
 
+		if (item.Transform.IsDirty()) item.Transform.UpdateWorldMatrix();
 		mr.Mat->GetShader()->UpdateObjectCB(mr.gameObject->transform->GetWorldMatrix(), mr.ObjectCBIndex);
 	}
 }

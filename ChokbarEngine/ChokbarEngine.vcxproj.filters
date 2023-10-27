@@ -44,6 +44,12 @@
     <Filter Include="Source\Platform\Windows\Classes">
       <UniqueIdentifier>{882579c6-83b9-4bbb-936b-97c1f57ccd7a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Engine\Private\Collision">
+      <UniqueIdentifier>{291c2ba8-5999-4dc8-9e19-79c1e6ee2c57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\Public\Collision">
+      <UniqueIdentifier>{7466ece3-e13f-4fa9-91e5-365426024392}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Source\Engine\Core">
       <UniqueIdentifier>{1ce36a97-6b74-4b35-856f-9c6c0a5549b1}</UniqueIdentifier>
     </Filter>
@@ -199,6 +205,21 @@
     <ClCompile Include="Source\Core\D3D\Internal\Material.cpp">
       <Filter>Source\Engine\Core\D3D\Internal\Private</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Engine\Collision\TriangleCollision.cpp">
+      <Filter>Source\Engine\Private\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Collision\BoundingBoxCollision.cpp">
+      <Filter>Source\Engine\Private\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Collision\SphereCollision.cpp">
+      <Filter>Source\Engine\Private\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Collision\PyramidCollision.cpp">
+      <Filter>Source\Engine\Private\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Collision\CollisionShape.cpp">
+      <Filter>Source\Engine\Private\Collision</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Chokbar.h">
@@ -323,6 +344,22 @@
     </ClInclude>
     <ClInclude Include="Source\Core\D3D\Internal\Material.h">
       <Filter>Source\Engine\Core\D3D\Internal\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Collision\TriangleCollision.h">
+      <Filter>Source\Engine\Public\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Collision\BoundingBoxCollision.h">
+      <Filter>Source\Engine\Public\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Collision\PyramidCollision.h">
+      <Filter>Source\Engine\Public\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\SphereCollision.h" />
+    <ClInclude Include="Source\Engine\Collision\SphereCollision.h">
+      <Filter>Source\Engine\Public\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Collision\CollisionShape.h">
+      <Filter>Source\Engine\Public\Collision</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

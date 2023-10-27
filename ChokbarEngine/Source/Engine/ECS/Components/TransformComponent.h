@@ -31,24 +31,36 @@ namespace Chokbar
 		void SetScale(float x, float y, float z);
 		void SetScale(DirectX::XMFLOAT3 scale);
 
-		DirectX::XMFLOAT3 GetPosition();
-		DirectX::XMFLOAT3 GetScale();
+		DirectX::XMFLOAT3 GetPosition() {return m_Position;}
+		DirectX::XMFLOAT3 GetScale() {return m_Scale;}
 
-		DirectX::XMFLOAT4X4 GetWorldMatrix();
+		void UpdatePositionMatrix();
+		void UpdateRotationMatrix();
+		void UpdateScaleMatrix();
+		void UpdateWorldMatrix();
+
+		DirectX::XMFLOAT4X4 GetWorldMatrix() {return m_WorldMatrix;}
+
+		bool IsDirty() {return m_Dirty;}
 
 	private:
 		void RotateFromAxisAngle(DirectX::XMFLOAT3 axis, float angle);
 
-		DirectX::XMFLOAT3 position;
-		DirectX::XMFLOAT3 scale;
+		bool m_Dirty;
 
-		DirectX::XMFLOAT3 right;
-		DirectX::XMFLOAT3 up;
-		DirectX::XMFLOAT3 forward;
+		DirectX::XMFLOAT3 m_Right;
+		DirectX::XMFLOAT3 m_Up;
+		DirectX::XMFLOAT3 m_Forward;
 
-		DirectX::XMFLOAT4X4 rotationMatrix;
-		DirectX::XMFLOAT4 rotationQuaternion;
+		DirectX::XMFLOAT3 m_Position;
+		DirectX::XMFLOAT4X4 m_PositionMatrix;
 
-		DirectX::XMFLOAT4X4 worldMatrix;
+		DirectX::XMFLOAT3 m_Scale;
+		DirectX::XMFLOAT4X4 m_ScaleMatrix;
+
+		DirectX::XMFLOAT4X4 m_RotationMatrix;
+		DirectX::XMFLOAT4 m_RotationQuaternion;
+
+		DirectX::XMFLOAT4X4 m_WorldMatrix;
 	};
 }
