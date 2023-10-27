@@ -23,6 +23,11 @@ namespace Chokbar
 		return GetInstance().m_InputHandler;
 	}
 
+	PhysicsManager& Engine::GetPhysicsManager()
+	{
+		return GetInstance().m_PhysicsManager;
+	}
+
 #pragma region INIT
 
 	void Engine::PreInitialize()

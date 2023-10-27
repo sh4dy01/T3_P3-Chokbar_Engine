@@ -7,6 +7,7 @@
 #include "GameTimer.h"
 #include "Platform/Windows/Window.h"
 #include "InputHandler.h"
+#include "PhysicsManager.h"
 
 
 namespace Chokbar {
@@ -21,6 +22,7 @@ namespace Chokbar {
 		static Engine& GetInstance();
 		static Coordinator& GetCoordinator();
 		static InputHandler& GetInput();
+		static PhysicsManager& GetPhysicsManager();
 
 		void Initialize();
 		void Run();
@@ -51,6 +53,8 @@ namespace Chokbar {
 		Win32::Window m_Window;
 
 		InputHandler m_InputHandler;
+
+		PhysicsManager m_PhysicsManager;
 
 	};
 }

@@ -7,6 +7,7 @@
 
 using namespace DirectX;
 
+
 class Rectangle : public CollisionShape
 {
 public:
