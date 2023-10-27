@@ -22,6 +22,9 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="Resources\Textures">
+      <UniqueIdentifier>{86997fae-a36e-4534-ae35-30788f0e3f9a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\BlankProject.cpp">
@@ -44,6 +47,12 @@
   <ItemGroup>
     <Image Include="Content\Icons\mainIcon.ico">
       <Filter>Resources\Icons</Filter>
+    </Image>
+    <Image Include="Resources\Textures\4k.dds">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\angry_winnie.dds">
+      <Filter>Resources\Textures</Filter>
     </Image>
   </ItemGroup>
 </Project>

@@ -1,16 +1,28 @@
 #pragma once
 
 #include "UploadBuffer.h"
-#include "MeshGeometry.h"
+#include "Core/D3D/Internal/D3DMesh.h"
+
+struct Texture;
 
 enum VertexType { POS, POS_COLOR, POS_TEX, POS_NORM_TEX, POS_NORM_TEX_TAN };
+enum ShaderType { BASE, SIMPLE, TEXTURE };
 
 struct ShaderDrawArguments
 {
-	ShaderDrawArguments(ID3D12GraphicsCommandList* cmdList, UINT renderItemCBIndex, MeshGeometry* renderItemGeometry) : CmdList(cmdList), RenderItemCBIndex(renderItemCBIndex), RenderItemGeometry(renderItemGeometry) { }
+	ShaderDrawArguments() : RenderItemCBIndex(-1), IndexCount(0), StartIndexLocation(0), BaseVertexLocation(0)
+	{
+		CmdList = nullptr;
+		RenderItemGeometry = nullptr;
+	}
+
 	ID3D12GraphicsCommandList* CmdList;
 	UINT RenderItemCBIndex;
-	MeshGeometry* RenderItemGeometry;
+	D3DMesh* RenderItemGeometry;
+	UINT IndexCount;
+	UINT StartIndexLocation;
+	UINT BaseVertexLocation;
+	Texture* Text;
 };
 
 class ShaderBase
@@ -23,16 +35,16 @@ protected:
 
 	struct ObjConstants
 	{
-		DirectX::XMFLOAT4X4 World = Identity4x4();
+		DirectX::XMFLOAT4X4 World;
 	};
 
 	struct PassConstants
 	{
-		DirectX::XMFLOAT4X4 View = Identity4x4();
+		DirectX::XMFLOAT4X4 View;
 		// DirectX::XMFLOAT4X4 InvView = Identity4x4();
-		DirectX::XMFLOAT4X4 Proj = Identity4x4();
+		DirectX::XMFLOAT4X4 Proj;
 		// DirectX::XMFLOAT4X4 InvProj = Identity4x4();
-		DirectX::XMFLOAT4X4 ViewProj = Identity4x4();
+		DirectX::XMFLOAT4X4 ViewProj;
 		// DirectX::XMFLOAT4X4 InvViewProj = Identity4x4();
 
 		DirectX::XMFLOAT3 EyePosW = { 0.0f, 0.0f, 0.0f };
@@ -45,7 +57,11 @@ protected:
 		float DeltaTime = 0.0f;
 	};
 
+
 protected:
+
+	const ShaderType Type;
+
 	std::wstring& m_filepath;
 
 	/* Upload buffers are used to give the GPU information at runtime with the CPU.
@@ -88,10 +104,12 @@ public:
 	virtual void Draw(ShaderDrawArguments& args) = 0;
 	virtual void EndDraw(ID3D12GraphicsCommandList* cmdList) = 0;
 
+	UINT GetCreatedIndex() { return (UINT)m_objectCBs.size() - 1; }
 	UINT GetLastIndex() { return (UINT)m_objectCBs.size(); }
 	ShaderBase* Bind();
-	virtual void AddObjectCB() = 0;
-	virtual void UpdateObjectCB(DirectX::XMFLOAT4X4& itemWorldMatrix, UINT cbIndex) = 0;
+
+	virtual void AddObjectCB();
+	virtual void UpdateObjectCB(DirectX::XMFLOAT4X4& itemWorldMatrix, UINT cbIndex);
 
 	void CreatePassCB();
 	void UpdatePassCB(const float dt, const float totalTime);
@@ -111,10 +129,27 @@ public:
 	void Init() override;
 	void CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT& rtvFormat, DXGI_FORMAT& dsvFormat) override;
 
-	void AddObjectCB() override;
-	void UpdateObjectCB(DirectX::XMFLOAT4X4& itemWorldMatrix, UINT cbIndex) override;
+	void BeginDraw(ID3D12GraphicsCommandList* cmdList) override;
+	void Draw(ShaderDrawArguments& args) override;
+	void EndDraw(ID3D12GraphicsCommandList* cmdList) override;
+};
+
+class ShaderTexture : public ShaderBase
+{
+public:
+	ShaderTexture(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, UINT cbvDescriptorSize, std::wstring& filepath);
+	~ShaderTexture();
+
+	void Init() override;
+	void CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT& rtvFormat, DXGI_FORMAT& dsvFormat) override;
 
 	void BeginDraw(ID3D12GraphicsCommandList* cmdList) override;
 	void Draw(ShaderDrawArguments& args) override;
 	void EndDraw(ID3D12GraphicsCommandList* cmdList) override;
+
+public:
+	void BindTexture(Texture* tex) { m_texture = tex; }
+
+private:
+	Texture* m_texture;
 };
