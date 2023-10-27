@@ -82,7 +82,7 @@ namespace Chokbar {
 		}
 
 		template<class T>
-		T* GetAllComponentsOfType()
+		std::shared_ptr<ComponentArray<T>> GetAllComponentsOfType()
 		{
 			// Get a pointer to a list of all components of type
 			return m_ComponentManager->GetComponentArray<T>();

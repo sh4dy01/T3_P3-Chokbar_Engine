@@ -1,12 +1,23 @@
 #include "Chokbar.h"
 
-#include "D3DApp.h"
 #include "Core/DebugUtils.h"
-#include "Texture.h"
 #include "Engine/ECS/Components/TransformComponent.h"
+
+#include "Engine/Resource.h"
+
+#include "Core/D3D/Internal/Texture.h"
+#include "Core/D3D/Internal/ShaderBase.h"
+#include "Core/D3D/Internal/MeshRenderer.h"
+#include "Core/D3D/Internal/Material.h"
+
+#include "D3DUtils.h"
+
+#include "D3DApp.h"
+
 
 using namespace DirectX;
 
+#pragma region BASIC
 D3DApp* D3DApp::m_pApp = nullptr;
 
 D3DApp::D3DApp() :
@@ -28,8 +39,6 @@ D3DApp::D3DApp() :
 	m_pRtvHeap = nullptr;
 	m_pDsvHeap = nullptr;
 	m_pCbvHeap = nullptr;
-
-	m_pyramidGeometry = nullptr;
 
 	m_pSwapChain = nullptr;
 	m_pSwapChainBuffer[0] = nullptr;
@@ -67,23 +76,16 @@ D3DApp::~D3DApp() {
 
 	m_pDepthStencilBuffer->Release();
 
-	for (auto& item : m_OpaqueRenderItems)
-		delete item;
-
-	for (auto& item : m_TransparentRenderItems)
-		delete item;
-
-	delete m_pyramidGeometry;
-	delete m_pShader;
-
 	m_pDebugController->Release();
 }
 
 void D3DApp::Update(const float dt, const float totalTime)
 {
 	UpdateRenderItems(dt, totalTime);
-	m_pShader[ShaderType::SIMPLE]->UpdatePassCB(dt, totalTime);
-	m_pShader[ShaderType::TEXTURE]->UpdatePassCB(dt, totalTime);
+	for (auto& shader : Resource::GetShaders())
+	{
+		shader.second->UpdatePassCB(dt, totalTime);
+	}
 }
 
 void D3DApp::Render()
@@ -117,7 +119,7 @@ void D3DApp::Render()
 	ID3D12DescriptorHeap* descriptorHeaps[] = { m_pCbvHeap };
 	m_pCommandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 
-	DrawRenderItems(m_pCommandList, m_OpaqueRenderItems);
+	DrawRenderItems(m_pCommandList);
 
 	// Set resource barrier to transition the back buffer from render target to present
 	// This allows to present the back buffer (D3D12_RESOURCE_STATE_PRESENT state)
@@ -173,14 +175,16 @@ void D3DApp::InitializeD3D12(Win32::Window* window)
 
 	CreateRtvAndDsvDescriptorHeaps();
 	CreateRenderTargetView();
+	CreateDepthStencilBuffer();
 
-	CreateShaders();
-	CreateGeometry();
-	CreateRenderItems();
+	CreateResources();
+	GetMeshRenderersRef();
 
 	RegisterInitCommands_In_CommandList();
 }
+#pragma endregion
 
+#pragma region COMMAND_LIST_PUBLIC
 void D3DApp::BeginList()
 {
 	m_pCommandAllocator->Reset();
@@ -195,7 +199,9 @@ void D3DApp::EndList()
 	m_pCommandQueue->ExecuteCommandLists(_countof(cmdLists), cmdLists);
 	FlushCommandQueue();
 }
+#pragma endregion
 
+#pragma region D3DX12_COMPONENTS
 void D3DApp::EnableDebugLayer()
 {
 	// Enable the D3D12 debug layer.
@@ -241,39 +247,6 @@ void D3DApp::CheckMSAAQualitySupport()
 	assert(m_4xMsaaQuality > 0 && "Unexpected MSAA quality level.");
 }
 
-void D3DApp::DEBUG_CreateInfoQueue()
-{
-	ID3D12InfoQueue* InfoQueue = nullptr;
-	m_pD3dDevice->QueryInterface(IID_PPV_ARGS(&InfoQueue));
-	InfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, true);
-	InfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, true);
-	InfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, false);
-}
-
-void D3DApp::CreateCommandObjects()
-{
-	D3D12_COMMAND_QUEUE_DESC queueDesc = {};
-	queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
-	queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
-
-	m_pD3dDevice->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&m_pCommandQueue));
-
-	m_pD3dDevice->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&m_pCommandAllocator));
-
-	m_pD3dDevice->CreateCommandList(
-		0,
-		D3D12_COMMAND_LIST_TYPE_DIRECT,
-		m_pCommandAllocator, // Associated command allocator
-		nullptr, // Initial PipelineStateObject
-		IID_PPV_ARGS(&m_pCommandList)
-	);
-
-	// Start off in a closed state. This is because the first time we
-	// refer to the command list we will Reset it, and it needs to be
-	// closed before calling Reset.
-	m_pCommandList->Close();
-}
-
 void D3DApp::CreateSwapChain(HWND windowHandle)
 {
 	// Release the previous swapchain we will be recreating.
@@ -298,41 +271,6 @@ void D3DApp::CreateSwapChain(HWND windowHandle)
 
 	// Note: Swap chain uses queue to perform flush.
 	m_pDxgiFactory->CreateSwapChain(m_pCommandQueue, &sd, &m_pSwapChain);
-}
-
-void D3DApp::FlushCommandQueue()
-{
-	// Advance the fence value to mark commands up to this fence point.
-	m_CurrentFenceValue++;
-
-	// Add an instruction to the command queue to set a new fence point. 
-	// Because we are on the GPU timeline, the new fence point won't be 
-	// set until the GPU finishes processing all the commands prior to this Signal().
-	m_pCommandQueue->Signal(m_pFence, m_CurrentFenceValue);
-
-	// Wait until the GPU has completed commands up to this fence point.
-	if (m_pFence->GetCompletedValue() < m_CurrentFenceValue)
-	{
-		HANDLE eventHandle = CreateEventEx(nullptr, nullptr, false, EVENT_ALL_ACCESS);
-
-		// Fire event when GPU hits current fence.  
-		m_pFence->SetEventOnCompletion(m_CurrentFenceValue, eventHandle);
-
-		// Wait until the GPU hits current fence event is fired.
-		WaitForSingleObject(eventHandle, INFINITE);
-		CloseHandle(eventHandle);
-	}
-}
-
-void D3DApp::RegisterInitCommands_In_CommandList()
-{
-	BeginList();
-
-	CreateDepthStencilBuffer();
-	m_pShader[0]->CreatePsoAndRootSignature(VertexType::POS_COLOR, m_BackBufferFormat, m_DepthStencilFormat);
-	m_pShader[1]->CreatePsoAndRootSignature(VertexType::POS_TEX, m_BackBufferFormat, m_DepthStencilFormat);
-
-	EndList();
 }
 
 void D3DApp::CreateRtvAndDsvDescriptorHeaps()
@@ -366,6 +304,8 @@ void D3DApp::CreateRtvAndDsvDescriptorHeaps()
 
 void D3DApp::CreateDepthStencilBuffer()
 {
+	BeginList();
+
 	// Create the depth/stencil buffer and view.
 	D3D12_RESOURCE_DESC depthStencilDesc;
 	depthStencilDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
@@ -400,6 +340,8 @@ void D3DApp::CreateDepthStencilBuffer()
 
 	CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(m_pDepthStencilBuffer, D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_DEPTH_WRITE);
 	m_pCommandList->ResourceBarrier(1, &barrier);
+
+	EndList();
 }
 
 void D3DApp::CreateRenderTargetView()
@@ -417,35 +359,81 @@ void D3DApp::CreateRenderTargetView()
 		rtvHeapHandle.Offset(1, m_RtvDescriptorSize);
 	}
 }
+#pragma endregion
 
-void D3DApp::CreateGeometry()
+#pragma region COMMAND_LIST_PRIVATE
+void D3DApp::DEBUG_CreateInfoQueue()
 {
-	Vertex_PosColor vList[] =
+	ID3D12InfoQueue* InfoQueue = nullptr;
+	m_pD3dDevice->QueryInterface(IID_PPV_ARGS(&InfoQueue));
+	InfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, true);
+	InfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, true);
+	InfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, false);
+}
+
+void D3DApp::CreateCommandObjects()
+{
+	D3D12_COMMAND_QUEUE_DESC queueDesc = {};
+	queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
+	queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
+
+	m_pD3dDevice->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&m_pCommandQueue));
+
+	m_pD3dDevice->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&m_pCommandAllocator));
+
+	m_pD3dDevice->CreateCommandList(
+		0,
+		D3D12_COMMAND_LIST_TYPE_DIRECT,
+		m_pCommandAllocator, // Associated command allocator
+		nullptr, // Initial PipelineStateObject
+		IID_PPV_ARGS(&m_pCommandList)
+	);
+
+	// Start off in a closed state. This is because the first time we
+	// refer to the command list we will Reset it, and it needs to be
+	// closed before calling Reset.
+	m_pCommandList->Close();
+}
+
+void D3DApp::FlushCommandQueue()
+{
+	// Advance the fence value to mark commands up to this fence point.
+	m_CurrentFenceValue++;
+
+	// Add an instruction to the command queue to set a new fence point. 
+	// Because we are on the GPU timeline, the new fence point won't be 
+	// set until the GPU finishes processing all the commands prior to this Signal().
+	m_pCommandQueue->Signal(m_pFence, m_CurrentFenceValue);
+
+	// Wait until the GPU has completed commands up to this fence point.
+	if (m_pFence->GetCompletedValue() < m_CurrentFenceValue)
 	{
-		{ XMFLOAT3(0.0f, 1.0f, 0.0f),   XMFLOAT4(0.8f, 0.1f, 0.1f, 1.0f) },
-		{ XMFLOAT3(-0.5f, 0.0f, -0.5f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) },
-		{ XMFLOAT3(-0.5f, 0.0f, 0.5f),  XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) },
-		{ XMFLOAT3(0.5f, 0.0f, 0.5f),   XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) },
-		{ XMFLOAT3(0.5f, 0.0f, -0.5f),  XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f) },
-	};
+		HANDLE eventHandle = CreateEventEx(nullptr, nullptr, false, EVENT_ALL_ACCESS);
 
-	UINT16 iList[] = { 0, 1, 2, 0, 2, 3, 0, 3, 4, 0, 4, 1 };
+		// Fire event when GPU hits current fence.  
+		m_pFence->SetEventOnCompletion(m_CurrentFenceValue, eventHandle);
+
+		// Wait until the GPU hits current fence event is fired.
+		WaitForSingleObject(eventHandle, INFINITE);
+		CloseHandle(eventHandle);
+	}
+}
+#pragma endregion
+
+#pragma region CREATE_INTERNAL_COMPONENTS
+
+void D3DApp::CreateResources()
+{
+	Resource::CreateResources(m_pD3dDevice, m_pCbvHeap, m_CbvSrvUavDescriptorSize);
+
+	auto& shaders = Resource::GetShaders();
+	shaders[SHADER_SIMPLE]->CreatePsoAndRootSignature(VertexType::POS_COLOR, m_BackBufferFormat, m_DepthStencilFormat);
+	shaders[SHADER_TEXTURE]->CreatePsoAndRootSignature(VertexType::POS_TEX, m_BackBufferFormat, m_DepthStencilFormat);
 }
 
-void D3DApp::CreateShaders()
+void D3DApp::GetMeshRenderersRef()
 {
-	std::wstring shaderPathSimple = L"Shader/Simple.hlsl";
-	m_pShader[ShaderType::SIMPLE] = new ShaderSimple(m_pD3dDevice, m_pCbvHeap, m_CbvSrvUavDescriptorSize, shaderPathSimple);
-	m_pShader[ShaderType::SIMPLE]->Init();
-
-	std::wstring shaderPathTex = L"Shader/Texture.hlsl";
-	m_pShader[ShaderType::TEXTURE] = new ShaderTexture(m_pD3dDevice, m_pCbvHeap, m_CbvSrvUavDescriptorSize, shaderPathTex);
-	m_pShader[ShaderType::TEXTURE]->Init();
-}
-
-void D3DApp::CreateRenderItems()
-{
-	for (int i = 0; i < m_ObjectCount; i++)
+	/*for (int i = 0; i < m_ObjectCount; i++)
 	{
 		auto pyrItem = RenderItem();
 		pyrItem.ObjCBIndex = m_AllRenderItems.size();
@@ -456,31 +444,13 @@ void D3DApp::CreateRenderItems()
 		pyrItem.StartIndexLocation = pyrItem.Geo->StartIndexLocation;
 		pyrItem.BaseVertexLocation = pyrItem.Geo->BaseVertexLocation;
 		pyrItem.Transform = Chokbar::Transform();
-		if (i % 3 == 0)
-		{
-			pyrItem.TransformationType = TRANSFORMATION_TYPE::SCALE;
-		}
-		else
-			if (i % 2 == 0)
-			{
-				pyrItem.TransformationType = TRANSFORMATION_TYPE::ROTATION;
-				pyrItem.Transform.Translate(XMFLOAT3(2.0f, 0.0f, 0.0f));
-			}
-			else
-			{
-				pyrItem.TransformationType = TRANSFORMATION_TYPE::TRANSLATION;
-				pyrItem.Transform.Translate(XMFLOAT3(-2.0f, 0.0f, 0.0f));
-			}
+	} */
 
-		m_AllRenderItems.push_back(std::move(pyrItem));
-	}
-
-	for (auto& ri : m_AllRenderItems)
-	{
-		m_OpaqueRenderItems.push_back(&ri);
-	}
+	m_meshRenderers = Chokbar::Engine::GetCoordinator().GetAllComponentsOfType<MeshRenderer>()->GetAllData<MeshRenderer>();
 }
+#pragma endregion
 
+#pragma region UPDATE 
 void D3DApp::UpdateTextureHeap(Texture* tex)
 {
 	// auto tex = new Texture("Texture01", L"Resources/Textures/4k.dds");
@@ -503,47 +473,49 @@ void D3DApp::UpdateTextureHeap(Texture* tex)
 
 void D3DApp::UpdateRenderItems(const float dt, const float totalTime)
 {
-	for (auto& item : m_AllRenderItems)
+	for (auto& mr : m_meshRenderers)
 	{
-		//XMMATRIX world = XMLoadFloat4x4(&item.World);
-
-		switch (item.TransformationType)
+		/*
+		switch (mr.TransformationType)
 		{
 		case TRANSFORMATION_TYPE::ROTATION:
 		{
-			item.Transform.Rotate(100.0f * dt, 100.0f * dt, 100.0f * dt);
+			mr.gameObject->transform->Rotate(100.0f * dt, 100.0f * dt, 100.0f * dt);
 			break;
 		}
 		case TRANSFORMATION_TYPE::TRANSLATION:
 		{
-			item.Transform.Translate(XMFLOAT3(sinf(totalTime) * dt, sinf(totalTime) * dt, -sinf(totalTime) * dt));
+			mr.gameObject->transform->Translate(XMFLOAT3(sinf(totalTime) * dt, sinf(totalTime) * dt, -sinf(totalTime) * dt));
 			break;
 		}
 		case TRANSFORMATION_TYPE::SCALE:
 		{
-			item.Transform.Scale(1.0f + sinf(totalTime) * dt * 0.5f, 1.0f + sinf(totalTime) * dt * 0.5f, 1.0f + sinf(totalTime) * dt * 0.5f);
+			mr.gameObject->transform->Scale(1.0f + sinf(totalTime) * dt * 0.5f, 1.0f + sinf(totalTime) * dt * 0.5f, 1.0f + sinf(totalTime) * dt * 0.5f);
 			break;
 		}
 		default:
 			break;
-		}
-		item.Shader->UpdateObjectCB(item.Transform.GetWorldMatrix(), item.ObjCBIndex);
+		} */
+
+		mr.Mat->GetShader()->UpdateObjectCB(mr.gameObject->transform->GetWorldMatrix(), mr.ObjectCBIndex);
 	}
 }
 
-void D3DApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItem*>& renderItems)
+void D3DApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList)
 {
-	for (auto& item : m_AllRenderItems)
+	for (auto& mr : m_meshRenderers)
 	{
-		item.Shader->BeginDraw(cmdList);
+		mr.Mat->GetShader()->BeginDraw(cmdList);
 
-		ShaderDrawArguments args(m_pCommandList, item.ObjCBIndex, item.Geo);
-		item.Shader->Draw(args);
+		ShaderDrawArguments args(m_pCommandList, mr.ObjectCBIndex, mr.Mesh);
+		mr.Mat->GetShader()->Draw(args, mr.Mat->GetTexture(0));
 
-		item.Shader->EndDraw(cmdList);
+		mr.Mat->GetShader()->EndDraw(cmdList);
 	}
 }
+#pragma endregion
 
+#pragma region CONSTANTS
 D3D12_CPU_DESCRIPTOR_HANDLE D3DApp::CurrentBackBufferView() const
 {
 
@@ -559,3 +531,4 @@ D3D12_CPU_DESCRIPTOR_HANDLE D3DApp::DepthStencilView() const
 {
 	return m_pDsvHeap->GetCPUDescriptorHandleForHeapStart();
 }
+#pragma endregion

@@ -74,15 +74,6 @@
     <Filter Include="Source\Engine\ECS\Systems\Private">
       <UniqueIdentifier>{6a4126f7-7ee7-4c41-be5c-52a5185ea94a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\Engine\External">
-      <UniqueIdentifier>{b8cce582-fe50-4734-b443-168ac11d2755}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Engine\External\Private">
-      <UniqueIdentifier>{bd97e01e-4726-4f48-acbf-cfa865af1103}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Engine\External\Public">
-      <UniqueIdentifier>{1606522a-3934-497e-a9f5-b9fcee6bb275}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source\Engine\Core\D3D">
       <UniqueIdentifier>{de68f07e-e4d8-4e34-80aa-6c40e734c8c3}</UniqueIdentifier>
     </Filter>
@@ -181,9 +172,6 @@
     <ClCompile Include="Source\Engine\IResourceObject.cpp">
       <Filter>Source\Engine\Private</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Core\External\DDSTextureLoader.cpp">
-      <Filter>Source\Engine\External\Private</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Core\D3D\Internal\D3DMesh.cpp">
       <Filter>Source\Engine\Core\D3D\Internal\Private</Filter>
     </ClCompile>
@@ -212,6 +200,9 @@
       <Filter>Source\Engine\Core\D3D\Private</Filter>
     </ClCompile>
     <ClCompile Include="Source\Core\D3D\Internal\MeshRenderer.cpp">
+      <Filter>Source\Engine\Core\D3D\Internal\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Core\D3D\Internal\Material.cpp">
       <Filter>Source\Engine\Core\D3D\Internal\Private</Filter>
     </ClCompile>
   </ItemGroup>
@@ -300,9 +291,6 @@
     <ClInclude Include="Source\Engine\ECS\Components\Component.h">
       <Filter>Source\Engine\ECS\Components</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Core\External\DDSTextureLoader.h">
-      <Filter>Source\Engine\External\Public</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Engine\IResourceObject.h">
       <Filter>Source\Engine\Public</Filter>
     </ClInclude>
@@ -343,6 +331,9 @@
       <Filter>Source\Engine\Core\D3D\Public</Filter>
     </ClInclude>
     <ClInclude Include="Source\Core\D3D\Internal\MeshRenderer.h">
+      <Filter>Source\Engine\Core\D3D\Internal\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Core\D3D\Internal\Material.h">
       <Filter>Source\Engine\Core\D3D\Internal\Public</Filter>
     </ClInclude>
   </ItemGroup>

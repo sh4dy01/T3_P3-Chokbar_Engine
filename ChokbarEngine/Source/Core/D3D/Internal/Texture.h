@@ -1,5 +1,4 @@
 #pragma once 
-#include "Engine/IResourceObject.h"
 
 struct Texture : IResourceObject
 {

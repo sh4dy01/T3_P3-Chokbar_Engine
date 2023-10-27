@@ -26,16 +26,16 @@ protected:
 
 	struct ObjConstants
 	{
-		DirectX::XMFLOAT4X4 World = Identity4x4();
+		DirectX::XMFLOAT4X4 World;
 	};
 
 	struct PassConstants
 	{
-		DirectX::XMFLOAT4X4 View = Identity4x4();
+		DirectX::XMFLOAT4X4 View;
 		// DirectX::XMFLOAT4X4 InvView = Identity4x4();
-		DirectX::XMFLOAT4X4 Proj = Identity4x4();
+		DirectX::XMFLOAT4X4 Proj;
 		// DirectX::XMFLOAT4X4 InvProj = Identity4x4();
-		DirectX::XMFLOAT4X4 ViewProj = Identity4x4();
+		DirectX::XMFLOAT4X4 ViewProj;
 		// DirectX::XMFLOAT4X4 InvViewProj = Identity4x4();
 
 		DirectX::XMFLOAT3 EyePosW = { 0.0f, 0.0f, 0.0f };
@@ -95,6 +95,7 @@ public:
 	virtual void Draw(ShaderDrawArguments& args, Texture* text = nullptr) = 0;
 	virtual void EndDraw(ID3D12GraphicsCommandList* cmdList) = 0;
 
+	UINT GetCreatedIndex() { return (UINT)m_objectCBs.size() - 1; }
 	UINT GetLastIndex() { return (UINT)m_objectCBs.size(); }
 	ShaderBase* Bind();
 

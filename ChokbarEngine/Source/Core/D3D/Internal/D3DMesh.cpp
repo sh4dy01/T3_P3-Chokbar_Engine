@@ -1,9 +1,27 @@
 #include "Chokbar.h"
+
+#include "Core/D3D/D3DMath.h"
+
 #include "D3DMesh.h"
 
 using namespace DirectX;
 
-D3DMesh::D3DMesh() : VertexByteStride(0), VertexBufferByteSize(0), IndexFormat(DXGI_FORMAT_R16_UINT), IndexBufferByteSize(0)
+Vertex::Vertex(
+	const DirectX::XMFLOAT3& position,
+	const DirectX::XMFLOAT4& color,
+	const DirectX::XMFLOAT2& uv
+) :
+	Position(position), Color(color), Texcoord(uv)
+{
+}
+
+Vertex::Vertex(float px, float py, float pz, float cr, float cg, float cb, float ca, float u, float v) :
+	Position(px, py, pz), Color(cr, cg, cb, ca), Texcoord(u, v)
+{
+}
+
+D3DMesh::D3DMesh()
+	: VertexByteStride(0), VertexBufferByteSize(0), IndexFormat(DXGI_FORMAT_R16_UINT), IndexBufferByteSize(0)
 {
 	VertexBufferGPU = nullptr;
 	IndexBufferGPU = nullptr;
@@ -45,8 +63,24 @@ void D3DMesh::DisposeUploaders()
 	IndexBufferUploader->Release();
 }
 
+void D3DMesh::Create(std::vector<Vertex>& vertices, std::vector<UINT>& indices)
+{
+	for (auto& v : vertices)
+	{
+		Vertices.push_back(v.Position);
+		Colors.push_back(v.Color);
+		UV.push_back(v.Texcoord);
+	}
+
+	Indices.insert(Indices.end(), indices.begin(), indices.end());
+
+	CreateMeshGPU();
+}
+
 void D3DMesh::CreateMeshGPU()
 {
+	assert(Vertices.size() > 0 && Indices.size() > 0);
+
 	D3DApp::GetInstance()->BeginList();
 	ID3D12Device* device = D3DApp::GetInstance()->GetDevice();
 	ID3D12GraphicsCommandList* cmdList = D3DApp::GetInstance()->GetCommandList();
@@ -65,7 +99,7 @@ void D3DMesh::CreateMeshGPU()
 	IndexFormat = DXGI_FORMAT_R16_UINT;
 	IndexBufferByteSize = iBufferSize;
 
-	IndexCount = Indices.size();
+	IndexCount = (UINT)Indices.size();
 	StartIndexLocation = 0;
 	BaseVertexLocation = 0;
 

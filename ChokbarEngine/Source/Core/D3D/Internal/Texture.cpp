@@ -1,7 +1,9 @@
 #include "Chokbar.h"
+#include "Engine/IResourceObject.h"
+
 #include "Texture.h"
 
-#include "External/DDSTextureLoader.h"
+#include "Core/D3D/External/DDSTextureLoader.h"
 #include <wrl.h>
 
 using namespace Microsoft::WRL;

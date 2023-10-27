@@ -47,6 +47,8 @@ namespace Chokbar {
 			
 		}
 
+
+
 		T* GetData(InstanceID entity)
 		{
 			if (HasData(entity))
@@ -67,6 +69,13 @@ namespace Chokbar {
 				// Remove the entity's component if it existed
 				RemoveData(entity);
 			}
+		}
+
+		template<class T>
+		std::array<T, MAX_ENTITIES>& GetAllData()
+		{
+		// Get a pointer to a list of all components of type
+			return m_ComponentArray;
 		}
 
 

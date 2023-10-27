@@ -16,6 +16,8 @@ static const int SWAP_CHAIN_BUFFER_COUNT = 2;
 
 #pragma endregion
 
+class MeshRenderer;
+class Texture;
 
 class D3DApp
 {
@@ -61,11 +63,10 @@ private:
 	void CreateRenderTargetView();
 	void CreateDepthStencilBuffer();
 
-	void CreateGeometry();
-	void CreateShaders();
+	void CreateResources();
 
-	void CreateRenderItems();
-	void DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItem*>& renderItems);
+	void GetMeshRenderersRef();
+	void DrawRenderItems(ID3D12GraphicsCommandList* cmdList);
 	void UpdateRenderItems(const float dt, const float totalTime);
 
 	D3D12_CPU_DESCRIPTOR_HANDLE CurrentBackBufferView() const;
@@ -132,22 +133,9 @@ private:
 	ID3D12Resource *m_pDepthStencilBuffer;
 	DXGI_FORMAT m_DepthStencilFormat;
 
-	/* All our items to be rendered in our world. They are not sorted by shader.*/
-	std::vector<RenderItem> m_AllRenderItems{};
-	/* All opaque item in our world. They might not use the same shader as well.
-	RenderItem* points to a render item in m_AllRenderItems
-	/!\ Do not create an object directly into this list, you need to create it in m_AllItem and add the reference in this list */
-	std::vector<RenderItem *> m_OpaqueRenderItems{};
-	/* All transparent item in our world. They might not use the same shader as well.
-	RenderItem* points to a render item in m_AllRenderItems
-	/!\ Do not create an object directly into this list, you need to create it in m_AllItem and add the reference in this list */
-	std::vector<RenderItem *> m_TransparentRenderItems{};
-
-	/* Reference to our pyramid geometry. It is instanciated once and can be used by any RenderItem */
-	D3DMesh *m_pyramidGeometry;
+	std::array<MeshRenderer, 1000>& m_meshRenderers{};
 
 	UINT m_texIndex;
-	ShaderBase* m_pShader[2];
 
 	const int m_ObjectCount = 3;
 };

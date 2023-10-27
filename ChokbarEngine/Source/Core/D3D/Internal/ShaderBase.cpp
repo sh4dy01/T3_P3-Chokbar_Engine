@@ -1,8 +1,10 @@
 #include "Chokbar.h"
 
-#include "ShaderBase.h"
 #include "Core/DebugUtils.h"
 #include "Texture.h"
+#include "Core/D3D/D3DUtils.h"
+
+#include "ShaderBase.h"
 
 using namespace DirectX;
 

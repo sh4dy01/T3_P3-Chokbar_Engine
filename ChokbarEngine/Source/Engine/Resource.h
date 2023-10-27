@@ -2,24 +2,36 @@
 
 #include "Engine/IResourceObject.h"
 
-template <class T = IResourceObject>
+#define SHADER_SIMPLE "Simple"
+#define SHADER_TEXTURE "Texture"
+
 class Resource
 {
 public:
 	Resource() = default;
-	~Resource()
-	{
-		m_resource.clear();
-	}
+	~Resource();
 
 	template <class T = IResourceObject>
-	static T* Load<T>(const std::wstring& filepath)
+	static T* Load(const std::wstring& filepath)
 	{
 		T* resource = new T(filepath);
 		resource->Load();
 		return resource;
 	}
 
+	static void CreateResources(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, UINT cbvSrvDescriptorSize);
+
+	static std::unordered_map<std::string, ShaderBase*>& GetShaders() { return m_shaders; }
+
 private:
-	std::vector<T*> m_resource;
+	static std::unordered_map<std::string, ShaderBase*> m_shaders;
+	static std::unordered_map<std::string, Material*> m_materials;
+
+	static ShaderBase* FindShader(std::string& shaderName);
+
+	static void CreateShaders(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, UINT cbvSrvDescriptorSize);
+
+	static void CreateMaterials();
+
+
 };

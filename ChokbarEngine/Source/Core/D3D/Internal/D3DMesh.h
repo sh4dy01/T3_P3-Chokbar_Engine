@@ -1,8 +1,22 @@
 #pragma once 
 
-#include "Core/D3D/D3DMath.h"
-
-enum TRANSFORMATION_TYPE { TRANSLATION, ROTATION, SCALE };
+struct Vertex
+	{
+		Vertex() {}
+		Vertex(
+			const DirectX::XMFLOAT3& position,
+			const DirectX::XMFLOAT4& color,
+			const DirectX::XMFLOAT2& uv
+		);
+		Vertex(
+			float px, float py, float pz,
+			float cr, float cg, float cb, float ca,
+			float u, float v
+		);
+		DirectX::XMFLOAT3 Position;
+		DirectX::XMFLOAT4 Color;
+		DirectX::XMFLOAT2 Texcoord;
+	};
 
 class D3DMesh
 {
@@ -14,6 +28,7 @@ public:
 
 	std::vector<DirectX::XMFLOAT3> Vertices;
 	std::vector<UINT> Indices;
+	std::vector<DirectX::XMFLOAT4> Colors;
 	std::vector<DirectX::XMFLOAT2> UV;
 	
 public:
@@ -22,6 +37,9 @@ public:
 
 	void DisposeUploaders();
 
+	void Create(std::vector<Vertex>& vertices, std::vector<UINT>& indices);
+
+private:
 	void CreateMeshGPU();
 
 private:
