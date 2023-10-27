@@ -157,6 +157,12 @@
     <ClCompile Include="Source\Engine\ECS\Systems\TransformSystem.cpp">
       <Filter>Source\Engine\ECS\Systems\Private</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Engine\ECS\Components\MeshRenderer.cpp">
+      <Filter>Source\Engine\ECS\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\ECS\Components\MeshRenderer.cpp">
+      <Filter>Source\Engine\ECS\Components</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Engine\ECS\Components\PlayerComponent.cpp">
       <Filter>Source\Engine\ECS\Components</Filter>
     </ClCompile>
@@ -220,6 +226,9 @@
     <ClCompile Include="Source\Engine\Collision\CollisionShape.cpp">
       <Filter>Source\Engine\Private\Collision</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Engine\ECS\Systems\PlayerSystem.cpp">
+      <Filter>Source\Engine\ECS\Systems\Private</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Chokbar.h">
@@ -281,9 +290,6 @@
     </ClInclude>
     <ClInclude Include="Source\Engine\ECS\Components\TransformComponent.h">
       <Filter>Source\Engine\ECS\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Engine\ECS\Systems\TransformSystem.h">
-      <Filter>Source\Engine\ECS\Systems\Public</Filter>
     </ClInclude>
     <ClInclude Include="Source\Engine\ECS\Base\System.h">
       <Filter>Source\Engine\ECS\Systems\Public</Filter>
@@ -360,6 +366,9 @@
     </ClInclude>
     <ClInclude Include="Source\Engine\Collision\CollisionShape.h">
       <Filter>Source\Engine\Public\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\ECS\Systems\PlayerSystem.h">
+      <Filter>Source\Engine\ECS\Systems\Public</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

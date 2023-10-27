@@ -3,7 +3,7 @@
 class Material;
 class D3DMesh;
 
-class MeshRenderer : public Chokbar::Component
+class MeshRenderer : public Component
 {
 public:
 

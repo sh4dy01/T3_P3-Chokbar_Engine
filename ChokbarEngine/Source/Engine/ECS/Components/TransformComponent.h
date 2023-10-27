@@ -6,61 +6,65 @@
 
 // Transform is a component and is meant to be attached to 3D objects to give them a position, rotation and scale and to be able to move and rotate them around.
 
-namespace Chokbar
+
+class Transform : public Component
 {
-	class Transform : public Component
-	{
-	public:
-		Transform();
+public:
+	Transform();
 
-		void Translate(float x, float y, float z);
-		void Translate(DirectX::XMFLOAT3 translation);
+	void Translate(float x, float y, float z);
+	void Translate(DirectX::XMFLOAT3 translation);
 
-		void RotateYaw(float angle);
-		void RotatePitch(float angle);
-		void RotateRoll(float angle);
-		void Rotate(float yaw, float pitch, float roll);
-		void Rotate(DirectX::XMFLOAT3 rotation);
+	void RotateYaw(float angle);
+	void RotatePitch(float angle);
+	void RotateRoll(float angle);
 
-		void Scale(float x, float y, float z);
-		void Scale(DirectX::XMFLOAT3 scale);
+	void Rotate(float yaw, float pitch, float roll);
+	void Rotate(DirectX::XMFLOAT3 rotation);
 
-		void SetPosition(float x, float y, float z);
-		void SetPosition(DirectX::XMFLOAT3 position);
+	void Scale(float x, float y, float z);
+	void Scale(DirectX::XMFLOAT3 scale);
 
-		void SetScale(float x, float y, float z);
-		void SetScale(DirectX::XMFLOAT3 scale);
+	void SetPosition(float x, float y, float z);
+	void SetPosition(DirectX::XMFLOAT3 position);
 
-		DirectX::XMFLOAT3 GetPosition() {return m_Position;}
-		DirectX::XMFLOAT3 GetScale() {return m_Scale;}
+	void SetScale(float x, float y, float z);
+	void SetScale(DirectX::XMFLOAT3 scale);
 
-		void UpdatePositionMatrix();
-		void UpdateRotationMatrix();
-		void UpdateScaleMatrix();
-		void UpdateWorldMatrix();
+	DirectX::XMFLOAT3 GetPosition() {return m_Position;}
+	DirectX::XMFLOAT3 GetScale() {return m_Scale;}
 
-		DirectX::XMFLOAT4X4 GetWorldMatrix() {return m_WorldMatrix;}
+	DirectX::XMFLOAT4X4* GetWorldMatrix() { return &m_WorldMatrix ;}
 
-		bool IsDirty() {return m_Dirty;}
+	bool IsDirty() {return m_Dirty;}
 
-	private:
-		void RotateFromAxisAngle(DirectX::XMFLOAT3 axis, float angle);
+	void UpdateWorldMatrix();
 
-		bool m_Dirty;
+public:
 
-		DirectX::XMFLOAT3 m_Right;
-		DirectX::XMFLOAT3 m_Up;
-		DirectX::XMFLOAT3 m_Forward;
 
-		DirectX::XMFLOAT3 m_Position;
-		DirectX::XMFLOAT4X4 m_PositionMatrix;
+private:
 
-		DirectX::XMFLOAT3 m_Scale;
-		DirectX::XMFLOAT4X4 m_ScaleMatrix;
+	void RotateFromAxisAngle(DirectX::XMFLOAT3 axis, float angle);
 
-		DirectX::XMFLOAT4X4 m_RotationMatrix;
-		DirectX::XMFLOAT4 m_RotationQuaternion;
+	void UpdatePositionMatrix();
+	void UpdateRotationMatrix();
+	void UpdateScaleMatrix();
 
-		DirectX::XMFLOAT4X4 m_WorldMatrix;
-	};
-}
+	bool m_Dirty;
+
+	DirectX::XMFLOAT3 m_Right;
+	DirectX::XMFLOAT3 m_Up;
+	DirectX::XMFLOAT3 m_Forward;
+
+	DirectX::XMFLOAT3 m_Position;
+	DirectX::XMFLOAT4X4 m_PositionMatrix;
+
+	DirectX::XMFLOAT3 m_Scale;
+	DirectX::XMFLOAT4X4 m_ScaleMatrix;
+
+	DirectX::XMFLOAT4X4 m_RotationMatrix;
+	DirectX::XMFLOAT4 m_RotationQuaternion;
+
+	DirectX::XMFLOAT4X4 m_WorldMatrix;
+};

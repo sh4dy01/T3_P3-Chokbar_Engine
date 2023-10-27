@@ -1,58 +1,58 @@
 #pragma once
+
 #include "Object.h"
 #include "Engine/Engine.h"
 #include "Engine/ECS/Components/Component.h"
 
-namespace Chokbar
+
+class GameObject : public Object
 {
-	class GameObject : public Object
+public:
+
+	GameObject();
+	GameObject(const std::string& name);
+
+	template<typename... Component>
+	GameObject(const std::string& name, Component... components)
 	{
-	public:
-
-		GameObject();
-		GameObject(const std::string& name);
-
-		template<typename... Component>
-		GameObject(const std::string& name, Component... components)
-		{
-			m_Name = name;
+		m_Name = name;
+		transform = Chokbar::Engine::GetCoordinator().GetComponent<Transform>(m_InstanceID);
 
 
-			(AddComponent<Component>(), ...);       
-		}
+		(AddComponent<Component>(), ...);       
+	}
 
-		~GameObject();
+	~GameObject();
 
 		template<class Component>
 		void AddComponent()
 		{
 			Component component;
 			component.gameObject = this;
-			component.transform = transform;
+			component.transform = this->transform;
 			component.SetEnabled(true);
 
-			DEBUG_LOG("Adding component: " + std::string(typeid(Component).name()) + " to " + m_Name + " entity");
+		DEBUG_LOG("Adding component: " + std::string(typeid(Component).name()) + " to " + m_Name + " entity");
 
-			Engine::GetCoordinator().AddComponent<Component>(m_InstanceID, component);
-		}
+		Chokbar::Engine::GetCoordinator().AddComponent<Component>(m_InstanceID, component);
+	}
 
-		template<class T>
-		T* GetComponent()
-		{
-			return Engine::GetCoordinator().GetComponent<T>(m_InstanceID);
-		}
+	template<class T>
+	T* GetComponent()
+	{
+		return Chokbar::Engine::GetCoordinator().GetComponent<T>(m_InstanceID);
+	}
 
-		template<class T>
-		bool HasComponent()
-		{
-			return Engine::GetCoordinator().HasComponent<T>(m_InstanceID);
-		}
-		
+	template<class T>
+	bool HasComponent()
+	{
+		return Chokbar::Engine::GetCoordinator().HasComponent<T>(m_InstanceID);
+	}
 
-	public:
+public:
 
-		Transform* transform;
-	};
-}
+	Transform* transform;
+};
+
 
 
