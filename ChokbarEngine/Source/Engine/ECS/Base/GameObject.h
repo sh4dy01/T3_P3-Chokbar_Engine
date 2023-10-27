@@ -29,6 +29,7 @@ namespace Chokbar
 			Component component;
 			component.gameObject = this;
 			component.transform = transform;
+			component.SetEnabled(true);
 
 			DEBUG_LOG("Adding component: " + std::string(typeid(Component).name()) + " to " + m_Name + " entity");
 
