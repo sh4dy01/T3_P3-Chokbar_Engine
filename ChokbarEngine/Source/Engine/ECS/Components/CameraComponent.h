@@ -3,36 +3,21 @@
 
 using namespace DirectX;
 
-inline DirectX::XMFLOAT4X4 Identity4x4()
-{
-	static DirectX::XMFLOAT4X4 I(
-		1.0F, 0.0F, 0.0F, 0.0F,
-		0.0F, 1.0F, 0.0F, 0.0F,
-		0.0F, 0.0F, 1.0F, 0.0F,
-		0.0F, 0.0F, 0.0F, 1.0F);
 
-	return I;
-}
-
-class Camera
+class Camera : public Chokbar::Component
 {
 public:
 	Camera();
 	~Camera();
 
-	// Get/Set world camera position.
-	XMVECTOR GetPosition()const;
-	XMFLOAT3 GetPosition3f()const;
-	void SetPosition(float x, float y, float z);
-	void SetPosition(const XMFLOAT3& v);
 	
 	// Get camera basis vectors.
-	XMVECTOR GetRight()const;
-	XMFLOAT3 GetRight3f()const;
-	XMVECTOR GetUp()const;
-	XMFLOAT3 GetUp3f()const;
-	XMVECTOR GetLook()const;
-	XMFLOAT3 GetLook3f()const;
+	XMVECTOR GetRight() const;
+	XMFLOAT3 GetRight3f() const;
+	XMVECTOR GetUp() const;
+	XMFLOAT3 GetUp3f() const;
+	XMVECTOR GetLook() const;
+	XMFLOAT3 GetLook3f() const;
 
 	// Get frustum properties.
 	float GetNearZ()const;
@@ -61,14 +46,6 @@ public:
 	XMFLOAT4X4 GetView4x4f()const;
 	XMFLOAT4X4 GetProj4x4f()const;
 
-	// Strafe/Walk the camera a distance d.
-	void Strafe(float d);
-	void Walk(float d);
-
-	// Rotate the camera.
-	void Pitch(float angle);
-	void RotateY(float angle);
-
 	// After modifying camera position/orientation, call to rebuild the view matrix.
 	void UpdateViewMatrix();
 	void UpdateProjMatrix(const float winWidth, const float winHeight);
@@ -76,14 +53,13 @@ public:
 private:
 
 	// Camera coordinate system with coordinates relative to world space
-	XMFLOAT3 m_Position = { 0.0f, 0.0f, 0.0f };
 	XMFLOAT3 m_Right = { 1.0f, 0.0f, 0.0f };
 	XMFLOAT3 m_Up = { 0.0f, 1.0f, 0.0f };
 	XMFLOAT3 m_Look = { 0.0f, 0.0f, 1.0f };
 
 	// Cache frustum properties.
-	float m_NearZ = 0.0f;
-	float m_FarZ = 0.0f;
+	float m_NearZ = 0.5f;
+	float m_FarZ = 1000.0f;
 	float m_Aspect = 0.0f;
 	float m_FovY = 0.0f;
 	float m_NearWindowHeight = 0.0f;

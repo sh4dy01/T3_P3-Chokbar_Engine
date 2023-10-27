@@ -11,26 +11,6 @@ Camera::~Camera()
 {
 }
 
-XMVECTOR Camera::GetPosition() const
-{
-	return XMLoadFloat3(&m_Position);
-}
-
-XMFLOAT3 Camera::GetPosition3f() const
-{
-	return m_Position;
-}
-
-void Camera::SetPosition(float x, float y, float z)
-{
-	m_Position = XMFLOAT3(x, y, z);
-}
-
-void Camera::SetPosition(const XMFLOAT3& v)
-{
-	m_Position = v;
-}
-
 XMVECTOR Camera::GetRight() const
 {
 	return XMLoadFloat3(&m_Right);
@@ -128,7 +108,7 @@ void Camera::LookAt(FXMVECTOR pos, FXMVECTOR target, FXMVECTOR worldUp)
 	XMVECTOR R = XMVector3Normalize(XMVector3Cross(worldUp, L));
 	XMVECTOR U = XMVector3Cross(L, R);
 
-	XMStoreFloat3(&m_Position, pos);
+	XMStoreFloat3(&transform->GetPosition(), pos);
 	XMStoreFloat3(&m_Look, L);
 	XMStoreFloat3(&m_Right, R);
 	XMStoreFloat3(&m_Up, U);
@@ -163,44 +143,6 @@ XMFLOAT4X4 Camera::GetProj4x4f() const
 	return m_Proj;
 }
 
-void Camera::Strafe(float d)
-{
-	// mPosition += d*mRight
-	XMVECTOR s = XMVectorReplicate(d);
-	XMVECTOR r = XMLoadFloat3(&m_Right);
-	XMVECTOR p = XMLoadFloat3(&m_Position);
-	XMStoreFloat3(&m_Position, XMVectorMultiplyAdd(s, r, p));
-}
-
-void Camera::Walk(float d)
-{
-	// mPosition += d*mLook
-	XMVECTOR s = XMVectorReplicate(d);
-	XMVECTOR l = XMLoadFloat3(&m_Look);
-	XMVECTOR p = XMLoadFloat3(&m_Position);
-	XMStoreFloat3(&m_Position, XMVectorMultiplyAdd(s, l, p));
-}
-
-void Camera::Pitch(float angle)
-{
-	// Rotate up and look vector about the right vector.
-
-	XMMATRIX R = XMMatrixRotationAxis(XMLoadFloat3(&m_Right), angle);
-
-	XMStoreFloat3(&m_Up, XMVector3TransformNormal(XMLoadFloat3(&m_Up), R));
-	XMStoreFloat3(&m_Look, XMVector3TransformNormal(XMLoadFloat3(&m_Look), R));
-}
-
-void Camera::RotateY(float angle)
-{
-	// Rotate the basis vectors about the world y-axis.
-
-	XMMATRIX R = XMMatrixRotationY(angle);
-
-	XMStoreFloat3(&m_Right, XMVector3TransformNormal(XMLoadFloat3(&m_Right), R));
-	XMStoreFloat3(&m_Up, XMVector3TransformNormal(XMLoadFloat3(&m_Up), R));
-	XMStoreFloat3(&m_Look, XMVector3TransformNormal(XMLoadFloat3(&m_Look), R));
-}
 
 void Camera::UpdateViewMatrix()
 {
@@ -209,7 +151,7 @@ void Camera::UpdateViewMatrix()
 		XMVECTOR R = XMLoadFloat3(&m_Right);
 		XMVECTOR U = XMLoadFloat3(&m_Up);
 		XMVECTOR L = XMLoadFloat3(&m_Look);
-		XMVECTOR P = XMLoadFloat3(&m_Position);
+		XMVECTOR P = XMLoadFloat3(&transform->GetPosition());
 		// Keep camera’s axes orthogonal to each other and of unit length.
 		L = XMVector3Normalize(L);
 		U = XMVector3Normalize(XMVector3Cross(L, R));

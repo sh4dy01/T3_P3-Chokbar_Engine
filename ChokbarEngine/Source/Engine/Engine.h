@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Core/CoreMinimal.h"
-
+#include "Engine/ECS/Components/CameraComponent.h"
 #include "Engine/InputHandler.h"
 #include "Engine/ECS/Base/Coordinator.h"
 #include "GameTimer.h"
@@ -46,7 +46,7 @@ namespace Chokbar {
 
 		GameTimer m_GameTimer;
 		Coordinator m_Coordinator;
-
+		Camera m_MainCamera;
 		//physic
 		Win32::Window m_Window;
 

@@ -22,6 +22,7 @@ inline DirectX::XMFLOAT4X4 Identity4x4()
 /* HELPER STRUCTS                                                            */
 /* ------------------------------------------------------------------------- */
 #pragma region Helper Structs
+/*
 
 struct Camera
 {
@@ -40,4 +41,7 @@ struct Camera
 	void UpdateViewMatrix();
 	void UpdateProjMatrix(const float winWidth, const float winHeight);
 };
+
+*/
+
 #pragma endregion
