@@ -121,6 +121,7 @@
     <ClCompile Include="Source\Engine\ECS\Base\GameObject.cpp" />
     <ClCompile Include="Source\Engine\ECS\Base\Object.cpp" />
     <ClCompile Include="Source\Engine\ECS\Base\SystemManager.cpp" />
+    <ClCompile Include="Source\Engine\ECS\Components\CameraComponent.cpp" />
     <ClCompile Include="Source\Engine\ECS\Components\Component.cpp" />
     <ClCompile Include="Source\Engine\ECS\Components\MeshRenderer.cpp" />
     <ClCompile Include="Source\Engine\ECS\Components\PlayerComponent.cpp" />
@@ -155,6 +156,7 @@
     <ClInclude Include="Source\Engine\Collision\PyramidCollision.h" />
     <ClInclude Include="Source\Engine\Collision\SphereCollision.h" />
     <ClInclude Include="Source\Engine\Collision\TriangleCollision.h" />
+    <ClInclude Include="Source\Engine\ECS\Components\CameraComponent.h" />
     <ClInclude Include="Source\Engine\SphereCollision.h" />
     <ClInclude Include="Source\Engine\ECS\Base\ComponentArray.h" />
     <ClInclude Include="Source\Engine\ECS\Base\ComponentManager.h" />
