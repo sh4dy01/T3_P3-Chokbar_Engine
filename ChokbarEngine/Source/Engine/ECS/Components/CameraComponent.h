@@ -1,7 +1,7 @@
+#pragma once
 #include <DirectXMath.h>
 
-
-using namespace DirectX;
+#include "Core/D3D/D3DUtils.h"
 
 
 class Camera : public Chokbar::Component
@@ -12,12 +12,12 @@ public:
 
 	
 	// Get camera basis vectors.
-	XMVECTOR GetRight() const;
-	XMFLOAT3 GetRight3f() const;
-	XMVECTOR GetUp() const;
-	XMFLOAT3 GetUp3f() const;
-	XMVECTOR GetLook() const;
-	XMFLOAT3 GetLook3f() const;
+	DirectX::XMVECTOR GetRight() const;
+	DirectX::XMFLOAT3 GetRight3f() const;
+	DirectX::XMVECTOR GetUp() const;
+	DirectX::XMFLOAT3 GetUp3f() const;
+	DirectX::XMVECTOR GetLook() const;
+	DirectX::XMFLOAT3 GetLook3f() const;
 
 	// Get frustum properties.
 	float GetNearZ()const;
@@ -36,15 +36,15 @@ public:
 	void SetLens(float fovY, float aspect, float zn, float zf);
 
 	// Define camera space via LookAt parameters.
-	void LookAt(FXMVECTOR pos, FXMVECTOR target, FXMVECTOR worldUp);
-	void LookAt(const XMFLOAT3& pos, const XMFLOAT3& target, const XMFLOAT3& up);
+	void LookAt(DirectX::FXMVECTOR pos, DirectX::FXMVECTOR target, DirectX::FXMVECTOR worldUp);
+	void LookAt(const DirectX::XMFLOAT3& pos, const DirectX::XMFLOAT3& target, const DirectX::XMFLOAT3& up);
 
 	// Get View/Proj matrices.
-	XMMATRIX GetView()const;
-	XMMATRIX GetProj()const;
+	DirectX::XMMATRIX GetView()const;
+	DirectX::XMMATRIX GetProj()const;
 
-	XMFLOAT4X4 GetView4x4f()const;
-	XMFLOAT4X4 GetProj4x4f()const;
+	DirectX::XMFLOAT4X4 GetView4x4f()const;
+	DirectX::XMFLOAT4X4 GetProj4x4f()const;
 
 	// After modifying camera position/orientation, call to rebuild the view matrix.
 	void UpdateViewMatrix();
@@ -53,9 +53,9 @@ public:
 private:
 
 	// Camera coordinate system with coordinates relative to world space
-	XMFLOAT3 m_Right = { 1.0f, 0.0f, 0.0f };
-	XMFLOAT3 m_Up = { 0.0f, 1.0f, 0.0f };
-	XMFLOAT3 m_Look = { 0.0f, 0.0f, 1.0f };
+	DirectX::XMFLOAT3 m_Right = { 1.0f, 0.0f, 0.0f };
+	DirectX::XMFLOAT3 m_Up = { 0.0f, 1.0f, 0.0f };
+	DirectX::XMFLOAT3 m_Look = { 0.0f, 0.0f, 1.0f };
 
 	// Cache frustum properties.
 	float m_NearZ = 0.5f;

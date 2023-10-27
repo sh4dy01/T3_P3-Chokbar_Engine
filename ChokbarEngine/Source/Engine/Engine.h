@@ -21,6 +21,7 @@ namespace Chokbar {
 		static Engine& GetInstance();
 		static Coordinator& GetCoordinator();
 		static InputHandler& GetInput();
+		static Camera* GetMainCamera();
 
 		void Initialize();
 		void Run();

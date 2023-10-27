@@ -26,6 +26,11 @@ namespace Chokbar
 		return GetInstance().m_InputHandler;
 	}
 
+	Camera* Engine::GetMainCamera()
+	{
+		return &GetInstance().m_MainCamera;
+	}
+
 #pragma region INIT
 
 	void Engine::PreInitialize()

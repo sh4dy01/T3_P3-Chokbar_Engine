@@ -20,7 +20,6 @@ static const int SWAP_CHAIN_BUFFER_COUNT = 2;
 
 class MeshRenderer;
 class Texture;
-struct Camera;
 
 class D3DApp
 {
@@ -47,7 +46,6 @@ public:
 	int m_bufferWidth;
 	int m_bufferHeight;
 
-	Camera m_camera;
 private:
 	void EnableDebugLayer();
 

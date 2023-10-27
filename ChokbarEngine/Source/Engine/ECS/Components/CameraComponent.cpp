@@ -1,5 +1,6 @@
 #include "Chokbar.h"
 #include "CameraComponent.h"
+#include "Engine/ECS/Components/Component.h"
 
 using namespace DirectX;
 
@@ -143,7 +144,29 @@ XMFLOAT4X4 Camera::GetProj4x4f() const
 	return m_Proj;
 }
 
+void Camera::UpdateViewMatrix()
+{
+	XMFLOAT3 Position = transform->GetPosition();
 
+	XMVECTOR pos = XMVectorSet(Position.x, Position.y, Position.z, 1.0F);
+	XMVECTOR target = XMVectorSet(0.0F, 0.5F, 0.0F, 0.0F);
+	XMVECTOR up = XMVectorSet(0.0F, 1.0F, 0.0F, 0.0F);
+
+	XMStoreFloat4x4(&m_View, XMMatrixLookAtLH(pos, target, up));
+}
+
+void Camera::UpdateProjMatrix(const float winWidth, const float winHeight)
+{
+	XMFLOAT3 Position = transform->GetPosition();
+
+	XMVECTOR pos = XMVectorSet(Position.x, Position.y, Position.z, 1.0F);
+	XMVECTOR target = XMVectorSet(0.0F, 0.5F, 0.0F, 0.0F);
+	XMVECTOR up = XMVectorSet(0.0F, 1.0F, 0.0F, 0.0F);
+
+	XMStoreFloat4x4(&m_Proj, XMMatrixPerspectiveFovLH(XMConvertToRadians(70.0F), winWidth / winHeight, 0.05F, 1000.0F));
+}
+
+/*
 void Camera::UpdateViewMatrix()
 {
 	if (m_ViewDirty)
@@ -183,3 +206,5 @@ void Camera::UpdateViewMatrix()
 		m_ViewDirty = false;
 	}
 }
+
+*/
