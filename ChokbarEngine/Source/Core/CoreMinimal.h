@@ -5,6 +5,8 @@
 #include "Common/Logger.h"
 #include "Common/Time.h"
 
+#include "Engine/ECS/Base/GameObject.h"
+
 #include "Engine/GameTimer.h"
 #include "Engine/InputHandler.h"
 

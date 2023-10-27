@@ -11,23 +11,8 @@
     <Filter Include="Source\pch">
       <UniqueIdentifier>{9139896d-d27c-4485-9c72-f0f6f0575ef2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\Core">
-      <UniqueIdentifier>{1ce36a97-6b74-4b35-856f-9c6c0a5549b1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Core\Classes">
-      <UniqueIdentifier>{7a244edb-eb54-4868-91cd-2db9045495b5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Core\Private">
-      <UniqueIdentifier>{e3d8a183-e744-4770-bbab-dd0bc6bd8376}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Core\Public">
-      <UniqueIdentifier>{bd8f5847-f1a6-497f-9b49-debe0ccdf6bf}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source\Engine">
       <UniqueIdentifier>{6b2b109d-57f1-4756-b751-fce63a39b182}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Engine\Classes">
-      <UniqueIdentifier>{77803344-ad3c-4d2e-9140-0969ec0f0585}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source\Engine\Public">
       <UniqueIdentifier>{d10e78b5-8ad6-499a-98f1-a891eeb6b030}</UniqueIdentifier>
@@ -64,17 +49,49 @@
     </Filter>
     <Filter Include="Source\Engine\Public\Collision">
       <UniqueIdentifier>{7466ece3-e13f-4fa9-91e5-365426024392}</UniqueIdentifier>
+    <Filter Include="Source\Engine\Core">
+      <UniqueIdentifier>{1ce36a97-6b74-4b35-856f-9c6c0a5549b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\Core\Classes">
+      <UniqueIdentifier>{7a244edb-eb54-4868-91cd-2db9045495b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\Core\Private">
+      <UniqueIdentifier>{e3d8a183-e744-4770-bbab-dd0bc6bd8376}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\Core\Public">
+      <UniqueIdentifier>{bd8f5847-f1a6-497f-9b49-debe0ccdf6bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\ECS">
+      <UniqueIdentifier>{88daf8bd-1eed-4f52-a000-8bc1c48319d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\ECS\Public">
+      <UniqueIdentifier>{93efd9b1-04f1-4bf8-9879-783f87cf1c66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\ECS\Private">
+      <UniqueIdentifier>{b9d43283-e074-4eac-bd53-2e07b02f25a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\ECS\Components">
+      <UniqueIdentifier>{4eed304e-fc24-487e-8e80-37925701c4e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\ECS\Systems">
+      <UniqueIdentifier>{778d6514-45f2-45f3-a39b-41c3b4fa5b9b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\ECS\Systems\Public">
+      <UniqueIdentifier>{121fe308-dd95-4e94-a84c-66edf098e8a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\ECS\Systems\Private">
+      <UniqueIdentifier>{6a4126f7-7ee7-4c41-be5c-52a5185ea94a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Core\D3DApp.cpp">
-      <Filter>Source\Core\Private</Filter>
+      <Filter>Source\Engine\Core\Private</Filter>
     </ClCompile>
     <ClCompile Include="Source\Core\D3DUtils.cpp">
-      <Filter>Source\Core\Private</Filter>
+      <Filter>Source\Engine\Core\Private</Filter>
     </ClCompile>
     <ClCompile Include="Source\Core\PerGameSettings.cpp">
-      <Filter>Source\Core\Private</Filter>
+      <Filter>Source\Engine\Core\Private</Filter>
     </ClCompile>
     <ClCompile Include="Source\Engine\Engine.cpp">
       <Filter>Source\Engine\Private</Filter>
@@ -98,19 +115,52 @@
       <Filter>Source\Platform\Windows\Private</Filter>
     </ClCompile>
     <ClCompile Include="Source\Core\UpdloadBuffer.cpp">
-      <Filter>Source\Core\Private</Filter>
+      <Filter>Source\Engine\Core\Private</Filter>
     </ClCompile>
     <ClCompile Include="Source\Core\MeshGeometry.cpp">
-      <Filter>Source\Core\Private</Filter>
+      <Filter>Source\Engine\Core\Private</Filter>
     </ClCompile>
     <ClCompile Include="Source\Engine\InputHandler.cpp">
       <Filter>Source\Engine\Private</Filter>
     </ClCompile>
     <ClCompile Include="Source\Core\D3DMath.cpp">
-      <Filter>Source\Core\Private</Filter>
+      <Filter>Source\Engine\Core\Private</Filter>
     </ClCompile>
     <ClCompile Include="Source\Core\DebugUtils.cpp">
-      <Filter>Source\Core\Private</Filter>
+      <Filter>Source\Engine\Core\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\ECS\Base\ComponentManager.cpp">
+      <Filter>Source\Engine\ECS\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\ECS\Base\Coordinator.cpp">
+      <Filter>Source\Engine\ECS\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\ECS\Base\EntityManager.cpp">
+      <Filter>Source\Engine\ECS\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\ECS\Base\SystemManager.cpp">
+      <Filter>Source\Engine\ECS\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\ECS\Components\TransformComponent.cpp">
+      <Filter>Source\Engine\ECS\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\ECS\Systems\TransformSystem.cpp">
+      <Filter>Source\Engine\ECS\Systems\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\ECS\Components\MeshRenderer.cpp">
+      <Filter>Source\Engine\ECS\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\ECS\Components\PlayerComponent.cpp">
+      <Filter>Source\Engine\ECS\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\ECS\Base\Object.cpp">
+      <Filter>Source\Engine\ECS\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\ECS\Base\GameObject.cpp">
+      <Filter>Source\Engine\ECS\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\ECS\Components\Component.cpp">
+      <Filter>Source\Engine\ECS\Components</Filter>
     </ClCompile>
     <ClCompile Include="Source\Engine\SplashScreen.cpp" />
     <ClCompile Include="Source\Engine\Collision\TriangleCollision.cpp">
@@ -125,31 +175,30 @@
     <ClCompile Include="Source\Engine\Collision\PyramidCollision.cpp">
       <Filter>Source\Engine\Private\Collision</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Core\RenderItem.cpp" />
+    <ClCompile Include="Source\Core\ShaderBase.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Chokbar.h">
       <Filter>Source\pch</Filter>
     </ClInclude>
     <ClInclude Include="Source\Core\PerGameSettings.h">
-      <Filter>Source\Core\Classes</Filter>
+      <Filter>Source\Engine\Core\Classes</Filter>
     </ClInclude>
     <ClInclude Include="Source\Core\D3DApp.h">
-      <Filter>Source\Core\Classes</Filter>
+      <Filter>Source\Engine\Core\Classes</Filter>
     </ClInclude>
     <ClInclude Include="Source\Core\D3DUtils.h">
-      <Filter>Source\Core\Classes</Filter>
+      <Filter>Source\Engine\Core\Classes</Filter>
     </ClInclude>
     <ClInclude Include="Source\Core\Core.h">
-      <Filter>Source\Core\Public</Filter>
+      <Filter>Source\Engine\Core\Public</Filter>
     </ClInclude>
     <ClInclude Include="Source\Core\CoreMinimal.h">
-      <Filter>Source\Core\Public</Filter>
+      <Filter>Source\Engine\Core\Public</Filter>
     </ClInclude>
     <ClInclude Include="Source\Core\CoreDefinitions.h">
-      <Filter>Source\Core\Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Engine\Engine.h">
-      <Filter>Source\Engine\Classes</Filter>
+      <Filter>Source\Engine\Core\Public</Filter>
     </ClInclude>
     <ClInclude Include="Source\Common\Logger.h">
       <Filter>Source\Common\Public</Filter>
@@ -173,19 +222,64 @@
       <Filter>Source\Platform\Windows\Classes</Filter>
     </ClInclude>
     <ClInclude Include="Source\Core\UploadBuffer.h">
-      <Filter>Source\Core\Classes</Filter>
+      <Filter>Source\Engine\Core\Classes</Filter>
     </ClInclude>
     <ClInclude Include="Source\Core\MeshGeometry.h">
-      <Filter>Source\Core\Classes</Filter>
+      <Filter>Source\Engine\Core\Classes</Filter>
     </ClInclude>
     <ClInclude Include="Source\Engine\InputHandler.h">
       <Filter>Source\Engine\Public</Filter>
     </ClInclude>
     <ClInclude Include="Source\Core\D3DMath.h">
-      <Filter>Source\Core\Classes</Filter>
+      <Filter>Source\Engine\Core\Classes</Filter>
     </ClInclude>
     <ClInclude Include="Source\Core\DebugUtils.h">
-      <Filter>Source\Core\Public</Filter>
+      <Filter>Source\Engine\Core\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\ECS\Base\ComponentArray.h">
+      <Filter>Source\Engine\ECS\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\ECS\Base\ComponentManager.h">
+      <Filter>Source\Engine\ECS\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\ECS\Base\Coordinator.h">
+      <Filter>Source\Engine\ECS\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\ECS\Base\EntityManager.h">
+      <Filter>Source\Engine\ECS\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\ECS\Base\SystemManager.h">
+      <Filter>Source\Engine\ECS\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\ECS\Base\TypeDef.h">
+      <Filter>Source\Engine\ECS\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\ECS\Components\TransformComponent.h">
+      <Filter>Source\Engine\ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\ECS\Systems\TransformSystem.h">
+      <Filter>Source\Engine\ECS\Systems\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\ECS\Base\System.h">
+      <Filter>Source\Engine\ECS\Systems\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Engine.h">
+      <Filter>Source\Engine\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\ECS\Components\MeshRenderer.h">
+      <Filter>Source\Engine\ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\ECS\Components\PlayerComponent.h">
+      <Filter>Source\Engine\ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\ECS\Base\GameObject.h">
+      <Filter>Source\Engine\ECS\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\ECS\Base\Object.h">
+      <Filter>Source\Engine\ECS\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\ECS\Components\Component.h">
+      <Filter>Source\Engine\ECS\Components</Filter>
     </ClInclude>
     <ClInclude Include="Source\Engine\SplashScreen.h" />
     <ClInclude Include="Source\Engine\Collision\TriangleCollision.h">
@@ -201,5 +295,7 @@
     <ClInclude Include="Source\Engine\Collision\SphereCollision.h">
       <Filter>Source\Engine\Public\Collision</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Core\RenderItem.h" />
+    <ClInclude Include="Source\Core\ShaderBase.h" />
   </ItemGroup>
 </Project>
