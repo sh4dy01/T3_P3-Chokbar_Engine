@@ -14,8 +14,9 @@ struct RenderItem
 
 	UINT ObjCBIndex = -1;
 
-	MeshGeometry* Geo = nullptr;
+	D3DMesh* Geo = nullptr;
 	ShaderBase* Shader = nullptr;
+	Texture* Texture = nullptr;
 
 	D3D12_PRIMITIVE_TOPOLOGY PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 

@@ -1,4 +1,7 @@
 #include "Chokbar.h"
+
+#include "Resource.h"
+
 #include "Engine.h"
 
 namespace Chokbar
@@ -51,6 +54,8 @@ namespace Chokbar
 
 
 		D3DApp::GetInstance()->InitializeD3D12(&m_Window);
+
+		m_Coordinator.GetAllComponentsOfType<MeshRenderer>();
 	}
 
 #pragma endregion

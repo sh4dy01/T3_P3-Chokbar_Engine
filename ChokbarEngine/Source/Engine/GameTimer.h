@@ -15,7 +15,7 @@ namespace Chokbar
 		void Stop();	// Call when paused.
 		void Tick();	// Call every frame.
 
-		__int64 GetCurrentFrameTime();
+		float GetCurrentFrameTime();
 
 		float GetTotalTime();
 		float GetGameTime() const { return m_CurrTime; }
@@ -27,11 +27,11 @@ namespace Chokbar
 		double m_SecondsPerCount;
 		static float m_DeltaTime;
 
-		__int64 m_BaseTime;
-		__int64 m_PausedTime;
-		__int64 m_StopTime;
-		__int64 m_PrevTime;
-		__int64 m_CurrTime;
+		float m_BaseTime;
+		float m_PausedTime;
+		float m_StopTime;
+		float m_PrevTime;
+		float m_CurrTime;
 
 		bool isStopped;
 

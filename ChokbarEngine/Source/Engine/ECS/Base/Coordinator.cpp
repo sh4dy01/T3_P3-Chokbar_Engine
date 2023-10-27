@@ -1,7 +1,7 @@
 #include "Chokbar.h"
 #include "Coordinator.h"
 
-#include "Engine/ECS/Components/MeshRenderer.h"
+#include "Core/D3D/Internal/MeshRenderer.h"
 #include "Engine/ECS/Components/PlayerComponent.h"
 #include "Engine/ECS/Systems/PlayerSystem.h"
 

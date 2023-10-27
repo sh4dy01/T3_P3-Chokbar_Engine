@@ -16,8 +16,7 @@ namespace Chokbar {
 	public:
 		// Initialize the coordinator and all its managers
 		void Init();
-		void RegisterComponents();
-		void RegisterSystems();
+
 
 		// Create a new game object ID and add a default transform component
 		InstanceID CreateNewGameObjectWithTransform();
@@ -25,6 +24,11 @@ namespace Chokbar {
 		InstanceID CreateNewGameObjectWithTransform(const Transform& transform);
 		void UpdateSystems(float dt);
 		void DestroyEntity(InstanceID entity);
+
+	private:
+
+		void RegisterComponents();
+		void RegisterSystems();
 
 	public:
 
@@ -75,6 +79,13 @@ namespace Chokbar {
 		ComponentType GetComponentType() const
 		{
 			return m_ComponentManager->GetComponentType<T>();
+		}
+
+		template<class T>
+		std::shared_ptr<ComponentArray<T>> GetAllComponentsOfType()
+		{
+			// Get a pointer to a list of all components of type
+			return m_ComponentManager->GetComponentArray<T>();
 		}
 
 

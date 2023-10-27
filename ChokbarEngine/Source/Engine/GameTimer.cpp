@@ -92,7 +92,7 @@ namespace Chokbar
 		}
 	}
 
-	__int64 GameTimer::GetCurrentFrameTime()
+	float GameTimer::GetCurrentFrameTime()
 	{
 		__int64 currTime;
 		QueryPerformanceCounter(reinterpret_cast<LARGE_INTEGER*>(&currTime));
