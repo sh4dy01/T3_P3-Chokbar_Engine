@@ -84,9 +84,10 @@ void InputHandler::CheckInput()
 /// <returns>True if the key is pressed down, otherwise false.</returns>
 bool InputHandler::IsKeyDown(char key)
 {
+	// [TODO] - Replace char key by an enum
 	for (size_t i = 0; i < m_KeyboardInput.size(); ++i)
 	{
-		if (m_KeyboardInput[i] == key)
+		if (m_KeyboardInput[i] == toupper(key))
 		{
 			return m_KeyStates[i] == KeyState::Down;
 		}
@@ -103,7 +104,7 @@ bool InputHandler::IsKeyUp(char key)
 {
 	for (size_t i = 0; i < m_KeyboardInput.size(); ++i)
 	{
-		if (m_KeyboardInput[i] == key)
+		if (m_KeyboardInput[i] == toupper(key))
 		{
 			return m_KeyStates[i] == KeyState::Up;
 		}
@@ -120,7 +121,7 @@ bool InputHandler::IsKeyHeld(char key)
 {
 	for (size_t i = 0; i < m_KeyboardInput.size(); ++i)
 	{
-		if (m_KeyboardInput[i] == key)
+		if (m_KeyboardInput[i] == toupper(key))
 		{
 			return m_KeyStates[i] == KeyState::Held;
 		}

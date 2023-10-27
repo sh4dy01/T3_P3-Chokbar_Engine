@@ -4,6 +4,8 @@
 #include "DebugUtils.h"
 #include "Engine/ECS/Components/TransformComponent.h"
 
+//#include "Engine/Engine.h"
+
 using namespace DirectX;
 
 D3DApp* D3DApp::m_pApp = nullptr;
@@ -503,7 +505,33 @@ void D3DApp::UpdateRenderItems(const float dt, const float totalTime)
 		{
 		case TRANSFORMATION_TYPE::ROTATION:
 		{
-			item.Transform.Rotate(100.0f * dt, 100.0f * dt, 100.0f * dt);
+			//item.Transform.Rotate(100.0f * dt, 100.0f * dt, 100.0f * dt);
+
+			if (Chokbar::Engine::GetInput().IsKeyHeld('z'))
+			{
+				item.Transform.RotateRoll(100.f * dt);
+			}
+			if (Chokbar::Engine::GetInput().IsKeyHeld('q'))
+			{
+				item.Transform.RotatePitch(100.f * dt);
+			}
+			if (Chokbar::Engine::GetInput().IsKeyHeld('s'))
+			{
+				item.Transform.RotateRoll(-100.f * dt);
+			}
+			if (Chokbar::Engine::GetInput().IsKeyHeld('d'))
+			{
+				item.Transform.RotatePitch(-100.f * dt);
+			}
+			if (Chokbar::Engine::GetInput().IsKeyHeld(VK_LBUTTON))
+			{
+				item.Transform.RotateYaw(100.f * dt);
+			}
+			if (Chokbar::Engine::GetInput().IsKeyHeld(VK_RBUTTON))
+			{
+				item.Transform.RotateYaw(-100.f * dt);
+			}
+
 			break;
 		}
 		case TRANSFORMATION_TYPE::TRANSLATION:
@@ -519,6 +547,8 @@ void D3DApp::UpdateRenderItems(const float dt, const float totalTime)
 		default:
 			break;
 		}
+
+		if (item.Transform.IsDirty()) item.Transform.UpdateWorldMatrix();
 		item.Shader->UpdateObjectCB(item.Transform.GetWorldMatrix(), item.ObjCBIndex);
 	}
 }
