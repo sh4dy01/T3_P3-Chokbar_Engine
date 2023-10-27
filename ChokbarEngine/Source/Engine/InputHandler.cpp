@@ -14,10 +14,7 @@ std::vector<InputHandler::KeyState> InputHandler::m_KeyStates = {};
 InputHandler::InputHandler()
 	: m_WindowHandle(nullptr), m_timer(0.0f), m_mouseRefresh(0.1f)
 {
-
 	m_KeyStates.reserve(m_KeyboardInput.size());
-
-
 
 	for (size_t i = 0; i < m_KeyboardInput.size(); ++i)
 	{

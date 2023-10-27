@@ -126,7 +126,6 @@
     <ClCompile Include="Source\Engine\ECS\Components\PlayerComponent.cpp" />
     <ClCompile Include="Source\Engine\ECS\Components\TransformComponent.cpp" />
     <ClCompile Include="Source\Engine\ECS\Systems\PlayerSystem.cpp" />
-    <ClCompile Include="Source\Engine\ECS\Systems\TransformSystem.cpp" />
     <ClCompile Include="Source\Engine\Engine.cpp" />
     <ClCompile Include="Source\Engine\GameTimer.cpp" />
     <ClCompile Include="Source\Engine\InputHandler.cpp" />
@@ -171,7 +170,6 @@
     <ClInclude Include="Source\Engine\ECS\Components\MeshRenderer.h" />
     <ClInclude Include="Source\Engine\ECS\Components\PlayerComponent.h" />
     <ClInclude Include="Source\Engine\ECS\Components\TransformComponent.h" />
-    <ClInclude Include="Source\Engine\ECS\Systems\TransformSystem.h" />
     <ClInclude Include="Source\Engine\Engine.h" />
     <ClInclude Include="Source\Engine\GameTimer.h" />
     <ClInclude Include="Source\Engine\InputHandler.h" />

@@ -1,7 +1,8 @@
 #pragma once
 
-namespace Chokbar {
-	class PlayerSystem : public System
-	{
-		void Update(float deltaTime) override;
-	};
+class PlayerSystem : public System
+{
+	void Awake() override;
+	void Start() override;
+	void Update(float deltaTime) override;
+};
