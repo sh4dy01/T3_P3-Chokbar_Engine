@@ -5,6 +5,9 @@
 
 #include "Resource.h"
 
+std::unordered_map<std::string, ShaderBase*> Resource::m_shaders;
+std::unordered_map<std::string, Material*> Resource::m_materials;
+
 Resource::~Resource()
 {
 	m_shaders.clear();
@@ -32,11 +35,11 @@ ShaderBase* Resource::FindShader(std::string& shaderName)
 
 void Resource::CreateShaders(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, UINT cbvSrvDescriptorSize)
 {
-	std::wstring shaderPathSimple = L"Resources/Shaders/Simple.hlsl";
+	std::wstring shaderPathSimple = L"Shader/Simple.hlsl";
 	m_shaders[SHADER_SIMPLE] = new ShaderSimple(device, cbvHeap, cbvSrvDescriptorSize, shaderPathSimple);
 	m_shaders[SHADER_SIMPLE]->Init();
-
-	std::wstring shaderPathTex = L"Resources/Shaders/Texture.hlsl";
+	
+	std::wstring shaderPathTex = L"Shader/Texture.hlsl";
 	m_shaders[SHADER_TEXTURE] = new ShaderTexture(device, cbvHeap, cbvSrvDescriptorSize, shaderPathTex);
 	m_shaders[SHADER_TEXTURE]->Init();
 
@@ -45,9 +48,9 @@ void Resource::CreateShaders(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap
 
 void Resource::CreateMaterials()
 {
-	m_materials[SHADER_SIMPLE] = new Material(SHADER_SIMPLE);
+	m_materials[SHADER_SIMPLE] = new Material();
 	m_materials[SHADER_SIMPLE]->SetShader(m_shaders[SHADER_SIMPLE]);
 
-	m_materials[SHADER_TEXTURE] = new Material(SHADER_TEXTURE);
+	m_materials[SHADER_TEXTURE] = new Material();
 	m_materials[SHADER_TEXTURE]->SetShader(m_shaders[SHADER_TEXTURE]);
 }

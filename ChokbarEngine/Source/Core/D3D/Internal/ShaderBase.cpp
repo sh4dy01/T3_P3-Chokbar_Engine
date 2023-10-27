@@ -167,7 +167,7 @@ void ShaderBase::CompileShader(const D3D_SHADER_MACRO* defines, const std::strin
 
 #pragma region SHADER SIMPLE
 ShaderSimple::ShaderSimple(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, UINT cbvDescriptorSize, std::wstring& filepath)
-	: ShaderBase(device, cbvHeap, cbvDescriptorSize, filepath), Type(ShaderType::SIMPLE)
+	: ShaderBase(device, cbvHeap, cbvDescriptorSize, filepath)
 {
 }
 
@@ -240,7 +240,7 @@ void ShaderSimple::BeginDraw(ID3D12GraphicsCommandList* cmdList)
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
-void ShaderSimple::Draw(ShaderDrawArguments& args, Texture* text = nullptr)
+void ShaderSimple::Draw(ShaderDrawArguments& args)
 {
 	if (args.RenderItemCBIndex >= m_objectCBs.size())
 		AddObjectCB();
@@ -253,7 +253,7 @@ void ShaderSimple::Draw(ShaderDrawArguments& args, Texture* text = nullptr)
 
 	args.CmdList->SetGraphicsRootConstantBufferView(0, m_objectCBs[args.RenderItemCBIndex]->GetResource()->GetGPUVirtualAddress());
 
-	args.CmdList->DrawIndexedInstanced(args.RenderItemGeometry->IndexCount, 1, args.RenderItemGeometry->StartIndexLocation, args.RenderItemGeometry->BaseVertexLocation, 0);
+	args.CmdList->DrawIndexedInstanced(args.IndexCount, 1, args.StartIndexLocation, args.BaseVertexLocation, 0);
 }
 
 void ShaderSimple::EndDraw(ID3D12GraphicsCommandList* cmdList)
@@ -264,7 +264,7 @@ void ShaderSimple::EndDraw(ID3D12GraphicsCommandList* cmdList)
 
 #pragma region SHADER TEXTURE
 ShaderTexture::ShaderTexture(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, UINT cbvDescriptorSize, std::wstring& filepath)
-	: ShaderBase(device, cbvHeap, cbvDescriptorSize, filepath), Type(ShaderType::TEXTURE)
+	: ShaderBase(device, cbvHeap, cbvDescriptorSize, filepath)
 {
 	m_texture = nullptr;
 }
@@ -340,8 +340,9 @@ void ShaderTexture::BeginDraw(ID3D12GraphicsCommandList* cmdList)
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
-void ShaderTexture::Draw(ShaderDrawArguments& args, Texture* text = nullptr)
-{
+void ShaderTexture::Draw(ShaderDrawArguments& args) 
+{ 
+	//TODO heck if texture is nullptr
 	if (args.RenderItemCBIndex >= m_objectCBs.size())
 		AddObjectCB();
 
@@ -353,7 +354,7 @@ void ShaderTexture::Draw(ShaderDrawArguments& args, Texture* text = nullptr)
 
 	// args.CmdList->SetGraphicsRootConstantBufferView(0, m_objectCBs[args.RenderItemCBIndex]->GetResource()->GetGPUVirtualAddress());
 
-	args.CmdList->DrawIndexedInstanced(args.RenderItemGeometry->IndexCount, 1, args.RenderItemGeometry->StartIndexLocation, args.RenderItemGeometry->BaseVertexLocation, 0);
+	args.CmdList->DrawIndexedInstanced(args.IndexCount, 1, args.StartIndexLocation, args.BaseVertexLocation, 0);
 }
 
 void ShaderTexture::EndDraw(ID3D12GraphicsCommandList* cmdList)

@@ -10,8 +10,6 @@
 #include "Core/D3D/Internal/MeshRenderer.h"
 #include "Core/D3D/Internal/Material.h"
 
-#include "D3DUtils.h"
-
 #include "D3DApp.h"
 
 
@@ -24,7 +22,8 @@ D3DApp::D3DApp() :
 	m_pInstance(nullptr), m_4xMsaaState(false),
 	m_4xMsaaQuality(0), m_bufferWidth(DEFAULT_WIDTH), m_bufferHeight(DEFAULT_HEIGHT),
 	m_D3dDriverType(D3D_DRIVER_TYPE_HARDWARE), m_CurrentFenceValue(0), m_RtvDescriptorSize(0),
-	m_DsvDescriptorSize(0), m_CbvSrvUavDescriptorSize(0), m_currBackBuffer(0), m_BackBufferFormat(DXGI_FORMAT_R8G8B8A8_UNORM), m_DepthStencilFormat(DXGI_FORMAT_D24_UNORM_S8_UINT)
+	m_DsvDescriptorSize(0), m_CbvSrvUavDescriptorSize(0), m_currBackBuffer(0), m_BackBufferFormat(DXGI_FORMAT_R8G8B8A8_UNORM), m_DepthStencilFormat(DXGI_FORMAT_D24_UNORM_S8_UINT),
+	m_meshRenderers(nullptr)
 {
 	m_pDebugController = nullptr;
 
@@ -179,8 +178,6 @@ void D3DApp::InitializeD3D12(Win32::Window* window)
 
 	CreateResources();
 	GetMeshRenderersRef();
-
-	RegisterInitCommands_In_CommandList();
 }
 #pragma endregion
 
@@ -473,8 +470,9 @@ void D3DApp::UpdateTextureHeap(Texture* tex)
 
 void D3DApp::UpdateRenderItems(const float dt, const float totalTime)
 {
-	for (auto& mr : m_meshRenderers)
+	for (auto& mr : *m_meshRenderers)
 	{
+		if (!mr.IsEnabled()) return;
 		/*
 		switch (mr.TransformationType)
 		{
@@ -503,12 +501,21 @@ void D3DApp::UpdateRenderItems(const float dt, const float totalTime)
 
 void D3DApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList)
 {
-	for (auto& mr : m_meshRenderers)
+	for (auto& mr : *m_meshRenderers)
 	{
+		if (!mr.IsEnabled()) return;
+
 		mr.Mat->GetShader()->BeginDraw(cmdList);
 
-		ShaderDrawArguments args(m_pCommandList, mr.ObjectCBIndex, mr.Mesh);
-		mr.Mat->GetShader()->Draw(args, mr.Mat->GetTexture(0));
+		ShaderDrawArguments args;
+		args.CmdList = cmdList;
+		args.RenderItemGeometry = mr.Mesh;
+		args.RenderItemCBIndex = mr.ObjectCBIndex;
+		args.IndexCount = mr.Mesh->Indices.size();
+		args.StartIndexLocation = 0;
+		args.BaseVertexLocation = 0;
+		args.Text = mr.Mat->GetTexture(0);
+		mr.Mat->GetShader()->Draw(args);
 
 		mr.Mat->GetShader()->EndDraw(cmdList);
 	}

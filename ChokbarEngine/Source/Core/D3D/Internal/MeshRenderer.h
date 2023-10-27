@@ -1,6 +1,7 @@
 #pragma once 
 
 class Material;
+class D3DMesh;
 
 class MeshRenderer : public Chokbar::Component
 {

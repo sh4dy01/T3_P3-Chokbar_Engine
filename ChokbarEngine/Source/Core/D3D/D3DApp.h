@@ -10,6 +10,8 @@
 #include <d3dcompiler.h>
 #include <WinUser.h>
 
+#include "D3DUtils.h"
+
 #pragma region GLOBAL VARIABLES
 
 static const int SWAP_CHAIN_BUFFER_COUNT = 2;
@@ -18,6 +20,7 @@ static const int SWAP_CHAIN_BUFFER_COUNT = 2;
 
 class MeshRenderer;
 class Texture;
+struct Camera;
 
 class D3DApp
 {
@@ -58,7 +61,6 @@ private:
 
 	void CreateSwapChain(HWND windowHandle);
 
-	void RegisterInitCommands_In_CommandList();
 	void CreateRtvAndDsvDescriptorHeaps();
 	void CreateRenderTargetView();
 	void CreateDepthStencilBuffer();
@@ -117,9 +119,6 @@ private:
 	UINT m_DsvDescriptorSize;
 	UINT m_CbvSrvUavDescriptorSize;
 
-	/* This struct helps the GPU identifying how our Vertex class is composed */
-	D3D12_INPUT_ELEMENT_DESC m_inputLayout[2];
-
 	/* D3D12 SwapChain : Used to swap the back buffer */
 	IDXGISwapChain *m_pSwapChain;
 	/* Buffer used by the swap chain (contains our two buffers that will serve for the Present() method) */
@@ -133,7 +132,7 @@ private:
 	ID3D12Resource *m_pDepthStencilBuffer;
 	DXGI_FORMAT m_DepthStencilFormat;
 
-	std::array<MeshRenderer, 1000>& m_meshRenderers{};
+	std::array<MeshRenderer, 1000>* m_meshRenderers;
 
 	UINT m_texIndex;
 

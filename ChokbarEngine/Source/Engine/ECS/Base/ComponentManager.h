@@ -2,7 +2,7 @@
 
 #include "TypeDef.h"
 #include "ComponentArray.h"
-
+#include "Core/D3D/Internal/MeshRenderer.h"
 
 namespace Chokbar {
 
@@ -86,8 +86,6 @@ namespace Chokbar {
 		// Notify each component array that an entity has been destroyed
 		// If it has a component for that entity, it will remove it
 		void EntityDestroyed(InstanceID entity);
-
-	private:
 
 		// Convenience function to get the statically casted pointer to the ComponentArray of type T.
 		template<class T>

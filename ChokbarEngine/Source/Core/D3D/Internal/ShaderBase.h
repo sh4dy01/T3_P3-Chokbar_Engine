@@ -10,10 +10,19 @@ enum ShaderType { BASE, SIMPLE, TEXTURE };
 
 struct ShaderDrawArguments
 {
-	ShaderDrawArguments(ID3D12GraphicsCommandList* cmdList, UINT renderItemCBIndex, D3DMesh* renderItemGeometry) : CmdList(cmdList), RenderItemCBIndex(renderItemCBIndex), RenderItemGeometry(renderItemGeometry) { }
+	ShaderDrawArguments() : RenderItemCBIndex(-1), IndexCount(0), StartIndexLocation(0), BaseVertexLocation(0)
+	{
+		CmdList = nullptr;
+		RenderItemGeometry = nullptr;
+	}
+
 	ID3D12GraphicsCommandList* CmdList;
 	UINT RenderItemCBIndex;
 	D3DMesh* RenderItemGeometry;
+	UINT IndexCount;
+	UINT StartIndexLocation;
+	UINT BaseVertexLocation;
+	Texture* Text;
 };
 
 class ShaderBase
@@ -92,7 +101,7 @@ public:
 	virtual void CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT& rtvFormat, DXGI_FORMAT& dsvFormat) = 0;
 
 	virtual void BeginDraw(ID3D12GraphicsCommandList* cmdList) = 0;
-	virtual void Draw(ShaderDrawArguments& args, Texture* text = nullptr) = 0;
+	virtual void Draw(ShaderDrawArguments& args) = 0;
 	virtual void EndDraw(ID3D12GraphicsCommandList* cmdList) = 0;
 
 	UINT GetCreatedIndex() { return (UINT)m_objectCBs.size() - 1; }
@@ -121,7 +130,7 @@ public:
 	void CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT& rtvFormat, DXGI_FORMAT& dsvFormat) override;
 
 	void BeginDraw(ID3D12GraphicsCommandList* cmdList) override;
-	void Draw(ShaderDrawArguments& args, Texture* text = nullptr) override;
+	void Draw(ShaderDrawArguments& args) override;
 	void EndDraw(ID3D12GraphicsCommandList* cmdList) override;
 };
 
@@ -135,7 +144,7 @@ public:
 	void CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT& rtvFormat, DXGI_FORMAT& dsvFormat) override;
 
 	void BeginDraw(ID3D12GraphicsCommandList* cmdList) override;
-	void Draw(ShaderDrawArguments& args, Texture* text = nullptr) override;
+	void Draw(ShaderDrawArguments& args) override;
 	void EndDraw(ID3D12GraphicsCommandList* cmdList) override;
 
 public:

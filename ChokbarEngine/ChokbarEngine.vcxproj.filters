@@ -151,9 +151,6 @@
     <ClCompile Include="Source\Engine\ECS\Systems\TransformSystem.cpp">
       <Filter>Source\Engine\ECS\Systems\Private</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\ECS\Components\MeshRenderer.cpp">
-      <Filter>Source\Engine\ECS\Components</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Engine\ECS\Components\PlayerComponent.cpp">
       <Filter>Source\Engine\ECS\Components</Filter>
     </ClCompile>
@@ -173,9 +170,6 @@
       <Filter>Source\Engine\Private</Filter>
     </ClCompile>
     <ClCompile Include="Source\Core\D3D\Internal\D3DMesh.cpp">
-      <Filter>Source\Engine\Core\D3D\Internal\Private</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Core\D3D\Internal\RenderItem.cpp">
       <Filter>Source\Engine\Core\D3D\Internal\Private</Filter>
     </ClCompile>
     <ClCompile Include="Source\Core\D3D\Internal\ShaderBase.cpp">
@@ -276,9 +270,6 @@
     <ClInclude Include="Source\Engine\Engine.h">
       <Filter>Source\Engine\Public</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\ECS\Components\MeshRenderer.h">
-      <Filter>Source\Engine\ECS\Components</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Engine\ECS\Components\PlayerComponent.h">
       <Filter>Source\Engine\ECS\Components</Filter>
     </ClInclude>
@@ -298,9 +289,6 @@
       <Filter>Source\Engine\Public</Filter>
     </ClInclude>
     <ClInclude Include="Source\Core\D3D\Internal\D3DMesh.h">
-      <Filter>Source\Engine\Core\D3D\Internal\Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Core\D3D\Internal\RenderItem.h">
       <Filter>Source\Engine\Core\D3D\Internal\Public</Filter>
     </ClInclude>
     <ClInclude Include="Source\Core\D3D\Internal\ShaderBase.h">

@@ -2,6 +2,7 @@
 #include <DirectXMath.h>
 #include <vector>
 
+#include "Internal/D3DMesh.h"
 
 class GeometryGenerator
 {

@@ -5,6 +5,9 @@
 #define SHADER_SIMPLE "Simple"
 #define SHADER_TEXTURE "Texture"
 
+class ShaderBase;
+class Material;
+
 class Resource
 {
 public:

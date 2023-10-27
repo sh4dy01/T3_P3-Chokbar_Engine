@@ -1,6 +1,8 @@
 #pragma once 
 
-struct Texture : IResourceObject
+#include "Engine/IResourceObject.h"
+
+struct Texture : public IResourceObject
 {
 	Texture(const std::string& name, const std::wstring& filepath);
 	~Texture();
