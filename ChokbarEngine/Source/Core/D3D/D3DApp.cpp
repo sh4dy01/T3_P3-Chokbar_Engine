@@ -470,9 +470,9 @@ void D3DApp::UpdateTextureHeap(Texture* tex)
 
 void D3DApp::UpdateRenderItems(const float dt, const float totalTime)
 {
-	for (auto& mr : *m_meshRenderers)
+	for (auto mr : *m_meshRenderers)
 	{
-		if (!mr.IsEnabled()) return;
+		if (!mr.IsEnabled() || !mr.Mat || !mr.Mesh) return;
 		/*
 		switch (mr.TransformationType)
 		{
@@ -506,7 +506,7 @@ void D3DApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList)
 {
 	for (auto& mr : *m_meshRenderers)
 	{
-		if (!mr.IsEnabled()) return;
+		if (!mr.IsEnabled() || !mr.Mat || !mr.Mesh) return;
 
 		mr.Mat->GetShader()->BeginDraw(cmdList);
 

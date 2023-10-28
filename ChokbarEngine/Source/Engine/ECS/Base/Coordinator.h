@@ -22,7 +22,7 @@ namespace Chokbar {
 		InstanceID CreateNewGameObjectWithTransform();
 		// Create a new game object ID and add a copied transform component
 		InstanceID CreateNewGameObjectWithTransform(const Transform& transform);
-		void UpdateSystems();
+		void UpdateSystems(float dt);
 		void DestroyEntity(InstanceID entity);
 
 	private:

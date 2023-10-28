@@ -89,7 +89,7 @@ void ShaderBase::AddObjectCB()
 	m_objectCBs.push_back(cb);
 }
 
-void ShaderBase::UpdateObjectCB(DirectX::XMFLOAT4X4 itemWorldMatrix, UINT cbIndex)
+void ShaderBase::UpdateObjectCB(DirectX::XMFLOAT4X4* itemWorldMatrix, UINT cbIndex)
 {
 	if (cbIndex >= m_objectCBs.size())
 		AddObjectCB();

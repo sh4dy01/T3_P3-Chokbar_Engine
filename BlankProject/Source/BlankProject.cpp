@@ -46,7 +46,7 @@ void Application::PreInitialize()
 void Application::Initialize()
 {
 	GameObject test = GameObject("player");
-	GameObject player = GameObject("player", PlayerComponent());
+	GameObject player = GameObject("player", PlayerComponent(), MeshRenderer());
 }
 
 void Application::Run()
