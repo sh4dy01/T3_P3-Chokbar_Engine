@@ -1,20 +1,19 @@
 #include "Chokbar.h"
 #include "GameObject.h"
 
-GameObject::GameObject()
+
+Chokbar::GameObject::GameObject()
 {
 	transform = Engine::GetCoordinator()->GetComponent<Transform>(m_InstanceID);
 }
 
-GameObject::GameObject(const std::string& name)
+Chokbar::GameObject::GameObject(const std::string& name)
 	: Object(name)
 {
 	transform = Engine::GetCoordinator()->GetComponent<Transform>(m_InstanceID);
 }
 
 
-GameObject::~GameObject()
+Chokbar::GameObject::~GameObject()
 = default;
-
-
 

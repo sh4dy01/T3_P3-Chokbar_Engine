@@ -1,11 +1,11 @@
 #pragma once
 #include <DirectXMath.h>
 
-#include "Component.h"
 #include "Core/D3D/D3DUtils.h"
+#include "Engine/ECS/Components/Component.h"
 
 
-class CameraComponent : public Chokbar::Component
+class CameraComponent : public Component
 {
 public:
 	CameraComponent();
@@ -68,7 +68,7 @@ private:
 
 	bool m_ViewDirty = true;
 
-	Chokbar::Transform* m_Target;
+	Transform* m_Target;
 
 	// Cache View/Proj matrices.
 	DirectX::XMFLOAT4X4 m_View = Identity4x4();

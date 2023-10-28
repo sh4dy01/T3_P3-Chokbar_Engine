@@ -470,7 +470,7 @@ void D3DApp::UpdateTextureHeap(Texture* tex)
 
 void D3DApp::UpdateRenderItems(const float dt, const float totalTime)
 {
-	for (auto mr : *m_meshRenderers)
+	for (const auto& mr : *m_meshRenderers)
 	{
 		if (!mr.IsEnabled() || !mr.Mat || !mr.Mesh) return;
 		/*

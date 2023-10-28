@@ -1,12 +1,13 @@
 #pragma once
+#include "Engine/ECS/Base/GameObject.h"
 
-class GameObject;
+
 class Transform;
 
 class Component
 {
 public:
-	GameObject* gameObject;
+	Chokbar::GameObject* gameObject;
 	Transform* transform;
 
 	void SetEnabled(bool enabled) { m_isEnabled = enabled; }
@@ -15,3 +16,4 @@ public:
 private:
 	bool m_isEnabled = false;
 };
+

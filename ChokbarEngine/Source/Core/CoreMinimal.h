@@ -9,7 +9,7 @@
 #include "Engine/Managers/InputHandler.h"
 
 #ifdef WIN32
-	#include "Platform/Windows/Win32Utils.h"
-	#include "Platform/Windows/Window.h"
-	#include "Platform/Windows/IApplication.h"
+#include "Platform/Windows/Win32Utils.h"
+#include "Platform/Windows/Window.h"
+#include "Platform/Windows/IApplication.h"
 #endif

@@ -5,13 +5,13 @@
 Object::Object()
 	: m_Name("DefaultName")
 {
-	m_InstanceID = Chokbar::Engine::GetCoordinator().CreateNewGameObjectWithTransform();
+	m_InstanceID = Chokbar::Engine::GetCoordinator()->CreateNewGameObjectWithTransform();
 }
 
 Object::Object(const std::string& name)
 	: m_Name(name)
 {
-	m_InstanceID = Chokbar::Engine::GetCoordinator().CreateNewGameObjectWithTransform();
+	m_InstanceID = Chokbar::Engine::GetCoordinator()->CreateNewGameObjectWithTransform();
 	DEBUG_LOG("Object created with name: " + name);
 }
 
@@ -44,7 +44,7 @@ Object Object::Instantiate(const Object& original, DirectX::XMFLOAT3 position, D
 {
 	Object clone = Instantiate(original);
 
-	const auto transform = Chokbar::Engine::GetCoordinator().GetComponent<Transform>(clone.m_InstanceID);
+	const auto transform = Chokbar::Engine::GetCoordinator()->GetComponent<Transform>(clone.m_InstanceID);
 	transform->SetPosition(position);
 	transform->Rotate(rotation);
 
@@ -56,5 +56,5 @@ Object Object::Instantiate(const Object& original, DirectX::XMFLOAT3 position, D
 
 void Object::Destroy() const
 {
-	Chokbar::Engine::GetCoordinator().DestroyEntity(m_InstanceID);
+	Chokbar::Engine::GetCoordinator()->DestroyEntity(m_InstanceID);
 }
