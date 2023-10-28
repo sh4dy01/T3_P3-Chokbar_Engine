@@ -36,7 +36,7 @@ ShaderBase::~ShaderBase()
 	m_objectCBs.clear();
 	m_passCB = nullptr;
 
-	m_generalCamera = nullptr;
+	m_MainCamera = nullptr;
 }
 
 void ShaderBase::Init()
@@ -113,11 +113,8 @@ void ShaderBase::CreatePassCB()
 
 void ShaderBase::UpdatePassCB(const float dt, const float totalTime)
 {
-	m_generalCamera->UpdateProjMatrix(D3DApp::GetInstance()->m_bufferWidth, D3DApp::GetInstance()->m_bufferHeight);
-	m_generalCamera->UpdateViewMatrix();
-
-	XMMATRIX camView = XMLoadFloat4x4(&m_generalCamera->View);
-	XMMATRIX camProj = XMLoadFloat4x4(&m_generalCamera->Proj);
+	const XMMATRIX camView = m_MainCamera->GetCameraComponent()->GetView();
+	const XMMATRIX camProj = m_MainCamera->GetCameraComponent()->GetProj();
 
 	XMMATRIX viewProj = XMMatrixMultiply(camView, camProj);
 	// XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(camView), camView);
@@ -132,7 +129,7 @@ void ShaderBase::UpdatePassCB(const float dt, const float totalTime)
 	XMStoreFloat4x4(&mainPassCB.ViewProj, XMMatrixTranspose(viewProj));
 	// XMStoreFloat4x4(&mainPassCB.InvViewProj, XMMatrixTranspose(invViewProj));
 
-	mainPassCB.EyePosW = m_generalCamera->Position;
+	mainPassCB.EyePosW = m_MainCamera->GetCameraComponent()->transform->GetPosition();
 	// mainPassCB.RenderTargetSize = XMFLOAT2(m_bufferWidth, m_bufferHeight);
 	// mainPassCB.InvRenderTargetSize = XMFLOAT2(1.0f / m_bufferWidth, 1.0f / m_bufferHeight);
 	// mainPassCB.NearZ = m_camera.NearZ;
@@ -181,7 +178,7 @@ void ShaderSimple::Init()
 	CompileShader(nullptr, "vs_main", "vs_5_0", &m_vsByteCode);
 	CompileShader(nullptr, "ps_main", "ps_5_0", &m_psByteCode);
 
-	m_generalCamera = &D3DApp::GetInstance()->m_camera;
+	m_MainCamera = Chokbar::Engine::GetMainCamera();
 }
 
 void ShaderSimple::CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT& rtvFormat, DXGI_FORMAT& dsvFormat)
@@ -280,7 +277,7 @@ void ShaderTexture::Init()
 	CompileShader(nullptr, "vs_main", "vs_5_0", &m_vsByteCode);
 	CompileShader(nullptr, "ps_main", "ps_5_0", &m_psByteCode);
 
-	m_generalCamera = &D3DApp::GetInstance()->m_camera;
+	m_MainCamera = Chokbar::Engine::GetMainCamera();
 
 }
 

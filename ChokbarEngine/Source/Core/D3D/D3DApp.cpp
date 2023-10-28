@@ -1,7 +1,6 @@
 #include "Chokbar.h"
 
 #include "Core/DebugUtils.h"
-#include "Engine/ECS/Components/TransformComponent.h"
 
 #include "Engine/Resource.h"
 
@@ -12,6 +11,7 @@
 
 #include "D3DApp.h"
 
+class Transform;
 
 using namespace DirectX;
 
@@ -443,7 +443,7 @@ void D3DApp::GetMeshRenderersRef()
 		pyrItem.Transform = Chokbar::Transform();
 	} */
 
-	m_meshRenderers = Chokbar::Engine::GetCoordinator().GetAllComponentsOfType<MeshRenderer>()->GetAllData<MeshRenderer>();
+	m_meshRenderers = Chokbar::Engine::GetCoordinator()->GetAllComponentsOfType<MeshRenderer>()->GetAllData<MeshRenderer>();
 }
 #pragma endregion
 
@@ -470,7 +470,7 @@ void D3DApp::UpdateTextureHeap(Texture* tex)
 
 void D3DApp::UpdateRenderItems(const float dt, const float totalTime)
 {
-	for (auto mr : *m_meshRenderers)
+	for (const auto& mr : *m_meshRenderers)
 	{
 		if (!mr.IsEnabled() || !mr.Mat || !mr.Mesh) return;
 		/*

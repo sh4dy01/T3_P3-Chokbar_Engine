@@ -94,7 +94,7 @@ protected:
 	ID3D12DescriptorHeap* m_generalCBVHeap;
 	UINT m_cbvDescriptorSize;
 
-	Camera* m_generalCamera;
+	Camera* m_MainCamera;
 
 public:
 	virtual void Init() = 0;

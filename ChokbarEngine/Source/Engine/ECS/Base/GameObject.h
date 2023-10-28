@@ -1,28 +1,30 @@
 #pragma once
 
 #include "Object.h"
-#include "Engine/Engine.h"
-#include "Engine/ECS/Components/Component.h"
+#include "Core/DebugUtils.h"
 
+namespace Chokbar {
 
-class GameObject : public Object
-{
-public:
+	class Engine;
 
-	GameObject();
-	GameObject(const std::string& name);
-
-	template<typename... Component>
-	GameObject(const std::string& name, Component... components)
+	class GameObject : public Object
 	{
-		m_Name = name;
-		transform = Chokbar::Engine::GetCoordinator().GetComponent<Transform>(m_InstanceID);
+	public:
+
+		GameObject();
+		GameObject(const std::string& name);
+
+		template<typename... Component>
+		GameObject(const std::string& name, Component... components)
+		{
+			m_Name = name;
+			transform = Engine::GetCoordinator()->GetComponent<Transform>(m_InstanceID);
 
 
-		(AddComponent<Component>(), ...);       
-	}
+			(AddComponent<Component>(), ...);
+		}
 
-	~GameObject();
+		~GameObject();
 
 		template<class Component>
 		void AddComponent()
@@ -32,27 +34,26 @@ public:
 			component.transform = this->transform;
 			component.SetEnabled(true);
 
-		DEBUG_LOG("Adding component: " + std::string(typeid(Component).name()) + " to " + m_Name + " entity");
+			DEBUG_LOG("Adding component: " + std::string(typeid(Component).name()) + " to " + m_Name + " entity");
 
-		Chokbar::Engine::GetCoordinator().AddComponent<Component>(m_InstanceID, component);
-	}
+			Engine::GetCoordinator()->AddComponent<Component>(m_InstanceID, component);
+		}
 
-	template<class T>
-	T* GetComponent()
-	{
-		return Chokbar::Engine::GetCoordinator().GetComponent<T>(m_InstanceID);
-	}
+		template<class T>
+		T* GetComponent()
+		{
+			return Engine::GetCoordinator()->GetComponent<T>(m_InstanceID);
+		}
 
-	template<class T>
-	bool HasComponent()
-	{
-		return Chokbar::Engine::GetCoordinator().HasComponent<T>(m_InstanceID);
-	}
-
-public:
-
-	Transform* transform;
-};
+		template<class T>
+		bool HasComponent()
+		{
+			return Engine::GetCoordinator()->HasComponent<T>(m_InstanceID);
+		}
 
 
+	public:
 
+		Transform* transform;
+	};
+}

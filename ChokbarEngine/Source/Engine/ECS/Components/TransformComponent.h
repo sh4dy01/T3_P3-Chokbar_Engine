@@ -40,8 +40,6 @@ public:
 
 	void UpdateWorldMatrix();
 
-public:
-
 
 private:
 

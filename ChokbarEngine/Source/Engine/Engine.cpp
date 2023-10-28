@@ -4,26 +4,44 @@
 
 #include "Engine.h"
 
+#include "GameObjects/Camera.h"
+
+
 namespace Chokbar
 {
+	Engine* Engine::m_Instance = nullptr;
+
+
 	Engine::Engine() = default;
 
-	Engine::~Engine() = default;
-
-	Engine &Engine::GetInstance()
+	Engine::~Engine()
 	{
-		static Engine engine;
-		return engine;
+		m_Instance = nullptr;
+		delete m_Instance;
+	};
+
+	Engine* Engine::GetInstance()
+	{
+		if (m_Instance == nullptr) {
+			m_Instance = new Engine();
+		}
+
+		return m_Instance;
 	}
 
-	Coordinator &Engine::GetCoordinator()
+	Coordinator* Engine::GetCoordinator()
 	{
-		return GetInstance().m_Coordinator;
+		return &GetInstance()->m_Coordinator;
 	}
 
-	InputHandler& Engine::GetInput()
+	InputHandler* Engine::GetInput()
 	{
-		return GetInstance().m_InputHandler;
+		return &GetInstance()->m_InputHandler;
+	}
+
+	Camera* Engine::GetMainCamera()
+	{
+		return GetInstance()->m_CameraManager.GetMainCamera();
 	}
 
 #pragma region INIT
@@ -47,6 +65,7 @@ namespace Chokbar
 		PreInitialize();
 
 		m_Coordinator.Init();
+		m_CameraManager.SetMainCamera(new Camera());
 
 		m_Window.CreateNewWindow(DEFAULT_WIDTH, DEFAULT_HEIGHT, PerGameSettings::GameName(), PerGameSettings::MainIcon(), Win32::RESIZABLE);
 		m_InputHandler.Init(m_Window.GetHandle());
@@ -54,8 +73,6 @@ namespace Chokbar
 
 
 		D3DApp::GetInstance()->InitializeD3D12(&m_Window);
-
-		m_Coordinator.GetAllComponentsOfType<MeshRenderer>();
 	}
 
 #pragma endregion

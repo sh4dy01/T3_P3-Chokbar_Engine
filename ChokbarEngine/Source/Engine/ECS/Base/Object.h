@@ -3,8 +3,8 @@
 #include <DirectXMath.h>
 
 #include "TypeDef.h"
-#include "Engine/ECS/Components/TransformComponent.h"
 
+class Transform;
 
 class Object
 {

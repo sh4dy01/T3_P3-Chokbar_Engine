@@ -38,6 +38,7 @@ namespace Chokbar {
 		RegisterComponent<Transform>();
 		RegisterComponent<MeshRenderer>();
 		RegisterComponent<PlayerComponent>();
+		RegisterComponent<CameraComponent>();
 	}
 
 	void Coordinator::RegisterSystems()
