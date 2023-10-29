@@ -10,8 +10,7 @@ using namespace DirectX;
 
 #pragma region SHADER BASE
 ShaderBase::ShaderBase(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, UINT cbvDescriptorSize, std::wstring& filepath)
-	: m_generalDevice(device), m_generalCBVHeap(cbvHeap), m_cbvDescriptorSize(cbvDescriptorSize), m_filepath(filepath),
-	Type(ShaderType::BASE)
+	: m_generalDevice(device), m_generalCBVHeap(cbvHeap), m_cbvDescriptorSize(cbvDescriptorSize), m_filepath(filepath)
 {
 	m_passCB = nullptr;
 
@@ -242,6 +241,8 @@ void ShaderSimple::BeginDraw(ID3D12GraphicsCommandList* cmdList)
 
 void ShaderSimple::Draw(ShaderDrawArguments& args)
 {
+	assert(args.Text == nullptr);
+
 	if (args.RenderItemCBIndex >= m_objectCBs.size())
 		AddObjectCB();
 
@@ -266,12 +267,10 @@ void ShaderSimple::EndDraw(ID3D12GraphicsCommandList* cmdList)
 ShaderTexture::ShaderTexture(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, UINT cbvDescriptorSize, std::wstring& filepath)
 	: ShaderBase(device, cbvHeap, cbvDescriptorSize, filepath)
 {
-	m_texture = nullptr;
 }
 
 ShaderTexture::~ShaderTexture()
 {
-	delete m_texture;
 }
 
 void ShaderTexture::Init()
