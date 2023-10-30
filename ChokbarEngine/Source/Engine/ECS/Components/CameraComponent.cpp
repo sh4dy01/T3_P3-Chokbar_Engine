@@ -88,6 +88,30 @@ float CameraComponent::GetFarWindowHeight() const
 	return m_FarWindowHeight;
 }
 
+void CameraComponent::SetFOV(float fovY)
+{
+	m_FovY = fovY;
+
+	UpdateWindowWithNewRange();
+	UpdateProjectionMatrix();
+}
+
+void CameraComponent::SetAspect(float aspect)
+{
+	m_Aspect = aspect;
+
+	UpdateProjectionMatrix();
+}
+
+void CameraComponent::SetZRange(float zn, float zf)
+{
+	m_NearZ = zn;
+	m_FarZ = zf;
+
+	UpdateWindowWithNewRange();
+	UpdateProjectionMatrix();
+}
+
 void CameraComponent::SetLens(float fovY, float aspect, float zn, float zf)
 {
 	// cache properties
@@ -96,9 +120,18 @@ void CameraComponent::SetLens(float fovY, float aspect, float zn, float zf)
 	m_NearZ = zn;
 	m_FarZ = zf;
 
+	UpdateWindowWithNewRange();
+	UpdateProjectionMatrix();
+}
+
+void CameraComponent::UpdateWindowWithNewRange()
+{
 	m_NearWindowHeight = 2.0f * m_NearZ * tanf(0.5f * m_FovY);
 	m_FarWindowHeight = 2.0f * m_FarZ * tanf(0.5f * m_FovY);
+}
 
+void CameraComponent::UpdateProjectionMatrix()
+{
 	XMMATRIX P = XMMatrixPerspectiveFovLH(m_FovY, m_Aspect, m_NearZ, m_FarZ);
 	XMStoreFloat4x4(&m_Proj, P);
 }
