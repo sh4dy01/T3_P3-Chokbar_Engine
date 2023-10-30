@@ -1,6 +1,5 @@
 #include "BlankProject.h"
 
-#include "Platform/Windows/WinEntry.h"
 
 using namespace Chokbar;
 
@@ -18,12 +17,8 @@ public:
 	/* Initialize the application */
 	void Initialize() override;
 
-	void PreInitialize() override;
-
 	/* Game Loop */
 	void Update(const float dt) override;
-
-	void Run() override;
 
 	void Shutdown() override;
 };
@@ -38,20 +33,11 @@ void Application::SetupPerGameSettings()
 	PerGameSettings::SetMainIcon(IDI_MAINICON);
 }
 
-void Application::PreInitialize()
-{
-	Engine::GetInstance()->Initialize();
-}
 
 void Application::Initialize()
 {
 	GameObject test = GameObject("player");
 	GameObject player = GameObject("player", PlayerComponent(), MeshRenderer());
-}
-
-void Application::Run()
-{
-	Engine::GetInstance()->Run();
 }
 
 void Application::Update(const float dt)
@@ -61,5 +47,5 @@ void Application::Update(const float dt)
 
 void Application::Shutdown()
 {
-	Engine::GetInstance()->Shutdown();
+
 }

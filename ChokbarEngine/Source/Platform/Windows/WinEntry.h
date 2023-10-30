@@ -13,7 +13,10 @@
 #endif
 
 #include "IApplication.h"
+
+#include "Engine/Engine.h"
 #include "Core/DebugUtils.h"
+#include "Core/CoreMinimal.h"
 
 extern Win32::IApplication* EntryApplication();
 
@@ -23,18 +26,19 @@ int CALLBACK WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
 	{
 		PerGameSettings GameSettings;
 
+		auto engine = Chokbar::Engine::GetInstance();
 		auto EntryApp = EntryApplication();
 
 		EntryApp->SetupPerGameSettings();
 
-		//Logger logger;
+		engine->Initialize();
 
-		EntryApp->PreInitialize();
 		EntryApp->Initialize();
 
-		EntryApp->Run();
+		engine->Run();
 
 		EntryApp->Shutdown();
+		engine->Shutdown();
 
 	}
 	catch (DxException& e)

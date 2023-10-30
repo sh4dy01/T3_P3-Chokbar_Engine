@@ -8,6 +8,13 @@
 #include "Engine/GameTimer.h"
 #include "Engine/Managers/InputHandler.h"
 
+#include "Engine/ECS/Base/GameObject.h"
+#include "Engine/ECS/Components/CameraComponent.h"
+#include "Engine/ECS/Components/TransformComponent.h"
+#include "Engine/ECS/Components/PlayerComponent.h"
+#include "Core/D3D/Internal/MeshRenderer.h"
+
+
 #ifdef WIN32
 #include "Platform/Windows/Win32Utils.h"
 #include "Platform/Windows/Window.h"

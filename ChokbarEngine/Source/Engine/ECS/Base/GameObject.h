@@ -9,6 +9,7 @@ namespace Chokbar {
 
 	class GameObject : public Object
 	{
+
 	public:
 
 		GameObject();
