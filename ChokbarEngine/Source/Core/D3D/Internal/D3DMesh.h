@@ -5,7 +5,7 @@ struct Vertex
 		Vertex() {}
 		Vertex(
 			const DirectX::XMFLOAT3& position,
-			const DirectX::XMFLOAT4& color,
+			const DirectX::XMVECTORF32& color,
 			const DirectX::XMFLOAT2& uv
 		);
 		Vertex(
@@ -26,10 +26,8 @@ public:
 
 	std::string Name;
 
-	std::vector<DirectX::XMFLOAT3> Vertices{};
-	std::vector<UINT> Indices{};
-	std::vector<DirectX::XMFLOAT4> Colors{};
-	std::vector<DirectX::XMFLOAT2> UV{};
+	std::vector<Vertex> Vertices{};
+	std::vector<UINT16> Indices{};
 	
 public:
 	D3D12_VERTEX_BUFFER_VIEW VertexBufferView() const;
@@ -37,7 +35,7 @@ public:
 
 	void DisposeUploaders();
 
-	void Create(std::vector<Vertex>& vertices, std::vector<UINT>& indices);
+	void Create(std::vector<Vertex>& vertices, std::vector<UINT16>& indices);
 
 private:
 	void CreateMeshGPU();

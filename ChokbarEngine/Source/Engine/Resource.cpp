@@ -14,7 +14,7 @@ Resource::~Resource()
 	m_materials.clear();
 }
 
-Material* Resource::LoadMaterial(MaterialType& matType)
+Material* Resource::LoadMaterial(MaterialType matType)
 {
 	return m_materials[matType];
 }

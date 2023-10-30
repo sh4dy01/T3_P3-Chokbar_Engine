@@ -4,6 +4,8 @@
 
 #include "Engine/Resource.h"
 
+#include "D3DMath.h"
+
 #include "Core/D3D/Internal/Texture.h"
 #include "Core/D3D/Internal/ShaderBase.h"
 #include "Core/D3D/Internal/MeshRenderer.h"
@@ -178,6 +180,8 @@ void D3DApp::InitializeD3D12(Win32::Window* window)
 
 	CreateResources();
 	GetMeshRenderersRef();
+
+	GeometryHandler::CreateAllMeshes();
 }
 #pragma endregion
 
@@ -518,7 +522,7 @@ void D3DApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList)
 		args.IndexCount = mr.Mesh->Indices.size();
 		args.StartIndexLocation = 0;
 		args.BaseVertexLocation = 0;
-		args.Text = mr.GetTexture(0);
+		args.Text = nullptr;
 		mr.Mat->GetShader()->Draw(args);
 
 		mr.Mat->GetShader()->EndDraw(cmdList);

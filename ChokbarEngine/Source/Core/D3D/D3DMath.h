@@ -3,23 +3,29 @@
 #include <vector>
 
 #include "Internal/D3DMesh.h"
+#include "Core/D3D/MeshType.h"
 
 
-class GeometryGenerator
+
+static class GeometryHandler
 {
-	public:
-	
-
 	struct MeshData
 	{
 		std::vector<Vertex> Vertices;
-		std::vector<UINT> Indices32;
-
-		std::vector<UINT16>& GetIndices16();
-
-	private:
-		std::vector<UINT16> m_Indices16;
+		std::vector<UINT16> Indices16;
 	};
 
-	MeshData CreatePyramid(float width, float height, float depth);
+public:
+
+	static void CreateAllMeshes();
+
+	static D3DMesh* GetMesh(MeshType type) { return &m_Meshes[type]; }
+
+private:
+
+	static D3DMesh CreatePyramid();
+
+private:
+
+	static D3DMesh m_Meshes[4];
 };

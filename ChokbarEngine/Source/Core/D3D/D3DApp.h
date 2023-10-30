@@ -133,4 +133,6 @@ private:
 	std::array<MeshRenderer, MAX_ENTITIES>* m_meshRenderers;
 
 	UINT m_texIndex;
+
+	
 };

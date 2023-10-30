@@ -5,6 +5,9 @@
 #include "Common/Logger.h"
 #include "Common/Time.h"
 
+#include "Core/D3D/MeshType.h"
+#include "Core/D3D/MaterialType.h"
+
 #include "Engine/GameTimer.h"
 #include "Engine/Managers/InputHandler.h"
 

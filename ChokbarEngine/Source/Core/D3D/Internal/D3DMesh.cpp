@@ -8,7 +8,7 @@ using namespace DirectX;
 
 Vertex::Vertex(
 	const DirectX::XMFLOAT3& position,
-	const DirectX::XMFLOAT4& color,
+	const DirectX::XMVECTORF32& color,
 	const DirectX::XMFLOAT2& uv
 ) :
 	Position(position), Color(color), Texcoord(uv)
@@ -63,16 +63,10 @@ void D3DMesh::DisposeUploaders()
 	IndexBufferUploader->Release();
 }
 
-void D3DMesh::Create(std::vector<Vertex>& vertices, std::vector<UINT>& indices)
+void D3DMesh::Create(std::vector<Vertex>& vertices, std::vector<UINT16>& indices)
 {
-	for (auto& v : vertices)
-	{
-		Vertices.push_back(v.Position);
-		Colors.push_back(v.Color);
-		UV.push_back(v.Texcoord);
-	}
-
-	Indices.insert(Indices.end(), indices.begin(), indices.end());
+	Vertices = vertices;
+	Indices = indices;
 
 	CreateMeshGPU();
 }
@@ -90,7 +84,7 @@ void D3DMesh::CreateMeshGPU()
 
 	Name = typeid(D3DMesh).name();
 
-	UINT vertexSize = (UINT)sizeof(XMFLOAT3) + (UINT)sizeof(UINT) + (UINT)sizeof(XMFLOAT2);
+	UINT vertexSize = (UINT)sizeof(Vertex);
 	VertexBufferGPU = CreateDefaultBuffer(device, cmdList, Vertices.data(), vBufferSize, VertexBufferUploader);
 	VertexByteStride = vertexSize;
 	VertexBufferByteSize = vertexSize * Vertices.size();

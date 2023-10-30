@@ -1,11 +1,11 @@
 #pragma once
 
 #include "Engine/IResourceObject.h"
+#include "Core/D3D/MaterialType.h"
+
 
 class ShaderBase;
 class Material;
-
-enum MaterialType { SIMPLE, TEXTURE };
 
 class Resource
 {
@@ -21,7 +21,7 @@ public:
 		return resource;
 	}
 
-	static Material* LoadMaterial(MaterialType& matType);
+	static Material* LoadMaterial(MaterialType matType);
 
 	static void CreateResources(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, UINT cbvSrvDescriptorSize);
 

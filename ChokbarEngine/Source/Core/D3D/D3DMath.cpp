@@ -1,27 +1,46 @@
 #include "Chokbar.h"
 #include "D3Dmath.h"
+#include <DirectXColors.h>
 
 using namespace DirectX;
 
-std::vector<UINT16>& GeometryGenerator::MeshData::GetIndices16()
-{
-	if (m_Indices16.empty())
-	{
-		m_Indices16.resize(Indices32.size());
-		for (size_t i = 0; i < Indices32.size(); ++i)
-			m_Indices16[i] = static_cast<UINT16>(Indices32[i]);
-	}
+D3DMesh GeometryHandler::m_Meshes[4];
 
-	return m_Indices16;
+void GeometryHandler::CreateAllMeshes()
+{
+	m_Meshes[3] = CreatePyramid();
 }
 
-GeometryGenerator::MeshData GeometryGenerator::CreatePyramid(float width, float height, float depth)
+D3DMesh GeometryHandler::CreatePyramid()
 {
 	MeshData meshData;
 
+	Vertex vList[] =
+	{
+		{ XMFLOAT3(0.0f, 1.0f, 0.0f),  Colors::White, XMFLOAT2(0, 0)},
+		{ XMFLOAT3(-0.5f, 0.0f, -0.5f), Colors::White, XMFLOAT2(0, 0) },
+		{ XMFLOAT3(-0.5f, 0.0f, 0.5f),  Colors::White, XMFLOAT2(0, 0) },
+		{ XMFLOAT3(0.5f, 0.0f, 0.5f),   Colors::White, XMFLOAT2(0, 0) },
+		{ XMFLOAT3(0.5f, 0.0f, -0.5f),  Colors::White, XMFLOAT2(0, 0) },
+	};
+
+	for (auto v : vList)
+	{
+		meshData.Vertices.push_back(v);
+	}
 
 
-	return meshData;
+	UINT16 iList[] = { 0, 1, 2, 0, 2, 3, 0, 3, 4, 0, 4, 1 };
+
+	for (auto i: iList)
+	{
+		meshData.Indices16.push_back(i);
+	}
+
+	D3DMesh mesh;
+	mesh.Create(meshData.Vertices, meshData.Indices16);
+
+	return mesh;
 }
 
 
