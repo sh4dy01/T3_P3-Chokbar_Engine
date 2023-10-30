@@ -17,8 +17,3 @@ void Material::SetShader(ShaderBase * shader)
 {
 	m_shader = shader;
 }
-
-void Material::AddTexture(Texture * text)
-{
-	m_textures.push_back(text);
-}

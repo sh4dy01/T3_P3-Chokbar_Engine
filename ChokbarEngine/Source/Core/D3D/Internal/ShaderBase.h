@@ -1,4 +1,5 @@
 #pragma once
+#include <stack>
 
 #include "UploadBuffer.h"
 #include "Core/D3D/Internal/D3DMesh.h"
@@ -6,7 +7,6 @@
 struct Texture;
 
 enum VertexType { POS, POS_COLOR, POS_TEX, POS_NORM_TEX, POS_NORM_TEX_TAN };
-enum ShaderType { BASE, SIMPLE, TEXTURE };
 
 struct ShaderDrawArguments
 {
@@ -14,6 +14,7 @@ struct ShaderDrawArguments
 	{
 		CmdList = nullptr;
 		RenderItemGeometry = nullptr;
+		Text = nullptr;
 	}
 
 	ID3D12GraphicsCommandList* CmdList;
@@ -32,7 +33,6 @@ public:
 	virtual ~ShaderBase();
 
 protected:
-
 	struct ObjConstants
 	{
 		DirectX::XMFLOAT4X4* World;
@@ -57,24 +57,21 @@ protected:
 		float DeltaTime = 0.0f;
 	};
 
-
 protected:
-
-	const ShaderType Type;
-
 	std::wstring& m_filepath;
 
 	/* Upload buffers are used to give the GPU information at runtime with the CPU.
 	Those buffers uses the GPU Upload Heap that allows the CPU to upload data to the GPU at runtime.
 
-	The Main Object Constant Buffer stocks every constant buffer. Each constant buffer is associated to an unique RenderItem
-	To find the associated RenderItem, you can use the index of the used object constant buffer
+	m_objectCBs stores every constant buffer. Each constant buffer is associated to an unique MeshRenderer
 	NOTE : The object constant buffer is associated to the b0 cbuffer in the shader (only true in our project) */
 	std::vector<UploadBuffer<ObjConstants>*> m_objectCBs;
-	/* The Main Pass Constant Buffer stores every information the shader might need about our camera
+	std::stack<UINT> m_freeIndices; 
+	/* m_passCB stores every information the shader might need about our camera
 	NOTE : The main pass constant buffer is associated to the b1 cbuffer in the shader (only true in our project) */
 	UploadBuffer<PassConstants>* m_passCB;
-	/* This struct helps the GPU identifying how our Vertex class is composed */
+	/* This struct helps the GPU identifying how our Vertex class is composed
+	This information will be used by the shader as the VertexIn struct*/
 	std::vector<D3D12_INPUT_ELEMENT_DESC> m_inputLayout;
 
 	/* D3D12RootSignature : Defines where the resources bound to the rendering pipeline can be found by the shader
@@ -106,6 +103,8 @@ public:
 
 	UINT GetCreatedIndex() { return (UINT)m_objectCBs.size() - 1; }
 	UINT GetLastIndex() { return (UINT)m_objectCBs.size(); }
+
+	void UnBind(UINT index);
 	ShaderBase* Bind();
 
 	virtual void AddObjectCB();
@@ -146,10 +145,4 @@ public:
 	void BeginDraw(ID3D12GraphicsCommandList* cmdList) override;
 	void Draw(ShaderDrawArguments& args) override;
 	void EndDraw(ID3D12GraphicsCommandList* cmdList) override;
-
-public:
-	void BindTexture(Texture* tex) { m_texture = tex; }
-
-private:
-	Texture* m_texture;
 };

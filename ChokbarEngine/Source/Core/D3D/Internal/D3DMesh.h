@@ -26,10 +26,10 @@ public:
 
 	std::string Name;
 
-	std::vector<DirectX::XMFLOAT3> Vertices;
-	std::vector<UINT> Indices;
-	std::vector<DirectX::XMFLOAT4> Colors;
-	std::vector<DirectX::XMFLOAT2> UV;
+	std::vector<DirectX::XMFLOAT3> Vertices{};
+	std::vector<UINT> Indices{};
+	std::vector<DirectX::XMFLOAT4> Colors{};
+	std::vector<DirectX::XMFLOAT2> UV{};
 	
 public:
 	D3D12_VERTEX_BUFFER_VIEW VertexBufferView() const;
