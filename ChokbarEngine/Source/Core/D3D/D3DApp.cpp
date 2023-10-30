@@ -496,7 +496,7 @@ void D3DApp::UpdateRenderItems(const float dt, const float totalTime)
 		} */
 
 		if (mr.transform->IsDirty()) mr.transform->UpdateWorldMatrix();
-		mr.Mat->GetShader()->UpdateObjectCB(mr.gameObject->transform->GetWorldMatrix(), mr.ObjectCBIndex);
+		mr.Mat->GetShader()->UpdateObjectCB(mr.transform->GetWorldMatrix(), mr.ObjectCBIndex);
 	}
 }
 
