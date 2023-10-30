@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Engine/Engine.h"
+
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
 #include <crtdbg.h>
@@ -14,7 +16,6 @@
 
 #include "IApplication.h"
 
-#include "Engine/Engine.h"
 #include "Core/DebugUtils.h"
 #include "Core/CoreMinimal.h"
 

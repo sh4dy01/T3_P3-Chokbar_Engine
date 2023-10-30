@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #define MAX_NAME_STRING 256
 #define HInstance() GetModuleHandle(NULL)
 #define I(x) { return x::GetInstance() }
