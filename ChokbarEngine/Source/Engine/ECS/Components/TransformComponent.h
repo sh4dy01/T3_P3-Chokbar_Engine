@@ -40,7 +40,6 @@ public:
 
 	void UpdateWorldMatrix();
 
-
 private:
 
 	void RotateFromAxisAngle(DirectX::XMFLOAT3 axis, float angle);

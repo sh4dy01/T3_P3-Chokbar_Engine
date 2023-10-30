@@ -7,7 +7,7 @@ using namespace DirectX;
 
 CameraComponent::CameraComponent()
 {
-	SetLens(0.25f * 0.25f * std::numbers::pi, 1.0f, 1.0f, 1000.0f);
+	SetLens(0.25f * std::numbers::pi, 1.0f, 1.0f, 1000.0f);
 }
 
 CameraComponent::~CameraComponent()
@@ -101,12 +101,15 @@ void CameraComponent::SetLens(float fovY, float aspect, float zn, float zf)
 	m_NearWindowHeight = 2.0f * m_NearZ * tanf(0.5f * m_FovY);
 	m_FarWindowHeight = 2.0f * m_FarZ * tanf(0.5f * m_FovY);
 
-	XMMATRIX P = XMMatrixPerspectiveFovLH(m_FovY, m_Aspect, m_NearZ, m_FarZ);
+	XMMATRIX P = DirectX::XMMatrixPerspectiveFovLH(m_FovY, m_Aspect, m_NearZ, m_FarZ);
 	XMStoreFloat4x4(&m_Proj, P);
 }
 
 void CameraComponent::LookAt(FXMVECTOR pos, FXMVECTOR target, FXMVECTOR worldUp)
 {
+	XMStoreFloat4x4(&m_View, DirectX::XMMatrixLookAtLH(pos, target, worldUp));
+
+	/*
 	XMVECTOR L = XMVector3Normalize(XMVectorSubtract(target, pos));
 	XMVECTOR R = XMVector3Normalize(XMVector3Cross(worldUp, L));
 	XMVECTOR U = XMVector3Cross(L, R);
@@ -115,6 +118,7 @@ void CameraComponent::LookAt(FXMVECTOR pos, FXMVECTOR target, FXMVECTOR worldUp)
 	XMStoreFloat3(&m_Look, L);
 	XMStoreFloat3(&m_Right, R);
 	XMStoreFloat3(&m_Up, U);
+	*/
 }
 
 void CameraComponent::LookAt(const XMFLOAT3& pos, const XMFLOAT3& target, const XMFLOAT3& up)
@@ -124,6 +128,8 @@ void CameraComponent::LookAt(const XMFLOAT3& pos, const XMFLOAT3& target, const 
 	XMVECTOR U = XMLoadFloat3(&up);
 
 	LookAt(P, T, U);
+
+	m_ViewDirty = true;
 }
 
 
@@ -147,17 +153,6 @@ XMFLOAT4X4 CameraComponent::GetProj4x4f() const
 	return m_Proj;
 }
 
-void CameraComponent::UpdateProjMatrix(const float winWidth, const float winHeight)
-{
-	XMFLOAT3 Position = transform->GetPosition();
-
-	XMVECTOR pos = XMVectorSet(Position.x, Position.y, Position.z, 1.0F);
-	XMVECTOR target = XMVectorSet(0.0F, 0.5F, 0.0F, 0.0F);
-	XMVECTOR up = XMVectorSet(0.0F, 1.0F, 0.0F, 0.0F);
-
-	XMStoreFloat4x4(&m_Proj, XMMatrixPerspectiveFovLH(XMConvertToRadians(70.0F), winWidth / winHeight, 0.05F, 1000.0F));
-}
-
 void CameraComponent::UpdateViewMatrix()
 {
 	if (m_ViewDirty)
@@ -175,20 +170,25 @@ void CameraComponent::UpdateViewMatrix()
 		float x = -XMVectorGetX(XMVector3Dot(P, R));
 		float y = -XMVectorGetX(XMVector3Dot(P, U));
 		float z = -XMVectorGetX(XMVector3Dot(P, L));
+
 		XMStoreFloat3(&m_Right, R);
 		XMStoreFloat3(&m_Up, U);
 		XMStoreFloat3(&m_Look, L);
+
 		m_View(0, 0) = m_Right.x;
 		m_View(1, 0) = m_Right.y;
 		m_View(2, 0) = m_Right.z;
+
 		m_View(3, 0) = x;
 		m_View(0, 1) = m_Up.x;
 		m_View(1, 1) = m_Up.y;
 		m_View(2, 1) = m_Up.z;
+
 		m_View(3, 1) = y;
 		m_View(0, 2) = m_Look.x;
 		m_View(1, 2) = m_Look.y;
 		m_View(2, 2) = m_Look.z;
+
 		m_View(3, 2) = z;
 		m_View(0, 3) = 0.0f;
 		m_View(1, 3) = 0.0f;
