@@ -4,21 +4,18 @@
 
 #include "D3DMesh.h"
 
+#define RELPTR(ptr) if (ptr) { ptr->Release(); ptr = nullptr; }
+
 using namespace DirectX;
 
-Vertex::Vertex(
-	const DirectX::XMFLOAT3& position,
-	const DirectX::XMVECTORF32& color,
-	const DirectX::XMFLOAT2& uv
-) :
-	Position(position), Color(color), Texcoord(uv)
-{
-}
+Vertex::Vertex(const DirectX::XMFLOAT3& position) : Position(position) { }
+Vertex::Vertex(float px, float py, float pz) : Position(px, py, pz) { }
 
-Vertex::Vertex(float px, float py, float pz, float cr, float cg, float cb, float ca, float u, float v) :
-	Position(px, py, pz), Color(cr, cg, cb, ca), Texcoord(u, v)
-{
-}
+Vertex_Color::Vertex_Color(const DirectX::XMFLOAT3& position, const DirectX::XMVECTORF32& color) : Position(position), Color(color) { }
+Vertex_Color::Vertex_Color(float px, float py, float pz, float cr, float cg, float cb, float ca) : Position(px, py, pz), Color(cr, cg, cb, ca) { }
+
+Vertex_UV::Vertex_UV(const DirectX::XMFLOAT3& position, const DirectX::XMFLOAT2& uv) : Position(position), Texcoord(uv) { }
+Vertex_UV::Vertex_UV(float px, float py, float pz, float u, float v) : Position(px, py, pz), Texcoord(u, v) { }
 
 D3DMesh::D3DMesh()
 	: VertexByteStride(0), VertexBufferByteSize(0), IndexFormat(DXGI_FORMAT_R16_UINT), IndexBufferByteSize(0)
@@ -32,11 +29,10 @@ D3DMesh::D3DMesh()
 
 D3DMesh::~D3DMesh()
 {
-	VertexBufferUploader->Release();
-	IndexBufferUploader->Release();
+	DisposeUploaders();
 
-	VertexBufferGPU->Release();
-	IndexBufferGPU->Release();
+	RELPTR(VertexBufferGPU);
+	RELPTR(IndexBufferGPU);
 }
 
 D3D12_VERTEX_BUFFER_VIEW D3DMesh::VertexBufferView() const {
@@ -59,45 +55,36 @@ D3D12_INDEX_BUFFER_VIEW D3DMesh::IndexBufferView() const {
 
 void D3DMesh::DisposeUploaders()
 {
-	VertexBufferUploader->Release();
-	IndexBufferUploader->Release();
+	RELPTR(VertexBufferUploader);
+	RELPTR(IndexBufferUploader);
 }
 
-void D3DMesh::Create(std::vector<Vertex>& vertices, std::vector<UINT16>& indices)
+void D3DMesh::Create(const void* vData, UINT vStride, UINT vSize, const void* iData, UINT iStride, UINT iSize)
 {
-	Vertices = vertices;
-	Indices = indices;
-
-	CreateMeshGPU();
-}
-
-void D3DMesh::CreateMeshGPU()
-{
-	assert(Vertices.size() > 0 && Indices.size() > 0);
-
 	D3DApp::GetInstance()->BeginList();
 	ID3D12Device* device = D3DApp::GetInstance()->GetDevice();
 	ID3D12GraphicsCommandList* cmdList = D3DApp::GetInstance()->GetCommandList();
 
-	const UINT64 iBufferSize = sizeof(Indices);
-	const UINT64 vBufferSize = sizeof(Vertices);
+	const UINT iBufferSize = iStride * iSize;
+	const UINT vBufferSize = vStride * vSize;
 
 	Name = typeid(D3DMesh).name();
 
-	UINT vertexSize = (UINT)sizeof(Vertex);
-	VertexBufferGPU = CreateDefaultBuffer(device, cmdList, Vertices.data(), vBufferSize, VertexBufferUploader);
-	VertexByteStride = vertexSize;
-	VertexBufferByteSize = vertexSize * Vertices.size();
+	VertexBufferGPU = CreateDefaultBuffer(device, cmdList, vData, vBufferSize, VertexBufferUploader);
+	VertexByteStride = vStride;
+	VertexBufferByteSize = vBufferSize;
 
-	IndexBufferGPU = CreateDefaultBuffer(device, cmdList, Indices.data(), iBufferSize, IndexBufferUploader);
-	IndexFormat = DXGI_FORMAT_R16_UINT;
+	IndexBufferGPU = CreateDefaultBuffer(device, cmdList, iData, iBufferSize, IndexBufferUploader);
+	IndexFormat = DXGI_FORMAT_R32_UINT;
 	IndexBufferByteSize = iBufferSize;
 
-	IndexCount = (UINT)Indices.size();
+	IndexCount = iSize;
 	StartIndexLocation = 0;
 	BaseVertexLocation = 0;
 
 	D3DApp::GetInstance()->EndList();
+
+	DisposeUploaders();
 }
 
 ID3D12Resource* D3DMesh::CreateDefaultBuffer(ID3D12Device* device, ID3D12GraphicsCommandList* cmdList, const void* initData, UINT64 byteSize, ID3D12Resource*& uploadBuffer)

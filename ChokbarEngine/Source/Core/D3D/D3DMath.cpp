@@ -4,41 +4,29 @@
 
 using namespace DirectX;
 
-D3DMesh GeometryHandler::m_Meshes[4];
+D3DMesh* GeometryHandler::m_Meshes[4];
 
 void GeometryHandler::CreateAllMeshes()
 {
 	m_Meshes[3] = CreatePyramid();
 }
 
-D3DMesh GeometryHandler::CreatePyramid()
+D3DMesh* GeometryHandler::CreatePyramid()
 {
-	MeshData meshData;
-
-	Vertex vList[] =
+	Vertex_Color vList[] =
 	{
-		{ XMFLOAT3(0.0f, 1.0f, 0.0f),  Colors::White, XMFLOAT2(0, 0)},
-		{ XMFLOAT3(-0.5f, 0.0f, -0.5f), Colors::White, XMFLOAT2(0, 0) },
-		{ XMFLOAT3(-0.5f, 0.0f, 0.5f),  Colors::White, XMFLOAT2(0, 0) },
-		{ XMFLOAT3(0.5f, 0.0f, 0.5f),   Colors::White, XMFLOAT2(0, 0) },
-		{ XMFLOAT3(0.5f, 0.0f, -0.5f),  Colors::White, XMFLOAT2(0, 0) },
+		{ XMFLOAT3(0.0f, 1.0f, 0.0f),   Colors::Red       },
+		{ XMFLOAT3(-0.5f, 0.0f, -0.5f), Colors::White     },
+		{ XMFLOAT3(-0.5f, 0.0f, 0.5f),  Colors::LightBlue },
+		{ XMFLOAT3(0.5f, 0.0f, 0.5f),   Colors::White     },
+		{ XMFLOAT3(0.5f, 0.0f, -0.5f),  Colors::White     },
 	};
 
-	for (auto v : vList)
-	{
-		meshData.Vertices.push_back(v);
-	}
 
+	UINT iList[] = { 0, 1, 2, 0, 2, 3, 0, 3, 4, 0, 4, 1 };
 
-	UINT16 iList[] = { 0, 1, 2, 0, 2, 3, 0, 3, 4, 0, 4, 1 };
-
-	for (auto i: iList)
-	{
-		meshData.Indices16.push_back(i);
-	}
-
-	D3DMesh mesh;
-	mesh.Create(meshData.Vertices, meshData.Indices16);
+	D3DMesh* mesh = new D3DMesh();
+	mesh->Create(vList, sizeof(Vertex_Color), _countof(vList), iList, sizeof(UINT), _countof(iList));
 
 	return mesh;
 }

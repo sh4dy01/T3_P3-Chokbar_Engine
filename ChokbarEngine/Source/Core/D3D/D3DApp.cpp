@@ -178,10 +178,11 @@ void D3DApp::InitializeD3D12(Win32::Window* window)
 	CreateRenderTargetView();
 	CreateDepthStencilBuffer();
 
+	GeometryHandler::CreateAllMeshes();
+
 	CreateResources();
 	GetMeshRenderersRef();
 
-	GeometryHandler::CreateAllMeshes();
 }
 #pragma endregion
 
@@ -519,13 +520,13 @@ void D3DApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList)
 		args.CmdList = cmdList;
 		args.RenderItemGeometry = mr.Mesh;
 		args.RenderItemCBIndex = mr.ObjectCBIndex;
-		args.IndexCount = mr.Mesh->Indices.size();
+		args.IndexCount = mr.Mesh->GetIndexCount();
 		args.StartIndexLocation = 0;
 		args.BaseVertexLocation = 0;
 		args.Text = nullptr;
 		mr.Mat->GetShader()->Draw(args);
 
-		mr.Mat->GetShader()->EndDraw(cmdList);
+ 		mr.Mat->GetShader()->EndDraw(cmdList);
 	}
 }
 #pragma endregion

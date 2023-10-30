@@ -218,11 +218,10 @@ void ShaderSimple::CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT&
 	m_generalDevice->CreateRootSignature(0, serializedRootSignature->GetBufferPointer(), serializedRootSignature->GetBufferSize(), IID_PPV_ARGS(&m_rootSignature));
 
 	if (errorBlob != nullptr) errorBlob->Release();
-	serializedRootSignature->Release();
 
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc;
 	ZeroMemory(&psoDesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
-	psoDesc.InputLayout = { m_inputLayout.data(), 2 };
+	psoDesc.InputLayout = { m_inputLayout.data(), (UINT)m_inputLayout.size()};
 	psoDesc.pRootSignature = m_rootSignature;
 	psoDesc.VS = { reinterpret_cast<BYTE*>(m_vsByteCode->GetBufferPointer()), m_vsByteCode->GetBufferSize() };
 	psoDesc.PS = { reinterpret_cast<BYTE*>(m_psByteCode->GetBufferPointer()), m_psByteCode->GetBufferSize() };
@@ -237,7 +236,9 @@ void ShaderSimple::CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT&
 	psoDesc.SampleDesc.Quality = 0;
 	psoDesc.DSVFormat = dsvFormat;
 
-	m_generalDevice->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&m_pipelineState));
+	HRESULT hr2 = m_generalDevice->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&m_pipelineState));
+
+	serializedRootSignature->Release();
 }
 
 void ShaderSimple::BeginDraw(ID3D12GraphicsCommandList* cmdList)

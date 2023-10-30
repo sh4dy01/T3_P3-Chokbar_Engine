@@ -16,13 +16,13 @@ cbuffer cbPass : register(b1)
 struct VS_INPUT
 {
     float3 pos : POSITION;
-    float4 color : COLOR;
+    float2 uv : TEXCOORD;
 };
 
 struct PS_INPUT
 {
     float4 pos : SV_POSITION;
-    float4 color : COLOR;
+    float2 uv : TEXCOORD;
 };
 
 PS_INPUT vs_main(VS_INPUT input)
@@ -31,13 +31,11 @@ PS_INPUT vs_main(VS_INPUT input)
 
     float4 posW = mul(float4(input.pos, 1.0f), gWorld);
     output.pos = mul(posW, gViewProj);
-    
-    output.color = input.color;
-    
+        
     return output;
 }
 
 float4 ps_main(PS_INPUT input) : SV_TARGET
 {
-    return input.color;
+    return float4(1, 0, 0, 1);
 }

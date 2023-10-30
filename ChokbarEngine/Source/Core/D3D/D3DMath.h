@@ -12,20 +12,32 @@ static class GeometryHandler
 	struct MeshData
 	{
 		std::vector<Vertex> Vertices;
-		std::vector<UINT16> Indices16;
+		std::vector<UINT> Indices16;
+	};
+
+	struct MeshData_Color
+	{
+		std::vector<Vertex_Color> Vertices;
+		std::vector<UINT> Indices16;
+	};
+
+	struct MeshData_UV
+	{
+		std::vector<Vertex_UV> Vertices;
+		std::vector<UINT> Indices16;
 	};
 
 public:
 
 	static void CreateAllMeshes();
 
-	static D3DMesh* GetMesh(MeshType type) { return &m_Meshes[type]; }
+	static D3DMesh* GetMesh(MeshType type) { return m_Meshes[type]; }
 
 private:
 
-	static D3DMesh CreatePyramid();
+	static D3DMesh* CreatePyramid();
 
 private:
 
-	static D3DMesh m_Meshes[4];
+	static D3DMesh* m_Meshes[4];
 };

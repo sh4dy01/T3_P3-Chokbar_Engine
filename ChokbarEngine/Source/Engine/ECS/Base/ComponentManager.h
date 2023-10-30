@@ -49,7 +49,6 @@ namespace Chokbar {
 		void AddComponent(InstanceID entity, T component)
 		{
 			const char* typeName = typeid(T).name();
-			DEBUG_LOG("Adding " << typeName << " to entity.");
 
 			// Add a component to the array for an entity
 			GetComponentArray<T>()->InsertData(entity, component);
