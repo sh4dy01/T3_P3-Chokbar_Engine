@@ -2,63 +2,59 @@
 #include "Object.h"
 
 
-namespace Chokbar
+Object::Object()
+	: m_Name("DefaultName")
 {
-	Object::Object()
-		: m_Name("DefaultName")
-	{
-		m_InstanceID = Engine::GetCoordinator().CreateNewGameObjectWithTransform();
-	}
+	m_InstanceID = Chokbar::Engine::GetCoordinator()->CreateNewGameObjectWithTransform();
+}
 
-	Object::Object(const std::string& name)
-		: m_Name(name)
-	{
-		m_InstanceID = Engine::GetCoordinator().CreateNewGameObjectWithTransform();
-		DEBUG_LOG("Object created with name: " + name);
-	}
+Object::Object(const std::string& name)
+	: m_Name(name)
+{
+	m_InstanceID = Chokbar::Engine::GetCoordinator()->CreateNewGameObjectWithTransform();
+	DEBUG_LOG("Object created with name: " + name);
+}
 
-	Object::~Object()
-	= default;
+Object::~Object()
+= default;
 
 
-	Object Object::Instantiate(Object original)
-	{
-		//Clones the object original and returns the clone.
+Object Object::Instantiate(Object original)
+{
+	//Clones the object original and returns the clone.
 
-		Object clone = Object();
-		clone.m_Name = original.m_Name;
+	Object clone = Object();
+	clone.m_Name = original.m_Name;
 
-		return clone;
-	}
+	return clone;
+}
 
-	/*
-	Object Object::Instantiate(GameObject original, Transform parent)
-	{
-		Object clone = Instantiate(original);
+/*
+Object Object::Instantiate(GameObject original, Transform parent)
+{
+	Object clone = Instantiate(original);
 
-		Chokbar::Engine::GetCoordinator().AddComponent<Transform>(clone.m_InstanceID, parent);
+	Chokbar::Engine::GetCoordinator().AddComponent<Transform>(clone.m_InstanceID, parent);
 
-		return Object();
-	}
-	*/
+	return Object();
+}
+*/
 
-	Object Object::Instantiate(const Object& original, DirectX::XMFLOAT3 position, DirectX::XMFLOAT3 rotation, const Transform parent)
-	{
-		Object clone = Instantiate(original);
+Object Object::Instantiate(const Object& original, DirectX::XMFLOAT3 position, DirectX::XMFLOAT3 rotation, const Transform parent)
+{
+	Object clone = Instantiate(original);
 
-		const auto transform = Engine::GetCoordinator().GetComponent<Transform>(clone.m_InstanceID);
-		transform->SetPosition(position);
-		transform->Rotate(rotation);
+	const auto transform = Chokbar::Engine::GetCoordinator()->GetComponent<Transform>(clone.m_InstanceID);
+	transform->SetPosition(position);
+	transform->Rotate(rotation);
 
-		//TODO: assign parent transform
+	//TODO: assign parent transform
 
 
-		return clone;
-	}
+	return clone;
+}
 
-	void Object::Destroy() const
-	{
-		Engine::GetCoordinator().DestroyEntity(m_InstanceID);
-	}
-
+void Object::Destroy() const
+{
+	Chokbar::Engine::GetCoordinator()->DestroyEntity(m_InstanceID);
 }

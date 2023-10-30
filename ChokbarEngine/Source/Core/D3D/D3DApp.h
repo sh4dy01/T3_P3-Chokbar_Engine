@@ -20,7 +20,6 @@ static const int SWAP_CHAIN_BUFFER_COUNT = 2;
 
 class MeshRenderer;
 class Texture;
-struct Camera;
 
 class D3DApp
 {
@@ -47,7 +46,6 @@ public:
 	int m_bufferWidth;
 	int m_bufferHeight;
 
-	Camera m_camera;
 private:
 	void EnableDebugLayer();
 
@@ -132,9 +130,7 @@ private:
 	ID3D12Resource *m_pDepthStencilBuffer;
 	DXGI_FORMAT m_DepthStencilFormat;
 
-	std::array<MeshRenderer, 1000>* m_meshRenderers;
+	std::array<MeshRenderer, MAX_ENTITIES>* m_meshRenderers;
 
 	UINT m_texIndex;
-
-	const int m_ObjectCount = 3;
 };

@@ -6,5 +6,6 @@
 
 #include "../resource.h"
 
+#include "Engine/Engine.h"
 
 #include "Core/CoreMinimal.h"

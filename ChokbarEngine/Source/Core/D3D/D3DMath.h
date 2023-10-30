@@ -4,6 +4,7 @@
 
 #include "Internal/D3DMesh.h"
 
+
 class GeometryGenerator
 {
 	public:

@@ -35,7 +35,7 @@ public:
 protected:
 	struct ObjConstants
 	{
-		DirectX::XMFLOAT4X4 World;
+		DirectX::XMFLOAT4X4* World;
 	};
 
 	struct PassConstants
@@ -91,7 +91,7 @@ protected:
 	ID3D12DescriptorHeap* m_generalCBVHeap;
 	UINT m_cbvDescriptorSize;
 
-	Camera* m_generalCamera;
+	Camera* m_MainCamera;
 
 public:
 	virtual void Init() = 0;
@@ -108,7 +108,7 @@ public:
 	ShaderBase* Bind();
 
 	virtual void AddObjectCB();
-	virtual void UpdateObjectCB(DirectX::XMFLOAT4X4& itemWorldMatrix, UINT cbIndex);
+	virtual void UpdateObjectCB(DirectX::XMFLOAT4X4* itemWorldMatrix, UINT cbIndex);
 
 	void CreatePassCB();
 	void UpdatePassCB(const float dt, const float totalTime);

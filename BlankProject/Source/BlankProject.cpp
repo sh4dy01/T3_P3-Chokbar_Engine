@@ -1,9 +1,6 @@
 #include "BlankProject.h"
 
-#include "Engine/Engine.h"
 #include "Platform/Windows/WinEntry.h"
-#include "Engine/ECS/Base/GameObject.h"
-#include "Engine/ECS/Components/PlayerComponent.h"
 
 using namespace Chokbar;
 
@@ -43,18 +40,18 @@ void Application::SetupPerGameSettings()
 
 void Application::PreInitialize()
 {
-	Engine::GetInstance().Initialize();
+	Engine::GetInstance()->Initialize();
 }
 
 void Application::Initialize()
 {
 	GameObject test = GameObject("player");
-	GameObject player = GameObject("player", PlayerComponent());
+	GameObject player = GameObject("player", PlayerComponent(), MeshRenderer());
 }
 
 void Application::Run()
 {
-	Engine::GetInstance().Run();
+	Engine::GetInstance()->Run();
 }
 
 void Application::Update(const float dt)
@@ -64,5 +61,5 @@ void Application::Update(const float dt)
 
 void Application::Shutdown()
 {
-	Engine::GetInstance().Shutdown();
+	Engine::GetInstance()->Shutdown();
 }

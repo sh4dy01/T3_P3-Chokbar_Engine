@@ -5,13 +5,11 @@
 #include "Common/Logger.h"
 #include "Common/Time.h"
 
-#include "Engine/ECS/Base/GameObject.h"
-
 #include "Engine/GameTimer.h"
-#include "Engine/InputHandler.h"
+#include "Engine/Managers/InputHandler.h"
 
 #ifdef WIN32
-	#include "Platform/Windows/Win32Utils.h"
-	#include "Platform/Windows/Window.h"
-	#include "Platform/Windows/IApplication.h"
+#include "Platform/Windows/Win32Utils.h"
+#include "Platform/Windows/Window.h"
+#include "Platform/Windows/IApplication.h"
 #endif

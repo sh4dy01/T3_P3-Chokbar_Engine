@@ -17,7 +17,7 @@ namespace Chokbar {
 		SystemManager();
 		~SystemManager();
 
-		void UpdateAllSystems();
+		void UpdateAllSystems(float dt);
 
 	public:
 		template<typename T>

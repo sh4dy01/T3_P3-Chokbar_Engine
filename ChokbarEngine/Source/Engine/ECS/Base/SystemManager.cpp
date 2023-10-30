@@ -13,13 +13,13 @@ namespace Chokbar {
 		m_Signatures.clear();
 	}
 
-	void SystemManager::UpdateAllSystems()
+	void SystemManager::UpdateAllSystems(float dt)
 	{
 		for (auto const& pair : m_Systems)
 		{
 			auto const& system = pair.second;
 
-			system->Update();
+			system->Update(dt);
 		}
 	}
 
