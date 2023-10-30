@@ -15,11 +15,11 @@ D3DMesh* GeometryHandler::CreatePyramid()
 {
 	Vertex_Color vList[] =
 	{
-		{ XMFLOAT3(0.0f, 1.0f, 0.0f),   Colors::Red       },
-		{ XMFLOAT3(-0.5f, 0.0f, -0.5f), Colors::White     },
-		{ XMFLOAT3(-0.5f, 0.0f, 0.5f),  Colors::LightBlue },
-		{ XMFLOAT3(0.5f, 0.0f, 0.5f),   Colors::White     },
-		{ XMFLOAT3(0.5f, 0.0f, -0.5f),  Colors::White     },
+		{ XMFLOAT3(0.0f, 1.0f, 7.0f),   Colors::Red       },
+		{ XMFLOAT3(-0.5f, 0.0f, 6.5f), Colors::White     },
+		{ XMFLOAT3(-0.5f, 0.0f, 7.5f),  Colors::LightBlue },
+		{ XMFLOAT3(0.5f, 0.0f, 7.5f),   Colors::White     },
+		{ XMFLOAT3(0.5f, 0.0f, 6.5f),  Colors::White     },
 	};
 
 

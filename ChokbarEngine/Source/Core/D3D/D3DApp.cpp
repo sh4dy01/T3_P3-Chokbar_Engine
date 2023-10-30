@@ -10,7 +10,7 @@
 #include "Core/D3D/Internal/ShaderBase.h"
 #include "Core/D3D/Internal/MeshRenderer.h"
 #include "Core/D3D/Internal/Material.h"
-
+#include "Engine/Engine.h"
 #include "D3DApp.h"
 
 class Transform;
@@ -83,6 +83,9 @@ D3DApp::~D3DApp() {
 void D3DApp::Update(const float dt, const float totalTime)
 {
 	UpdateRenderItems(dt, totalTime);
+
+	Chokbar::Engine::GetMainCamera()->GetCameraComponent()->UpdateViewMatrix();
+
 	for (auto& shader : Resource::GetShaders())
 	{
 		shader.second->UpdatePassCB(dt, totalTime);
@@ -475,9 +478,9 @@ void D3DApp::UpdateTextureHeap(Texture* tex)
 
 void D3DApp::UpdateRenderItems(const float dt, const float totalTime)
 {
-	for (const auto& mr : *m_meshRenderers)
+	for (const auto mr : *m_meshRenderers)
 	{
-		if (!mr.IsEnabled() || !mr.Mat || !mr.Mesh) return;
+		if (!mr || !mr->IsEnabled() || !mr->Mat || !mr->Mesh) return;
 		/*
 		switch (mr.TransformationType)
 		{
@@ -501,32 +504,32 @@ void D3DApp::UpdateRenderItems(const float dt, const float totalTime)
 		} */
 
 
-		if (mr.transform->IsDirty()) 
-			mr.transform->UpdateWorldMatrix();
+		if (mr->transform->IsDirty()) 
+			mr->transform->UpdateWorldMatrix();
 
-		mr.Mat->GetShader()->UpdateObjectCB(mr.transform->GetWorldMatrix(), mr.ObjectCBIndex);
+		mr->Mat->GetShader()->UpdateObjectCB(mr->transform->GetWorldMatrix(), mr->ObjectCBIndex);
 	}
 }
 
 void D3DApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList)
 {
-	for (auto& mr : *m_meshRenderers)
+	for (auto mr : *m_meshRenderers)
 	{
-		if (!mr.IsEnabled() || !mr.Mat || !mr.Mesh) return;
+		if (!mr || !mr->IsEnabled() || !mr->Mat || !mr->Mesh) return;
 
-		mr.Mat->GetShader()->BeginDraw(cmdList);
+		mr->Mat->GetShader()->BeginDraw(cmdList);
 
 		ShaderDrawArguments args;
 		args.CmdList = cmdList;
-		args.RenderItemGeometry = mr.Mesh;
-		args.RenderItemCBIndex = mr.ObjectCBIndex;
-		args.IndexCount = mr.Mesh->GetIndexCount();
+		args.RenderItemGeometry = mr->Mesh;
+		args.RenderItemCBIndex = mr->ObjectCBIndex;
+		args.IndexCount = mr->Mesh->GetIndexCount();
 		args.StartIndexLocation = 0;
 		args.BaseVertexLocation = 0;
 		args.Text = nullptr;
-		mr.Mat->GetShader()->Draw(args);
+		mr->Mat->GetShader()->Draw(args);
 
- 		mr.Mat->GetShader()->EndDraw(cmdList);
+ 		mr->Mat->GetShader()->EndDraw(cmdList);
 	}
 }
 #pragma endregion

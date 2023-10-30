@@ -46,7 +46,7 @@ namespace Chokbar {
 		}
 
 		template<class T>
-		void AddComponent(InstanceID entity, T component)
+		void AddComponent(InstanceID entity, T* component)
 		{
 			const char* typeName = typeid(T).name();
 

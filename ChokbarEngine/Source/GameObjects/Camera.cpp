@@ -4,12 +4,12 @@
 Camera::Camera()
 	: m_CameraComponent(nullptr)
 {
-	AddComponent<CameraComponent>();
-	m_CameraComponent = GetComponent<CameraComponent>();
+	m_CameraComponent = AddComponent<CameraComponent>();
+	transform->SetPosition(0, 0, -2);
 }
 
 Camera::~Camera()
 {
-	m_CameraComponent = nullptr;
 	delete m_CameraComponent;
+	m_CameraComponent = nullptr;
 }

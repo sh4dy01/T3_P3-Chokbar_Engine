@@ -21,7 +21,7 @@ namespace Chokbar {
 		// Create a new game object ID and add a default transform component
 		InstanceID CreateNewGameObjectWithTransform();
 		// Create a new game object ID and add a copied transform component
-		InstanceID CreateNewGameObjectWithTransform(const Transform& transform);
+		InstanceID CreateNewGameObjectWithTransform(Transform* transform);
 		void UpdateSystems(float dt);
 		void DestroyEntity(InstanceID entity);
 
@@ -40,7 +40,7 @@ namespace Chokbar {
 		}
 
 		template<typename T>
-		void AddComponent(InstanceID entity, T component)
+		void AddComponent(InstanceID entity, T* component)
 		{
 			m_ComponentManager->AddComponent<T>(entity, component);
 

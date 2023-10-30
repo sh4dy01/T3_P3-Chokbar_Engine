@@ -1,11 +1,13 @@
 #include "Chokbar.h"
 #include "CameraComponent.h"
 #include "Engine/ECS/Components/Component.h"
+#include <numbers>
 
 using namespace DirectX;
 
 CameraComponent::CameraComponent()
 {
+	SetLens(0.25f * 0.25f * std::numbers::pi, 1.0f, 1.0f, 1000.0f);
 }
 
 CameraComponent::~CameraComponent()
@@ -145,17 +147,6 @@ XMFLOAT4X4 CameraComponent::GetProj4x4f() const
 	return m_Proj;
 }
 
-void CameraComponent::UpdateViewMatrix()
-{
-	XMFLOAT3 Position = transform->GetPosition();
-
-	XMVECTOR pos = XMVectorSet(Position.x, Position.y, Position.z, 1.0F);
-	XMVECTOR target = XMVectorSet(0.0F, 0.5F, 0.0F, 0.0F);
-	XMVECTOR up = XMVectorSet(0.0F, 1.0F, 0.0F, 0.0F);
-
-	XMStoreFloat4x4(&m_View, XMMatrixLookAtLH(pos, target, up));
-}
-
 void CameraComponent::UpdateProjMatrix(const float winWidth, const float winHeight)
 {
 	XMFLOAT3 Position = transform->GetPosition();
@@ -167,7 +158,6 @@ void CameraComponent::UpdateProjMatrix(const float winWidth, const float winHeig
 	XMStoreFloat4x4(&m_Proj, XMMatrixPerspectiveFovLH(XMConvertToRadians(70.0F), winWidth / winHeight, 0.05F, 1000.0F));
 }
 
-/*
 void CameraComponent::UpdateViewMatrix()
 {
 	if (m_ViewDirty)
@@ -207,5 +197,3 @@ void CameraComponent::UpdateViewMatrix()
 		m_ViewDirty = false;
 	}
 }
-
-*/

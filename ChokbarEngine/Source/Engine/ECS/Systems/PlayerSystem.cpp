@@ -20,7 +20,7 @@ void PlayerSystem::Update(float deltaTime)
 		auto player = Chokbar::Engine::GetCoordinator()->GetComponent<PlayerComponent>(entity);
 		auto transform = Chokbar::Engine::GetCoordinator()->GetComponent<Transform>(entity);
 		//camera 
-
+		/*
 		if (InputHandler::IsKeyHeld('z'))
 		{
 			transform->Translate(0, 0, player->Speed);
@@ -37,5 +37,6 @@ void PlayerSystem::Update(float deltaTime)
 		{
 			transform->Translate(-player->Speed, 0, 0);
 		}
+		*/
 	}
 }

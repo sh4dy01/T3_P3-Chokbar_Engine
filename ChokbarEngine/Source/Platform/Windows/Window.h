@@ -14,6 +14,8 @@ namespace Win32
 		void PollEvent();
 		bool NeedsToClose() const { return needsToClose; }
 
+		float GetAspectRatio() const { return (float)m_Width / (float)m_Height; }
+
 	protected:
 
 		static LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);

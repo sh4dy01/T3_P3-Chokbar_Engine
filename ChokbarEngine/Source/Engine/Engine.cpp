@@ -6,6 +6,7 @@
 
 #include "GameObjects/Camera.h"
 
+#include <numbers>
 
 namespace Chokbar
 {
@@ -69,8 +70,8 @@ namespace Chokbar
 
 		m_Window.CreateNewWindow(DEFAULT_WIDTH, DEFAULT_HEIGHT, PerGameSettings::GameName(), PerGameSettings::MainIcon(), Win32::RESIZABLE);
 		m_InputHandler.Init(m_Window.GetHandle());
-		OnResize();
 
+		OnResize();
 
 		D3DApp::GetInstance()->InitializeD3D12(&m_Window);
 	}
@@ -155,7 +156,10 @@ namespace Chokbar
 	void Engine::OnResize()
 	{
 		D3DApp::GetInstance()->OnResize(m_Window.GetWidth(), m_Window.GetHeight());
+
+		m_CameraManager.GetMainCamera()->GetCameraComponent()->SetLens(0.25f * std::numbers::pi, m_Window.GetAspectRatio(), 0.5f, 1000.0f);
 	}
+
 
 	void Engine::Shutdown()
 	{

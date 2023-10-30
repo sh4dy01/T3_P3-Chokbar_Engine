@@ -45,13 +45,15 @@ void Application::PreInitialize()
 
 void Application::Initialize()
 {
-	GameObject test = GameObject("f");
+	GameObject* test = new GameObject("f");
 
-	MeshRenderer mr = MeshRenderer(MeshType::PYRAMID, MaterialType::SIMPLE);
+	MeshRenderer* mr = new MeshRenderer(MeshType::PYRAMID, MaterialType::SIMPLE);
 
-	GameObject player = GameObject("player");
-	player.AddComponent<PlayerComponent>();
-	player.AddComponent<MeshRenderer>(mr);
+	test->AddComponent<MeshRenderer>(mr);
+
+	//GameObject player = GameObject("player");
+	//player.AddComponent<PlayerComponent>();
+
 }
 
 void Application::Run()

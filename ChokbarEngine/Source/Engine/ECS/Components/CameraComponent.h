@@ -62,7 +62,7 @@ private:
 	float m_NearZ = 0.5f;
 	float m_FarZ = 1000.0f;
 	float m_Aspect = 0.0f;
-	float m_FovY = 0.0f;
+	float m_FovY = 75.0f;
 	float m_NearWindowHeight = 0.0f;
 	float m_FarWindowHeight = 0.0f;
 
