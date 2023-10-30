@@ -5,6 +5,7 @@
 
 #include "Material.h"
 #include "ShaderBase.h"
+#include "Texture.h"
 
 #include "MeshRenderer.h"
 
@@ -18,6 +19,11 @@ MeshRenderer::~MeshRenderer()
 {
 	Mesh = nullptr;
 	Mat = nullptr;
+}
+
+void MeshRenderer::OnDelete()
+{
+	Mat->GetShader()->UnBind(ObjectCBIndex);
 }
 
 void MeshRenderer::BindMaterial(Material* mat)

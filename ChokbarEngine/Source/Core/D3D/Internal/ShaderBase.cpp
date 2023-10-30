@@ -64,6 +64,12 @@ void ShaderBase::SetInputLayout(VertexType vertexType)
 	}
 }
 
+void ShaderBase::UnBind(UINT index)
+{
+	m_objectCBs.erase(m_objectCBs.begin() + index);
+	m_freeIndices.push(index);
+}
+
 ShaderBase* ShaderBase::Bind()
 {
 	AddObjectCB();
@@ -73,7 +79,16 @@ ShaderBase* ShaderBase::Bind()
 void ShaderBase::AddObjectCB()
 {
 	const UINT64 cBufferSize = (sizeof(ObjConstants) + 255) & ~255;
-	const int index = (int)m_objectCBs.size();
+	int index = 0;
+	if (!m_freeIndices.empty())
+	{
+		index = m_freeIndices.top();
+		m_freeIndices.pop();
+	}
+	else
+	{
+		index = m_objectCBs.size();
+	}
 
 	auto cb = new UploadBuffer<ObjConstants>(m_generalDevice, 1, true);
 
@@ -246,6 +261,8 @@ void ShaderSimple::Draw(ShaderDrawArguments& args)
 	if (args.RenderItemCBIndex >= m_objectCBs.size())
 		AddObjectCB();
 
+	assert(args.RenderItemCBIndex <= m_objectCBs.size());
+
 	args.CmdList->IASetVertexBuffers(0, 1, &args.RenderItemGeometry->VertexBufferView());
 	args.CmdList->IASetIndexBuffer(&args.RenderItemGeometry->IndexBufferView());
 
@@ -259,7 +276,7 @@ void ShaderSimple::Draw(ShaderDrawArguments& args)
 
 void ShaderSimple::EndDraw(ID3D12GraphicsCommandList* cmdList)
 {
-	
+
 }
 #pragma endregion
 
@@ -339,8 +356,8 @@ void ShaderTexture::BeginDraw(ID3D12GraphicsCommandList* cmdList)
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
-void ShaderTexture::Draw(ShaderDrawArguments& args) 
-{ 
+void ShaderTexture::Draw(ShaderDrawArguments& args)
+{
 	//TODO heck if texture is nullptr
 	if (args.RenderItemCBIndex >= m_objectCBs.size())
 		AddObjectCB();

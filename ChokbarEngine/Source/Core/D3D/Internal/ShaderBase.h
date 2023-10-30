@@ -1,4 +1,5 @@
 #pragma once
+#include <stack>
 
 #include "UploadBuffer.h"
 #include "Core/D3D/Internal/D3DMesh.h"
@@ -6,7 +7,6 @@
 struct Texture;
 
 enum VertexType { POS, POS_COLOR, POS_TEX, POS_NORM_TEX, POS_NORM_TEX_TAN };
-enum ShaderType { BASE, SIMPLE, TEXTURE };
 
 struct ShaderDrawArguments
 {
@@ -66,6 +66,7 @@ protected:
 	m_objectCBs stores every constant buffer. Each constant buffer is associated to an unique MeshRenderer
 	NOTE : The object constant buffer is associated to the b0 cbuffer in the shader (only true in our project) */
 	std::vector<UploadBuffer<ObjConstants>*> m_objectCBs;
+	std::stack<UINT> m_freeIndices; 
 	/* m_passCB stores every information the shader might need about our camera
 	NOTE : The main pass constant buffer is associated to the b1 cbuffer in the shader (only true in our project) */
 	UploadBuffer<PassConstants>* m_passCB;
@@ -102,6 +103,8 @@ public:
 
 	UINT GetCreatedIndex() { return (UINT)m_objectCBs.size() - 1; }
 	UINT GetLastIndex() { return (UINT)m_objectCBs.size(); }
+
+	void UnBind(UINT index);
 	ShaderBase* Bind();
 
 	virtual void AddObjectCB();

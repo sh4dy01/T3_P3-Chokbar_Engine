@@ -424,8 +424,8 @@ void D3DApp::CreateResources()
 	Resource::CreateResources(m_pD3dDevice, m_pCbvHeap, m_CbvSrvUavDescriptorSize);
 
 	auto& shaders = Resource::GetShaders();
-	shaders[SHADER_SIMPLE]->CreatePsoAndRootSignature(VertexType::POS_COLOR, m_BackBufferFormat, m_DepthStencilFormat);
-	shaders[SHADER_TEXTURE]->CreatePsoAndRootSignature(VertexType::POS_TEX, m_BackBufferFormat, m_DepthStencilFormat);
+	shaders[SIMPLE]->CreatePsoAndRootSignature(VertexType::POS_COLOR, m_BackBufferFormat, m_DepthStencilFormat);
+	shaders[TEXTURE]->CreatePsoAndRootSignature(VertexType::POS_TEX, m_BackBufferFormat, m_DepthStencilFormat);
 }
 
 void D3DApp::GetMeshRenderersRef()
@@ -515,7 +515,7 @@ void D3DApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList)
 		args.IndexCount = mr.Mesh->Indices.size();
 		args.StartIndexLocation = 0;
 		args.BaseVertexLocation = 0;
-		args.Text = mr.Mat->GetTexture(0);
+		args.Text = mr.GetTexture(0);
 		mr.Mat->GetShader()->Draw(args);
 
 		mr.Mat->GetShader()->EndDraw(cmdList);

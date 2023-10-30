@@ -2,8 +2,9 @@
 
 #include "Engine/IResourceObject.h"
 
-struct Texture : public IResourceObject
+class Texture : public IResourceObject
 {
+public:
 	Texture(const std::string& name, const std::wstring& filepath);
 	~Texture();
 	std::string Name = "";
