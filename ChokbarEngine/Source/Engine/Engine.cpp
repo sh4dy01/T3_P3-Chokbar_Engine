@@ -17,8 +17,8 @@ namespace Chokbar
 
 	Engine::~Engine()
 	{
-		m_Instance = nullptr;
 		delete m_Instance;
+		m_Instance = nullptr;
 	};
 
 	Engine* Engine::GetInstance()
@@ -157,7 +157,7 @@ namespace Chokbar
 	{
 		D3DApp::GetInstance()->OnResize(m_Window.GetWidth(), m_Window.GetHeight());
 
-		m_CameraManager.GetMainCamera()->GetCameraComponent()->SetLens(0.25f * std::numbers::pi, m_Window.GetAspectRatio(), 0.5f, 1000.0f);
+		m_CameraManager.GetMainCamera()->GetCameraComponent()->SetLens(0.25f * std::numbers::pi, GetAspectRatio(), 0.5f, 1000.0f);
 	}
 
 

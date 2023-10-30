@@ -50,6 +50,7 @@ void Application::Initialize()
 	MeshRenderer* mr = new MeshRenderer(MeshType::PYRAMID, MaterialType::SIMPLE);
 
 	test->AddComponent<MeshRenderer>(mr);
+	test->AddComponent<PlayerComponent>();
 
 	//GameObject player = GameObject("player");
 	//player.AddComponent<PlayerComponent>();

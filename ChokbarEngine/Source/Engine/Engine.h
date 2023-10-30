@@ -43,6 +43,8 @@ namespace Chokbar {
 		void CalculateFrameStats();
 		bool NeedsToClose();
 
+		float GetAspectRatio() const { return m_Window.GetWidth() / static_cast<float>(m_Window.GetHeight()); }
+
 	private:
 
 		static Engine* m_Instance;
