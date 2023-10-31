@@ -438,19 +438,6 @@ void D3DApp::CreateResources()
 
 void D3DApp::GetMeshRenderersRef()
 {
-	/*for (int i = 0; i < m_ObjectCount; i++)
-	{
-		auto pyrItem = RenderItem();
-		pyrItem.ObjCBIndex = m_AllRenderItems.size();
-		pyrItem.Geo = m_pyramidGeometry;
-		pyrItem.Shader = m_pShader[i]->Bind();
-		pyrItem.PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-		pyrItem.IndexCount = pyrItem.Geo->IndexCount;
-		pyrItem.StartIndexLocation = pyrItem.Geo->StartIndexLocation;
-		pyrItem.BaseVertexLocation = pyrItem.Geo->BaseVertexLocation;
-		pyrItem.Transform = Chokbar::Transform();
-	} */
-
 	m_meshRenderers = Chokbar::Engine::GetCoordinator()->GetAllComponentsOfType<MeshRenderer>()->GetAllData<MeshRenderer>();
 }
 #pragma endregion
@@ -481,32 +468,10 @@ void D3DApp::UpdateRenderItems(const float dt, const float totalTime)
 	for (const auto mr : *m_meshRenderers)
 	{
 		if (!mr || !mr->IsEnabled() || !mr->Mat || !mr->Mesh) return;
-		/*
-		switch (mr.TransformationType)
-		{
-		case TRANSFORMATION_TYPE::ROTATION:
-		{
-			mr.gameObject->transform->Rotate(100.0f * dt, 100.0f * dt, 100.0f * dt);
-			break;
-		}
-		case TRANSFORMATION_TYPE::TRANSLATION:
-		{
-			mr.gameObject->transform->Translate(XMFLOAT3(sinf(totalTime) * dt, sinf(totalTime) * dt, -sinf(totalTime) * dt));
-			break;
-		}
-		case TRANSFORMATION_TYPE::SCALE:
-		{
-			mr.gameObject->transform->Scale(1.0f + sinf(totalTime) * dt * 0.5f, 1.0f + sinf(totalTime) * dt * 0.5f, 1.0f + sinf(totalTime) * dt * 0.5f);
-			break;
-		}
-		default:
-			break;
-		} */
 
+		if (mr->transform->IsDirty())
+			mr->transform->UpdateWorldMatrix();
 
-		//if (mr->transform->IsDirty())
-
-		mr->transform->UpdateWorldMatrix();
 		mr->Mat->GetShader()->UpdateObjectCB(mr->transform->GetWorldMatrix(), mr->ObjectCBIndex);
 	}
 }

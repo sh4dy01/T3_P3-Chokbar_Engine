@@ -164,11 +164,12 @@ void Transform::UpdateScaleMatrix()
 
 void Transform::UpdateWorldMatrix()
 {
-	m_Dirty = false;
 	// Create the position matrix
 	// Combine rotation and scale and position
 	DirectX::XMMATRIX newWorldMatrix = DirectX::XMLoadFloat4x4(&m_RotationMatrix) * DirectX::XMLoadFloat4x4(&m_ScaleMatrix) * DirectX::XMLoadFloat4x4(&m_PositionMatrix);
 	// Combine rotation and scale with position
 	// Convert the final world matrix to XMFLOAT4X4
 	DirectX::XMStoreFloat4x4(&m_WorldMatrix, DirectX::XMMatrixTranspose(newWorldMatrix));
+
+	m_Dirty = false;
 }
