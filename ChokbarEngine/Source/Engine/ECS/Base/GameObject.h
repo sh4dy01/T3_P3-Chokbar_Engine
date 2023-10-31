@@ -26,9 +26,22 @@ namespace Chokbar
 		template<class Component>
 		void AddComponent()
 		{
-			Component component;
-			component.gameObject = this;
-			component.transform = transform;
+			auto component = new Component;
+			component->gameObject = this;
+			component->transform = transform;
+			component->OnAddedComponent();
+
+			DEBUG_LOG("Adding component: " + std::string(typeid(Component).name()) + " to " + m_Name + " entity");
+
+			Engine::GetCoordinator().AddComponent<Component>(m_InstanceID, component);
+		}
+
+		template<class Component>
+		void AddComponent(Component* component)
+		{
+			component->gameObject = this;
+			component->transform = transform;
+			component->OnAddedComponent();
 
 			DEBUG_LOG("Adding component: " + std::string(typeid(Component).name()) + " to " + m_Name + " entity");
 

@@ -3,6 +3,9 @@
 
 #include "Engine/ECS/Components/MeshRenderer.h"
 #include "Engine/ECS/Components/PlayerComponent.h"
+#include "Engine/ECS/Components/Collision/CollisionShape.h"
+#include "Engine/ECS/Components/Collision/RigidBody.h"
+
 
 namespace Chokbar {
 
@@ -36,6 +39,8 @@ namespace Chokbar {
 		RegisterComponent<Transform>();
 		RegisterComponent<MeshRenderer>();
 		RegisterComponent<PlayerComponent>();
+		RegisterComponent<RigidBody>();
+		RegisterComponent<Sphere>();
 	}
 
 	void Coordinator::RegisterSystems()
@@ -52,15 +57,16 @@ namespace Chokbar {
 	InstanceID Coordinator::CreateNewGameObjectWithTransform()
 	{
 		const InstanceID newId = m_EntityManager->CreateEntity();
-		m_ComponentManager->AddComponent<Transform>(newId, Transform());
+		m_ComponentManager->AddComponent<Transform>(newId, new Transform());
 
 		return newId;
 	}
 
-	InstanceID Coordinator::CreateNewGameObjectWithTransform(const Transform& transform)
+	InstanceID Coordinator::CreateNewGameObjectWithTransform(Transform* transform)
 	{
 		const InstanceID newId = m_EntityManager->CreateEntity();
-		const Transform copiedTransform = transform;
+		Transform* copiedTransform = new Transform;
+		copiedTransform = transform;
 
 		m_ComponentManager->AddComponent<Transform>(newId, copiedTransform);
 

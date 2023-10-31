@@ -21,7 +21,7 @@ namespace Chokbar {
 
 	public:
 
-		void InsertData(InstanceID entity, T component) {
+		void InsertData(InstanceID entity, T* component) {
 			size_t newIndex = m_Size;
 			m_EntityToIndexMap[entity] = newIndex;
 			m_IndexToEntityMap[newIndex] = entity;
@@ -50,7 +50,7 @@ namespace Chokbar {
 		T* GetData(InstanceID entity)
 		{
 			if (HasData(entity))
-				return &m_ComponentArray[m_EntityToIndexMap[entity]];
+				return m_ComponentArray[m_EntityToIndexMap[entity]];
 			else
 				return nullptr;
 		}
@@ -76,7 +76,7 @@ namespace Chokbar {
 		// set to a specified maximum amount, matching the maximum number
 		// of entities allowed to exist simultaneously, so that each entity
 		// has a unique spot.
-		std::array<T, MAX_ENTITIES> m_ComponentArray = {};
+		std::array<T*, MAX_ENTITIES> m_ComponentArray = {};
 
 		// Map from an entity ID to an array index.
 		std::unordered_map<InstanceID, size_t> m_EntityToIndexMap = {};

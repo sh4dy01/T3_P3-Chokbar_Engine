@@ -116,11 +116,9 @@
     <ClCompile Include="Source\Engine\ECS\Base\GameObject.cpp" />
     <ClCompile Include="Source\Engine\ECS\Base\Object.cpp" />
     <ClCompile Include="Source\Engine\ECS\Base\SystemManager.cpp" />
-    <ClCompile Include="Source\Engine\ECS\Components\Collision\BoundingBoxCollision.cpp" />
     <ClCompile Include="Source\Engine\ECS\Components\Collision\CollisionShape.cpp" />
-    <ClCompile Include="Source\Engine\ECS\Components\Collision\PyramidCollision.cpp" />
+    <ClCompile Include="Source\Engine\ECS\Components\Collision\Rigidbody.cpp" />
     <ClCompile Include="Source\Engine\ECS\Components\Collision\SphereCollision.cpp" />
-    <ClCompile Include="Source\Engine\ECS\Components\Collision\TriangleCollision.cpp" />
     <ClCompile Include="Source\Engine\ECS\Components\Component.cpp" />
     <ClCompile Include="Source\Engine\ECS\Components\MeshRenderer.cpp" />
     <ClCompile Include="Source\Engine\ECS\Components\PlayerComponent.cpp" />
@@ -130,6 +128,7 @@
     <ClCompile Include="Source\Engine\GameTimer.cpp" />
     <ClCompile Include="Source\Engine\InputHandler.cpp" />
     <ClCompile Include="Source\Engine\PhysicsManager.cpp" />
+    <ClCompile Include="Source\Engine\PhysicsWorld.cpp" />
     <ClCompile Include="Source\Engine\SplashScreen.cpp" />
     <ClCompile Include="Source\Platform\Windows\IApplication.cpp" />
     <ClCompile Include="Source\Platform\Windows\Win32Utils.cpp" />
@@ -151,12 +150,11 @@
     <ClInclude Include="Source\Core\RenderItem.h" />
     <ClInclude Include="Source\Core\ShaderBase.h" />
     <ClInclude Include="Source\Core\UploadBuffer.h" />
-    <ClInclude Include="Source\Engine\ECS\Components\Collision\BoundingBoxCollision.h" />
     <ClInclude Include="Source\Engine\ECS\Components\Collision\CollisionShape.h" />
-    <ClInclude Include="Source\Engine\ECS\Components\Collision\PyramidCollision.h" />
+    <ClInclude Include="Source\Engine\ECS\Components\Collision\Rigidbody.h" />
     <ClInclude Include="Source\Engine\ECS\Components\Collision\SphereCollision.h" />
-    <ClInclude Include="Source\Engine\ECS\Components\Collision\TriangleCollision.h" />
     <ClInclude Include="Source\Engine\PhysicsManager.h" />
+    <ClInclude Include="Source\Engine\PhysicsWorld.h" />
     <ClInclude Include="Source\Engine\SphereCollision.h" />
     <ClInclude Include="Source\Engine\ECS\Base\ComponentArray.h" />
     <ClInclude Include="Source\Engine\ECS\Base\ComponentManager.h" />

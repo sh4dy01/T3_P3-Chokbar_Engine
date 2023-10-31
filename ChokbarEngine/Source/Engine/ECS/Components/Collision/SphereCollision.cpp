@@ -1,12 +1,22 @@
 #include "Chokbar.h"
 #include "SphereCollision.h"
 
+
+Sphere::Sphere()
+	: m_sphere()
+{
+	m_type = ShapeType::Sphere;
+}
 /// <summary>
 /// Constructs a Sphere object with a specified center and radius.
 /// </summary>
 /// <param name="center">The center point of the sphere.</param>
 /// <param name="radius">The radius of the sphere.</param>
-Sphere::Sphere(const XMFLOAT3& center, float radius) : m_sphere(center, radius) {}
+Sphere::Sphere(const XMFLOAT3& center, float radius)
+	: m_sphere(center, radius)
+{
+	m_type = ShapeType::Sphere;
+}
 
 /// <summary>
 /// Gets the center of the sphere.
@@ -42,22 +52,4 @@ void Sphere::setCenter(const XMFLOAT3& center)
 void Sphere::setRadius(float radius)
 {
 	m_sphere.Radius = radius;
-}
-
-/// <summary>
-/// Checks if this sphere is colliding with another sphere.
-/// </summary>
-/// <param name="other">The other sphere to check for collision.</param>
-/// <returns>True if the spheres are colliding, false otherwise.</returns>
-bool Sphere::AreSpheresColliding(const Sphere& other) const
-{
-	return m_sphere.Intersects(other.m_sphere);
-}
-
-bool Sphere::Intersects(const CollisionShape& other) const {
-    const Sphere* otherSphere = dynamic_cast<const Sphere*>(&other);
-    if (otherSphere) {
-        return AreSpheresColliding(*otherSphere);
-    }
-    return false;
 }

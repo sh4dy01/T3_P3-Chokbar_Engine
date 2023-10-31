@@ -23,9 +23,9 @@ namespace Chokbar
 		return GetInstance().m_InputHandler;
 	}
 
-	PhysicsManager& Engine::GetPhysicsManager()
+	PhysicsWorld& Engine::GetPhysicsWorld()
 	{
-		return GetInstance().m_PhysicsManager;
+		return GetInstance().m_PhysicsWorld;
 	}
 
 #pragma region INIT
@@ -87,6 +87,8 @@ namespace Chokbar
 		m_Coordinator.UpdateSystems();
 
 		m_InputHandler.Update(dt);
+		m_PhysicsWorld.Update();
+
 		D3DApp::GetInstance()->Update(dt, m_GameTimer.GetTotalTime());
 		CalculateFrameStats();
 	}

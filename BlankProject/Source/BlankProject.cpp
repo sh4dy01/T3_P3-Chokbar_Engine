@@ -5,6 +5,7 @@
 #include "Engine/ECS/Base/GameObject.h"
 #include "Engine/ECS/Components/MeshRenderer.h"
 #include "Engine/ECS/Components/PlayerComponent.h"
+#include "Engine/ECS/Components/Collision/Rigidbody.h"
 
 using namespace Chokbar;
 
@@ -49,8 +50,18 @@ void Application::PreInitialize()
 
 void Application::Initialize()
 {
-	GameObject test = GameObject("player");
-	GameObject player = GameObject("player", PlayerComponent());
+	auto test = new GameObject("player");
+	auto player = new GameObject("test");
+	auto rbA = new RigidBody();
+	auto rbB = new RigidBody();
+	
+	test->AddComponent<RigidBody>(rbA);
+	player->AddComponent<RigidBody>(rbB);
+
+	auto sphereA = new Sphere(XMFLOAT3(0, 0, 0), 2);
+	auto sphereB = new Sphere(XMFLOAT3(0, 0, 0), 2);
+	test->AddComponent<Sphere>(sphereA);
+	player->AddComponent<Sphere>(sphereB);
 }
 
 void Application::Run()
@@ -59,6 +70,7 @@ void Application::Run()
 }
 
 void Application::Update(const float dt)
+
 {
 	
 }

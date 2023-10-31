@@ -10,17 +10,16 @@ using namespace DirectX;
 class Sphere : public CollisionShape
 {
 public:
+	Sphere();
 	Sphere(const XMFLOAT3& center, float radius);
 
 	const XMFLOAT3& GetCenter() const;
 	float GetRadius() const;
+	BoundingSphere* GetBoundingSphere() { return &m_sphere; }
 
 	void setCenter(const XMFLOAT3& center);
 	void setRadius(float radius);
 
-	bool AreSpheresColliding(const Sphere& other) const;
-
-	bool Intersects(const CollisionShape& other) const override;
 private:
 	BoundingSphere m_sphere;
 };

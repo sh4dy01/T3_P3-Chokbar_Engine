@@ -9,6 +9,8 @@ namespace Chokbar
 	class Component
 	{
 	public:
+		virtual void OnAddedComponent() {};
+
 		GameObject* gameObject;
 		Transform* transform;
 	};

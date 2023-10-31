@@ -163,22 +163,19 @@
     <ClCompile Include="Source\Engine\SplashScreen.cpp" />
     <ClCompile Include="Source\Core\RenderItem.cpp" />
     <ClCompile Include="Source\Core\ShaderBase.cpp" />
-    <ClCompile Include="Source\Engine\ECS\Components\Collision\BoundingBoxCollision.cpp">
-      <Filter>Source\Engine\ECS\Components\Collision</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Engine\ECS\Components\Collision\CollisionShape.cpp">
-      <Filter>Source\Engine\ECS\Components\Collision</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Engine\ECS\Components\Collision\PyramidCollision.cpp">
       <Filter>Source\Engine\ECS\Components\Collision</Filter>
     </ClCompile>
     <ClCompile Include="Source\Engine\ECS\Components\Collision\SphereCollision.cpp">
       <Filter>Source\Engine\ECS\Components\Collision</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\ECS\Components\Collision\TriangleCollision.cpp">
+    <ClCompile Include="Source\Engine\PhysicsManager.cpp">
+      <Filter>Source\Engine\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\ECS\Components\Collision\Rigidbody.cpp">
       <Filter>Source\Engine\ECS\Components\Collision</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\PhysicsManager.cpp">
+    <ClCompile Include="Source\Engine\PhysicsWorld.cpp">
       <Filter>Source\Engine\Private</Filter>
     </ClCompile>
   </ItemGroup>
@@ -289,22 +286,19 @@
     <ClInclude Include="Source\Engine\SphereCollision.h" />
     <ClInclude Include="Source\Core\RenderItem.h" />
     <ClInclude Include="Source\Core\ShaderBase.h" />
-    <ClInclude Include="Source\Engine\ECS\Components\Collision\BoundingBoxCollision.h">
-      <Filter>Source\Engine\ECS\Components\Collision</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Engine\ECS\Components\Collision\CollisionShape.h">
-      <Filter>Source\Engine\ECS\Components\Collision</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Engine\ECS\Components\Collision\PyramidCollision.h">
       <Filter>Source\Engine\ECS\Components\Collision</Filter>
     </ClInclude>
     <ClInclude Include="Source\Engine\ECS\Components\Collision\SphereCollision.h">
       <Filter>Source\Engine\ECS\Components\Collision</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\ECS\Components\Collision\TriangleCollision.h">
+    <ClInclude Include="Source\Engine\PhysicsManager.h">
+      <Filter>Source\Engine\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\ECS\Components\Collision\Rigidbody.h">
       <Filter>Source\Engine\ECS\Components\Collision</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\PhysicsManager.h">
+    <ClInclude Include="Source\Engine\PhysicsWorld.h">
       <Filter>Source\Engine\Public</Filter>
     </ClInclude>
   </ItemGroup>
