@@ -6,6 +6,7 @@
 
 #include "GameObjects/Camera.h"
 
+#include <numbers>
 
 namespace Chokbar
 {
@@ -16,8 +17,8 @@ namespace Chokbar
 
 	Engine::~Engine()
 	{
-		m_Instance = nullptr;
 		delete m_Instance;
+		m_Instance = nullptr;
 	};
 
 	Engine* Engine::GetInstance()
@@ -69,8 +70,8 @@ namespace Chokbar
 
 		m_Window.CreateNewWindow(DEFAULT_WIDTH, DEFAULT_HEIGHT, PerGameSettings::GameName(), PerGameSettings::MainIcon(), Win32::RESIZABLE);
 		m_InputHandler.Init(m_Window.GetHandle());
-		OnResize();
 
+		OnResize();
 
 		D3DApp::GetInstance()->InitializeD3D12(&m_Window);
 	}
@@ -144,8 +145,8 @@ namespace Chokbar
 			timeElapsed += 1.0f;
 		}
 
-		std::wstring x = std::to_wstring(m_InputHandler.GetMouseX());
-		std::wstring y = std::to_wstring(m_InputHandler.GetMouseY());
+		std::wstring x = std::to_wstring(InputHandler::GetAxisX());
+		std::wstring y = std::to_wstring(InputHandler::GetAxisY());
 
 		windowText += L"    MouseX: " + x + L"   MouseY: " + y;
 
@@ -155,7 +156,10 @@ namespace Chokbar
 	void Engine::OnResize()
 	{
 		D3DApp::GetInstance()->OnResize(m_Window.GetWidth(), m_Window.GetHeight());
+
+		m_CameraManager.GetMainCamera()->GetCameraComponent()->SetLens(70, GetAspectRatio(), 0.5f, 1000.0f);
 	}
+
 
 	void Engine::Shutdown()
 	{

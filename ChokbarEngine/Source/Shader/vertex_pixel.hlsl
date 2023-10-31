@@ -19,8 +19,9 @@ PS_INPUT vs_main(VS_INPUT input)
 {
     PS_INPUT output;
 
-	output.pos = float4(input.pos, 1.0F);
-	output.pos = mul(output.pos, gWorldViewProj);
+    
+	float4 color = float4(input.pos, 1.0F);
+    output.pos = mul(color, gWorldViewProj);
     output.color = input.color / 255.0F;
 
     return output;

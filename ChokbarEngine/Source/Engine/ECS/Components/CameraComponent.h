@@ -11,7 +11,6 @@ public:
 	CameraComponent();
 	~CameraComponent();
 
-	
 	// Get camera basis vectors.
 	DirectX::XMVECTOR GetRight() const;
 	DirectX::XMFLOAT3 GetRight3f() const;
@@ -37,19 +36,27 @@ public:
 	void SetLens(float fovY, float aspect, float zn, float zf);
 
 	// Define camera space via LookAt parameters.
-	void LookAt(DirectX::FXMVECTOR pos, DirectX::FXMVECTOR target, DirectX::FXMVECTOR worldUp);
+	void __vectorcall LookAt(DirectX::FXMVECTOR pos, DirectX::FXMVECTOR target, DirectX::FXMVECTOR worldUp);
 	void LookAt(const DirectX::XMFLOAT3& pos, const DirectX::XMFLOAT3& target, const DirectX::XMFLOAT3& up);
+
 
 	// Get View/Proj matrices.
 	DirectX::XMMATRIX GetView()const;
 	DirectX::XMMATRIX GetProj()const;
+
+	// Strafe/Walk the camera a distance d.
+	void Strafe(float d);
+	void Walk(float d);
+
+	// Rotate the camera.
+	void Pitch(float angle);
+	void RotateY(float angle);
 
 	DirectX::XMFLOAT4X4 GetView4x4f()const;
 	DirectX::XMFLOAT4X4 GetProj4x4f()const;
 
 	// After modifying camera position/orientation, call to rebuild the view matrix.
 	void UpdateViewMatrix();
-	void UpdateProjMatrix(const float winWidth, const float winHeight);
 
 private:
 
@@ -62,7 +69,7 @@ private:
 	float m_NearZ = 0.5f;
 	float m_FarZ = 1000.0f;
 	float m_Aspect = 0.0f;
-	float m_FovY = 0.0f;
+	float m_FovY = 75.0f;
 	float m_NearWindowHeight = 0.0f;
 	float m_FarWindowHeight = 0.0f;
 

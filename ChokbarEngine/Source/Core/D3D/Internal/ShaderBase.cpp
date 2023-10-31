@@ -109,7 +109,7 @@ void ShaderBase::UpdateObjectCB(DirectX::XMFLOAT4X4* itemWorldMatrix, UINT cbInd
 		AddObjectCB();
 
 	ObjConstants objConstants;
-	objConstants.World = itemWorldMatrix;
+	objConstants.World = *itemWorldMatrix;
 	m_objectCBs[cbIndex]->CopyData(0, &objConstants);
 }
 
@@ -127,8 +127,8 @@ void ShaderBase::CreatePassCB()
 
 void ShaderBase::UpdatePassCB(const float dt, const float totalTime)
 {
-	const XMMATRIX camView = m_MainCamera->GetCameraComponent()->GetView();
-	const XMMATRIX camProj = m_MainCamera->GetCameraComponent()->GetProj();
+	const XMMATRIX camView = m_MainCamera->GetView();
+	const XMMATRIX camProj = m_MainCamera->GetProj();
 
 	XMMATRIX viewProj = XMMatrixMultiply(camView, camProj);
 	// XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(camView), camView);
@@ -143,7 +143,7 @@ void ShaderBase::UpdatePassCB(const float dt, const float totalTime)
 	XMStoreFloat4x4(&mainPassCB.ViewProj, XMMatrixTranspose(viewProj));
 	// XMStoreFloat4x4(&mainPassCB.InvViewProj, XMMatrixTranspose(invViewProj));
 
-	mainPassCB.EyePosW = m_MainCamera->GetCameraComponent()->transform->GetPosition();
+	mainPassCB.EyePosW = m_MainCamera->transform->GetPosition();
 	// mainPassCB.RenderTargetSize = XMFLOAT2(m_bufferWidth, m_bufferHeight);
 	// mainPassCB.InvRenderTargetSize = XMFLOAT2(1.0f / m_bufferWidth, 1.0f / m_bufferHeight);
 	// mainPassCB.NearZ = m_camera.NearZ;
@@ -192,7 +192,7 @@ void ShaderSimple::Init()
 	CompileShader(nullptr, "vs_main", "vs_5_0", &m_vsByteCode);
 	CompileShader(nullptr, "ps_main", "ps_5_0", &m_psByteCode);
 
-	m_MainCamera = Chokbar::Engine::GetMainCamera();
+	m_MainCamera = Chokbar::Engine::GetMainCamera()->GetCameraComponent();
 }
 
 void ShaderSimple::CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT& rtvFormat, DXGI_FORMAT& dsvFormat)
@@ -218,15 +218,15 @@ void ShaderSimple::CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT&
 	m_generalDevice->CreateRootSignature(0, serializedRootSignature->GetBufferPointer(), serializedRootSignature->GetBufferSize(), IID_PPV_ARGS(&m_rootSignature));
 
 	if (errorBlob != nullptr) errorBlob->Release();
-	serializedRootSignature->Release();
 
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc;
 	ZeroMemory(&psoDesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
-	psoDesc.InputLayout = { m_inputLayout.data(), 2 };
+	psoDesc.InputLayout = { m_inputLayout.data(), (UINT)m_inputLayout.size()};
 	psoDesc.pRootSignature = m_rootSignature;
 	psoDesc.VS = { reinterpret_cast<BYTE*>(m_vsByteCode->GetBufferPointer()), m_vsByteCode->GetBufferSize() };
 	psoDesc.PS = { reinterpret_cast<BYTE*>(m_psByteCode->GetBufferPointer()), m_psByteCode->GetBufferSize() };
 	psoDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
+	psoDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
 	psoDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
 	psoDesc.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
 	psoDesc.SampleMask = UINT_MAX;
@@ -237,7 +237,9 @@ void ShaderSimple::CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT&
 	psoDesc.SampleDesc.Quality = 0;
 	psoDesc.DSVFormat = dsvFormat;
 
-	m_generalDevice->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&m_pipelineState));
+	HRESULT hr2 = m_generalDevice->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&m_pipelineState));
+
+	serializedRootSignature->Release();
 }
 
 void ShaderSimple::BeginDraw(ID3D12GraphicsCommandList* cmdList)
@@ -293,7 +295,7 @@ void ShaderTexture::Init()
 	CompileShader(nullptr, "vs_main", "vs_5_0", &m_vsByteCode);
 	CompileShader(nullptr, "ps_main", "ps_5_0", &m_psByteCode);
 
-	m_MainCamera = Chokbar::Engine::GetMainCamera();
+	m_MainCamera = Chokbar::Engine::GetMainCamera()->GetCameraComponent();
 
 }
 

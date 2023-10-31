@@ -4,11 +4,15 @@ class Material;
 class D3DMesh;
 class Texture;
 
+#include "Core/D3D/MeshType.h"
+#include "Core/D3D/MaterialType.h"
+
 class MeshRenderer : public Component
 {
 public:
 
 	MeshRenderer();
+	MeshRenderer(MeshType, MaterialType);
 	~MeshRenderer();
 
 	void OnDelete();

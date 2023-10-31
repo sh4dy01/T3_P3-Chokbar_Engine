@@ -17,6 +17,7 @@ namespace Chokbar {
 		template<typename... Component>
 		GameObject(const std::string& name, Component... components)
 		{
+			Component
 			m_Name = name;
 			transform = Engine::GetCoordinator()->GetComponent<Transform>(m_InstanceID);
 
@@ -27,12 +28,26 @@ namespace Chokbar {
 		~GameObject();
 
 		template<class Component>
-		void AddComponent()
+		Component* AddComponent()
 		{
-			Component component;
-			component.gameObject = this;
-			component.transform = this->transform;
-			component.SetEnabled(true);
+			Component* component = new Component;
+			component->gameObject = this;
+			component->transform = this->transform;
+			component->SetEnabled(true);
+
+			DEBUG_LOG("Adding component: " + std::string(typeid(Component).name()) + " to " + m_Name + " entity");
+
+			Engine::GetCoordinator()->AddComponent<Component>(m_InstanceID, component);
+
+			return component;
+		}
+
+		template<class Component>
+		void AddComponent(Component* component)
+		{
+			component->gameObject = this;
+			component->transform = this->transform;
+			component->SetEnabled(true);
 
 			DEBUG_LOG("Adding component: " + std::string(typeid(Component).name()) + " to " + m_Name + " entity");
 
