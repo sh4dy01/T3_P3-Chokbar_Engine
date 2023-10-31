@@ -90,6 +90,30 @@ float CameraComponent::GetFarWindowHeight() const
 	return m_FarWindowHeight;
 }
 
+void CameraComponent::SetFOV(float fovY)
+{
+	m_FovY = fovY;
+
+	UpdateWindowWithNewRange();
+	UpdateProjectionMatrix();
+}
+
+void CameraComponent::SetAspect(float aspect)
+{
+	m_Aspect = aspect;
+
+	UpdateProjectionMatrix();
+}
+
+void CameraComponent::SetZRange(float zn, float zf)
+{
+	m_NearZ = zn;
+	m_FarZ = zf;
+
+	UpdateWindowWithNewRange();
+	UpdateProjectionMatrix();
+}
+
 void CameraComponent::SetLens(float fovY, float aspect, float zn, float zf)
 {
 	// cache properties
@@ -98,10 +122,14 @@ void CameraComponent::SetLens(float fovY, float aspect, float zn, float zf)
 	m_NearZ = zn;
 	m_FarZ = zf;
 
+	UpdateWindowWithNewRange();
+	UpdateProjectionMatrix();
+}
+
+void CameraComponent::UpdateWindowWithNewRange()
+{
 	m_NearWindowHeight = 2.0f * m_NearZ * tanf(0.5f * m_FovY);
 	m_FarWindowHeight = 2.0f * m_FarZ * tanf(0.5f * m_FovY);
-
-	XMStoreFloat4x4(&m_Proj, XMMatrixPerspectiveFovLH(XMConvertToRadians(m_FovY), m_Aspect, m_NearZ, m_FarZ));
 }
 
 void CameraComponent::LookAt(FXMVECTOR pos, FXMVECTOR target, FXMVECTOR worldUp)
@@ -197,6 +225,11 @@ XMFLOAT4X4 CameraComponent::GetProj4x4f() const
 	return m_Proj;
 }
 
+void CameraComponent::UpdateProjectionMatrix()
+{
+	XMStoreFloat4x4(&m_Proj, XMMatrixPerspectiveFovLH(XMConvertToRadians(m_FovY), m_Aspect, m_NearZ, m_FarZ));
+}
+
 void CameraComponent::UpdateViewMatrix()
 {
 	if (m_ViewDirty)
@@ -206,7 +239,7 @@ void CameraComponent::UpdateViewMatrix()
 		XMVECTOR L = XMLoadFloat3(&m_Look);
 		XMVECTOR P = XMLoadFloat3(&transform->GetPosition());
 
-		// Keep camera’s axes orthogonal to each other and of unit length.
+		// Keep cameraâ€™s axes orthogonal to each other and of unit length.
 		L = XMVector3Normalize(L);
 		U = XMVector3Normalize(XMVector3Cross(L, R));
 

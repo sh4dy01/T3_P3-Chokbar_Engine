@@ -33,6 +33,9 @@ public:
 	float GetFarWindowHeight()const;
 
 	// Set frustum.
+	void SetFOV(float fovY);
+	void SetAspect(float aspect);
+	void SetZRange(float zn, float zf);
 	void SetLens(float fovY, float aspect, float zn, float zf);
 
 	// Define camera space via LookAt parameters.
@@ -57,6 +60,11 @@ public:
 
 	// After modifying camera position/orientation, call to rebuild the view matrix.
 	void UpdateViewMatrix();
+
+private:
+
+	void UpdateWindowWithNewRange();
+	void UpdateProjectionMatrix();
 
 private:
 
