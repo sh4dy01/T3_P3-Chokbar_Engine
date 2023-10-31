@@ -17,31 +17,37 @@ namespace Chokbar {
 
 	EntityManager::~EntityManager()
 	{
+		for (auto entity : m_LivingEntities) {
+			if (entity == nullptr) continue;
+
+			delete entity;
+			entity = nullptr;
+		}
 	}
 
-	InstanceID EntityManager::CreateEntity(GameObject* go)
+	InstanceID EntityManager::CreateEntityWithTransform(GameObject* go)
 	{
 		assert(m_LivingEntityCount < MAX_ENTITIES && "Entities limit exceeded");
 
 		InstanceID id = m_AvailableEntities.front();
 		m_AvailableEntities.pop();
-		m_LivingEntities.push_back(go);
+
+		m_LivingEntities[id] = go;
 
 		++m_LivingEntityCount;
 
 		return id;
 	}
 
-	void EntityManager::DestroyEntity(InstanceID entity, GameObject* go)
+	void EntityManager::DestroyEntity(InstanceID entity)
 	{
 		assert(entity < MAX_ENTITIES && "InstanceID id is out of range");
 
+		delete m_LivingEntities[entity];
+		m_LivingEntities[entity] = nullptr;
+
 		m_AllSignatures[entity].reset();	// Reset the signature == reset the entity
 		m_AvailableEntities.push(entity);	// entity's id now available
-		m_LivingEntities.erase(std::remove(m_LivingEntities.begin(), m_LivingEntities.end(), go), m_LivingEntities.end());
-
-		delete go;
-		go = nullptr;
 
 		--m_LivingEntityCount;
 	}

@@ -56,31 +56,34 @@ namespace Chokbar {
 
 
 	InstanceID Coordinator::CreateNewGameObjectWithTransform(GameObject* go)
-	{
-		const InstanceID newId = m_EntityManager->CreateEntity(go);
-		m_ComponentManager->AddComponent<Transform>(newId, new Transform());
+	{		
+		go->AddComponent<Transform>();
 
-		return newId;
+		InstanceID newGoId = m_EntityManager->CreateEntityWithTransform(go);
+
+		return newGoId;
 	}
 
-	InstanceID Coordinator::CreateNewGameObjectWithTransform(GameObject* go, Transform* transform)
+	/*
+	InstanceID Coordinator::CreateNewGameObjectWithTransform(Transform* transform)
 	{
-		const InstanceID newId = m_EntityManager->CreateEntity(go);
+		const auto newGo = m_EntityManager->CreateEntity();
 		Transform* copiedTransform = transform;
 
 		m_ComponentManager->AddComponent<Transform>(newId, copiedTransform);
 
-		return newId;
+		return newGo;
 	}
+	*/
 
 	void Coordinator::UpdateSystems(float dt)
 	{
 		m_SystemManager->UpdateAllSystems(dt);
 	}
 
-	void Coordinator::DestroyEntity(InstanceID entity, GameObject* go)
+	void Coordinator::DestroyEntity(InstanceID entity)
 	{
-		m_EntityManager->DestroyEntity(entity, go);
+		m_EntityManager->DestroyEntity(entity);
 		m_SystemManager->EntityDestroyed(entity);
 		m_ComponentManager->EntityDestroyed(entity);
 	}

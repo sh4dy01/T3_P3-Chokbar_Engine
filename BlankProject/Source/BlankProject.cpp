@@ -60,7 +60,7 @@ void Application::Initialize()
 	test2->transform->SetPosition(0, 0, -2);*/
 
 
-	auto* test3 = new GameObject("f");
+	auto* test3 = Object::Instantiate(*test2);
 	auto* mr3 = new MeshRenderer(MeshType::PYRAMID, MaterialType::SIMPLE);
 	test3->AddComponent<MeshRenderer>(mr3);
 	test3->transform->SetScale(6, 6, 6);

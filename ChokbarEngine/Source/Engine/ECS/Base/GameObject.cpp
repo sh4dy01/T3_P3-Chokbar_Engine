@@ -3,17 +3,28 @@
 
 
 Chokbar::GameObject::GameObject()
+	: transform(nullptr)
 {
-	transform = Engine::GetCoordinator()->GetComponent<Transform>(m_InstanceID);
+	m_InstanceID = Chokbar::Engine::GetInstance()->GetCoordinator()->CreateNewGameObjectWithTransform(this);
 }
 
 Chokbar::GameObject::GameObject(const std::string& name)
-	: Object(name)
+	: Object(name), transform(nullptr)
 {
-	transform = Engine::GetCoordinator()->GetComponent<Transform>(m_InstanceID);
+	m_InstanceID = Chokbar::Engine::GetInstance()->GetCoordinator()->CreateNewGameObjectWithTransform(this);
 }
 
 
 Chokbar::GameObject::~GameObject()
 = default;
+
+Chokbar::GameObject* Chokbar::GameObject::Instantiate(GameObject original)
+{
+	return new GameObject(original);
+}
+
+Chokbar::GameObject* Chokbar::GameObject::Instantiate(const GameObject& original, DirectX::XMFLOAT3 position, DirectX::XMFLOAT3 rotation, Transform parent)
+{
+	return nullptr;
+}
 
