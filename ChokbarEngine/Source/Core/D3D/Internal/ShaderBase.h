@@ -35,7 +35,7 @@ public:
 protected:
 	struct ObjConstants
 	{
-		DirectX::XMFLOAT4X4* World;
+		DirectX::XMFLOAT4X4 World;
 	};
 
 	struct PassConstants

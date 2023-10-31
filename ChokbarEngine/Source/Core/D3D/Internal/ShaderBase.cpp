@@ -109,7 +109,7 @@ void ShaderBase::UpdateObjectCB(DirectX::XMFLOAT4X4* itemWorldMatrix, UINT cbInd
 		AddObjectCB();
 
 	ObjConstants objConstants;
-	objConstants.World = itemWorldMatrix;
+	objConstants.World = *itemWorldMatrix;
 	m_objectCBs[cbIndex]->CopyData(0, &objConstants);
 }
 
