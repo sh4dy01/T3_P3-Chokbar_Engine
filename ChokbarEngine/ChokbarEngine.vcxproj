@@ -133,6 +133,7 @@
     <ClCompile Include="Source\Engine\GameTimer.cpp" />
     <ClCompile Include="Source\Engine\IResourceObject.cpp" />
     <ClCompile Include="Source\Engine\Managers\CameraManager.cpp" />
+    <ClCompile Include="Source\Engine\Managers\GameObjectsManager.cpp" />
     <ClCompile Include="Source\Engine\Managers\InputHandler.cpp" />
     <ClCompile Include="Source\Engine\Resource.cpp" />
     <ClCompile Include="Source\GameObjects\Camera.cpp" />
@@ -169,6 +170,7 @@
     <ClInclude Include="Source\Engine\Collision\TriangleCollision.h" />
     <ClInclude Include="Source\Engine\ECS\Components\CameraComponent.h" />
     <ClInclude Include="Source\Engine\Managers\CameraManager.h" />
+    <ClInclude Include="Source\Engine\Managers\GameObjectsManager.h" />
     <ClInclude Include="Source\Engine\Managers\InputHandler.h" />
     <ClInclude Include="Source\Engine\ECS\Systems\PlayerSystem.h" />
     <ClInclude Include="Source\Engine\SphereCollision.h" />
