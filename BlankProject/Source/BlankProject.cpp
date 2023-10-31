@@ -1,6 +1,5 @@
 #include "BlankProject.h"
 
-#include "Engine/Engine.h"
 #include "Platform/Windows/WinEntry.h"
 #include "Engine/ECS/Base/GameObject.h"
 #include "Engine/ECS/Components/MeshRenderer.h"
@@ -9,15 +8,14 @@
 
 using namespace Chokbar;
 
-class Application : public Win32::IApplication {
+class Application : public Win32::IApplication
+{
 
 public:
-
 	Application() {}
 	~Application() {}
 
 public:
-
 	void SetupPerGameSettings() override;
 
 	/* Initialize the application */
@@ -33,7 +31,6 @@ public:
 	void Shutdown() override;
 };
 
-
 ENTRYAPP(Application);
 
 void Application::SetupPerGameSettings()
@@ -45,37 +42,42 @@ void Application::SetupPerGameSettings()
 
 void Application::PreInitialize()
 {
-	Engine::GetInstance().Initialize();
+	Engine::GetInstance()->Initialize();
 }
 
 void Application::Initialize()
 {
-	auto test = new GameObject("player");
-	auto player = new GameObject("test");
-	auto rbA = new RigidBody();
-	auto rbB = new RigidBody();
-	
-	test->AddComponent<RigidBody>(rbA);
-	player->AddComponent<RigidBody>(rbB);
+	auto *test = new GameObject("f");
+	auto *mr = new MeshRenderer(MeshType::PYRAMID, MaterialType::SIMPLE);
+	test->AddComponent<MeshRenderer>(mr);
+	test->transform->SetPosition(0, 0, 0);
 
-	auto sphereA = new Sphere(XMFLOAT3(0, 0, 0), 2);
-	auto sphereB = new Sphere(XMFLOAT3(0, 0, 0), 2);
-	test->AddComponent<Sphere>(sphereA);
-	player->AddComponent<Sphere>(sphereB);
+	auto *test2 = new GameObject("f");
+	auto *mr2 = new MeshRenderer(MeshType::PYRAMID, MaterialType::SIMPLE);
+	test2->AddComponent<MeshRenderer>(mr2);
+	test2->transform->SetPosition(0, 0, -2);
+
+	auto *test3 = new GameObject("f");
+	auto *mr3 = new MeshRenderer(MeshType::PYRAMID, MaterialType::SIMPLE);
+	test3->AddComponent<MeshRenderer>(mr3);
+	test2->transform->SetPosition(-2, 1, -2);
+	test3->transform->SetScale(6, 6, 6);
+
+	// GameObject player = GameObject("player");
+	// player.AddComponent<PlayerComponent>();
 }
 
 void Application::Run()
 {
-	Engine::GetInstance().Run();
+	Engine::GetInstance()->Run();
 }
 
 void Application::Update(const float dt)
 
 {
-	
 }
 
 void Application::Shutdown()
 {
-	Engine::GetInstance().Shutdown();
+	Engine::GetInstance()->Shutdown();
 }

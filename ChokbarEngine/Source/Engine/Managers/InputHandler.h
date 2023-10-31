@@ -4,7 +4,7 @@
 #include <algorithm>
 
 
-class InputHandler
+static class InputHandler
 {
 public:
 	enum class KeyState
@@ -21,15 +21,15 @@ public:
 	void Init(HWND windowHandle);
 	void Update(float dt);
 
-	bool IsKeyDown(char key) const;
-	bool IsKeyUp(char key) const;
-	bool IsKeyHeld(char key) const;
+	static bool IsKeyDown(char key);
+	static bool IsKeyUp(char key);
+	static bool IsKeyHeld(char key);
 
-	float GetMouseX() const;
-	float GetMouseY() const;
+	static float GetMouseX();
+	static float GetMouseY();
 
-	float GetAxisX() const;
-	float GetAxisY() const;
+	static float GetAxisX();
+	static float GetAxisY();
 
 private:
 
@@ -38,12 +38,12 @@ private:
 
 private:
 
-	std::vector<char> m_KeyboardInput = { 'Z', 'Q', 'S', 'D', VK_LBUTTON, VK_RBUTTON };
-	std::vector<KeyState> m_KeyStates;
+	static std::vector<char> m_KeyboardInput;
+	static std::vector<KeyState> m_KeyStates;
 
-	POINT m_lastPos;
-	float m_deltaPosX;
-	float m_deltaPosY;
+	static POINT m_lastPos;
+	static float m_deltaPosX;
+	static float m_deltaPosY;
 
 	const int SENSIBILITY = 100;
 

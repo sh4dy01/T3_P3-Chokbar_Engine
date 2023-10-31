@@ -1,29 +1,51 @@
 #include "Chokbar.h"
+
+#include "Resource.h"
+
 #include "Engine.h"
+
+#include "GameObjects/Camera.h"
+
+#include <numbers>
 
 namespace Chokbar
 {
+	Engine *Engine::m_Instance = nullptr;
+
 	Engine::Engine() = default;
 
-	Engine::~Engine() = default;
-
-	Engine &Engine::GetInstance()
+	Engine::~Engine()
 	{
-		static Engine engine;
-		return engine;
+		delete m_Instance;
+		m_Instance = nullptr;
+	};
+
+	Engine *Engine::GetInstance()
+	{
+		if (m_Instance == nullptr)
+		{
+			m_Instance = new Engine();
+		}
+
+		return m_Instance;
 	}
 
-	Coordinator &Engine::GetCoordinator()
+	Coordinator *Engine::GetCoordinator()
 	{
-		return GetInstance().m_Coordinator;
+		return &GetInstance()->m_Coordinator;
 	}
 
-	InputHandler& Engine::GetInput()
+	InputHandler *Engine::GetInput()
 	{
-		return GetInstance().m_InputHandler;
+		return &GetInstance()->m_InputHandler;
 	}
 
-	PhysicsWorld& Engine::GetPhysicsWorld()
+	Camera *Engine::GetMainCamera()
+	{
+		return GetInstance()->m_CameraManager.GetMainCamera();
+	}
+
+	PhysicsWorld &Engine::GetPhysicsWorld()
 	{
 		return GetInstance().m_PhysicsWorld;
 	}
@@ -49,11 +71,12 @@ namespace Chokbar
 		PreInitialize();
 
 		m_Coordinator.Init();
+		m_CameraManager.SetMainCamera(new Camera());
 
 		m_Window.CreateNewWindow(DEFAULT_WIDTH, DEFAULT_HEIGHT, PerGameSettings::GameName(), PerGameSettings::MainIcon(), Win32::RESIZABLE);
 		m_InputHandler.Init(m_Window.GetHandle());
-		OnResize();
 
+		OnResize();
 
 		D3DApp::GetInstance()->InitializeD3D12(&m_Window);
 	}
@@ -84,8 +107,7 @@ namespace Chokbar
 
 	void Engine::Update(float dt)
 	{
-		m_Coordinator.UpdateSystems();
-
+		m_Coordinator.UpdateSystems(dt);
 		m_InputHandler.Update(dt);
 		m_PhysicsWorld.Update();
 
@@ -129,8 +151,8 @@ namespace Chokbar
 			timeElapsed += 1.0f;
 		}
 
-		std::wstring x = std::to_wstring(m_InputHandler.GetMouseX());
-		std::wstring y = std::to_wstring(m_InputHandler.GetMouseY());
+		std::wstring x = std::to_wstring(InputHandler::GetAxisX());
+		std::wstring y = std::to_wstring(InputHandler::GetAxisY());
 
 		windowText += L"    MouseX: " + x + L"   MouseY: " + y;
 
@@ -140,6 +162,8 @@ namespace Chokbar
 	void Engine::OnResize()
 	{
 		D3DApp::GetInstance()->OnResize(m_Window.GetWidth(), m_Window.GetHeight());
+
+		m_CameraManager.GetMainCamera()->GetCameraComponent()->SetLens(70, GetAspectRatio(), 0.5f, 1000.0f);
 	}
 
 	void Engine::Shutdown()

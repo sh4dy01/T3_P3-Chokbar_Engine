@@ -1,16 +1,29 @@
 #pragma once
+#include <stack>
 
 #include "UploadBuffer.h"
-#include "MeshGeometry.h"
+#include "Core/D3D/Internal/D3DMesh.h"
+
+struct Texture;
 
 enum VertexType { POS, POS_COLOR, POS_TEX, POS_NORM_TEX, POS_NORM_TEX_TAN };
 
 struct ShaderDrawArguments
 {
-	ShaderDrawArguments(ID3D12GraphicsCommandList* cmdList, UINT renderItemCBIndex, MeshGeometry* renderItemGeometry) : CmdList(cmdList), RenderItemCBIndex(renderItemCBIndex), RenderItemGeometry(renderItemGeometry) { }
+	ShaderDrawArguments() : RenderItemCBIndex(-1), IndexCount(0), StartIndexLocation(0), BaseVertexLocation(0)
+	{
+		CmdList = nullptr;
+		RenderItemGeometry = nullptr;
+		Text = nullptr;
+	}
+
 	ID3D12GraphicsCommandList* CmdList;
 	UINT RenderItemCBIndex;
-	MeshGeometry* RenderItemGeometry;
+	D3DMesh* RenderItemGeometry;
+	UINT IndexCount;
+	UINT StartIndexLocation;
+	UINT BaseVertexLocation;
+	Texture* Text;
 };
 
 class ShaderBase
@@ -20,19 +33,18 @@ public:
 	virtual ~ShaderBase();
 
 protected:
-
 	struct ObjConstants
 	{
-		DirectX::XMFLOAT4X4 World = Identity4x4();
+		DirectX::XMFLOAT4X4 World;
 	};
 
 	struct PassConstants
 	{
-		DirectX::XMFLOAT4X4 View = Identity4x4();
+		DirectX::XMFLOAT4X4 View;
 		// DirectX::XMFLOAT4X4 InvView = Identity4x4();
-		DirectX::XMFLOAT4X4 Proj = Identity4x4();
+		DirectX::XMFLOAT4X4 Proj;
 		// DirectX::XMFLOAT4X4 InvProj = Identity4x4();
-		DirectX::XMFLOAT4X4 ViewProj = Identity4x4();
+		DirectX::XMFLOAT4X4 ViewProj;
 		// DirectX::XMFLOAT4X4 InvViewProj = Identity4x4();
 
 		DirectX::XMFLOAT3 EyePosW = { 0.0f, 0.0f, 0.0f };
@@ -51,14 +63,15 @@ protected:
 	/* Upload buffers are used to give the GPU information at runtime with the CPU.
 	Those buffers uses the GPU Upload Heap that allows the CPU to upload data to the GPU at runtime.
 
-	The Main Object Constant Buffer stocks every constant buffer. Each constant buffer is associated to an unique RenderItem
-	To find the associated RenderItem, you can use the index of the used object constant buffer
+	m_objectCBs stores every constant buffer. Each constant buffer is associated to an unique MeshRenderer
 	NOTE : The object constant buffer is associated to the b0 cbuffer in the shader (only true in our project) */
 	std::vector<UploadBuffer<ObjConstants>*> m_objectCBs;
-	/* The Main Pass Constant Buffer stores every information the shader might need about our camera
+	std::stack<UINT> m_freeIndices; 
+	/* m_passCB stores every information the shader might need about our camera
 	NOTE : The main pass constant buffer is associated to the b1 cbuffer in the shader (only true in our project) */
 	UploadBuffer<PassConstants>* m_passCB;
-	/* This struct helps the GPU identifying how our Vertex class is composed */
+	/* This struct helps the GPU identifying how our Vertex class is composed
+	This information will be used by the shader as the VertexIn struct*/
 	std::vector<D3D12_INPUT_ELEMENT_DESC> m_inputLayout;
 
 	/* D3D12RootSignature : Defines where the resources bound to the rendering pipeline can be found by the shader
@@ -78,7 +91,7 @@ protected:
 	ID3D12DescriptorHeap* m_generalCBVHeap;
 	UINT m_cbvDescriptorSize;
 
-	Camera* m_generalCamera;
+	CameraComponent* m_MainCamera;
 
 public:
 	virtual void Init() = 0;
@@ -88,10 +101,14 @@ public:
 	virtual void Draw(ShaderDrawArguments& args) = 0;
 	virtual void EndDraw(ID3D12GraphicsCommandList* cmdList) = 0;
 
+	UINT GetCreatedIndex() { return (UINT)m_objectCBs.size() - 1; }
 	UINT GetLastIndex() { return (UINT)m_objectCBs.size(); }
+
+	void UnBind(UINT index);
 	ShaderBase* Bind();
-	virtual void AddObjectCB() = 0;
-	virtual void UpdateObjectCB(DirectX::XMFLOAT4X4& itemWorldMatrix, UINT cbIndex) = 0;
+
+	virtual void AddObjectCB();
+	virtual void UpdateObjectCB(DirectX::XMFLOAT4X4* itemWorldMatrix, UINT cbIndex);
 
 	void CreatePassCB();
 	void UpdatePassCB(const float dt, const float totalTime);
@@ -111,8 +128,19 @@ public:
 	void Init() override;
 	void CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT& rtvFormat, DXGI_FORMAT& dsvFormat) override;
 
-	void AddObjectCB() override;
-	void UpdateObjectCB(DirectX::XMFLOAT4X4& itemWorldMatrix, UINT cbIndex) override;
+	void BeginDraw(ID3D12GraphicsCommandList* cmdList) override;
+	void Draw(ShaderDrawArguments& args) override;
+	void EndDraw(ID3D12GraphicsCommandList* cmdList) override;
+};
+
+class ShaderTexture : public ShaderBase
+{
+public:
+	ShaderTexture(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, UINT cbvDescriptorSize, std::wstring& filepath);
+	~ShaderTexture();
+
+	void Init() override;
+	void CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT& rtvFormat, DXGI_FORMAT& dsvFormat) override;
 
 	void BeginDraw(ID3D12GraphicsCommandList* cmdList) override;
 	void Draw(ShaderDrawArguments& args) override;

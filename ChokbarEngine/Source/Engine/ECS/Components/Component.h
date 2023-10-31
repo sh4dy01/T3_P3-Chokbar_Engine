@@ -1,17 +1,18 @@
 #pragma once
+#include "Engine/ECS/Base/GameObject.h"
 
+class Transform;
 
-namespace Chokbar
+class Component
 {
-	class Transform;
-	class GameObject;
+public:
+	Chokbar::GameObject *gameObject;
+	Transform *transform;
+	virtual void OnAddedComponent(){};
 
-	class Component
-	{
-	public:
-		virtual void OnAddedComponent() {};
+	void SetEnabled(bool enabled) { m_isEnabled = enabled; }
+	bool IsEnabled() const { return m_isEnabled; }
 
-		GameObject* gameObject;
-		Transform* transform;
-	};
-}
+private:
+	bool m_isEnabled = false;
+};

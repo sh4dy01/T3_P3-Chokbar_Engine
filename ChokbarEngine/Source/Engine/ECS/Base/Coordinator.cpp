@@ -1,13 +1,14 @@
 #include "Chokbar.h"
 #include "Coordinator.h"
 
-#include "Engine/ECS/Components/MeshRenderer.h"
+#include "Core/D3D/Internal/MeshRenderer.h"
 #include "Engine/ECS/Components/PlayerComponent.h"
 #include "Engine/ECS/Components/Collision/CollisionShape.h"
 #include "Engine/ECS/Components/Collision/RigidBody.h"
+#include "Engine/ECS/Systems/PlayerSystem.h"
 
-
-namespace Chokbar {
+namespace Chokbar
+{
 
 	Coordinator::Coordinator()
 		: m_ComponentManager(nullptr), m_EntityManager(nullptr), m_SystemManager(nullptr)
@@ -34,25 +35,26 @@ namespace Chokbar {
 
 	void Coordinator::RegisterComponents()
 	{
-		//TODO: Automatize this
+		// TODO: Automatize this
 
 		RegisterComponent<Transform>();
 		RegisterComponent<MeshRenderer>();
 		RegisterComponent<PlayerComponent>();
 		RegisterComponent<RigidBody>();
 		RegisterComponent<Sphere>();
+		RegisterComponent<CameraComponent>();
 	}
 
 	void Coordinator::RegisterSystems()
 	{
-		//TODO: Automatize this
-		RegisterSystem<TransformSystem>();
+		// TODO: Automatize this
+		RegisterSystem<PlayerSystem>();
 		{
 			Signature signature;
 			signature.set(GetComponentType<Transform>());
+			signature.set(GetComponentType<PlayerComponent>());
 		}
 	}
-
 
 	InstanceID Coordinator::CreateNewGameObjectWithTransform()
 	{
@@ -62,10 +64,10 @@ namespace Chokbar {
 		return newId;
 	}
 
-	InstanceID Coordinator::CreateNewGameObjectWithTransform(Transform* transform)
+	InstanceID Coordinator::CreateNewGameObjectWithTransform(Transform *transform)
 	{
 		const InstanceID newId = m_EntityManager->CreateEntity();
-		Transform* copiedTransform = new Transform;
+		Transform *copiedTransform = new Transform;
 		copiedTransform = transform;
 
 		m_ComponentManager->AddComponent<Transform>(newId, copiedTransform);
@@ -73,9 +75,9 @@ namespace Chokbar {
 		return newId;
 	}
 
-	void Coordinator::UpdateSystems()
+	void Coordinator::UpdateSystems(float dt)
 	{
-		m_SystemManager->UpdateAllSystems();
+		m_SystemManager->UpdateAllSystems(dt);
 	}
 
 	void Coordinator::DestroyEntity(InstanceID entity)

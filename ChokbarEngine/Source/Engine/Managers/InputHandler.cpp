@@ -2,9 +2,20 @@
 #include "InputHandler.h"
 
 
+POINT InputHandler::m_lastPos = { 0, 0 };
+
+float InputHandler::m_deltaPosX = 0.0f;
+float InputHandler::m_deltaPosY = 0.0f;
+
+std::vector<char> InputHandler::m_KeyboardInput = { 'Z', 'Q', 'S', 'D', VK_LBUTTON, VK_RBUTTON };
+std::vector<InputHandler::KeyState> InputHandler::m_KeyStates = {};
+
+
 InputHandler::InputHandler()
+	: m_WindowHandle(nullptr), m_timer(0.0f), m_mouseRefresh(0.1f)
 {
 	m_KeyStates.reserve(m_KeyboardInput.size());
+
 	for (size_t i = 0; i < m_KeyboardInput.size(); ++i)
 	{
 		m_KeyStates.push_back(KeyState::None);
@@ -50,12 +61,10 @@ void InputHandler::CheckInput()
 			if (m_KeyStates[i] == KeyState::None || m_KeyStates[i] == KeyState::Up)
 			{
 				m_KeyStates[i] = KeyState::Down;
-				OutputDebugStringW(L"Key Pressed Down \n");
 			}
 			else
 			{
 				m_KeyStates[i] = KeyState::Held;
-				OutputDebugStringW(L"Key Pressed Held \n");
 			}
 		}
 		else
@@ -63,7 +72,6 @@ void InputHandler::CheckInput()
 			if (m_KeyStates[i] == KeyState::Held || m_KeyStates[i] == KeyState::Down)
 			{
 				m_KeyStates[i] = KeyState::Up;
-				OutputDebugStringW(L"Key Pressed Up \n");
 			}
 			else
 			{
@@ -78,11 +86,12 @@ void InputHandler::CheckInput()
 /// </summary>
 /// <param name="key">The key to check.</param>
 /// <returns>True if the key is pressed down, otherwise false.</returns>
-bool InputHandler::IsKeyDown(char key) const
+bool InputHandler::IsKeyDown(char key)
 {
+	// [TODO] - Replace char key by an enum
 	for (size_t i = 0; i < m_KeyboardInput.size(); ++i)
 	{
-		if (m_KeyboardInput[i] == key)
+		if (m_KeyboardInput[i] == toupper(key))
 		{
 			return m_KeyStates[i] == KeyState::Down;
 		}
@@ -95,11 +104,11 @@ bool InputHandler::IsKeyDown(char key) const
 /// </summary>
 /// <param name="key">The key to check.</param>
 /// <returns>True if the key is up, otherwise false.</returns>
-bool InputHandler::IsKeyUp(char key) const
+bool InputHandler::IsKeyUp(char key)
 {
 	for (size_t i = 0; i < m_KeyboardInput.size(); ++i)
 	{
-		if (m_KeyboardInput[i] == key)
+		if (m_KeyboardInput[i] == toupper(key))
 		{
 			return m_KeyStates[i] == KeyState::Up;
 		}
@@ -112,11 +121,11 @@ bool InputHandler::IsKeyUp(char key) const
 /// </summary>
 /// <param name="key">The key to check.</param>
 /// <returns>True if the key is held down, otherwise false.</returns>
-bool InputHandler::IsKeyHeld(char key) const
+bool InputHandler::IsKeyHeld(char key)
 {
 	for (size_t i = 0; i < m_KeyboardInput.size(); ++i)
 	{
-		if (m_KeyboardInput[i] == key)
+		if (m_KeyboardInput[i] == toupper(key))
 		{
 			return m_KeyStates[i] == KeyState::Held;
 		}
@@ -147,7 +156,7 @@ void InputHandler::GetNormalizedMovement()
 /// Retrieves the normalized x-coordinate of the mouse movement.
 /// </summary>
 /// <returns>Normalized x-coordinate of the mouse movement.</returns>
-float InputHandler::GetMouseX() const
+float InputHandler::GetMouseX()
 {
 	return m_lastPos.x;
 }
@@ -156,17 +165,17 @@ float InputHandler::GetMouseX() const
 /// Retrieves the normalized y-coordinate of the mouse movement.
 /// </summary>
 /// <returns>Normalized y-coordinate of the mouse movement.</returns>
-float InputHandler::GetMouseY() const
+float InputHandler::GetMouseY()
 {
 	return m_lastPos.y;
 }
 
-float InputHandler::GetAxisX() const
+float InputHandler::GetAxisX()
 {
 	return m_deltaPosX;
 }
 
-float InputHandler::GetAxisY() const
+float InputHandler::GetAxisY()
 {
 	return m_deltaPosY;
 }

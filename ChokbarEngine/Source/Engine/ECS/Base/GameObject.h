@@ -1,30 +1,33 @@
 #pragma once
+
 #include "Object.h"
-#include "Engine/Engine.h"
-#include "Engine/ECS/Components/Component.h"
+#include "Core/DebugUtils.h"
 
 namespace Chokbar
 {
+
+	class Engine;
+
 	class GameObject : public Object
 	{
 	public:
-
 		GameObject();
-		GameObject(const std::string& name);
+		GameObject(const std::string &name);
 
-		template<typename... Component>
-		GameObject(const std::string& name, Component... components)
+		template <typename... Component>
+		GameObject(const std::string &name, Component... components)
 		{
-			m_Name = name;
+			Component
+				m_Name = name;
+			transform = Engine::GetCoordinator()->GetComponent<Transform>(m_InstanceID);
 
-
-			(AddComponent<Component>(), ...);       
+			(AddComponent<Component>(), ...);
 		}
 
 		~GameObject();
 
-		template<class Component>
-		void AddComponent()
+		template <class Component>
+		Component *AddComponent()
 		{
 			auto component = new Component;
 			component->gameObject = this;
@@ -36,8 +39,8 @@ namespace Chokbar
 			Engine::GetCoordinator().AddComponent<Component>(m_InstanceID, component);
 		}
 
-		template<class Component>
-		void AddComponent(Component* component)
+		template <class Component>
+		void AddComponent(Component *component)
 		{
 			component->gameObject = this;
 			component->transform = transform;
@@ -45,26 +48,36 @@ namespace Chokbar
 
 			DEBUG_LOG("Adding component: " + std::string(typeid(Component).name()) + " to " + m_Name + " entity");
 
-			Engine::GetCoordinator().AddComponent<Component>(m_InstanceID, component);
+			Engine::GetCoordinator()->AddComponent<Component>(m_InstanceID, component);
+
+			return component;
 		}
 
-		template<class T>
-		T* GetComponent()
+		template <class Component>
+		void AddComponent(Component *component)
 		{
-			return Engine::GetCoordinator().GetComponent<T>(m_InstanceID);
+			component->gameObject = this;
+			component->transform = this->transform;
+			component->SetEnabled(true);
+
+			DEBUG_LOG("Adding component: " + std::string(typeid(Component).name()) + " to " + m_Name + " entity");
+
+			Engine::GetCoordinator()->AddComponent<Component>(m_InstanceID, component);
 		}
 
-		template<class T>
+		template <class T>
+		T *GetComponent()
+		{
+			return Engine::GetCoordinator()->GetComponent<T>(m_InstanceID);
+		}
+
+		template <class T>
 		bool HasComponent()
 		{
-			return Engine::GetCoordinator().HasComponent<T>(m_InstanceID);
+			return Engine::GetCoordinator()->HasComponent<T>(m_InstanceID);
 		}
-		
 
 	public:
-
-		Transform* transform;
+		Transform *transform;
 	};
 }
-
-

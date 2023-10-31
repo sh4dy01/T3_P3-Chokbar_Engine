@@ -5,12 +5,12 @@
 #include <crtdbg.h>
 #endif
 
-#include <Core/d3dx12.h>
+#include <Core/D3D/External/d3dx12.h>
 #include <dxgi1_6.h>
 #include <d3dcompiler.h>
 #include <WinUser.h>
 
-#include "RenderItem.h"
+#include "D3DUtils.h"
 
 #pragma region GLOBAL VARIABLES
 
@@ -18,6 +18,8 @@ static const int SWAP_CHAIN_BUFFER_COUNT = 2;
 
 #pragma endregion
 
+class MeshRenderer;
+class Texture;
 
 class D3DApp
 {
@@ -33,10 +35,17 @@ public:
 	void Update(const float dt, const float totalTime);
 	void Render();
 
+	ID3D12Device* GetDevice() const { return m_pD3dDevice; }
+	ID3D12GraphicsCommandList* GetCommandList() const { return m_pCommandList; }
+	void BeginList();
+	void EndList();
+
+	void UpdateTextureHeap(Texture* tex);
+
+
 	int m_bufferWidth;
 	int m_bufferHeight;
 
-	Camera m_camera;
 private:
 	void EnableDebugLayer();
 
@@ -50,24 +59,18 @@ private:
 
 	void CreateSwapChain(HWND windowHandle);
 
-	void RegisterInitCommands_In_CommandList();
 	void CreateRtvAndDsvDescriptorHeaps();
 	void CreateRenderTargetView();
 	void CreateDepthStencilBuffer();
 
-	void CreateGeometry();
-	void CreateShaders();
+	void CreateResources();
 
-	void CreateRenderItems();
-	void DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItem*>& renderItems);
+	void GetMeshRenderersRef();
+	void DrawRenderItems(ID3D12GraphicsCommandList* cmdList);
 	void UpdateRenderItems(const float dt, const float totalTime);
 
-	/* /!\ Be careful, this method uses the commandList component.
-	Therefore, it must be called within a command list Reset() and ExecuteCommandList() scope */
-	ID3D12Resource *CreateDefaultBuffer(const void *initData, UINT64 byteSize, ID3D12Resource *uploadBuffer);
 	D3D12_CPU_DESCRIPTOR_HANDLE CurrentBackBufferView() const;
 	D3D12_CPU_DESCRIPTOR_HANDLE DepthStencilView() const;
-	ID3DBlob *CompileShader(const std::wstring &filename, const D3D_SHADER_MACRO *defines, const std::string &entrypoint, const std::string &target);
 
 	/* Creates an ID3D12InfoQueue to catch any error within the Command Queue.
 	Any error will break the code */
@@ -114,9 +117,6 @@ private:
 	UINT m_DsvDescriptorSize;
 	UINT m_CbvSrvUavDescriptorSize;
 
-	/* This struct helps the GPU identifying how our Vertex class is composed */
-	D3D12_INPUT_ELEMENT_DESC m_inputLayout[2];
-
 	/* D3D12 SwapChain : Used to swap the back buffer */
 	IDXGISwapChain *m_pSwapChain;
 	/* Buffer used by the swap chain (contains our two buffers that will serve for the Present() method) */
@@ -130,21 +130,9 @@ private:
 	ID3D12Resource *m_pDepthStencilBuffer;
 	DXGI_FORMAT m_DepthStencilFormat;
 
-	/* All our items to be rendered in our world. They are not sorted by shader.*/
-	std::vector<RenderItem> m_AllRenderItems{};
-	/* All opaque item in our world. They might not use the same shader as well.
-	RenderItem* points to a render item in m_AllRenderItems
-	/!\ Do not create an object directly into this list, you need to create it in m_AllItem and add the reference in this list */
-	std::vector<RenderItem *> m_OpaqueRenderItems{};
-	/* All transparent item in our world. They might not use the same shader as well.
-	RenderItem* points to a render item in m_AllRenderItems
-	/!\ Do not create an object directly into this list, you need to create it in m_AllItem and add the reference in this list */
-	std::vector<RenderItem *> m_TransparentRenderItems{};
+	std::array<MeshRenderer*, MAX_ENTITIES>* m_meshRenderers;
 
-	/* Reference to our pyramid geometry. It is instanciated once and can be used by any RenderItem */
-	MeshGeometry *m_pyramidGeometry;
+	UINT m_texIndex;
 
-	ShaderBase* m_pShader;
-
-	const int m_ObjectCount = 3;
+	
 };

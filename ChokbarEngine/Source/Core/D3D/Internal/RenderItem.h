@@ -9,13 +9,14 @@ struct RenderItem
 {
 	RenderItem() = default;
 
-	Chokbar::Transform Transform;
+	Transform Transform;
 	DirectX::XMFLOAT4X4 World = Identity4x4();
 
 	UINT ObjCBIndex = -1;
 
-	MeshGeometry* Geo = nullptr;
+	D3DMesh* Geo = nullptr;
 	ShaderBase* Shader = nullptr;
+	Texture* Texture = nullptr;
 
 	D3D12_PRIMITIVE_TOPOLOGY PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 

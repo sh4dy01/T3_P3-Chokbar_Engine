@@ -2,7 +2,7 @@
 
 #include "TypeDef.h"
 #include "ComponentArray.h"
-
+#include "Core/D3D/Internal/MeshRenderer.h"
 
 namespace Chokbar {
 
@@ -49,7 +49,6 @@ namespace Chokbar {
 		void AddComponent(InstanceID entity, T* component)
 		{
 			const char* typeName = typeid(T).name();
-			DEBUG_LOG("Adding " << typeName << " to entity.");
 
 			// Add a component to the array for an entity
 			GetComponentArray<T>()->InsertData(entity, component);
@@ -70,6 +69,13 @@ namespace Chokbar {
 		}
 
 		template<class T>
+		T* GetAllComponentsOfType()
+		{
+			// Get a pointer to a list of all components of type
+			return GetComponentArray<T>();
+		}
+
+		template<class T>
 		bool HasComponent(InstanceID entity)
 		{
 			// Check if an entity has a component by checking if the component type's bit is set
@@ -79,8 +85,6 @@ namespace Chokbar {
 		// Notify each component array that an entity has been destroyed
 		// If it has a component for that entity, it will remove it
 		void EntityDestroyed(InstanceID entity);
-
-	private:
 
 		// Convenience function to get the statically casted pointer to the ComponentArray of type T.
 		template<class T>

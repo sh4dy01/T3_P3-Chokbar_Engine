@@ -3,16 +3,16 @@
 #include <set>
 #include "TypeDef.h"
 
-namespace Chokbar {
-	class System {
+class System {
 
-	public:
+public:
 
-		virtual void Update() = 0;
+	virtual void Awake() = 0;
+	virtual void Start() = 0;
+	virtual void Update(float delta) = 0;
 
-	public:
+public:
 
-		std::set<InstanceID> m_RegisteredEntities;
+	std::set<InstanceID> m_RegisteredEntities;
 
-	};
-}
+};
