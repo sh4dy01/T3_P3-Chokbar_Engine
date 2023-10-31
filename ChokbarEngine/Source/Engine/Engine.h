@@ -6,7 +6,6 @@
 #include "Engine/ECS/Base/Coordinator.h"
 #include "GameTimer.h"
 #include "Platform/Windows/Window.h"
-#include "InputHandler.h"
 #include "PhysicsWorld.h"
 #include "Engine/Managers/CameraManager.h"
 
@@ -15,14 +14,15 @@ namespace Chokbar
 
 	class Engine
 	{
+	public:
 
 		Engine();
 		~Engine();
 
-		static Engine &GetInstance();
-		static Coordinator &GetCoordinator();
-		static InputHandler &GetInput();
-		static PhysicsWorld &GetPhysicsWorld();
+		static Engine* GetInstance();
+		static Coordinator *GetCoordinator();
+		static InputHandler *GetInput();
+		static PhysicsWorld *GetPhysicsWorld();
 		static Camera *GetMainCamera();
 
 		void Initialize();

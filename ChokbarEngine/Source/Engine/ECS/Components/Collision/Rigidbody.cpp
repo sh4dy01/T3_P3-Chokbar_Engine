@@ -3,12 +3,12 @@
 
 RigidBody::RigidBody()
 {
-	Engine::GetPhysicsWorld().RegisterRigidBody(this);
+	Engine::GetPhysicsWorld()->RegisterRigidBody(this);
 }
 
 RigidBody::~RigidBody()
 {
-	Engine::GetPhysicsWorld().RemoveRigidBody(this);
+	Engine::GetPhysicsWorld()->RemoveRigidBody(this);
 
 	for (auto& shape : m_collisionShapes)
 	{

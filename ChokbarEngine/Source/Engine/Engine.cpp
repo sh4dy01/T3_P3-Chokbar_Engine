@@ -45,9 +45,9 @@ namespace Chokbar
 		return GetInstance()->m_CameraManager.GetMainCamera();
 	}
 
-	PhysicsWorld &Engine::GetPhysicsWorld()
+	PhysicsWorld* Engine::GetPhysicsWorld()
 	{
-		return GetInstance().m_PhysicsWorld;
+		return &GetInstance()->m_PhysicsWorld;
 	}
 
 #pragma region INIT

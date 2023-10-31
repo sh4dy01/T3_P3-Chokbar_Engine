@@ -2,7 +2,7 @@
 
 #include "Platform/Windows/WinEntry.h"
 #include "Engine/ECS/Base/GameObject.h"
-#include "Engine/ECS/Components/MeshRenderer.h"
+#include "Core/D3D/Internal/MeshRenderer.h"
 #include "Engine/ECS/Components/PlayerComponent.h"
 #include "Engine/ECS/Components/Collision/Rigidbody.h"
 
