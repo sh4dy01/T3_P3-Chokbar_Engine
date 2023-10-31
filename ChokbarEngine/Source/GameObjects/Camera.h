@@ -15,5 +15,6 @@ public:
 private:
 
 	CameraComponent* m_CameraComponent;
+	PlayerComponent* m_PlayerComponent;
 
 };

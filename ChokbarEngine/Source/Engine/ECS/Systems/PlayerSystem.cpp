@@ -13,29 +13,29 @@ void PlayerSystem::Start()
 {
 }
 
-void PlayerSystem::Update(float deltaTime)
+void PlayerSystem::Update(float dt)
 {
 	for (const auto entity : m_RegisteredEntities)
 	{
-		auto player = Chokbar::Engine::GetCoordinator()->GetComponent<PlayerComponent>(entity);
+		//auto player = Chokbar::Engine::GetCoordinator()->GetComponent<PlayerComponent>(entity);
 		auto transform = Chokbar::Engine::GetCoordinator()->GetComponent<Transform>(entity);
 		//camera
 
 		if (InputHandler::IsKeyHeld('z'))
 		{
-			transform->Translate(0, 0, player->Speed);
+			transform->RotatePitch(10 * dt);
 		}
 		if (InputHandler::IsKeyHeld('s'))
 		{
-			transform->Translate(0, 0, -player->Speed);
+			transform->RotatePitch(-10 * dt);
 		}
 		if (InputHandler::IsKeyHeld('q'))
 		{
-			transform->Translate(player->Speed, 0, 0);
+			transform->RotateYaw(-10 * dt);
 		}
 		if (InputHandler::IsKeyHeld('d'))
 		{
-			transform->Translate(-player->Speed, 0, 0);
+			transform->RotateYaw(10 * dt);
 		}
 	}
 }

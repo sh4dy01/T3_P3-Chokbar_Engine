@@ -145,8 +145,8 @@ namespace Chokbar
 			timeElapsed += 1.0f;
 		}
 
-		std::wstring x = std::to_wstring(m_InputHandler.GetMouseX());
-		std::wstring y = std::to_wstring(m_InputHandler.GetMouseY());
+		std::wstring x = std::to_wstring(InputHandler::GetAxisX());
+		std::wstring y = std::to_wstring(InputHandler::GetAxisY());
 
 		windowText += L"    MouseX: " + x + L"   MouseY: " + y;
 
@@ -157,7 +157,7 @@ namespace Chokbar
 	{
 		D3DApp::GetInstance()->OnResize(m_Window.GetWidth(), m_Window.GetHeight());
 
-		m_CameraManager.GetMainCamera()->GetCameraComponent()->SetLens(0.25f * std::numbers::pi, GetAspectRatio(), 0.5f, 1000.0f);
+		m_CameraManager.GetMainCamera()->GetCameraComponent()->SetLens(70, GetAspectRatio(), 0.5f, 1000.0f);
 	}
 
 

@@ -127,8 +127,9 @@ void ShaderBase::CreatePassCB()
 
 void ShaderBase::UpdatePassCB(const float dt, const float totalTime)
 {
-	const XMMATRIX camView = m_MainCamera->GetCameraComponent()->GetView();
-	const XMMATRIX camProj = m_MainCamera->GetCameraComponent()->GetProj();
+	CameraComponent* cam = m_MainCamera->GetCameraComponent();
+	const XMMATRIX camView = cam->GetView();
+	const XMMATRIX camProj = cam->GetProj();
 
 	XMMATRIX viewProj = XMMatrixMultiply(camView, camProj);
 	// XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(camView), camView);

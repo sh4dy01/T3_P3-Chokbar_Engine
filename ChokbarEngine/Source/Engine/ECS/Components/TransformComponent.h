@@ -32,11 +32,12 @@ public:
 	void SetScale(DirectX::XMFLOAT3 scale);
 
 	DirectX::XMFLOAT3 GetPosition() {return m_Position;}
-	DirectX::XMFLOAT3 GetScale() {return m_Scale;}
+	DirectX::XMFLOAT3 GetScale() const { return m_Scale; }
+	DirectX::XMFLOAT4 GetQuaternion() const { return m_RotationQuaternion; }
 
 	DirectX::XMFLOAT4X4* GetWorldMatrix() { return &m_WorldMatrix ;}
 
-	bool IsDirty() {return m_Dirty;}
+	bool IsDirty() const { return m_Dirty; }
 
 	void UpdateWorldMatrix();
 

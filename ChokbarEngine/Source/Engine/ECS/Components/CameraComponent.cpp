@@ -7,7 +7,7 @@ using namespace DirectX;
 
 CameraComponent::CameraComponent()
 {
-	SetLens(0.25f * std::numbers::pi, 1.0f, 1.0f, 1000.0f);
+	SetLens(70.0F, 1.0f, 1.0f, 1000.0f);
 }
 
 CameraComponent::~CameraComponent()
@@ -123,8 +123,7 @@ void CameraComponent::SetLens(float fovY, float aspect, float zn, float zf)
 	m_NearWindowHeight = 2.0f * m_NearZ * tanf(0.5f * m_FovY);
 	m_FarWindowHeight = 2.0f * m_FarZ * tanf(0.5f * m_FovY);
 
-	XMMATRIX P = DirectX::XMMatrixPerspectiveFovLH(m_FovY, m_Aspect, m_NearZ, m_FarZ);
-	XMStoreFloat4x4(&m_Proj, P);
+	XMStoreFloat4x4(&m_Proj, XMMatrixPerspectiveFovLH(XMConvertToRadians(m_FovY), m_Aspect, m_NearZ, m_FarZ));
 }
 
 void CameraComponent::LookAt(FXMVECTOR pos, FXMVECTOR target, FXMVECTOR worldUp)
@@ -227,7 +226,7 @@ void CameraComponent::UpdateViewMatrix()
 		XMVECTOR R = XMLoadFloat3(&m_Right);
 		XMVECTOR U = XMLoadFloat3(&m_Up);
 		XMVECTOR L = XMLoadFloat3(&m_Look);
-		XMVECTOR P = XMLoadFloat3(&transform->GetPosition());
+		XMVECTOR P = XMLoadFloat3(&m_Position);
 
 		// Keep camera’s axes orthogonal to each other and of unit length.
 		L = XMVector3Normalize(L);
