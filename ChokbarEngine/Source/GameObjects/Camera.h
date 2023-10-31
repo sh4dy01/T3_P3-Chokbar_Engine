@@ -1,6 +1,6 @@
 #pragma once
-#include "Engine/ECS/Components/CameraComponent.h"
 #include "Engine/ECS/Base/GameObject.h"
+#include "Engine/ECS/Components/CameraComponent.h"
 
 
 class Camera : public Chokbar::GameObject

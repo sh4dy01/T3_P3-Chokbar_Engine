@@ -2,12 +2,6 @@
 
 #include "Core/Core.h"
 
-#include "Engine/Managers/InputHandler.h"
-#include "Engine/ECS/Base/Coordinator.h"
-#include "GameTimer.h"
-#include "Platform/Windows/Window.h"
-#include "Engine/Managers/CameraManager.h"
-
 
 namespace Chokbar {
 
