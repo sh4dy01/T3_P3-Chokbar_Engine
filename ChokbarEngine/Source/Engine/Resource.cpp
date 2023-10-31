@@ -5,13 +5,18 @@
 
 #include "Resource.h"
 
-std::unordered_map<std::string, ShaderBase*> Resource::m_shaders;
-std::unordered_map<std::string, Material*> Resource::m_materials;
+std::unordered_map<MaterialType, ShaderBase*> Resource::m_shaders;
+std::unordered_map<MaterialType, Material*> Resource::m_materials;
 
 Resource::~Resource()
 {
 	m_shaders.clear();
 	m_materials.clear();
+}
+
+Material* Resource::LoadMaterial(MaterialType matType)
+{
+	return m_materials[matType];
 }
 
 void Resource::CreateResources(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, UINT cbvSrvDescriptorSize)
@@ -20,9 +25,9 @@ void Resource::CreateResources(ID3D12Device* device, ID3D12DescriptorHeap* cbvHe
 	CreateMaterials();
 }
 
-ShaderBase* Resource::FindShader(std::string& shaderName)
+ShaderBase* Resource::FindShader(MaterialType& id)
 {
-	auto iter = m_shaders.find(shaderName);
+	auto iter = m_shaders.find(id);
 	if (iter != m_shaders.end())
 	{
 		return iter->second;
@@ -36,21 +41,21 @@ ShaderBase* Resource::FindShader(std::string& shaderName)
 void Resource::CreateShaders(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, UINT cbvSrvDescriptorSize)
 {
 	std::wstring shaderPathSimple = L"Shader/Simple.hlsl";
-	m_shaders[SHADER_SIMPLE] = new ShaderSimple(device, cbvHeap, cbvSrvDescriptorSize, shaderPathSimple);
-	m_shaders[SHADER_SIMPLE]->Init();
-	
+	m_shaders[MaterialType::SIMPLE] = new ShaderSimple(device, cbvHeap, cbvSrvDescriptorSize, shaderPathSimple);
+	m_shaders[MaterialType::SIMPLE]->Init();
+
 	std::wstring shaderPathTex = L"Shader/Texture.hlsl";
-	m_shaders[SHADER_TEXTURE] = new ShaderTexture(device, cbvHeap, cbvSrvDescriptorSize, shaderPathTex);
-	m_shaders[SHADER_TEXTURE]->Init();
+	m_shaders[MaterialType::TEXTURE] = new ShaderTexture(device, cbvHeap, cbvSrvDescriptorSize, shaderPathTex);
+	m_shaders[MaterialType::TEXTURE]->Init();
 
 	CreateMaterials();
 }
 
 void Resource::CreateMaterials()
 {
-	m_materials[SHADER_SIMPLE] = new Material();
-	m_materials[SHADER_SIMPLE]->SetShader(m_shaders[SHADER_SIMPLE]);
+	m_materials[MaterialType::SIMPLE] = new Material();
+	m_materials[MaterialType::SIMPLE]->SetShader(m_shaders[MaterialType::SIMPLE]);
 
-	m_materials[SHADER_TEXTURE] = new Material();
-	m_materials[SHADER_TEXTURE]->SetShader(m_shaders[SHADER_TEXTURE]);
+	m_materials[MaterialType::TEXTURE] = new Material();
+	m_materials[MaterialType::TEXTURE]->SetShader(m_shaders[MaterialType::TEXTURE]);
 }

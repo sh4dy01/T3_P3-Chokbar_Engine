@@ -56,15 +56,15 @@ namespace Chokbar {
 	InstanceID Coordinator::CreateNewGameObjectWithTransform()
 	{
 		const InstanceID newId = m_EntityManager->CreateEntity();
-		m_ComponentManager->AddComponent<Transform>(newId, Transform());
+		m_ComponentManager->AddComponent<Transform>(newId, new Transform());
 
 		return newId;
 	}
 
-	InstanceID Coordinator::CreateNewGameObjectWithTransform(const Transform& transform)
+	InstanceID Coordinator::CreateNewGameObjectWithTransform(Transform* transform)
 	{
 		const InstanceID newId = m_EntityManager->CreateEntity();
-		const Transform copiedTransform = transform;
+		Transform* copiedTransform = transform;
 
 		m_ComponentManager->AddComponent<Transform>(newId, copiedTransform);
 

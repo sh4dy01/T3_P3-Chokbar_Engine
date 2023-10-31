@@ -61,12 +61,10 @@ void InputHandler::CheckInput()
 			if (m_KeyStates[i] == KeyState::None || m_KeyStates[i] == KeyState::Up)
 			{
 				m_KeyStates[i] = KeyState::Down;
-				OutputDebugStringW(L"Key Pressed Down \n");
 			}
 			else
 			{
 				m_KeyStates[i] = KeyState::Held;
-				OutputDebugStringW(L"Key Pressed Held \n");
 			}
 		}
 		else
@@ -74,7 +72,6 @@ void InputHandler::CheckInput()
 			if (m_KeyStates[i] == KeyState::Held || m_KeyStates[i] == KeyState::Down)
 			{
 				m_KeyStates[i] = KeyState::Up;
-				OutputDebugStringW(L"Key Pressed Up \n");
 			}
 			else
 			{

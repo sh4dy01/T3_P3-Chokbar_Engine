@@ -1,15 +1,9 @@
 #pragma once
 
-#define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
-#include <crtdbg.h>
-
-#ifdef _DEBUG
-#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
-// Replace _NORMAL_BLOCK with _CLIENT_BLOCK if you want the
-// allocations to be of _CLIENT_BLOCK type
-#else
-#define DBG_NEW new
+#define _CRTDBG_MAP_ALLOC
+#ifdef  _DEBUG
+	#include <crtdbg.h>
 #endif
 
 #include "IApplication.h"
@@ -19,6 +13,12 @@ extern Win32::IApplication* EntryApplication();
 
 int CALLBACK WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
 {
+
+#ifdef _DEBUG
+	_CrtMemState memStateInit;
+	_CrtMemCheckpoint(&memStateInit);
+#endif // DEBUG
+
 	try
 	{
 		PerGameSettings GameSettings;
@@ -43,7 +43,16 @@ int CALLBACK WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
 		return 0;
 	}
 
+#ifdef _DEBUG
 	_CrtDumpMemoryLeaks();
+	_CrtMemState memStateEnd, memStateDiff;
+	_CrtMemCheckpoint(&memStateEnd);
+
+	if (_CrtMemDifference(&memStateDiff, &memStateInit, &memStateEnd))
+	{
+		MessageBoxA(NULL, "MEMORY LEAKS", "Disclaimer", 0);
+	}
+#endif // DEBUG
 
 	return 0;
 }

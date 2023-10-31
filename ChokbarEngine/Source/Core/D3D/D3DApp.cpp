@@ -4,11 +4,13 @@
 
 #include "Engine/Resource.h"
 
+#include "D3DMath.h"
+
 #include "Core/D3D/Internal/Texture.h"
 #include "Core/D3D/Internal/ShaderBase.h"
 #include "Core/D3D/Internal/MeshRenderer.h"
 #include "Core/D3D/Internal/Material.h"
-
+#include "Engine/Engine.h"
 #include "D3DApp.h"
 
 class Transform;
@@ -81,6 +83,9 @@ D3DApp::~D3DApp() {
 void D3DApp::Update(const float dt, const float totalTime)
 {
 	UpdateRenderItems(dt, totalTime);
+
+	Chokbar::Engine::GetMainCamera()->GetCameraComponent()->UpdateViewMatrix();
+
 	for (auto& shader : Resource::GetShaders())
 	{
 		shader.second->UpdatePassCB(dt, totalTime);
@@ -176,8 +181,11 @@ void D3DApp::InitializeD3D12(Win32::Window* window)
 	CreateRenderTargetView();
 	CreateDepthStencilBuffer();
 
+	GeometryHandler::CreateAllMeshes();
+
 	CreateResources();
 	GetMeshRenderersRef();
+
 }
 #pragma endregion
 
@@ -424,25 +432,12 @@ void D3DApp::CreateResources()
 	Resource::CreateResources(m_pD3dDevice, m_pCbvHeap, m_CbvSrvUavDescriptorSize);
 
 	auto& shaders = Resource::GetShaders();
-	shaders[SHADER_SIMPLE]->CreatePsoAndRootSignature(VertexType::POS_COLOR, m_BackBufferFormat, m_DepthStencilFormat);
-	shaders[SHADER_TEXTURE]->CreatePsoAndRootSignature(VertexType::POS_TEX, m_BackBufferFormat, m_DepthStencilFormat);
+	shaders[SIMPLE]->CreatePsoAndRootSignature(VertexType::POS_COLOR, m_BackBufferFormat, m_DepthStencilFormat);
+	shaders[TEXTURE]->CreatePsoAndRootSignature(VertexType::POS_TEX, m_BackBufferFormat, m_DepthStencilFormat);
 }
 
 void D3DApp::GetMeshRenderersRef()
 {
-	/*for (int i = 0; i < m_ObjectCount; i++)
-	{
-		auto pyrItem = RenderItem();
-		pyrItem.ObjCBIndex = m_AllRenderItems.size();
-		pyrItem.Geo = m_pyramidGeometry;
-		pyrItem.Shader = m_pShader[i]->Bind();
-		pyrItem.PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-		pyrItem.IndexCount = pyrItem.Geo->IndexCount;
-		pyrItem.StartIndexLocation = pyrItem.Geo->StartIndexLocation;
-		pyrItem.BaseVertexLocation = pyrItem.Geo->BaseVertexLocation;
-		pyrItem.Transform = Chokbar::Transform();
-	} */
-
 	m_meshRenderers = Chokbar::Engine::GetCoordinator()->GetAllComponentsOfType<MeshRenderer>()->GetAllData<MeshRenderer>();
 }
 #pragma endregion
@@ -470,57 +465,36 @@ void D3DApp::UpdateTextureHeap(Texture* tex)
 
 void D3DApp::UpdateRenderItems(const float dt, const float totalTime)
 {
-	for (const auto& mr : *m_meshRenderers)
+	for (const auto mr : *m_meshRenderers)
 	{
-		if (!mr.IsEnabled() || !mr.Mat || !mr.Mesh) return;
-		/*
-		switch (mr.TransformationType)
-		{
-		case TRANSFORMATION_TYPE::ROTATION:
-		{
-			mr.gameObject->transform->Rotate(100.0f * dt, 100.0f * dt, 100.0f * dt);
-			break;
-		}
-		case TRANSFORMATION_TYPE::TRANSLATION:
-		{
-			mr.gameObject->transform->Translate(XMFLOAT3(sinf(totalTime) * dt, sinf(totalTime) * dt, -sinf(totalTime) * dt));
-			break;
-		}
-		case TRANSFORMATION_TYPE::SCALE:
-		{
-			mr.gameObject->transform->Scale(1.0f + sinf(totalTime) * dt * 0.5f, 1.0f + sinf(totalTime) * dt * 0.5f, 1.0f + sinf(totalTime) * dt * 0.5f);
-			break;
-		}
-		default:
-			break;
-		} */
+		if (!mr || !mr->IsEnabled() || !mr->Mat || !mr->Mesh) return;
 
-		if (mr.transform->IsDirty()) 
-			mr.transform->UpdateWorldMatrix();
+		if (mr->transform->IsDirty())
+			mr->transform->UpdateWorldMatrix();
 
-		mr.Mat->GetShader()->UpdateObjectCB(mr.transform->GetWorldMatrix(), mr.ObjectCBIndex);
+		mr->Mat->GetShader()->UpdateObjectCB(mr->transform->GetWorldMatrix(), mr->ObjectCBIndex);
 	}
 }
 
 void D3DApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList)
 {
-	for (auto& mr : *m_meshRenderers)
+	for (auto mr : *m_meshRenderers)
 	{
-		if (!mr.IsEnabled() || !mr.Mat || !mr.Mesh) return;
+		if (!mr || !mr->IsEnabled() || !mr->Mat || !mr->Mesh) return;
 
-		mr.Mat->GetShader()->BeginDraw(cmdList);
+		mr->Mat->GetShader()->BeginDraw(cmdList);
 
 		ShaderDrawArguments args;
 		args.CmdList = cmdList;
-		args.RenderItemGeometry = mr.Mesh;
-		args.RenderItemCBIndex = mr.ObjectCBIndex;
-		args.IndexCount = mr.Mesh->Indices.size();
+		args.RenderItemGeometry = mr->Mesh;
+		args.RenderItemCBIndex = mr->ObjectCBIndex;
+		args.IndexCount = mr->Mesh->GetIndexCount();
 		args.StartIndexLocation = 0;
 		args.BaseVertexLocation = 0;
-		args.Text = mr.Mat->GetTexture(0);
-		mr.Mat->GetShader()->Draw(args);
+		args.Text = nullptr;
+		mr->Mat->GetShader()->Draw(args);
 
-		mr.Mat->GetShader()->EndDraw(cmdList);
+ 		mr->Mat->GetShader()->EndDraw(cmdList);
 	}
 }
 #pragma endregion
