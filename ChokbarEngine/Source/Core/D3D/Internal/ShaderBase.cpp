@@ -127,9 +127,8 @@ void ShaderBase::CreatePassCB()
 
 void ShaderBase::UpdatePassCB(const float dt, const float totalTime)
 {
-	CameraComponent* cam = m_MainCamera->GetCameraComponent();
-	const XMMATRIX camView = cam->GetView();
-	const XMMATRIX camProj = cam->GetProj();
+	const XMMATRIX camView = m_MainCamera->GetView();
+	const XMMATRIX camProj = m_MainCamera->GetProj();
 
 	XMMATRIX viewProj = XMMatrixMultiply(camView, camProj);
 	// XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(camView), camView);
@@ -144,7 +143,7 @@ void ShaderBase::UpdatePassCB(const float dt, const float totalTime)
 	XMStoreFloat4x4(&mainPassCB.ViewProj, XMMatrixTranspose(viewProj));
 	// XMStoreFloat4x4(&mainPassCB.InvViewProj, XMMatrixTranspose(invViewProj));
 
-	mainPassCB.EyePosW = m_MainCamera->GetCameraComponent()->transform->GetPosition();
+	mainPassCB.EyePosW = m_MainCamera->transform->GetPosition();
 	// mainPassCB.RenderTargetSize = XMFLOAT2(m_bufferWidth, m_bufferHeight);
 	// mainPassCB.InvRenderTargetSize = XMFLOAT2(1.0f / m_bufferWidth, 1.0f / m_bufferHeight);
 	// mainPassCB.NearZ = m_camera.NearZ;
@@ -193,7 +192,7 @@ void ShaderSimple::Init()
 	CompileShader(nullptr, "vs_main", "vs_5_0", &m_vsByteCode);
 	CompileShader(nullptr, "ps_main", "ps_5_0", &m_psByteCode);
 
-	m_MainCamera = Chokbar::Engine::GetMainCamera();
+	m_MainCamera = Chokbar::Engine::GetMainCamera()->GetCameraComponent();
 }
 
 void ShaderSimple::CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT& rtvFormat, DXGI_FORMAT& dsvFormat)
@@ -296,7 +295,7 @@ void ShaderTexture::Init()
 	CompileShader(nullptr, "vs_main", "vs_5_0", &m_vsByteCode);
 	CompileShader(nullptr, "ps_main", "ps_5_0", &m_psByteCode);
 
-	m_MainCamera = Chokbar::Engine::GetMainCamera();
+	m_MainCamera = Chokbar::Engine::GetMainCamera()->GetCameraComponent();
 
 }
 

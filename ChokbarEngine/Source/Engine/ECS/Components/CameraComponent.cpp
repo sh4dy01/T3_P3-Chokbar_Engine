@@ -14,16 +14,6 @@ CameraComponent::~CameraComponent()
 {
 }
 
-DirectX::XMVECTOR CameraComponent::GetPosition() const
-{
-	return XMLoadFloat3(&m_Position);
-}
-
-DirectX::XMFLOAT3 CameraComponent::GetPosition3f() const
-{
-	return m_Position;
-}
-
 XMVECTOR CameraComponent::GetRight() const
 {
 	return XMLoadFloat3(&m_Right);
@@ -32,18 +22,6 @@ XMVECTOR CameraComponent::GetRight() const
 XMFLOAT3 CameraComponent::GetRight3f() const
 {
 	return m_Right;
-}
-
-void CameraComponent::SetPosition(float x, float y, float z)
-{
-	m_Position = XMFLOAT3(x, y, z);
-	m_ViewDirty = true;
-}
-
-void CameraComponent::SetPosition(const XMFLOAT3& v)
-{
-	m_Position = v;
-	m_ViewDirty = true;
 }
 
 XMVECTOR CameraComponent::GetUp() const
@@ -134,7 +112,7 @@ void CameraComponent::LookAt(FXMVECTOR pos, FXMVECTOR target, FXMVECTOR worldUp)
 	XMVECTOR R = XMVector3Normalize(XMVector3Cross(worldUp, L));
 	XMVECTOR U = XMVector3Cross(L, R);
 
-	XMStoreFloat3(&m_Position, pos);
+	XMStoreFloat3(&transform->GetPosition(), pos);
 	XMStoreFloat3(&m_Look, L);
 	XMStoreFloat3(&m_Right, R);
 	XMStoreFloat3(&m_Up, U);
@@ -171,8 +149,8 @@ void CameraComponent::Walk(float d)
 	// mPosition += d*mLook
 	XMVECTOR s = XMVectorReplicate(d);
 	XMVECTOR l = XMLoadFloat3(&m_Look);
-	XMVECTOR p = XMLoadFloat3(&m_Position);
-	XMStoreFloat3(&m_Position, XMVectorMultiplyAdd(s, l, p));
+	XMVECTOR p = XMLoadFloat3(&transform->GetPosition());
+	XMStoreFloat3(&transform->GetPosition(), XMVectorMultiplyAdd(s, l, p));
 
 	m_ViewDirty = true;
 
@@ -182,8 +160,8 @@ void CameraComponent::Strafe(float d)
 	// mPosition += d*mRight
 	XMVECTOR s = XMVectorReplicate(d);
 	XMVECTOR r = XMLoadFloat3(&m_Right);
-	XMVECTOR p = XMLoadFloat3(&m_Position);
-	XMStoreFloat3(&m_Position, XMVectorMultiplyAdd(s, r, p));
+	XMVECTOR p = XMLoadFloat3(&transform->GetPosition());
+	XMStoreFloat3(&transform->GetPosition(), XMVectorMultiplyAdd(s, r, p));
 
 	m_ViewDirty = true;
 
@@ -226,7 +204,7 @@ void CameraComponent::UpdateViewMatrix()
 		XMVECTOR R = XMLoadFloat3(&m_Right);
 		XMVECTOR U = XMLoadFloat3(&m_Up);
 		XMVECTOR L = XMLoadFloat3(&m_Look);
-		XMVECTOR P = XMLoadFloat3(&m_Position);
+		XMVECTOR P = XMLoadFloat3(&transform->GetPosition());
 
 		// Keep camera’s axes orthogonal to each other and of unit length.
 		L = XMVector3Normalize(L);

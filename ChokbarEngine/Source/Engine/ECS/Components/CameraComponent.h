@@ -11,12 +11,6 @@ public:
 	CameraComponent();
 	~CameraComponent();
 
-	// Get/Set world camera position.
-	DirectX::XMVECTOR GetPosition()const;
-	DirectX::XMFLOAT3 GetPosition3f()const;
-	void SetPosition(float x, float y, float z);
-	void SetPosition(const DirectX::XMFLOAT3& v);
-
 	// Get camera basis vectors.
 	DirectX::XMVECTOR GetRight() const;
 	DirectX::XMFLOAT3 GetRight3f() const;
@@ -67,7 +61,6 @@ public:
 private:
 
 	// CameraComponent coordinate system with coordinates relative to world space
-	DirectX::XMFLOAT3 m_Position = { 0.0f, 0.0f, 0.0f };
 	DirectX::XMFLOAT3 m_Right = { 1.0f, 0.0f, 0.0f };
 	DirectX::XMFLOAT3 m_Up = { 0.0f, 1.0f, 0.0f };
 	DirectX::XMFLOAT3 m_Look = { 0.0f, 0.0f, 1.0f };
