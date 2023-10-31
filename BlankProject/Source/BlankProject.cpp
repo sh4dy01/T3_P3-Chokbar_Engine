@@ -1,6 +1,5 @@
 #include "BlankProject.h"
 
-
 using namespace Chokbar;
 
 class Application : public Win32::IApplication {
