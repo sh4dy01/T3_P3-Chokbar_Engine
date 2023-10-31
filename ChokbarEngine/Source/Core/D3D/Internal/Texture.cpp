@@ -9,7 +9,7 @@
 using namespace Microsoft::WRL;
 using namespace DirectX;
 
-Texture::Texture(const std::string& filename, const std::wstring& filepath) : IResourceObject(filepath), Name(filename)
+Texture::Texture(const std::string& filename) : IResourceObject(filename)
 {
 	Resource = nullptr;
 	UploadHeap = nullptr;
@@ -17,17 +17,18 @@ Texture::Texture(const std::string& filename, const std::wstring& filepath) : IR
 
 Texture::~Texture()
 {
-	UploadHeap->Release();
-	Resource->Release();
+	RELPTR(UploadHeap);
+	RELPTR(Resource);
 }
 
-void Texture::Load(const std::wstring& filepath)
+void Texture::Load(const std::string& filepath)
 {
-	// TODO Remove D3DApp sigleton
-	D3DApp::GetInstance()->BeginList();
-	LoadTexture(D3DApp::GetInstance()->GetDevice(), D3DApp::GetInstance()->GetCommandList());
-	D3DApp::GetInstance()->UpdateTextureHeap(this);
-	D3DApp::GetInstance()->EndList();
+	m_filepath = filepath;
+
+	I(D3DApp)->BeginList();
+	LoadTexture(I(D3DApp)->GetDevice(), I(D3DApp)->GetCommandList());
+	I(D3DApp)->UpdateTextureHeap(this);
+	I(D3DApp)->EndList();
 }
 
 void Texture::LoadTexture(ID3D12Device* device, ID3D12GraphicsCommandList* cmdList)
@@ -36,7 +37,9 @@ void Texture::LoadTexture(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLi
 	ComPtr<ID3D12Resource> textureUploadHeap = UploadHeap;
 	ComPtr<ID3D12Resource> textureResource = Resource;
 
-	CreateDDSTextureFromFile12(device, cmdList, m_filepath.c_str(), textureResource, textureUploadHeap);
+	// I hate this. But idk how to convert from std::string to const wchar_t*. Please help
+	const std::wstring wstr = std::wstring(m_filepath.begin(), m_filepath.end());
+	CreateDDSTextureFromFile12(device, cmdList, wstr.c_str(), textureResource, textureUploadHeap);
 
 	Resource = textureResource.Detach();
 	UploadHeap = textureUploadHeap.Detach();

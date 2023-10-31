@@ -19,6 +19,8 @@ ShaderBase::ShaderBase(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, UINT
 
 	m_vsByteCode = nullptr;
 	m_psByteCode = nullptr;
+
+	m_MainCamera = nullptr;
 }
 
 ShaderBase::~ShaderBase()
@@ -26,11 +28,11 @@ ShaderBase::~ShaderBase()
 	m_generalDevice = nullptr;
 	m_generalCBVHeap = nullptr;
 
-	m_pipelineState->Release();
-	m_rootSignature->Release();
+	RELPTR(m_pipelineState);
+	RELPTR(m_rootSignature);
 
-	m_vsByteCode->Release();
-	m_psByteCode->Release();
+	RELPTR(m_vsByteCode);
+	RELPTR(m_psByteCode);
 
 	m_objectCBs.clear();
 	m_passCB = nullptr;
@@ -197,12 +199,6 @@ void ShaderSimple::Init()
 
 void ShaderSimple::CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT& rtvFormat, DXGI_FORMAT& dsvFormat)
 {
-	//CD3DX12_DESCRIPTOR_RANGE cbvTable0;
-	//cbvTable0.Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 0);
-
-	//CD3DX12_DESCRIPTOR_RANGE cbvTable1;
-	//cbvTable1.Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 1);
-
 	SetInputLayout(vertexType);
 
 	CD3DX12_ROOT_PARAMETER slotRootParameter[2];
@@ -217,11 +213,9 @@ void ShaderSimple::CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT&
 	HRESULT hr = D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &serializedRootSignature, &errorBlob);
 	m_generalDevice->CreateRootSignature(0, serializedRootSignature->GetBufferPointer(), serializedRootSignature->GetBufferSize(), IID_PPV_ARGS(&m_rootSignature));
 
-	if (errorBlob != nullptr) errorBlob->Release();
-
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc;
 	ZeroMemory(&psoDesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
-	psoDesc.InputLayout = { m_inputLayout.data(), (UINT)m_inputLayout.size()};
+	psoDesc.InputLayout = { m_inputLayout.data(), (UINT)m_inputLayout.size() };
 	psoDesc.pRootSignature = m_rootSignature;
 	psoDesc.VS = { reinterpret_cast<BYTE*>(m_vsByteCode->GetBufferPointer()), m_vsByteCode->GetBufferSize() };
 	psoDesc.PS = { reinterpret_cast<BYTE*>(m_psByteCode->GetBufferPointer()), m_psByteCode->GetBufferSize() };
@@ -239,7 +233,8 @@ void ShaderSimple::CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT&
 
 	HRESULT hr2 = m_generalDevice->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&m_pipelineState));
 
-	serializedRootSignature->Release();
+	RELPTR(serializedRootSignature);
+	RELPTR(errorBlob);
 }
 
 void ShaderSimple::BeginDraw(ID3D12GraphicsCommandList* cmdList)
@@ -257,18 +252,18 @@ void ShaderSimple::Draw(ShaderDrawArguments& args)
 {
 	assert(args.Text == nullptr);
 
-	if (args.RenderItemCBIndex >= m_objectCBs.size())
+	if (args.ItemCBIndex >= m_objectCBs.size())
 		AddObjectCB();
 
-	assert(args.RenderItemCBIndex <= m_objectCBs.size());
+	assert(args.ItemCBIndex <= m_objectCBs.size());
 
-	args.CmdList->IASetVertexBuffers(0, 1, &args.RenderItemGeometry->VertexBufferView());
-	args.CmdList->IASetIndexBuffer(&args.RenderItemGeometry->IndexBufferView());
+	args.CmdList->IASetVertexBuffers(0, 1, &args.ItemGeometry->VertexBufferView());
+	args.CmdList->IASetIndexBuffer(&args.ItemGeometry->IndexBufferView());
 
 	auto cbvHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(m_generalCBVHeap->GetGPUDescriptorHandleForHeapStart());
-	cbvHandle.Offset(args.RenderItemCBIndex, m_cbvDescriptorSize);
+	cbvHandle.Offset(args.ItemCBIndex, m_cbvDescriptorSize);
 
-	args.CmdList->SetGraphicsRootConstantBufferView(0, m_objectCBs[args.RenderItemCBIndex]->GetResource()->GetGPUVirtualAddress());
+	args.CmdList->SetGraphicsRootConstantBufferView(0, m_objectCBs[args.ItemCBIndex]->GetResource()->GetGPUVirtualAddress());
 
 	args.CmdList->DrawIndexedInstanced(args.IndexCount, 1, args.StartIndexLocation, args.BaseVertexLocation, 0);
 }
@@ -301,32 +296,30 @@ void ShaderTexture::Init()
 
 void ShaderTexture::CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT& rtvFormat, DXGI_FORMAT& dsvFormat)
 {
-	//CD3DX12_DESCRIPTOR_RANGE cbvTable0;
-	//cbvTable0.Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 0);
-
-	//CD3DX12_DESCRIPTOR_RANGE cbvTable1;
-	//cbvTable1.Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 1);
-
 	SetInputLayout(vertexType);
 
-	CD3DX12_ROOT_PARAMETER slotRootParameter[2];
-	slotRootParameter[0].InitAsConstantBufferView(0);
-	slotRootParameter[1].InitAsConstantBufferView(1);
+	CD3DX12_DESCRIPTOR_RANGE texTable;
+	texTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
 
-	CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc(_countof(slotRootParameter), slotRootParameter, 0, nullptr, D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
+	CD3DX12_ROOT_PARAMETER slotRootParameter[3];
+	slotRootParameter[OBJECT_CB_HEAP_INDEX].InitAsConstantBufferView(0);
+	slotRootParameter[PASS_CB_HEAP_INDEX].InitAsConstantBufferView(1);
+	slotRootParameter[TEXTURE_HEAP_INDEX_START].InitAsDescriptorTable(1, &texTable, D3D12_SHADER_VISIBILITY_PIXEL);
+
+	auto samplers = GetStaticSamplers();
+
+	CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc(_countof(slotRootParameter), slotRootParameter, 1, samplers.data(), D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
 	ID3DBlob* serializedRootSignature = nullptr;
 	ID3DBlob* errorBlob = nullptr;
 
 	HRESULT hr = D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &serializedRootSignature, &errorBlob);
 	m_generalDevice->CreateRootSignature(0, serializedRootSignature->GetBufferPointer(), serializedRootSignature->GetBufferSize(), IID_PPV_ARGS(&m_rootSignature));
-
-	if (errorBlob != nullptr) errorBlob->Release();
-	serializedRootSignature->Release();
+	ThrowIfFailed(hr);
 
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc;
 	ZeroMemory(&psoDesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
-	psoDesc.InputLayout = { m_inputLayout.data(), 2 };
+	psoDesc.InputLayout = { m_inputLayout.data(), (UINT)m_inputLayout.size() };
 	psoDesc.pRootSignature = m_rootSignature;
 	psoDesc.VS = { reinterpret_cast<BYTE*>(m_vsByteCode->GetBufferPointer()), m_vsByteCode->GetBufferSize() };
 	psoDesc.PS = { reinterpret_cast<BYTE*>(m_psByteCode->GetBufferPointer()), m_psByteCode->GetBufferSize() };
@@ -341,14 +334,18 @@ void ShaderTexture::CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT
 	psoDesc.SampleDesc.Quality = 0;
 	psoDesc.DSVFormat = dsvFormat;
 
-	m_generalDevice->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&m_pipelineState));
+	hr = m_generalDevice->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&m_pipelineState));
+	ThrowIfFailed(hr);
+
+	RELPTR(serializedRootSignature);
+	RELPTR(errorBlob);
 }
 
 void ShaderTexture::BeginDraw(ID3D12GraphicsCommandList* cmdList)
 {
 	cmdList->SetGraphicsRootSignature(m_rootSignature);
 
-	cmdList->SetGraphicsRootConstantBufferView(1, m_passCB->GetResource()->GetGPUVirtualAddress());
+	cmdList->SetGraphicsRootConstantBufferView(PASS_CB_HEAP_INDEX, m_passCB->GetResource()->GetGPUVirtualAddress());
 
 	cmdList->SetPipelineState(m_pipelineState);
 
@@ -357,22 +354,77 @@ void ShaderTexture::BeginDraw(ID3D12GraphicsCommandList* cmdList)
 
 void ShaderTexture::Draw(ShaderDrawArguments& args)
 {
-	//TODO heck if texture is nullptr
-	if (args.RenderItemCBIndex >= m_objectCBs.size())
+	assert(args.Text != nullptr);
+
+	if (args.ItemCBIndex >= m_objectCBs.size())
 		AddObjectCB();
 
-	args.CmdList->IASetVertexBuffers(0, 1, &args.RenderItemGeometry->VertexBufferView());
-	args.CmdList->IASetIndexBuffer(&args.RenderItemGeometry->IndexBufferView());
+	assert(args.ItemCBIndex <= m_objectCBs.size());
+
+	args.CmdList->IASetVertexBuffers(0, 1, &args.ItemGeometry->VertexBufferView());
+	args.CmdList->IASetIndexBuffer(&args.ItemGeometry->IndexBufferView());
 
 	auto cbvHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(m_generalCBVHeap->GetGPUDescriptorHandleForHeapStart());
-	cbvHandle.Offset(args.RenderItemCBIndex, m_cbvDescriptorSize);
+	cbvHandle.Offset(args.TextSrvIndex, m_cbvDescriptorSize);
 
-	// args.CmdList->SetGraphicsRootConstantBufferView(0, m_objectCBs[args.RenderItemCBIndex]->GetResource()->GetGPUVirtualAddress());
+	args.CmdList->SetGraphicsRootConstantBufferView(OBJECT_CB_HEAP_INDEX, m_objectCBs[args.ItemCBIndex]->GetResource()->GetGPUVirtualAddress());
+	args.CmdList->SetGraphicsRootDescriptorTable(TEXTURE_HEAP_INDEX_START, cbvHandle);
 
 	args.CmdList->DrawIndexedInstanced(args.IndexCount, 1, args.StartIndexLocation, args.BaseVertexLocation, 0);
 }
 
 void ShaderTexture::EndDraw(ID3D12GraphicsCommandList* cmdList)
 {
+}
+
+std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> ShaderTexture::GetStaticSamplers()
+{
+	const CD3DX12_STATIC_SAMPLER_DESC pointWrap(
+		0, // shaderRegister
+		D3D12_FILTER_MIN_MAG_MIP_POINT, // filter
+		D3D12_TEXTURE_ADDRESS_MODE_WRAP, // addressU
+		D3D12_TEXTURE_ADDRESS_MODE_WRAP, // addressV
+		D3D12_TEXTURE_ADDRESS_MODE_WRAP); // addressW
+
+	const CD3DX12_STATIC_SAMPLER_DESC pointClamp(
+		1, // shaderRegister
+		D3D12_FILTER_MIN_MAG_MIP_POINT, // filter
+		D3D12_TEXTURE_ADDRESS_MODE_CLAMP, // addressU
+		D3D12_TEXTURE_ADDRESS_MODE_CLAMP, // addressV
+		D3D12_TEXTURE_ADDRESS_MODE_CLAMP); // addressW
+
+	const CD3DX12_STATIC_SAMPLER_DESC linearWrap(
+		2, // shaderRegister
+		D3D12_FILTER_MIN_MAG_MIP_LINEAR, // filter
+		D3D12_TEXTURE_ADDRESS_MODE_WRAP, // addressU
+		D3D12_TEXTURE_ADDRESS_MODE_WRAP, // addressV
+		D3D12_TEXTURE_ADDRESS_MODE_WRAP); // addressW
+
+	const CD3DX12_STATIC_SAMPLER_DESC linearClamp(
+		3, // shaderRegister
+		D3D12_FILTER_MIN_MAG_MIP_LINEAR, // filter
+		D3D12_TEXTURE_ADDRESS_MODE_CLAMP, // addressU
+		D3D12_TEXTURE_ADDRESS_MODE_CLAMP, // addressV
+		D3D12_TEXTURE_ADDRESS_MODE_CLAMP); // addressW
+
+	const CD3DX12_STATIC_SAMPLER_DESC anisotropicWrap(
+		4, // shaderRegister
+		D3D12_FILTER_ANISOTROPIC, // filter
+		D3D12_TEXTURE_ADDRESS_MODE_WRAP, // addressU
+		D3D12_TEXTURE_ADDRESS_MODE_WRAP, // addressV
+		D3D12_TEXTURE_ADDRESS_MODE_WRAP, // addressW
+		0.0f, // mipLODBias
+		8); // maxAnisotropy
+
+	const CD3DX12_STATIC_SAMPLER_DESC anisotropicClamp(
+		5, // shaderRegister
+		D3D12_FILTER_ANISOTROPIC, // filter
+		D3D12_TEXTURE_ADDRESS_MODE_CLAMP, // addressU
+		D3D12_TEXTURE_ADDRESS_MODE_CLAMP, // addressV
+		D3D12_TEXTURE_ADDRESS_MODE_CLAMP, // addressW
+		0.0f, // mipLODBias
+		8); // maxAnisotropy
+
+	return { pointWrap, pointClamp, linearWrap, linearClamp, anisotropicWrap, anisotropicClamp };
 }
 #pragma endregion

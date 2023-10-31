@@ -4,8 +4,6 @@
 
 #include "D3DMesh.h"
 
-#define RELPTR(ptr) if (ptr) { ptr->Release(); ptr = nullptr; }
-
 using namespace DirectX;
 
 Vertex::Vertex(const DirectX::XMFLOAT3& position) : Position(position) { }
@@ -61,9 +59,9 @@ void D3DMesh::DisposeUploaders()
 
 void D3DMesh::Create(const void* vData, UINT vStride, UINT vSize, const void* iData, UINT iStride, UINT iSize)
 {
-	D3DApp::GetInstance()->BeginList();
-	ID3D12Device* device = D3DApp::GetInstance()->GetDevice();
-	ID3D12GraphicsCommandList* cmdList = D3DApp::GetInstance()->GetCommandList();
+	I(D3DApp)->BeginList();
+	ID3D12Device* device = I(D3DApp)->GetDevice();
+	ID3D12GraphicsCommandList* cmdList = I(D3DApp)->GetCommandList();
 
 	const UINT iBufferSize = iStride * iSize;
 	const UINT vBufferSize = vStride * vSize;
@@ -82,7 +80,7 @@ void D3DMesh::Create(const void* vData, UINT vStride, UINT vSize, const void* iD
 	StartIndexLocation = 0;
 	BaseVertexLocation = 0;
 
-	D3DApp::GetInstance()->EndList();
+	I(D3DApp)->EndList();
 
 	DisposeUploaders();
 }

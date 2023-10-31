@@ -35,6 +35,7 @@ public:
 
 private:
 
+	static D3DMesh* CreateCube();
 	static D3DMesh* CreatePyramid();
 
 private:

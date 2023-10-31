@@ -19,12 +19,19 @@ public:
 
 	void BindMaterial(Material* mat);
 
-	Texture* GetTexture(UINT index) const { return Textures[index]; }
+	Texture* GetTexture(UINT index) const { return m_textures[index]; }
+	std::vector<Texture*> GetTextures() const { return m_textures; }
+	void RegisterTexture(Texture* tex) { m_textures.push_back(tex); }
 
-	UINT ObjectCBIndex = -1;
 
 public:
 	D3DMesh* Mesh;
+	UINT ObjectCBIndex = -1;
+
 	Material* Mat;
-	std::vector<Texture*> Textures{};
+	UINT TextSrvIndex = -1;
+
+private:
+	std::vector<Texture*> m_textures{};
+
 };

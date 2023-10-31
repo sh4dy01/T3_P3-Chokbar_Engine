@@ -30,6 +30,7 @@ MeshRenderer::~MeshRenderer()
 {
 	Mesh = nullptr;
 	Mat = nullptr;
+	m_textures.clear();
 }
 
 void MeshRenderer::OnDelete()

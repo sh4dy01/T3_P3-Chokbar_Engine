@@ -4,26 +4,33 @@
 #include "UploadBuffer.h"
 #include "Core/D3D/Internal/D3DMesh.h"
 
+#define OBJECT_CB_HEAP_INDEX 0
+#define PASS_CB_HEAP_INDEX 1
+#define TEXTURE_HEAP_INDEX_START 2
+
 struct Texture;
 
 enum VertexType { POS, POS_COLOR, POS_TEX, POS_NORM_TEX, POS_NORM_TEX_TAN };
 
 struct ShaderDrawArguments
 {
-	ShaderDrawArguments() : RenderItemCBIndex(-1), IndexCount(0), StartIndexLocation(0), BaseVertexLocation(0)
+	ShaderDrawArguments() : ItemCBIndex(-1), IndexCount(0), StartIndexLocation(0), BaseVertexLocation(0)
 	{
 		CmdList = nullptr;
-		RenderItemGeometry = nullptr;
+		ItemGeometry = nullptr;
 		Text = nullptr;
 	}
 
 	ID3D12GraphicsCommandList* CmdList;
-	UINT RenderItemCBIndex;
-	D3DMesh* RenderItemGeometry;
+
+	UINT ItemCBIndex;
+	D3DMesh* ItemGeometry;
 	UINT IndexCount;
 	UINT StartIndexLocation;
 	UINT BaseVertexLocation;
+
 	Texture* Text;
+	UINT TextSrvIndex;
 };
 
 class ShaderBase
@@ -41,20 +48,22 @@ protected:
 	struct PassConstants
 	{
 		DirectX::XMFLOAT4X4 View;
-		// DirectX::XMFLOAT4X4 InvView = Identity4x4();
 		DirectX::XMFLOAT4X4 Proj;
-		// DirectX::XMFLOAT4X4 InvProj = Identity4x4();
 		DirectX::XMFLOAT4X4 ViewProj;
-		// DirectX::XMFLOAT4X4 InvViewProj = Identity4x4();
 
 		DirectX::XMFLOAT3 EyePosW = { 0.0f, 0.0f, 0.0f };
-		// float cbPerObjectPad1 = 0.0f;
-		// DirectX::XMFLOAT2 RenderTargetSize = { 0.0f, 0.0f };
-		// DirectX::XMFLOAT2 InvRenderTargetSize = { 0.0f, 0.0f };
-		// float NearZ = 0.0f;
-		// float FarZ = 0.0f;
 		float TotalTime = 0.0f;
 		float DeltaTime = 0.0f;
+	};
+
+	struct MaterialConstants
+	{
+		DirectX::XMFLOAT4 DiffuseAlbedo = { 1.0f, 1.0f, 1.0f, 1.0f };
+		DirectX::XMFLOAT3 FresnelR0 = { 0.01f, 0.01f, 0.01f };
+		float Roughness = .25f;
+
+		// Used in texture mapping.
+		DirectX::XMFLOAT4X4 MatTransform = Identity4x4();
 	};
 
 protected:
@@ -145,4 +154,10 @@ public:
 	void BeginDraw(ID3D12GraphicsCommandList* cmdList) override;
 	void Draw(ShaderDrawArguments& args) override;
 	void EndDraw(ID3D12GraphicsCommandList* cmdList) override;
+
+private:
+	/* Samplers defines how we want to parse our texture in our shader.
+	Creating multiple Samplers allows us to have access to different parse mode in our shader later on. This is useful on big engines.
+	Note that will certainly do not need that much samplers, but it was juste to learn how to use them. */
+	std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> GetStaticSamplers();
 };
