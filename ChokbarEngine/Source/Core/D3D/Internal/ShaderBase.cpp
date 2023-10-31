@@ -211,7 +211,9 @@ void ShaderSimple::CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT&
 	ID3DBlob* errorBlob = nullptr;
 
 	HRESULT hr = D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &serializedRootSignature, &errorBlob);
+	ThrowIfFailed(hr);
 	m_generalDevice->CreateRootSignature(0, serializedRootSignature->GetBufferPointer(), serializedRootSignature->GetBufferSize(), IID_PPV_ARGS(&m_rootSignature));
+	ThrowIfFailed(hr);
 
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc;
 	ZeroMemory(&psoDesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
@@ -231,7 +233,8 @@ void ShaderSimple::CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT&
 	psoDesc.SampleDesc.Quality = 0;
 	psoDesc.DSVFormat = dsvFormat;
 
-	HRESULT hr2 = m_generalDevice->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&m_pipelineState));
+	hr = m_generalDevice->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&m_pipelineState));
+	ThrowIfFailed(hr);
 
 	RELPTR(serializedRootSignature);
 	RELPTR(errorBlob);
@@ -302,9 +305,9 @@ void ShaderTexture::CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT
 	texTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
 
 	CD3DX12_ROOT_PARAMETER slotRootParameter[3];
-	slotRootParameter[OBJECT_CB_HEAP_INDEX].InitAsConstantBufferView(0);
-	slotRootParameter[PASS_CB_HEAP_INDEX].InitAsConstantBufferView(1);
-	slotRootParameter[TEXTURE_HEAP_INDEX_START].InitAsDescriptorTable(1, &texTable, D3D12_SHADER_VISIBILITY_PIXEL);
+	slotRootParameter[0].InitAsDescriptorTable(1, &texTable, D3D12_SHADER_VISIBILITY_PIXEL);
+	slotRootParameter[1].InitAsConstantBufferView(0);
+	slotRootParameter[2].InitAsConstantBufferView(1);
 
 	auto samplers = GetStaticSamplers();
 
@@ -314,7 +317,8 @@ void ShaderTexture::CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT
 	ID3DBlob* errorBlob = nullptr;
 
 	HRESULT hr = D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &serializedRootSignature, &errorBlob);
-	m_generalDevice->CreateRootSignature(0, serializedRootSignature->GetBufferPointer(), serializedRootSignature->GetBufferSize(), IID_PPV_ARGS(&m_rootSignature));
+	ThrowIfFailed(hr);
+	hr = m_generalDevice->CreateRootSignature(0, serializedRootSignature->GetBufferPointer(), serializedRootSignature->GetBufferSize(), IID_PPV_ARGS(&m_rootSignature));
 	ThrowIfFailed(hr);
 
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc;
@@ -345,7 +349,7 @@ void ShaderTexture::BeginDraw(ID3D12GraphicsCommandList* cmdList)
 {
 	cmdList->SetGraphicsRootSignature(m_rootSignature);
 
-	cmdList->SetGraphicsRootConstantBufferView(PASS_CB_HEAP_INDEX, m_passCB->GetResource()->GetGPUVirtualAddress());
+	cmdList->SetGraphicsRootConstantBufferView(2, m_passCB->GetResource()->GetGPUVirtualAddress());
 
 	cmdList->SetPipelineState(m_pipelineState);
 
@@ -354,7 +358,7 @@ void ShaderTexture::BeginDraw(ID3D12GraphicsCommandList* cmdList)
 
 void ShaderTexture::Draw(ShaderDrawArguments& args)
 {
-	assert(args.Text != nullptr);
+	assert(args.Text != nullptr && args.TextSrvIndex >= 0);
 
 	if (args.ItemCBIndex >= m_objectCBs.size())
 		AddObjectCB();
@@ -367,8 +371,8 @@ void ShaderTexture::Draw(ShaderDrawArguments& args)
 	auto cbvHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(m_generalCBVHeap->GetGPUDescriptorHandleForHeapStart());
 	cbvHandle.Offset(args.TextSrvIndex, m_cbvDescriptorSize);
 
-	args.CmdList->SetGraphicsRootConstantBufferView(OBJECT_CB_HEAP_INDEX, m_objectCBs[args.ItemCBIndex]->GetResource()->GetGPUVirtualAddress());
-	args.CmdList->SetGraphicsRootDescriptorTable(TEXTURE_HEAP_INDEX_START, cbvHandle);
+	args.CmdList->SetGraphicsRootConstantBufferView(1, m_objectCBs[args.ItemCBIndex]->GetResource()->GetGPUVirtualAddress());
+	args.CmdList->SetGraphicsRootDescriptorTable(0, cbvHandle);
 
 	args.CmdList->DrawIndexedInstanced(args.IndexCount, 1, args.StartIndexLocation, args.BaseVertexLocation, 0);
 }

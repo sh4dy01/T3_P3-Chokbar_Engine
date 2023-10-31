@@ -443,10 +443,12 @@ void D3DApp::GetMeshRenderersRef()
 #pragma endregion
 
 #pragma region UPDATE 
-void D3DApp::UpdateTextureHeap(Texture* tex)
+int D3DApp::UpdateTextureHeap(Texture* tex)
 {
+	if (!tex) return -1;
+
 	CD3DX12_CPU_DESCRIPTOR_HANDLE hDescriptor(m_pCbvHeap->GetCPUDescriptorHandleForHeapStart());
-	hDescriptor.Offset(2 + m_texIndex, m_CbvSrvUavDescriptorSize);
+	hDescriptor.Offset(m_texIndex, m_CbvSrvUavDescriptorSize);
 
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
@@ -457,7 +459,7 @@ void D3DApp::UpdateTextureHeap(Texture* tex)
 	srvDesc.Texture2D.ResourceMinLODClamp = 0.0f;
 	m_pD3dDevice->CreateShaderResourceView(tex->Resource, &srvDesc, hDescriptor);
 
-	m_texIndex++;
+	return m_texIndex++;
 }
 
 void D3DApp::UpdateRenderItems(const float dt, const float totalTime)
@@ -491,10 +493,7 @@ void D3DApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList)
 		args.StartIndexLocation = 0;
 		args.BaseVertexLocation = 0;
 
-		for (auto tex : mr->GetTextures())
-			UpdateTextureHeap(tex);
-
-		args.Text = mr->GetTexture(0);
+		args.Text = mr->GetTextures().empty() ? nullptr : mr->GetTexture(0);
 		args.TextSrvIndex = mr->TextSrvIndex;
 
 		mr->Mat->GetShader()->Draw(args);

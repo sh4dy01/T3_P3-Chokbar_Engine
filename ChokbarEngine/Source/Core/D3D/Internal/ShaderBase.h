@@ -4,10 +4,6 @@
 #include "UploadBuffer.h"
 #include "Core/D3D/Internal/D3DMesh.h"
 
-#define OBJECT_CB_HEAP_INDEX 0
-#define PASS_CB_HEAP_INDEX 1
-#define TEXTURE_HEAP_INDEX_START 2
-
 struct Texture;
 
 enum VertexType { POS, POS_COLOR, POS_TEX, POS_NORM_TEX, POS_NORM_TEX_TAN };

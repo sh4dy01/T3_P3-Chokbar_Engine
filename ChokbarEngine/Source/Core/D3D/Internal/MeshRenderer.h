@@ -21,7 +21,7 @@ public:
 
 	Texture* GetTexture(UINT index) const { return m_textures[index]; }
 	std::vector<Texture*> GetTextures() const { return m_textures; }
-	void RegisterTexture(Texture* tex) { m_textures.push_back(tex); }
+	void RegisterTexture(Texture* tex);
 
 
 public:

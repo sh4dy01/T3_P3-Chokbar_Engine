@@ -40,7 +40,7 @@ public:
 	void BeginList();
 	void EndList();
 
-	void UpdateTextureHeap(Texture* tex);
+	int UpdateTextureHeap(Texture* tex);
 
 
 	int m_bufferWidth;

@@ -1,3 +1,5 @@
+Texture2D gDiffuseMap : register(t0);
+
 cbuffer cbPerObject : register(b0)
 {
     float4x4 gWorld;
@@ -12,8 +14,6 @@ cbuffer cbPass : register(b1)
     float gTotalTime;
     float gDeltaTime;
 }
-
-Texture2D gDiffuseMap : register(t0);
 
 SamplerState gsamPointWrap          : register(s0);
 // Not used
@@ -43,6 +43,7 @@ PS_INPUT vs_main(VS_INPUT input)
     float4 posW = mul(float4(input.Pos, 1.0f), gWorld);
     output.PosW = posW.xyz;
     output.PosH = mul(posW, gViewProj);
+    output.TextCoord = input.TextCoord;
         
     return output;
 }

@@ -25,10 +25,12 @@ void Texture::Load(const std::string& filepath)
 {
 	m_filepath = filepath;
 
-	I(D3DApp)->BeginList();
-	LoadTexture(I(D3DApp)->GetDevice(), I(D3DApp)->GetCommandList());
-	I(D3DApp)->UpdateTextureHeap(this);
-	I(D3DApp)->EndList();
+	auto app = I(D3DApp);
+	app->BeginList();
+
+	LoadTexture(app->GetDevice(), app->GetCommandList());
+
+	app->EndList();
 }
 
 void Texture::LoadTexture(ID3D12Device* device, ID3D12GraphicsCommandList* cmdList)

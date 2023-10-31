@@ -28,6 +28,8 @@ MeshRenderer::MeshRenderer(MeshType meshType, MaterialType matType)
 
 MeshRenderer::~MeshRenderer()
 {
+	OnDelete();
+
 	Mesh = nullptr;
 	Mat = nullptr;
 	m_textures.clear();
@@ -36,6 +38,12 @@ MeshRenderer::~MeshRenderer()
 void MeshRenderer::OnDelete()
 {
 	Mat->GetShader()->UnBind(ObjectCBIndex);
+}
+
+void MeshRenderer::RegisterTexture(Texture* tex)
+{
+	m_textures.push_back(tex);
+	TextSrvIndex = I(D3DApp)->UpdateTextureHeap(tex);
 }
 
 void MeshRenderer::BindMaterial(Material* mat)
