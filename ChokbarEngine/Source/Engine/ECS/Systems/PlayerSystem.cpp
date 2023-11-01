@@ -23,7 +23,7 @@ void PlayerSystem::Update(float dt)
 
 		if (InputHandler::IsKeyHeld('z'))
 		{
-			transform->Translate(0, 0, player->Speed*dt);
+			transform->Translate(0, 0, player->Speed * dt);
 			//transform->
 		}
 		if (InputHandler::IsKeyHeld('s'))
@@ -40,16 +40,17 @@ void PlayerSystem::Update(float dt)
 		}
 		if (InputHandler::IsKeyHeld(VK_SHIFT))
 		{
-			transform->Translate(0, -player->Speed * dt, 0);
+			transform->TranslateWorld(0, -player->Speed * dt, 0);
 		}
 		if (InputHandler::IsKeyHeld(VK_SPACE))
 		{
-			transform->Translate(0, player->Speed * dt, 0);
+			transform->TranslateWorld(0, player->Speed * dt, 0);
 		}
-		//DEBUG_LOG(InputHandler::GetAxisX());
-		//DEBUG_LOG(InputHandler::GetAxisY());
+
+		DEBUG_LOG(std::to_string(transform->GetEulerAngles().x));
 
 		transform->RotatePitch(InputHandler::GetAxisY() * 50.f * dt);
+
 		transform->RotateYaw(InputHandler::GetAxisX() * 50.f * dt);
 	}
 }

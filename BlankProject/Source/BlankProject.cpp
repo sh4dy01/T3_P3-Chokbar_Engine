@@ -52,8 +52,6 @@ void Application::Initialize()
 	auto test = new GameObject("f");
 	auto mr = new MeshRenderer(MeshType::PYRAMID, MaterialType::SIMPLE);
 	test->AddComponent<MeshRenderer>(mr);
-	test->AddComponent<Rigidbody>(rb);
-	test->AddComponent<Sphere>(sphere);
 	test->transform->SetPosition(0, 0, 0);
 
 	auto *test2 = new GameObject("f");

@@ -1,5 +1,6 @@
 #pragma once
 #include "Engine/ECS/Components/CameraComponent.h"
+#include "Engine/ECS/Components/PlayerComponent.h"
 #include "Engine/ECS/Base/GameObject.h"
 #include "Engine/ECS/Components/Collision/Rigidbody.h"
 #include "Engine/ECS/Components/Collision/SphereCollision.h"

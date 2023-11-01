@@ -15,6 +15,9 @@ public:
 	void Translate(float x, float y, float z);
 	void Translate(DirectX::XMFLOAT3 translation);
 
+	void TranslateWorld(float x, float y, float z);
+	void TranslateWorld(DirectX::XMFLOAT3 translation);
+
 	void RotateYaw(float angle);
 	void RotatePitch(float angle);
 	void RotateRoll(float angle);
@@ -30,6 +33,8 @@ public:
 
 	void SetScale(float x, float y, float z);
 	void SetScale(DirectX::XMFLOAT3 scale);
+
+	DirectX::XMFLOAT3 GetEulerAngles();
 
 	DirectX::XMFLOAT3 GetRight() { return m_Right; }
 	DirectX::XMFLOAT3 GetUp() { return m_Up; }

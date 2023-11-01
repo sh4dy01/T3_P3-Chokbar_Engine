@@ -173,18 +173,26 @@ bool InputHandler::IsKeyHeld(char key)
 /// </summary>
 void InputHandler::GetNormalizedMovement()
 {
+
 	POINT currentPos;
 	GetCursorPos(&currentPos);
-
 	ScreenToClient(m_WindowHandle, &currentPos);
 
-	float x = std::clamp((int)((currentPos.x - m_lastPos.x)), -SENSIBILITY, SENSIBILITY);
-	float y = std::clamp((int)((currentPos.y - m_lastPos.y)), -SENSIBILITY, SENSIBILITY);
+	RECT rect;
+	GetClientRect(m_WindowHandle, &rect);
+	POINT windowCenter = { rect.right / 2, rect.bottom / 2 };
 
-	m_deltaPosX = x / SENSIBILITY;
-	m_deltaPosY = y / SENSIBILITY;
+	DirectX::XMFLOAT2 delta;
 
-	m_lastPos = currentPos;
+	delta.x = std::clamp((int)std::abs(windowCenter.x - currentPos.x), -SENSIBILITY, SENSIBILITY);
+	if (currentPos.x < windowCenter.x)
+		delta.x *= -1;
+	delta.y = std::clamp((int)std::abs(windowCenter.y - currentPos.y), -SENSIBILITY, SENSIBILITY);
+	if (currentPos.y < windowCenter.y)
+		delta.y *= -1;
+
+	m_deltaPosX = delta.x / SENSIBILITY;
+	m_deltaPosY = delta.y / SENSIBILITY;
 }
 
 
