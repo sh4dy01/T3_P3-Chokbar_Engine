@@ -25,9 +25,9 @@ Transform::Transform()
 void Transform::Translate(float x, float y, float z)
 {
 	// Update the position vector
-	m_Position.x += x;
-	m_Position.y += y;
-	m_Position.z += z;
+	m_Position.x += x * m_Right.x;
+	m_Position.y += y * m_Up.y;
+	m_Position.z += z * m_Forward.z;
 	UpdatePositionMatrix();
 }
 

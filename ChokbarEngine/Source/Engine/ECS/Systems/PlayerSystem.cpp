@@ -24,6 +24,7 @@ void PlayerSystem::Update(float dt)
 		if (InputHandler::IsKeyHeld('z'))
 		{
 			transform->Translate(0, 0, player->Speed*dt);
+			//transform->
 		}
 		if (InputHandler::IsKeyHeld('s'))
 		{
@@ -37,5 +38,10 @@ void PlayerSystem::Update(float dt)
 		{
 			transform->Translate(player->Speed * dt, 0, 0);
 		}
+		//DEBUG_LOG(InputHandler::GetAxisX());
+		//DEBUG_LOG(InputHandler::GetAxisY());
+
+		transform->RotatePitch(InputHandler::GetAxisY() * 50.f * dt);
+		transform->RotateYaw(InputHandler::GetAxisX() * 50.f * dt);
 	}
 }
