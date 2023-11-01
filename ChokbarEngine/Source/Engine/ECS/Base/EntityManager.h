@@ -18,7 +18,7 @@ namespace Chokbar {
 	
 	public:
 
-		InstanceID CreateEntityWithTransform(GameObject* go);
+		InstanceID RegisterEntity(Object* go);
 		void DestroyEntity(InstanceID entity);
 		void SetSignature(InstanceID entity, Signature signature);
 		Signature GetSignature(InstanceID entity);
@@ -31,7 +31,7 @@ namespace Chokbar {
 		// Array with fixed size to store the signatures of each entity
 		std::array<Signature, MAX_ENTITIES> m_AllSignatures;
 
-		std::array<GameObject*, MAX_ENTITIES> m_LivingEntities = {};
+		std::array<Object*, MAX_ENTITIES> m_LivingEntities = {};
 
 		// Keep track of the number of living entities
 		uint32_t m_LivingEntityCount;

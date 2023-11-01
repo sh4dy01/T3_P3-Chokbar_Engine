@@ -438,7 +438,7 @@ void D3DApp::CreateResources()
 
 void D3DApp::GetMeshRenderersRef()
 {
-	m_meshRenderers = Chokbar::Engine::GetCoordinator()->GetAllComponentsOfType<MeshRenderer>()->GetAllData<MeshRenderer>();
+	m_meshRenderers = Chokbar::Engine::GetCoordinator()->GetAllComponentsOfType<MeshRenderer>()->GetAllData();
 }
 #pragma endregion
 
@@ -466,7 +466,7 @@ void D3DApp::UpdateRenderItems(const float dt, const float totalTime)
 {
 	for (const auto mr : *m_meshRenderers)
 	{
-		if (!mr || !mr->IsEnabled() || !mr->Mat || !mr->Mesh) return;
+		if (!mr || !mr->IsEnabled() || !mr->Mat || !mr->Mesh) continue;
 
 		if (mr->transform->IsDirty())
 			mr->transform->UpdateWorldMatrix();
@@ -477,7 +477,7 @@ void D3DApp::UpdateRenderItems(const float dt, const float totalTime)
 
 void D3DApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList)
 {
-	for (auto mr : *m_meshRenderers)
+	for (const auto mr : *m_meshRenderers)
 	{
 		if (!mr || !mr->IsEnabled() || !mr->Mat || !mr->Mesh) return;
 

@@ -6,6 +6,8 @@ Camera::Camera()
 {
 	m_CameraComponent = AddComponent<CameraComponent>();
 	m_PlayerComponent = AddComponent<PlayerComponent>();
+
+	m_Name = "Camera";
 }
 
 Camera::~Camera()
