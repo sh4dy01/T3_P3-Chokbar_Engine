@@ -48,7 +48,7 @@ void Application::PreInitialize()
 
 void Application::Initialize()
 {
-	auto *test = new GameObject("f");
+	auto *test = new GameObject("Pyr1");
 	auto *mr = new MeshRenderer(MeshType::PYRAMID, MaterialType::SIMPLE);
 	auto *rb = new Rigidbody();
 	auto *sphere = new Sphere(XMFLOAT3(0,0,0), 2.0f);
@@ -57,7 +57,7 @@ void Application::Initialize()
 	test->AddComponent<Sphere>(sphere);
 	test->transform->SetPosition(0, 0, 0);
 
-	auto *test2 = new GameObject("f");
+	auto *test2 = new GameObject("Pyr2");
 	auto *mr2 = new MeshRenderer(MeshType::PYRAMID, MaterialType::SIMPLE);
 	auto *rb2 = new Rigidbody();
 	auto *sphere2 = new Sphere(XMFLOAT3(0, 0, 0), 2.0f);
@@ -66,7 +66,7 @@ void Application::Initialize()
 	test2->AddComponent<Sphere>(sphere2);
 	test2->transform->SetPosition(0, 0, -2);
 
-	auto *test3 = new GameObject("f");
+	auto *test3 = new GameObject("Pyr3");
 	auto *mr3 = new MeshRenderer(MeshType::PYRAMID, MaterialType::SIMPLE);
 	auto *rb3 = new Rigidbody();
 	auto *sphere3 = new Sphere(XMFLOAT3(0, 0, 0), 2.0f);
