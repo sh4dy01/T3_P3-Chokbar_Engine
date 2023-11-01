@@ -17,25 +17,25 @@ void PlayerSystem::Update(float dt)
 {
 	for (const auto entity : m_RegisteredEntities)
 	{
-		//auto player = Chokbar::Engine::GetCoordinator()->GetComponent<PlayerComponent>(entity);
+		auto player = Chokbar::Engine::GetCoordinator()->GetComponent<PlayerComponent>(entity);
 		auto transform = Chokbar::Engine::GetCoordinator()->GetComponent<Transform>(entity);
 		//camera
 
 		if (InputHandler::IsKeyHeld('z'))
 		{
-			transform->RotatePitch(10 * dt);
+			transform->Translate(0, 0, player->Speed*dt);
 		}
 		if (InputHandler::IsKeyHeld('s'))
 		{
-			transform->RotatePitch(-10 * dt);
+			transform->Translate(0, 0, -player->Speed * dt);
 		}
 		if (InputHandler::IsKeyHeld('q'))
 		{
-			transform->RotateYaw(-10 * dt);
+			transform->Translate(-player->Speed * dt, 0, 0);
 		}
 		if (InputHandler::IsKeyHeld('d'))
 		{
-			transform->RotateYaw(10 * dt);
+			transform->Translate(player->Speed * dt, 0, 0);
 		}
 	}
 }
