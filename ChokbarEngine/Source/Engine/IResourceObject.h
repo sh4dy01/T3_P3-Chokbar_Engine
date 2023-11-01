@@ -3,11 +3,12 @@
 class IResourceObject
 {
 public:
-	IResourceObject(const std::wstring& filepath) : m_filepath(filepath) {}
+	IResourceObject(std::string name) : m_filepath(""), m_name(name) {}
 	virtual ~IResourceObject();
 
-	virtual void Load(const std::wstring& filepath) = 0;
+	virtual void Load(const std::string& filepath) = 0;
 
 protected:
-	const std::wstring& m_filepath;
+	std::string m_filepath;
+	std::string m_name;
 };
