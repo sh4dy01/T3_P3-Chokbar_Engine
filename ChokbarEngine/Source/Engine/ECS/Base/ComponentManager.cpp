@@ -11,6 +11,10 @@ namespace Chokbar {
 
 	ComponentManager::~ComponentManager()
 	{
+		for (auto const& pair : m_ComponentArrays)
+		{
+			delete pair.second;
+		}
 	}
 
 	void ComponentManager::EntityDestroyed(InstanceID entity)
