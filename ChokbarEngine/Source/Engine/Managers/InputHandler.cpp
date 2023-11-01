@@ -7,7 +7,7 @@ POINT InputHandler::m_lastPos = { 0, 0 };
 float InputHandler::m_deltaPosX = 0.0f;
 float InputHandler::m_deltaPosY = 0.0f;
 
-std::vector<char> InputHandler::m_KeyboardInput = { 'Z', 'Q', 'S', 'D', VK_LBUTTON, VK_RBUTTON };
+std::vector<char> InputHandler::m_KeyboardInput = { 'Z', 'Q', 'S', 'D', VK_SHIFT, VK_SPACE ,VK_LBUTTON, VK_RBUTTON };
 std::vector<InputHandler::KeyState> InputHandler::m_KeyStates = {};
 
 
@@ -28,6 +28,7 @@ InputHandler::InputHandler()
 void InputHandler::Init(HWND windowHandle)
 {
 	m_WindowHandle = windowHandle;
+	m_IsFocus = false;
 }
 
 /// <summary>
@@ -42,6 +43,17 @@ void InputHandler::Update(float dt)
 	if (m_timer > m_mouseRefresh)
 	{
 		GetNormalizedMovement();
+
+		if (m_IsFocus)
+		{
+			RECT rect;
+			GetClientRect(m_WindowHandle, &rect);
+			POINT windowCenter = { rect.right / 2, rect.bottom / 2 };
+
+			ClientToScreen(m_WindowHandle, &windowCenter);
+			SetCursorPos(windowCenter.x, windowCenter.y);
+		}
+
 		m_timer = 0.0f;
 	}
 }
@@ -79,6 +91,29 @@ void InputHandler::CheckInput()
 			}
 		}
 	}
+}
+
+void InputHandler::CaptureCursor()
+{
+	m_IsFocus = true;
+
+	RECT rect;
+	GetClientRect(m_WindowHandle, &rect);
+	POINT windowCenter = { rect.right / 2, rect.bottom / 2 };
+
+	ClientToScreen(m_WindowHandle, &windowCenter);
+
+	RECT clipRect = { windowCenter.x - rect.right / 2, windowCenter.y - rect.bottom / 2, windowCenter.x + rect.right / 2, windowCenter.y + rect.bottom / 2 };
+	ClipCursor(&clipRect);
+
+	m_lastPos = windowCenter;
+}
+
+void InputHandler::ReleaseCursor()
+{
+	m_IsFocus = false;
+
+	ClipCursor(nullptr); // Libérez le mouvement du curseur.
 }
 
 /// <summary>
@@ -152,6 +187,7 @@ void InputHandler::GetNormalizedMovement()
 	m_lastPos = currentPos;
 }
 
+
 /// <summary>
 /// Retrieves the normalized x-coordinate of the mouse movement.
 /// </summary>
@@ -178,4 +214,32 @@ float InputHandler::GetAxisX()
 float InputHandler::GetAxisY()
 {
 	return m_deltaPosY;
+}
+
+void InputHandler::EnableCursor()
+{
+	if (!m_IsEnabled)
+	{
+		ShowCursor();
+		m_IsEnabled = true;
+	}
+}
+
+void InputHandler::DisableCursor()
+{
+	if (m_IsEnabled)
+	{
+		HideCursor();
+		m_IsEnabled = false;
+	}
+}
+
+void InputHandler::HideCursor()
+{
+	while (::ShowCursor(false) >= 0);
+}
+
+void InputHandler::ShowCursor()
+{
+	while (::ShowCursor(true) < 0);
 }

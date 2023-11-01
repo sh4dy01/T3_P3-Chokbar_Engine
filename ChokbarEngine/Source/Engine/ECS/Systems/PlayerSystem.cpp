@@ -38,6 +38,14 @@ void PlayerSystem::Update(float dt)
 		{
 			transform->Translate(player->Speed * dt, 0, 0);
 		}
+		if (InputHandler::IsKeyHeld(VK_SHIFT))
+		{
+			transform->Translate(0, -player->Speed * dt, 0);
+		}
+		if (InputHandler::IsKeyHeld(VK_SPACE))
+		{
+			transform->Translate(0, player->Speed * dt, 0);
+		}
 		//DEBUG_LOG(InputHandler::GetAxisX());
 		//DEBUG_LOG(InputHandler::GetAxisY());
 

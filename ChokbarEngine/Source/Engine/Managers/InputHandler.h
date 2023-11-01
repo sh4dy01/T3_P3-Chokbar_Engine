@@ -31,12 +31,24 @@ public:
 	static float GetAxisX();
 	static float GetAxisY();
 
+	void CaptureCursor();
+	void ReleaseCursor();
+
+	void EnableCursor();
+	void DisableCursor();
+
 private:
 
 	void CheckInput();
 	void GetNormalizedMovement();
 
+	void HideCursor();
+	void ShowCursor();
+
+
 private:
+
+	bool m_IsFocus;
 
 	static std::vector<char> m_KeyboardInput;
 	static std::vector<KeyState> m_KeyStates;
@@ -51,5 +63,7 @@ private:
 	const float m_mouseRefresh = 0.1f;
 
 	HWND m_WindowHandle;
+
+	bool m_IsEnabled = false;
 
 };

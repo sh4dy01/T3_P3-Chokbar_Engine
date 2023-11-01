@@ -14,13 +14,11 @@ public:
 
 	const XMFLOAT3& GetCenter() const;
 	float GetRadius() const;
+	BoundingSphere* GetBoundingSphere() { return &m_sphere; }
 
 	void setCenter(const XMFLOAT3& center);
 	void setRadius(float radius);
 
-	bool AreSpheresColliding(const Sphere& other) const;
-
-	bool Intersects(const CollisionShape& other) const override;
 private:
 	BoundingSphere m_sphere;
 };

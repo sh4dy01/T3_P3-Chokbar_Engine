@@ -81,21 +81,19 @@ namespace Win32
 		{
 		case WM_QUIT:
 			break;
+		case WM_SETFOCUS:
+			Engine::GetInstance()->OnApplicationFocus();
+			break;
+
+		case WM_KILLFOCUS:
+			Engine::GetInstance()->OnApplicationLostFocus();
+			break;
 		case WM_CLOSE:
 			window->needsToClose = true;
 			PostQuitMessage(0);
 			break;
 		case WM_DESTROY:
 			break;
-			switch (message)
-			{
-			case WM_QUIT:
-				break;
-			case WM_CLOSE:
-			case WM_DESTROY:
-				PostQuitMessage(0);
-				break;
-			}
 		}
 
 		return DefWindowProcW(hwnd, message, wParam, lParam);
