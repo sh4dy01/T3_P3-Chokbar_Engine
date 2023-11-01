@@ -21,7 +21,7 @@ public:
 	std::string GetName() { return m_Name; }
 	void SetName(const std::string& name) { m_Name = name; }
 
-	InstanceID GetInstanceID() { return m_InstanceID; }
+	InstanceID GetInstanceID() const { return m_InstanceID; }
 
 protected:
 
