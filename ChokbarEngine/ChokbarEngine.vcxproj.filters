@@ -241,9 +241,6 @@
     <ClCompile Include="Source\Engine\ECS\Systems\PlayerSystem.cpp">
       <Filter>Source\Engine\ECS\Systems\Private</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Managers\GameObjectsManager.cpp">
-      <Filter>Source\Engine\Managers\Private</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Chokbar.h">
@@ -399,9 +396,6 @@
     </ClInclude>
     <ClInclude Include="Source\Core\D3D\MaterialType.h">
       <Filter>Source\Engine\Core\D3D</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Engine\Managers\GameObjectsManager.h">
-      <Filter>Source\Engine\Managers\Public</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

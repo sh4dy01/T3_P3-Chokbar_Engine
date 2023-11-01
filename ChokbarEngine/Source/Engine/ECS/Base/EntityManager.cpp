@@ -25,7 +25,7 @@ namespace Chokbar {
 		}
 	}
 
-	InstanceID EntityManager::CreateEntityWithTransform(GameObject* go)
+	InstanceID EntityManager::RegisterEntity(Object* go)
 	{
 		assert(m_LivingEntityCount < MAX_ENTITIES && "Entities limit exceeded");
 

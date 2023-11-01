@@ -3,15 +3,13 @@
 
 
 Chokbar::GameObject::GameObject()
-	: transform(nullptr)
+	: transform(AddComponent<Transform>())
 {
-	m_InstanceID = Chokbar::Engine::GetInstance()->GetCoordinator()->CreateNewGameObjectWithTransform(this);
 }
 
 Chokbar::GameObject::GameObject(const std::string& name)
-	: Object(name), transform(nullptr)
+	: Object(name), transform(AddComponent<Transform>())
 {
-	m_InstanceID = Chokbar::Engine::GetInstance()->GetCoordinator()->CreateNewGameObjectWithTransform(this);
 }
 
 

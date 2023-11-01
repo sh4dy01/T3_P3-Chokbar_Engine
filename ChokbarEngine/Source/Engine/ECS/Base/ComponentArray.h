@@ -71,7 +71,6 @@ namespace Chokbar {
 			}
 		}
 
-		template<class T>
 		std::array<T*, MAX_ENTITIES>* GetAllData()
 		{
 		// Get a pointer to a list of all components of type
