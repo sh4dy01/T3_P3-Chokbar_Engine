@@ -26,6 +26,8 @@ namespace Chokbar {
 
 		~GameObject();
 
+		static GameObject* Instantiate();
+		static GameObject* Instantiate(const std::string& name);
 		static GameObject* Instantiate(GameObject original);
 		//static Object Instantiate(GameObject original, Transform parent);
 		//static Object Instantiate(Object original, Transform parent, bool instantiateInWorldSpace);
