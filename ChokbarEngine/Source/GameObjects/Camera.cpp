@@ -1,11 +1,11 @@
 #include "Chokbar.h"
 #include "GameObjects/Camera.h"
 
-
-Camera::Camera()
-	: GameObject("camera"), m_CameraComponent(AddComponent<CameraComponent>()), m_PlayerComponent(AddComponent<PlayerComponent>())
+Camera::Camera(const std::string& name)
+	: GameObject(name), m_CameraComponent(AddComponent<CameraComponent>()), m_PlayerComponent(AddComponent<PlayerComponent>())
 {
-	m_CameraComponent->LookAt(transform->GetPosition());
+	//transform->SetPosition(0, 0, -2);
+	m_CameraComponent->LookAt(transform->GetPosition(), { 0, 0, 0 }, { 0, 1, 0 });
 	//transform->Rotate(0, 0, 90);
 }
 

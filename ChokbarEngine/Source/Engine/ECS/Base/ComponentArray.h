@@ -33,10 +33,13 @@ namespace Chokbar {
 		{
 			const size_t indexOfRemovedEntity = m_EntityToIndexMap[entity];
 			const size_t indexOfLastElement = m_Size - 1;
+
+			delete m_ComponentArray[indexOfRemovedEntity];
+
 			m_ComponentArray[indexOfRemovedEntity] = m_ComponentArray[indexOfLastElement];
 
 			// Update map to point to moved spot
-			InstanceID entityOfLastElement = m_IndexToEntityMap[indexOfLastElement];
+			const InstanceID entityOfLastElement = m_IndexToEntityMap[indexOfLastElement];
 			m_EntityToIndexMap[entityOfLastElement] = indexOfRemovedEntity;
 			m_IndexToEntityMap[indexOfRemovedEntity] = entityOfLastElement;
 
@@ -71,7 +74,6 @@ namespace Chokbar {
 			}
 		}
 
-		template<class T>
 		std::array<T*, MAX_ENTITIES>* GetAllData()
 		{
 		// Get a pointer to a list of all components of type
