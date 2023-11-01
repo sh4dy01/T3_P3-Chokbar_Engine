@@ -1,6 +1,8 @@
 #include "Chokbar.h"
 #include "ComponentManager.h"
 
+#include <ranges>
+
 namespace Chokbar {
 	ComponentManager::ComponentManager()
 		: m_NextComponentType(0)
@@ -11,10 +13,6 @@ namespace Chokbar {
 
 	ComponentManager::~ComponentManager()
 	{
-		for (auto const& pair : m_ComponentArrays)
-		{
-			delete pair.second;
-		}
 	}
 
 	void ComponentManager::EntityDestroyed(InstanceID entity)
