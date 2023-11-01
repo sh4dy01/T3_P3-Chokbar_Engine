@@ -28,6 +28,7 @@ InputHandler::InputHandler()
 void InputHandler::Init(HWND windowHandle)
 {
 	m_WindowHandle = windowHandle;
+	m_IsFocus = false;
 }
 
 /// <summary>
@@ -42,6 +43,17 @@ void InputHandler::Update(float dt)
 	if (m_timer > m_mouseRefresh)
 	{
 		GetNormalizedMovement();
+
+		if (m_IsFocus)
+		{
+			RECT rect;
+			GetClientRect(m_WindowHandle, &rect);
+			POINT windowCenter = { rect.right / 2, rect.bottom / 2 };
+
+			ClientToScreen(m_WindowHandle, &windowCenter);
+			SetCursorPos(windowCenter.x, windowCenter.y);
+		}
+
 		m_timer = 0.0f;
 	}
 }
@@ -83,15 +95,15 @@ void InputHandler::CheckInput()
 
 void InputHandler::CaptureCursor()
 {
+	m_IsFocus = true;
+
 	RECT rect;
 	GetClientRect(m_WindowHandle, &rect);
 	POINT windowCenter = { rect.right / 2, rect.bottom / 2 };
 
 	ClientToScreen(m_WindowHandle, &windowCenter);
 
-	SetCursorPos(windowCenter.x, windowCenter.y);
-
-	RECT clipRect = { windowCenter.x, windowCenter.y, windowCenter.x + 1, windowCenter.y + 1 };
+	RECT clipRect = { windowCenter.x - rect.right / 2, windowCenter.y - rect.bottom / 2, windowCenter.x + rect.right / 2, windowCenter.y + rect.bottom / 2 };
 	ClipCursor(&clipRect);
 
 	m_lastPos = windowCenter;
@@ -99,6 +111,8 @@ void InputHandler::CaptureCursor()
 
 void InputHandler::ReleaseCursor()
 {
+	m_IsFocus = false;
+
 	ClipCursor(nullptr); // Libérez le mouvement du curseur.
 }
 
@@ -159,36 +173,18 @@ bool InputHandler::IsKeyHeld(char key)
 /// </summary>
 void InputHandler::GetNormalizedMovement()
 {
-	// Déterminez le centre de la fenêtre.
-	RECT rect;
-	GetClientRect(m_WindowHandle, &rect);
-	POINT windowCenter = { rect.right / 2, rect.bottom / 2 };
-
-	// Convertissez le point du centre en coordonnées écran pour SetCursorPos.
-	ClientToScreen(m_WindowHandle, &windowCenter);
-
-	// Obtenez la position actuelle de la souris.
 	POINT currentPos;
 	GetCursorPos(&currentPos);
+
 	ScreenToClient(m_WindowHandle, &currentPos);
 
-	// Calculez le mouvement delta.
-	float x = static_cast<float>(currentPos.x - windowCenter.x);
-	float y = static_cast<float>(currentPos.y - windowCenter.y);
+	float x = std::clamp((int)((currentPos.x - m_lastPos.x)), -SENSIBILITY, SENSIBILITY);
+	float y = std::clamp((int)((currentPos.y - m_lastPos.y)), -SENSIBILITY, SENSIBILITY);
 
-	// Clamp the delta movements with sensitivity.
-	x = std::clamp(x, (float) -SENSIBILITY, (float)SENSIBILITY);
-	y = std::clamp(y, (float)-SENSIBILITY, (float)SENSIBILITY);
-
-	// Update the member variables for delta positions.
 	m_deltaPosX = x / SENSIBILITY;
 	m_deltaPosY = y / SENSIBILITY;
 
-	// Remettez le curseur au centre de la fenêtre.
-	SetCursorPos(windowCenter.x, windowCenter.y);
-
-	// Mettez à jour la dernière position connue de la souris avec le centre de la fenêtre.
-	m_lastPos = windowCenter;
+	m_lastPos = currentPos;
 }
 
 

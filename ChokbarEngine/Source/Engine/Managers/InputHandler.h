@@ -48,6 +48,8 @@ private:
 
 private:
 
+	bool m_IsFocus;
+
 	static std::vector<char> m_KeyboardInput;
 	static std::vector<KeyState> m_KeyStates;
 

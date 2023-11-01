@@ -38,7 +38,7 @@ void PhysicsWorld::Update()
 					m_rigidbodies[i]->SetVelocity(XMFLOAT3(0, 0, 0));
 					//rigidbody->OnTriggerEnter(otherRigidbody);
 
-					DEBUG_LOG(m_rigidbodies[i]->gameObject->GetName() << " collided with " << m_rigidbodies[j]->gameObject->GetName());
+					//DEBUG_LOG(m_rigidbodies[i]->gameObject->GetName() << " collided with " << m_rigidbodies[j]->gameObject->GetName());
 				}
 			}
 		}

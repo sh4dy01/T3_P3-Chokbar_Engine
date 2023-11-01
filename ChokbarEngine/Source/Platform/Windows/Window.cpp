@@ -94,15 +94,6 @@ namespace Win32
 			break;
 		case WM_DESTROY:
 			break;
-			switch (message)
-			{
-			case WM_QUIT:
-				break;
-			case WM_CLOSE:
-			case WM_DESTROY:
-				PostQuitMessage(0);
-				break;
-			}
 		}
 
 		return DefWindowProcW(hwnd, message, wParam, lParam);
