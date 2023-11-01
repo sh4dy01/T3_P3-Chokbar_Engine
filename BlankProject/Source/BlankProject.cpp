@@ -60,15 +60,12 @@ void Application::Initialize()
 	test2->transform->SetPosition(0, 0, -2);*/
 
 
-	auto* test3 = new GameObject("f");
-	auto* mr3 = new MeshRenderer(MeshType::PYRAMID, MaterialType::SIMPLE);
-	test3->AddComponent<MeshRenderer>(mr3);
+	auto test3 = GameObject::Instantiate("test");
+	test3->AddComponent<MeshRenderer>(new MeshRenderer(MeshType::PYRAMID, MaterialType::SIMPLE));
 	test3->transform->SetScale(6, 6, 6);
-
 
 	//GameObject player = GameObject("player");
 	//player.AddComponent<PlayerComponent>();
-
 }
 
 void Application::Run()

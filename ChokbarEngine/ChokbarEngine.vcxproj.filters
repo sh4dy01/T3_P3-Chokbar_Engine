@@ -163,9 +163,6 @@
     <ClCompile Include="Source\Engine\ECS\Components\TransformComponent.cpp">
       <Filter>Source\Engine\ECS\Components</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\ECS\Components\MeshRenderer.cpp">
-      <Filter>Source\Engine\ECS\Components</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Engine\ECS\Components\PlayerComponent.cpp">
       <Filter>Source\Engine\ECS\Components</Filter>
     </ClCompile>

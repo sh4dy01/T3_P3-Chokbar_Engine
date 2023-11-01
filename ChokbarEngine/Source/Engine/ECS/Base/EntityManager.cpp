@@ -17,14 +17,23 @@ namespace Chokbar {
 
 	EntityManager::~EntityManager()
 	{
+		for (auto entity : m_LivingEntities) {
+			if (!entity) continue;
+
+			delete entity;
+			entity = nullptr;
+		}
 	}
 
-	InstanceID EntityManager::CreateEntity()
+	InstanceID EntityManager::RegisterEntity(Object* go)
 	{
 		assert(m_LivingEntityCount < MAX_ENTITIES && "Entities limit exceeded");
 
 		InstanceID id = m_AvailableEntities.front();
 		m_AvailableEntities.pop();
+
+		m_LivingEntities[id] = go;
+
 		++m_LivingEntityCount;
 
 		return id;
@@ -34,8 +43,12 @@ namespace Chokbar {
 	{
 		assert(entity < MAX_ENTITIES && "InstanceID id is out of range");
 
+		delete m_LivingEntities[entity];
+		m_LivingEntities[entity] = nullptr;
+
 		m_AllSignatures[entity].reset();	// Reset the signature == reset the entity
 		m_AvailableEntities.push(entity);	// entity's id now available
+
 		--m_LivingEntityCount;
 	}
 

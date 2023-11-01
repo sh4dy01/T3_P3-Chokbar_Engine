@@ -18,10 +18,10 @@ namespace Chokbar {
 		void Init();
 
 
-		// Create a new game object ID and add a default transform component
-		InstanceID CreateNewGameObjectWithTransform();
-		// Create a new game object ID and add a copied transform component
-		InstanceID CreateNewGameObjectWithTransform(Transform* transform);
+		// Create a new game object ID
+		InstanceID CreateNewObject(Object* go) const;
+		// Create a new game object ID
+		//GameObject* CreateNewObject(Transform* transform);
 		void UpdateSystems(float dt);
 		void DestroyEntity(InstanceID entity);
 
