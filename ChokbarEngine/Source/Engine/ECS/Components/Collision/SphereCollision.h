@@ -10,7 +10,6 @@ using namespace DirectX;
 class Sphere : public CollisionShape
 {
 public:
-	Sphere();
 	Sphere(const XMFLOAT3& center, float radius);
 
 	const XMFLOAT3& GetCenter() const;

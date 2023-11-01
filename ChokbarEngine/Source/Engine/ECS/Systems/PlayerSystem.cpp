@@ -23,19 +23,28 @@ void PlayerSystem::Update(float dt)
 
 		if (InputHandler::IsKeyHeld('z'))
 		{
-			transform->RotatePitch(10 * dt);
+			transform->Translate(0, 0, -1 * dt);
 		}
 		if (InputHandler::IsKeyHeld('s'))
 		{
-			transform->RotatePitch(-10 * dt);
+			transform->Translate(0, 0, 1 * dt);
 		}
 		if (InputHandler::IsKeyHeld('q'))
 		{
-			transform->RotateYaw(-10 * dt);
+			transform->Translate(1 * dt, 0, 0);
 		}
 		if (InputHandler::IsKeyHeld('d'))
 		{
-			transform->RotateYaw(10 * dt);
+			transform->Translate(-1 * dt, 0, 0);
 		}
+		if (InputHandler::IsKeyHeld(VK_SHIFT))
+		{
+			transform->Translate(0, 1 * dt, 0);
+		}
+		if (InputHandler::IsKeyHeld(VK_SPACE))
+		{
+			transform->Translate(0, -1 * dt, 0);
+		}
+
 	}
 }

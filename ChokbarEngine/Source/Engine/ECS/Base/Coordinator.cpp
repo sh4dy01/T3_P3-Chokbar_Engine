@@ -40,7 +40,7 @@ namespace Chokbar
 		RegisterComponent<Transform>();
 		RegisterComponent<MeshRenderer>();
 		RegisterComponent<PlayerComponent>();
-		RegisterComponent<RigidBody>();
+		RegisterComponent<Rigidbody>();
 		RegisterComponent<Sphere>();
 		RegisterComponent<CameraComponent>();
 	}

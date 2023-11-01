@@ -2,11 +2,6 @@
 #include "SphereCollision.h"
 
 
-Sphere::Sphere()
-	: m_sphere()
-{
-	m_type = ShapeType::Sphere;
-}
 /// <summary>
 /// Constructs a Sphere object with a specified center and radius.
 /// </summary>

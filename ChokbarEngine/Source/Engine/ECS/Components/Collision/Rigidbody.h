@@ -3,11 +3,11 @@
 #include <DirectXMath.h>
 using namespace DirectX;
 
-class RigidBody : public Component
+class Rigidbody : public Component
 {
 public:
-    RigidBody();
-    ~RigidBody();
+    Rigidbody();
+    ~Rigidbody();
 
     void RegisterCollisionShape(CollisionShape* shape);
     void RemoveCollisionShape(CollisionShape* shape);

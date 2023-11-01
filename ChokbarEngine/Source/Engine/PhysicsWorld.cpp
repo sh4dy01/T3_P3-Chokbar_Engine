@@ -45,19 +45,19 @@ void PhysicsWorld::Update()
 	}
 }
 
-void PhysicsWorld::RegisterRigidBody(RigidBody* rigidbody)
+void PhysicsWorld::RegisterRigidBody(Rigidbody* rigidbody)
 {
     m_rigidbodies.push_back(rigidbody);
 }
 
-void PhysicsWorld::RemoveRigidBody(RigidBody* rigidbody)
+void PhysicsWorld::RemoveRigidBody(Rigidbody* rigidbody)
 {
     m_rigidbodies.erase(std::remove(m_rigidbodies.begin(), m_rigidbodies.end(), rigidbody), m_rigidbodies.end());
 }
 
 
 
-bool PhysicsWorld::DetectCollision(RigidBody* rbA, RigidBody* rbB) const
+bool PhysicsWorld::DetectCollision(Rigidbody* rbA, Rigidbody* rbB) const
 {
 	// si true 
 	// rigidbody->setveloc 0

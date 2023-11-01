@@ -19,10 +19,10 @@ public:
 
     void Update();
 
-    void RegisterRigidBody(RigidBody* rigidbody);
-    void RemoveRigidBody(RigidBody* rigidbody);
+    void RegisterRigidBody(Rigidbody* rigidbody);
+    void RemoveRigidBody(Rigidbody* rigidbody);
 
-    bool DetectCollision(RigidBody* rbA, RigidBody* rbB) const;
+    bool DetectCollision(Rigidbody* rbA, Rigidbody* rbB) const;
 
     bool AreSpheresColliding(Sphere* sphere1, Sphere* sphere2) const;
 private:
@@ -30,7 +30,7 @@ private:
     //    std::list<CollisionShape*> objects;
     //};
 
-    std::vector<RigidBody*> m_rigidbodies;
+    std::vector<Rigidbody*> m_rigidbodies;
     int m_gridSize;
     float m_cellSize;
     //SpatialGridCell*** m_grid;

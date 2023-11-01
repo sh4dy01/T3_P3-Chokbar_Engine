@@ -73,6 +73,34 @@ namespace Win32
 		RegisterClassEx(&wcex);
 	}
 
+	void Window::EnableCursor()
+	{
+		if (!isEnabled)
+		{
+			ShowCursor();
+			isEnabled = true;
+		}
+	}
+
+	void Window::DisableCursor()
+	{
+		if (isEnabled)
+		{
+			HideCursor();
+			isEnabled = false;
+		}
+	}
+
+	void Window::HideCursor()
+	{
+		while (::ShowCursor(false) >= 0);
+	}
+
+	void Window::ShowCursor()
+	{
+		while (::ShowCursor(true) < 0);
+	}
+
 	LRESULT CALLBACK Window::WindowProcedure(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 		Window* window = reinterpret_cast<Window*>(GetWindowLongPtr(hwnd, GWLP_USERDATA));

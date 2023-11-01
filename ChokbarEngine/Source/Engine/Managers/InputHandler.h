@@ -35,6 +35,8 @@ private:
 
 	void CheckInput();
 	void GetNormalizedMovement();
+	void CaptureCursor();
+	void ReleaseCursor();
 
 private:
 

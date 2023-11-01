@@ -9,7 +9,7 @@ CollisionShape::CollisionShape()
 
 void CollisionShape::OnAddedComponent()
 {
-	RigidBody* rigidbody = gameObject->GetComponent<RigidBody>();
+	Rigidbody* rigidbody = gameObject->GetComponent<Rigidbody>();
 	rigidbody->RegisterCollisionShape(this);
 }
 

@@ -56,5 +56,7 @@ namespace Chokbar
 		InputHandler m_InputHandler;
 
 		PhysicsWorld m_PhysicsWorld;
+
+		bool m_IsGamePaused = false;
 	};
 }
