@@ -9,50 +9,39 @@ PhysicsWorld::PhysicsWorld()
 }
 
 PhysicsWorld::PhysicsWorld(int gridSize, float cellSize)
-    : m_gridSize(gridSize), m_cellSize(cellSize) 
+	: m_gridSize(gridSize), m_cellSize(cellSize)
 {
 
 }
 
-PhysicsWorld::~PhysicsWorld() 
+PhysicsWorld::~PhysicsWorld()
 {
-    for (auto& rigidbody : m_rigidbodies)
-    {
+	for (auto& rigidbody : m_rigidbodies)
+	{
 		delete rigidbody;
 		rigidbody = nullptr;
 	}
 }
 
-void PhysicsWorld::Update() 
+void PhysicsWorld::Update(float dt)
 {
-	if (m_rigidbodies.size() >= 2)
+	m_updateRate = 0.02f;
+	m_timer += dt;
+	if (m_timer >= m_updateRate)
 	{
-		for (int i = 0 ; i < m_rigidbodies.size(); i++)
-		{
-			for (int j = 0; j < m_rigidbodies.size(); j++)
-			{
-				if (i == j) continue;
-
-				if (DetectCollision(m_rigidbodies[i], m_rigidbodies[j]))
-				{
-					m_rigidbodies[i]->SetVelocity(XMFLOAT3(0, 0, 0));
-					//rigidbody->OnTriggerEnter(otherRigidbody);
-
-					//DEBUG_LOG(m_rigidbodies[i]->gameObject->GetName() << " collided with " << m_rigidbodies[j]->gameObject->GetName());
-				}
-			}
-		}
+		CheckCollision();
+		m_timer = 0.0f;
 	}
 }
 
 void PhysicsWorld::RegisterRigidBody(Rigidbody* rigidbody)
 {
-    m_rigidbodies.push_back(rigidbody);
+	m_rigidbodies.push_back(rigidbody);
 }
 
 void PhysicsWorld::RemoveRigidBody(Rigidbody* rigidbody)
 {
-    m_rigidbodies.erase(std::remove(m_rigidbodies.begin(), m_rigidbodies.end(), rigidbody), m_rigidbodies.end());
+	m_rigidbodies.erase(std::remove(m_rigidbodies.begin(), m_rigidbodies.end(), rigidbody), m_rigidbodies.end());
 }
 
 
@@ -94,9 +83,28 @@ bool PhysicsWorld::DetectCollision(Rigidbody* rbA, Rigidbody* rbB) const
 
 		}
 	}
+}
 
+void PhysicsWorld::CheckCollision()
+{
+	if (m_rigidbodies.size() >= 2)
+	{
+		for (int i = 0; i < m_rigidbodies.size(); i++)
+		{
+			for (int j = 0; j < m_rigidbodies.size(); j++)
+			{
+				if (i == j) continue;
 
+				if (DetectCollision(m_rigidbodies[i], m_rigidbodies[j]))
+				{
+					m_rigidbodies[i]->SetVelocity(XMFLOAT3(0, 0, 0));
+					//rigidbody->OnTriggerEnter(otherRigidbody);
 
+					//DEBUG_LOG(m_rigidbodies[i]->gameObject->GetName() << " collided with " << m_rigidbodies[j]->gameObject->GetName());
+				}
+			}
+		}
+	}
 }
 
 bool PhysicsWorld::AreSpheresColliding(Sphere* sphere1, Sphere* sphere2) const

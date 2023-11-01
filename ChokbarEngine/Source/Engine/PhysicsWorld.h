@@ -17,12 +17,14 @@ public:
     PhysicsWorld(int gridSize, float cellSize);
     ~PhysicsWorld();
 
-    void Update();
+    void Update(float dt);
 
     void RegisterRigidBody(Rigidbody* rigidbody);
     void RemoveRigidBody(Rigidbody* rigidbody);
 
     bool DetectCollision(Rigidbody* rbA, Rigidbody* rbB) const;
+
+    void CheckCollision();
 
     bool AreSpheresColliding(Sphere* sphere1, Sphere* sphere2) const;
 private:
@@ -33,6 +35,8 @@ private:
     std::vector<Rigidbody*> m_rigidbodies;
     int m_gridSize;
     float m_cellSize;
+    float m_timer;
+    float m_updateRate;
     //SpatialGridCell*** m_grid;
 
     //SpatialGridCell& getCellForPosition(const XMFLOAT3& position);
