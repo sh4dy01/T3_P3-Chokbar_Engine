@@ -6,7 +6,7 @@
 
 struct Texture;
 
-enum VertexType { POS, POS_COLOR, POS_TEX, POS_NORM_TEX, POS_NORM_TEX_TAN };
+enum VertexType { POS, POS_COLOR, POS_TEX, POS_NORM_TEX, POS_NORM_TAN_TEX };
 
 struct ShaderDrawArguments
 {

@@ -48,11 +48,11 @@ void Application::PreInitialize()
 void Application::Initialize()
 {
 	auto* test = new GameObject("f");
-	auto* mr = new MeshRenderer(MeshType::CUBE, MaterialType::TEXTURE);
+	auto* mr = new MeshRenderer(MeshType::SPHERE, MaterialType::TEXTURE);
 	test->AddComponent<MeshRenderer>(mr);
-	std::string path = "Resources/Textures/angry_winnie.dds";
+	std::string path = "Resources/Textures/mars.dds";
 	test->GetComponent<MeshRenderer>()->RegisterTexture(Resource::Load<Texture>(path));
-	test->transform->SetPosition(0, 0, 4);
+	test->transform->SetPosition(0, 0, 2);
 
 	/*auto* test2 = new GameObject("f");
 	auto* mr2 = new MeshRenderer(MeshType::PYRAMID, MaterialType::SIMPLE);
@@ -63,7 +63,6 @@ void Application::Initialize()
 	auto* test3 = new GameObject("f");
 	auto* mr3 = new MeshRenderer(MeshType::PYRAMID, MaterialType::SIMPLE);
 	test3->AddComponent<MeshRenderer>(mr3);
-	//test2->transform->SetPosition(-2, 1, -2);
 	test3->transform->SetScale(6, 6, 6);
 
 

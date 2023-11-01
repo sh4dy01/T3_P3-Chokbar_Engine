@@ -9,24 +9,6 @@
 
 static class GeometryHandler
 {
-	struct MeshData
-	{
-		std::vector<Vertex> Vertices;
-		std::vector<UINT> Indices16;
-	};
-
-	struct MeshData_Color
-	{
-		std::vector<Vertex_Color> Vertices;
-		std::vector<UINT> Indices16;
-	};
-
-	struct MeshData_UV
-	{
-		std::vector<Vertex_UV> Vertices;
-		std::vector<UINT> Indices16;
-	};
-
 public:
 
 	static void CreateAllMeshes();
@@ -36,6 +18,12 @@ public:
 private:
 
 	static D3DMesh* CreateCube();
+
+	static D3DMesh* CreateUVSphere();
+	static D3DMesh* CreateGeoSphere();
+	static void Subdivide(std::vector<Vertex>& vertices, std::vector<UINT>& indices);
+	static Vertex MidPoint(const Vertex& v0, const Vertex& v1);
+
 	static D3DMesh* CreatePyramid();
 
 private:

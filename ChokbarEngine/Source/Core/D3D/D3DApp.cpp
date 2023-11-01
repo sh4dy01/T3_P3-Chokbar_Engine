@@ -433,7 +433,7 @@ void D3DApp::CreateResources()
 
 	auto& shaders = Resource::GetShaders();
 	shaders[SIMPLE]->CreatePsoAndRootSignature(VertexType::POS_COLOR, m_BackBufferFormat, m_DepthStencilFormat);
-	shaders[TEXTURE]->CreatePsoAndRootSignature(VertexType::POS_TEX, m_BackBufferFormat, m_DepthStencilFormat);
+	shaders[TEXTURE]->CreatePsoAndRootSignature(VertexType::POS_NORM_TAN_TEX, m_BackBufferFormat, m_DepthStencilFormat);
 }
 
 void D3DApp::GetMeshRenderersRef()
