@@ -7,7 +7,7 @@ class Camera : public Chokbar::GameObject
 {
 public:
 
-	Camera();
+	Camera(const std::string& name);
 	~Camera();
 
 	CameraComponent* GetCameraComponent() const { return m_CameraComponent; }
