@@ -18,7 +18,7 @@ namespace Chokbar {
 	EntityManager::~EntityManager()
 	{
 		for (auto entity : m_LivingEntities) {
-			if (entity == nullptr) continue;
+			if (!entity) continue;
 
 			delete entity;
 			entity = nullptr;
