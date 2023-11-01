@@ -66,7 +66,7 @@ namespace Chokbar
 		PreInitialize();
 
 		m_Coordinator.Init();
-		m_CameraManager.SetMainCamera(new Camera("MainCamera"));
+		m_CameraManager.CreateDefaultCamera();
 
 		m_Window.CreateNewWindow(DEFAULT_WIDTH, DEFAULT_HEIGHT, PerGameSettings::GameName(), PerGameSettings::MainIcon(), Win32::RESIZABLE);
 		m_InputHandler.Init(m_Window.GetHandle());
