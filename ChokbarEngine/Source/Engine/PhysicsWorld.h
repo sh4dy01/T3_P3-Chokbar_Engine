@@ -10,36 +10,68 @@
 #include <vector>
 #include <algorithm>
 
+
+enum CollisionState {
+    Enter,
+    Stay,
+    Exit
+};
+
+struct CollisionInfo
+{
+    CollisionInfo(CollisionShape* colliderA, CollisionShape* colliderB)
+		: State(Enter), ColliderA(colliderA), ColliderB(colliderB)
+    {
+	    
+    }
+
+    CollisionState State;
+    CollisionShape* ColliderA;
+    CollisionShape* ColliderB;
+};
+
 class PhysicsWorld 
 {
 public:
+
     PhysicsWorld();
     PhysicsWorld(int gridSize, float cellSize);
     ~PhysicsWorld();
 
-    void Update(float dt);
-
     void RegisterRigidBody(Rigidbody* rigidbody);
     void RemoveRigidBody(Rigidbody* rigidbody);
 
-    bool DetectCollision(Rigidbody* rbA, Rigidbody* rbB);
+    void Update(float dt);
+   
+private:
 
     void CheckCollision();
+    bool CheckCollisionShape(Rigidbody* rbA, Rigidbody* rbB);
+    void HandleCollision(CollisionShape* sphereA, CollisionShape* sphereB);
 
     bool AreSpheresColliding(Sphere* sphere1, Sphere* sphere2) const;
+
+    void CreateNewCollisionInfo(CollisionShape* sphereA, CollisionShape* sphereB);
+    CollisionInfo* GetCollisionInfo(const CollisionShape* sphereA, const CollisionShape* sphereB) const;
+
+
 private:
+
+    const float UPDATE_RATE = 0.02f;
+
     //struct SpatialGridCell {
-    //    std::list<CollisionShape*> objects;
-    //};
+//    std::list<CollisionShape*> objects;
+//};
 
     std::vector<Rigidbody*> m_rigidbodies;
+    std::vector<CollisionInfo*> m_RegisteredCollisionInfos;
+
+    CollisionInfo* m_CurrentCollisionInfo;
+
     int m_gridSize;
     float m_cellSize;
     float m_timer;
-    float m_updateRate;
 
-    CollisionShape* m_collisionShapeA;
-    CollisionShape* m_collisionShapeB;
 
 
     //SpatialGridCell*** m_grid;

@@ -2,16 +2,23 @@
 
 #include <DirectXMath.h>
 #include <functional>
+
 using namespace DirectX;
 
 class Rigidbody : public Component
 {
 public:
+
     Rigidbody();
-    ~Rigidbody();
+    ~Rigidbody() override;
 
     void RegisterCollisionShape(CollisionShape* shape);
     void RemoveCollisionShape(CollisionShape* shape);
+
+    void RegisterOnTriggerCallback(const std::function<void(CollisionShape*)>& callback);
+
+    void CallOnCollisionEnter(CollisionShape*);
+
 
     XMFLOAT3 GetPosition() const;
     void SetPosition(const XMFLOAT3& position);
@@ -35,6 +42,9 @@ public:
 private:
 
     std::vector<CollisionShape*> m_collisionShapes;
+    std::vector<std::function<void(CollisionShape*)>> m_OnTriggerCallback;
+
+    //std::vector<std::function<void(CollisionShape*)>> m_OnCollisionCallback;
 
     XMFLOAT3 m_position;
     XMFLOAT3 m_velocity;
