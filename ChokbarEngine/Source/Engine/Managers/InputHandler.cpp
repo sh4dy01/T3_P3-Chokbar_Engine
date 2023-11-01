@@ -219,3 +219,31 @@ float InputHandler::GetAxisY()
 {
 	return m_deltaPosY;
 }
+
+void InputHandler::EnableCursor()
+{
+	if (!m_IsEnabled)
+	{
+		ShowCursor();
+		m_IsEnabled = true;
+	}
+}
+
+void InputHandler::DisableCursor()
+{
+	if (m_IsEnabled)
+	{
+		HideCursor();
+		m_IsEnabled = false;
+	}
+}
+
+void InputHandler::HideCursor()
+{
+	while (::ShowCursor(false) >= 0);
+}
+
+void InputHandler::ShowCursor()
+{
+	while (::ShowCursor(true) < 0);
+}

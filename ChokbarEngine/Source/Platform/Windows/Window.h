@@ -14,9 +14,6 @@ namespace Win32
 		void PollEvent();
 		bool NeedsToClose() const { return needsToClose; }
 
-		void EnableCursor();
-		void DisableCursor();
-
 	protected:
 
 		static LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
@@ -24,10 +21,6 @@ namespace Win32
 	private:
 
 		void RegisterNewClass();
-
-		void ShowCursor();
-		void HideCursor();
-
 
 	protected:
 
@@ -42,8 +35,6 @@ namespace Win32
 	private:
 
 		bool			needsToClose = false;
-		bool			isEnabled = false;
-
 
 	public:
 

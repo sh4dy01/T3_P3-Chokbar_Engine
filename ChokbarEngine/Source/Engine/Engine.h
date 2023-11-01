@@ -29,6 +29,9 @@ namespace Chokbar
 		void Run();
 		void Shutdown();
 
+		void OnApplicationFocus();
+		void OnApplicationLostFocus();
+
 	protected:
 		void PreInitialize();
 

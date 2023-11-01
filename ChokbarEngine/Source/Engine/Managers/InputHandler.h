@@ -31,12 +31,20 @@ public:
 	static float GetAxisX();
 	static float GetAxisY();
 
+	void CaptureCursor();
+	void ReleaseCursor();
+
+	void EnableCursor();
+	void DisableCursor();
+
 private:
 
 	void CheckInput();
 	void GetNormalizedMovement();
-	void CaptureCursor();
-	void ReleaseCursor();
+
+	void HideCursor();
+	void ShowCursor();
+
 
 private:
 
@@ -53,5 +61,7 @@ private:
 	const float m_mouseRefresh = 0.1f;
 
 	HWND m_WindowHandle;
+
+	bool m_IsEnabled = false;
 
 };

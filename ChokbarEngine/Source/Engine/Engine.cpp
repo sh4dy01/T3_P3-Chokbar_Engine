@@ -170,4 +170,16 @@ namespace Chokbar
 	{
 	}
 
+	void Engine::OnApplicationFocus()
+	{
+		m_InputHandler.CaptureCursor();
+		DEBUG_LOG("Focus");
+	}
+
+	void Engine::OnApplicationLostFocus()
+	{
+		m_InputHandler.ReleaseCursor();
+		DEBUG_LOG("Lost Focus");
+	}
+
 }
