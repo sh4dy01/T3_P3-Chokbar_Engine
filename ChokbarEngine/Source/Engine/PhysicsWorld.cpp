@@ -41,28 +41,53 @@ void PhysicsWorld::RegisterRigidBody(Rigidbody* rigidbody)
 
 void PhysicsWorld::RemoveRigidBody(Rigidbody* rigidbody)
 {
-	m_rigidbodies.erase(std::remove(m_rigidbodies.begin(), m_rigidbodies.end(), rigidbody), m_rigidbodies.end());
+	std::erase(m_rigidbodies, rigidbody);
 }
 
+void PhysicsWorld::CheckCollision()
+{
+	if (m_rigidbodies.size() >= 2)
+	{
+		for (size_t i = 0; i < m_rigidbodies.size(); i++)
+		{
+			for (size_t j = 0; j < m_rigidbodies.size(); j++)
+			{
+				if (i == j) continue;
 
+				if (DetectCollision(m_rigidbodies[i], m_rigidbodies[j]))
+				{
+					m_rigidbodies[i]->SetVelocity(XMFLOAT3(0, 0, 0));
+					// m_rigidbodies[i]->CallOnCollisionEnter();
 
-bool PhysicsWorld::DetectCollision(Rigidbody* rbA, Rigidbody* rbB) const
+					//DEBUG_LOG(m_rigidbodies[i]->gameObject->GetName() << " collided with " << m_rigidbodies[j]->gameObject->GetName());
+				}
+			}
+		}
+	}
+}
+
+bool PhysicsWorld::DetectCollision(Rigidbody* rbA, Rigidbody* rbB)
 {
 	// si true 
 	// rigidbody->setveloc 0
 	// OnTriggerEnter
 
-	for (auto& shapeA : rbA->GetAllCollisionShape())
+	for (const auto& shapeA : rbA->GetAllCollisionShape())
 	{
-		for (auto& shapeB : rbB->GetAllCollisionShape())
+		for (const auto& shapeB : rbB->GetAllCollisionShape())
 		{
 			if (shapeA->GetType() == CollisionShape::ShapeType::Sphere && shapeB->GetType() == CollisionShape::ShapeType::Sphere)
 			{
-				auto sphereA = (Sphere*)shapeA;
-				auto sphereB = (Sphere*)shapeB;
+				auto sphereA = static_cast<Sphere*>(shapeA);
+				auto sphereB = static_cast<Sphere*>(shapeB);
 
-				return AreSpheresColliding(sphereA, sphereB);
+				if (AreSpheresColliding(sphereA, sphereB))
+				{
+					m_collisionShapeA = sphereA;
+					m_collisionShapeB = sphereB;
 
+					return true;
+				}
 			}
 			//          else if (shapeA->GetType() == CollisionShape::ShapeType::Sphere && shapeB->GetType() == CollisionShape::ShapeType::Box)
 			//          {
@@ -81,28 +106,6 @@ bool PhysicsWorld::DetectCollision(Rigidbody* rbA, Rigidbody* rbB) const
 				  //	}
 				  //}
 
-		}
-	}
-}
-
-void PhysicsWorld::CheckCollision()
-{
-	if (m_rigidbodies.size() >= 2)
-	{
-		for (int i = 0; i < m_rigidbodies.size(); i++)
-		{
-			for (int j = 0; j < m_rigidbodies.size(); j++)
-			{
-				if (i == j) continue;
-
-				if (DetectCollision(m_rigidbodies[i], m_rigidbodies[j]))
-				{
-					m_rigidbodies[i]->SetVelocity(XMFLOAT3(0, 0, 0));
-					//rigidbody->OnTriggerEnter(otherRigidbody);
-
-					//DEBUG_LOG(m_rigidbodies[i]->gameObject->GetName() << " collided with " << m_rigidbodies[j]->gameObject->GetName());
-				}
-			}
 		}
 	}
 }

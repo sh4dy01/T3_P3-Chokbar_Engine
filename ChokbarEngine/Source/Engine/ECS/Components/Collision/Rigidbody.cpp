@@ -24,7 +24,7 @@ void Rigidbody::RegisterCollisionShape(CollisionShape* shape)
 
 void Rigidbody::RemoveCollisionShape(CollisionShape* shape)
 {
-	m_collisionShapes.erase(std::remove(m_collisionShapes.begin(), m_collisionShapes.end(), shape), m_collisionShapes.end());
+	std::erase(m_collisionShapes, shape);
 }
 
 void Rigidbody::SetMass(float mass)

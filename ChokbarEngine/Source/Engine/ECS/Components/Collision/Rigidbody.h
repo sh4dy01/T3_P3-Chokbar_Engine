@@ -1,6 +1,7 @@
 #pragma once 
 
 #include <DirectXMath.h>
+#include <functional>
 using namespace DirectX;
 
 class Rigidbody : public Component
@@ -27,8 +28,9 @@ public:
     bool IsStatic() const;
     void SetStatic(bool isStatic);
 
-    std::vector<CollisionShape*> GetAllCollisionShape();
 
+
+    std::vector<CollisionShape*> GetAllCollisionShape();
 
 private:
 

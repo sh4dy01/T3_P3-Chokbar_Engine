@@ -22,7 +22,7 @@ public:
     void RegisterRigidBody(Rigidbody* rigidbody);
     void RemoveRigidBody(Rigidbody* rigidbody);
 
-    bool DetectCollision(Rigidbody* rbA, Rigidbody* rbB) const;
+    bool DetectCollision(Rigidbody* rbA, Rigidbody* rbB);
 
     void CheckCollision();
 
@@ -37,6 +37,11 @@ private:
     float m_cellSize;
     float m_timer;
     float m_updateRate;
+
+    CollisionShape* m_collisionShapeA;
+    CollisionShape* m_collisionShapeB;
+
+
     //SpatialGridCell*** m_grid;
 
     //SpatialGridCell& getCellForPosition(const XMFLOAT3& position);
