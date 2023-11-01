@@ -53,6 +53,8 @@ namespace Chokbar
 			Signature signature;
 			signature.set(GetComponentType<Transform>());
 			signature.set(GetComponentType<PlayerComponent>());
+
+			SetSystemSignature<PlayerSystem>(signature);
 		}
 	}
 
