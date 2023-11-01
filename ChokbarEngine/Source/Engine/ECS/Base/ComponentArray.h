@@ -21,6 +21,18 @@ namespace Chokbar {
 
 	public:
 
+		~ComponentArray() override
+		{
+			for (auto& component : m_ComponentArray)
+			{
+				if (component)
+				{
+					delete component;
+					component = nullptr;
+				}
+			}
+		}
+
 		void InsertData(InstanceID entity, T* component) {
 			size_t newIndex = m_Size;
 			m_EntityToIndexMap[entity] = newIndex;
