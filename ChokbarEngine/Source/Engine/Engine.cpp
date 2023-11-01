@@ -107,9 +107,10 @@ namespace Chokbar
 
 	void Engine::Update(float dt)
 	{
-		m_Coordinator.UpdateSystems(dt);
 		m_InputHandler.Update(dt);
-		m_PhysicsWorld.Update();
+
+		m_PhysicsWorld.Update(dt);
+		m_Coordinator.UpdateSystems(dt);
 
 		D3DApp::GetInstance()->Update(dt, m_GameTimer.GetTotalTime());
 		CalculateFrameStats();
