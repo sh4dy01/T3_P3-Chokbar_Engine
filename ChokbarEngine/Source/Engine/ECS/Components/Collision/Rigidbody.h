@@ -1,19 +1,19 @@
 #pragma once 
 
-#include <DirectXMath.h>
+
 using namespace DirectX;
+
+class Collider;
 
 class Rigidbody : public Component
 {
 public:
-    Rigidbody();
-    ~Rigidbody();
 
-    void RegisterCollisionShape(CollisionShape* shape);
-    void RemoveCollisionShape(CollisionShape* shape);
+    Rigidbody(bool isStatic);
+    ~Rigidbody() override;
 
-    XMFLOAT3 GetPosition() const;
-    void SetPosition(const XMFLOAT3& position);
+    void RegisterCollisionShape(Collider* shape);
+    void RemoveCollisionShape(Collider* shape);
 
     XMFLOAT3 GetVelocity() const;
     void SetVelocity(const XMFLOAT3& velocity);
@@ -27,16 +27,17 @@ public:
     bool IsStatic() const;
     void SetStatic(bool isStatic);
 
-    std::vector<CollisionShape*> GetAllCollisionShape();
 
+
+    std::vector<Collider*> GetAllCollisionShape();
 
 private:
 
-    std::vector<CollisionShape*> m_collisionShapes;
+    std::vector<Collider*> m_collisionShapes;
 
-    XMFLOAT3 m_position;
     XMFLOAT3 m_velocity;
     XMFLOAT3 m_force;
+
     float m_mass;
 
     bool m_isStatic;

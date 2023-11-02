@@ -3,6 +3,7 @@
 #include "Object.h"
 #include "Core/DebugUtils.h"
 
+
 namespace Chokbar
 {
 
@@ -35,7 +36,7 @@ namespace Chokbar
 		template<class Component>
 		Component* AddComponent()
 		{
-			Component* component = new Component();
+			auto component = new Component();
 			component->gameObject = this;
 			component->transform = transform;
 			component->SetEnabled(true);
@@ -76,6 +77,7 @@ namespace Chokbar
 		}
 
 	public:
+
 		Transform *transform;
 	};
 }

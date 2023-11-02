@@ -119,10 +119,11 @@
     <ClCompile Include="Source\Engine\ECS\Base\GameObject.cpp" />
     <ClCompile Include="Source\Engine\ECS\Base\Object.cpp" />
     <ClCompile Include="Source\Engine\ECS\Base\SystemManager.cpp" />
-    <ClCompile Include="Source\Engine\ECS\Components\Collision\CollisionShape.cpp" />
+    <ClCompile Include="Source\Engine\ECS\Components\Collision\Collider.cpp" />
     <ClCompile Include="Source\Engine\ECS\Components\Collision\Rigidbody.cpp" />
-    <ClCompile Include="Source\Engine\ECS\Components\Collision\SphereCollision.cpp" />
+    <ClCompile Include="Source\Engine\ECS\Components\Collision\SphereCollider.cpp" />
     <ClCompile Include="Source\Engine\ECS\Components\CameraComponent.cpp" />
+    <ClCompile Include="Source\Engine\ECS\Components\Collision\TriggerCollisionEvent.cpp" />
     <ClCompile Include="Source\Engine\ECS\Components\Component.cpp" />
     <ClCompile Include="Source\Engine\ECS\Components\PlayerComponent.cpp" />
     <ClCompile Include="Source\Engine\ECS\Components\TransformComponent.cpp" />
@@ -163,9 +164,10 @@
     <ClInclude Include="Source\Core\D3D\MeshType.h" />
     <ClInclude Include="Source\Core\DebugUtils.h" />
     <ClInclude Include="Source\Core\PerGameSettings.h" />
-    <ClInclude Include="Source\Engine\ECS\Components\Collision\CollisionShape.h" />
+    <ClInclude Include="Source\Engine\ECS\Components\Collision\Collider.h" />
     <ClInclude Include="Source\Engine\ECS\Components\Collision\Rigidbody.h" />
-    <ClInclude Include="Source\Engine\ECS\Components\Collision\SphereCollision.h" />
+    <ClInclude Include="Source\Engine\ECS\Components\Collision\SphereCollider.h" />
+    <ClInclude Include="Source\Engine\ECS\Components\Collision\TriggerCollisionEvent.h" />
     <ClInclude Include="Source\Engine\PhysicsManager.h" />
     <ClInclude Include="Source\Engine\PhysicsWorld.h" />
     <ClInclude Include="Source\Engine\ECS\Components\CameraComponent.h" />

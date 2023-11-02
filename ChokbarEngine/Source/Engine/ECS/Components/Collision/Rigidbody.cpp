@@ -1,14 +1,15 @@
 #include "Chokbar.h"
 #include "Rigidbody.h"
 
-Rigidbody::Rigidbody()
+Rigidbody::Rigidbody(bool isStatic)
+: m_isStatic(isStatic), m_velocity(XMFLOAT3(0, 0, 0))
 {
-	Engine::GetPhysicsWorld()->RegisterRigidBody(this);
+	Chokbar::Engine::GetPhysicsWorld()->RegisterRigidBody(this);
 }
 
 Rigidbody::~Rigidbody()
 {
-	Engine::GetPhysicsWorld()->RemoveRigidBody(this);
+	Chokbar::Engine::GetPhysicsWorld()->RemoveRigidBody(this);
 
 	for (auto& shape : m_collisionShapes)
 	{
@@ -17,14 +18,14 @@ Rigidbody::~Rigidbody()
 	}
 }
 
-void Rigidbody::RegisterCollisionShape(CollisionShape* shape)
+void Rigidbody::RegisterCollisionShape(Collider* shape)
 {
 	m_collisionShapes.push_back(shape);
 }
 
-void Rigidbody::RemoveCollisionShape(CollisionShape* shape)
+void Rigidbody::RemoveCollisionShape(Collider* shape)
 {
-	m_collisionShapes.erase(std::remove(m_collisionShapes.begin(), m_collisionShapes.end(), shape), m_collisionShapes.end());
+	std::erase(m_collisionShapes, shape);
 }
 
 void Rigidbody::SetMass(float mass)
@@ -45,16 +46,6 @@ void Rigidbody::SetStatic(bool isStatic)
 bool Rigidbody::IsStatic() const
 {
 	return m_isStatic;
-}
-
-void Rigidbody::SetPosition(const XMFLOAT3& position)
-{
-	m_position = position;
-}
-
-XMFLOAT3 Rigidbody::GetPosition() const
-{
-	return m_position;
 }
 
 void Rigidbody::SetVelocity(const XMFLOAT3& velocity)
@@ -79,7 +70,7 @@ XMFLOAT3 Rigidbody::GetForce() const
 	return m_force;
 }
 
-std::vector<CollisionShape*> Rigidbody::GetAllCollisionShape()
+std::vector<Collider*> Rigidbody::GetAllCollisionShape()
 {
 	return m_collisionShapes;
 }

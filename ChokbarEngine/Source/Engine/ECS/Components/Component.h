@@ -6,13 +6,19 @@ class Transform;
 class Component
 {
 public:
-	Chokbar::GameObject *gameObject;
-	Transform *transform;
-	virtual void OnAddedComponent(){};
+
+	virtual ~Component();
+
+	virtual void OnAddedComponent() {};
 
 	void SetEnabled(bool enabled) { m_isEnabled = enabled; }
 	bool IsEnabled() const { return m_isEnabled; }
 
+	Chokbar::GameObject* gameObject;
+	Transform* transform;
+
 private:
+
 	bool m_isEnabled = false;
+
 };
