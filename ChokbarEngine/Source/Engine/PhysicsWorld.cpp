@@ -2,7 +2,7 @@
 #include "PhysicsWorld.h"
 
 
-CollisionInfo::CollisionInfo(CollisionShape* colliderA, CollisionShape* colliderB)
+CollisionInfo::CollisionInfo(Collider* colliderA, Collider* colliderB)
 	: m_ColliderA(colliderA), m_ColliderB(colliderB), m_State(Enter)
 {
 }
@@ -124,10 +124,10 @@ bool PhysicsWorld::CheckCollisionShapes(Rigidbody* rbA, Rigidbody* rbB)
 	{
 		for (const auto& shapeB : rbB->GetAllCollisionShape())
 		{
-			if (shapeA->GetType() == CollisionShape::ShapeType::Sphere && shapeB->GetType() == CollisionShape::ShapeType::Sphere)
+			if (shapeA->GetType() == Collider::ShapeType::Sphere && shapeB->GetType() == Collider::ShapeType::Sphere)
 			{
-				const auto sphereA = dynamic_cast<Sphere*>(shapeA);
-				const auto sphereB = dynamic_cast<Sphere*>(shapeB);
+				const auto sphereA = dynamic_cast<SphereCollider*>(shapeA);
+				const auto sphereB = dynamic_cast<SphereCollider*>(shapeB);
 
 				if (AreSpheresColliding(sphereA, sphereB))
 				{
@@ -175,7 +175,7 @@ bool PhysicsWorld::CheckCollisionShapes(Rigidbody* rbA, Rigidbody* rbB)
 	return false;
 }
 
-void PhysicsWorld::HandleCollision(CollisionShape* const sphereA, CollisionShape* const sphereB)
+void PhysicsWorld::HandleCollision(Collider* const sphereA, Collider* const sphereB)
 {
 	const auto collisionInfo = GetCollisionInfo(sphereA, sphereB);
 
@@ -190,7 +190,7 @@ void PhysicsWorld::HandleCollision(CollisionShape* const sphereA, CollisionShape
 	}
 }
 
-void PhysicsWorld::CreateNewCollisionInfo(CollisionShape* const sphereA, CollisionShape* const sphereB)
+void PhysicsWorld::CreateNewCollisionInfo(Collider* const sphereA, Collider* const sphereB)
 {
 	const auto newCollisionInfo = new CollisionInfo(sphereA, sphereB);
 
@@ -198,7 +198,7 @@ void PhysicsWorld::CreateNewCollisionInfo(CollisionShape* const sphereA, Collisi
 	m_CurrentCollisionInfo = newCollisionInfo;
 }
 
-CollisionInfo* PhysicsWorld::GetCollisionInfo(const CollisionShape* sphereA, const CollisionShape* sphereB) const
+CollisionInfo* PhysicsWorld::GetCollisionInfo(const Collider* sphereA, const Collider* sphereB) const
 {
 	for (const auto& collisionInfo : m_RegisteredCollisionInfos)
 	{
@@ -211,7 +211,7 @@ CollisionInfo* PhysicsWorld::GetCollisionInfo(const CollisionShape* sphereA, con
 	return nullptr;
 }
 
-bool PhysicsWorld::AreSpheresColliding(Sphere* sphereA, Sphere* sphereB) const
+bool PhysicsWorld::AreSpheresColliding(SphereCollider* sphereA, SphereCollider* sphereB) const
 {
 	// Load A.
 	XMVECTOR vCenterA = DirectX::XMVectorAdd(XMLoadFloat3(&sphereA->GetCenter()), XMLoadFloat3(&sphereA->transform->GetPosition()));

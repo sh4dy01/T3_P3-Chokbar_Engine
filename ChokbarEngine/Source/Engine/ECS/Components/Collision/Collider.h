@@ -3,7 +3,7 @@
 #include "Engine/ECS/Components/Collision/TriggerCollisionEvent.h"
 
 
-class CollisionShape : public Component
+class Collider : public Component
 {
 public:
 
@@ -13,12 +13,12 @@ public:
 
 public:
 
-	CollisionShape();
-	virtual ~CollisionShape() = 0;
+	Collider();
+	~Collider() override;
 
-	void CallOnTriggerEnter(CollisionShape* other);
-	void CallOnTriggerStay(CollisionShape* other);
-	void CallOnTriggerExit(CollisionShape* other);
+	void CallOnTriggerEnter(Collider* other);
+	void CallOnTriggerStay(Collider* other);
+	void CallOnTriggerExit(Collider* other);
 
 	void OnAddedComponent() override;
 	void RegisterTriggerCollisionEvent(TriggerCollisionEvent* triggerCollisionEvent);

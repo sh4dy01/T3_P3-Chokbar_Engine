@@ -1,5 +1,5 @@
 #include "Chokbar.h"
-#include "SphereCollision.h"
+#include "SphereCollider.h"
 
 
 /// <summary>
@@ -7,7 +7,7 @@
 /// </summary>
 /// <param name="center">The center point of the sphere.</param>
 /// <param name="radius">The radius of the sphere.</param>
-Sphere::Sphere(const XMFLOAT3& center, float radius)
+SphereCollider::SphereCollider(const XMFLOAT3& center, float radius)
 {
 	m_Center = center;
 	m_Radius = radius;
@@ -18,7 +18,7 @@ Sphere::Sphere(const XMFLOAT3& center, float radius)
 /// Sets the radius of the sphere.
 /// </summary>
 /// <param name="radius">The new radius for the sphere.</param>
-void Sphere::SetRadius(float radius)
+void SphereCollider::SetRadius(float radius)
 {
 	m_Radius = radius;
 }

@@ -1,5 +1,6 @@
 #include "Chokbar.h"
 #include "TriggerCollisionEvent.h"
+#include "Collider.h"
 
 TriggerCollisionEvent::TriggerCollisionEvent()
 {
@@ -12,7 +13,7 @@ TriggerCollisionEvent::~TriggerCollisionEvent()
 
 void TriggerCollisionEvent::OnAddedComponent()
 {
-	CollisionShape* m_holder = gameObject->GetComponent<CollisionShape>();
+	Collider* m_holder = gameObject->GetComponent<Collider>();
 
 	if (m_holder)
 	{

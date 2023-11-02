@@ -1,7 +1,6 @@
 #pragma once
-#include "ECS/Components/Collision/CollisionShape.h"
 #include "ECS/Components/Collision/Rigidbody.h"
-#include "ECS/Components/Collision/SphereCollision.h"
+#include "ECS/Components/Collision/SphereCollider.h"
 
 #include <DirectXMath.h>
 #include <DirectXCollision.h>
@@ -21,20 +20,20 @@ class CollisionInfo
 {
 public:
 
-    CollisionInfo(CollisionShape* colliderA, CollisionShape* colliderB);
+    CollisionInfo(Collider* colliderA, Collider* colliderB);
     ~CollisionInfo();
 
     CollisionState GetState() const { return m_State; };
     void UpdateState(CollisionState state);
 
-    CollisionShape* GetColliderA() const { return m_ColliderA; };
-    CollisionShape* GetColliderB() const { return m_ColliderB; };
+    Collider* GetColliderA() const { return m_ColliderA; };
+    Collider* GetColliderB() const { return m_ColliderB; };
 
 private:
 
     CollisionState m_State;
-    CollisionShape* m_ColliderA;
-    CollisionShape* m_ColliderB;
+    Collider* m_ColliderA;
+    Collider* m_ColliderB;
 
 };
 
@@ -55,12 +54,12 @@ private:
 
     void CheckCollision();
     bool CheckCollisionShapes(Rigidbody* rbA, Rigidbody* rbB);
-    void HandleCollision(CollisionShape* sphereA, CollisionShape* sphereB);
+    void HandleCollision(Collider* sphereA, Collider* sphereB);
 
-    bool AreSpheresColliding(Sphere* sphere1, Sphere* sphere2) const;
+    bool AreSpheresColliding(SphereCollider* sphere1, SphereCollider* sphere2) const;
 
-    void CreateNewCollisionInfo(CollisionShape* sphereA, CollisionShape* sphereB);
-    CollisionInfo* GetCollisionInfo(const CollisionShape* sphereA, const CollisionShape* sphereB) const;
+    void CreateNewCollisionInfo(Collider* sphereA, Collider* sphereB);
+    CollisionInfo* GetCollisionInfo(const Collider* sphereA, const Collider* sphereB) const;
 
 
 private:

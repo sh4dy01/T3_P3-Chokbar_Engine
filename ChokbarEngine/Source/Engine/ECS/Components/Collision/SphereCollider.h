@@ -1,12 +1,12 @@
 #pragma once
+#include "Collider.h"
 
-#include "CollisionShape.h"
 
-
-class Sphere : public CollisionShape
+class SphereCollider : public Collider
 {
 public:
-	Sphere(const XMFLOAT3& center, float radius);
+
+	SphereCollider(const DirectX::XMFLOAT3& center, float radius);
 
 	const float GetRadius() { return m_Radius; };
 
@@ -15,5 +15,7 @@ public:
 private:
 
 	float m_Radius;
+
+public:
 
 };

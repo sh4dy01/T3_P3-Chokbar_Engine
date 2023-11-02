@@ -2,7 +2,6 @@
 #include "Engine/ECS/Base/GameObject.h"
 
 class Transform;
-class CollisionShape;
 
 class Component
 {
