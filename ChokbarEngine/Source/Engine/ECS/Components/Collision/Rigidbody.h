@@ -9,7 +9,7 @@ class Rigidbody : public Component
 {
 public:
 
-    Rigidbody(bool isStatic);
+    Rigidbody();
     ~Rigidbody() override;
 
     void RegisterCollisionShape(Collider* shape);

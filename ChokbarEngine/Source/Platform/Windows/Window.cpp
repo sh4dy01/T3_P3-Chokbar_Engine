@@ -1,7 +1,6 @@
 ﻿#include "Chokbar.h"
 #include "Window.h"
 
-using namespace Chokbar;
 
 namespace Win32
 {

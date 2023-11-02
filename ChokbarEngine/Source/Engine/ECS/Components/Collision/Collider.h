@@ -13,7 +13,6 @@ public:
 
 public:
 
-	Collider();
 	~Collider() override;
 
 	void CallOnTriggerEnter(Collider* other);
@@ -23,13 +22,15 @@ public:
 	void OnAddedComponent() override;
 	void RegisterTriggerCollisionEvent(TriggerCollisionEvent* triggerCollisionEvent);
 
-    //virtual bool CheckCollision(const CollisionShape& other) const = 0;
 
+	void SetCenter(const DirectX::XMFLOAT3& center) { m_Center = center; };
 	DirectX::XMFLOAT3 GetCenter() const { return m_Center; };
+
 	ShapeType GetType() const { return m_type; };
 
-	void SetOffset(const DirectX::XMFLOAT3& offset) { m_Center = offset; };
+protected:
 
+	Collider();
 
 protected:
 

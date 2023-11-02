@@ -1,15 +1,15 @@
 #include "Chokbar.h"
 #include "Rigidbody.h"
 
-Rigidbody::Rigidbody(bool isStatic)
-: m_isStatic(isStatic), m_velocity(XMFLOAT3(0, 0, 0))
+Rigidbody::Rigidbody()
+	: m_mass(1.0f), m_isStatic(false), m_velocity(XMFLOAT3(0, 0, 0)), m_force(XMFLOAT3(0, 0, 0))
 {
-	Chokbar::Engine::GetPhysicsWorld()->RegisterRigidBody(this);
+	Engine::GetPhysicsWorld()->RegisterRigidBody(this);
 }
 
 Rigidbody::~Rigidbody()
 {
-	Chokbar::Engine::GetPhysicsWorld()->RemoveRigidBody(this);
+	Engine::GetPhysicsWorld()->RemoveRigidBody(this);
 
 	for (auto& shape : m_collisionShapes)
 	{

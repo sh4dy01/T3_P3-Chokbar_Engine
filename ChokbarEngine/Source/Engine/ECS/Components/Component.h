@@ -1,7 +1,7 @@
 #pragma once
-#include "Engine/ECS/Base/GameObject.h"
 
 class Transform;
+class GameObject;
 
 class Component
 {
@@ -14,7 +14,7 @@ public:
 	void SetEnabled(bool enabled) { m_isEnabled = enabled; }
 	bool IsEnabled() const { return m_isEnabled; }
 
-	Chokbar::GameObject* gameObject;
+	GameObject* gameObject;
 	Transform* transform;
 
 private:

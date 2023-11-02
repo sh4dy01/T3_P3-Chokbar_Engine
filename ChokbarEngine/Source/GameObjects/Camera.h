@@ -6,7 +6,7 @@
 #include "Engine/ECS/Components/Collision/SphereCollider.h"
 
 
-class Camera : public Chokbar::GameObject
+class Camera : public GameObject
 {
 public:
 
@@ -19,7 +19,5 @@ private:
 
 	CameraComponent* m_CameraComponent;
 	PlayerComponent* m_PlayerComponent;
-	Rigidbody* m_Rigidbody;
-	SphereCollider* m_Sphere;
 
 };

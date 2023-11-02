@@ -6,14 +6,13 @@
 
 #include "D3DMath.h"
 
+#include "Engine/ECS/Components/TransformComponent.h"
 #include "Core/D3D/Internal/Texture.h"
 #include "Core/D3D/Internal/ShaderBase.h"
 #include "Core/D3D/Internal/MeshRenderer.h"
 #include "Core/D3D/Internal/Material.h"
 #include "Engine/Engine.h"
 #include "D3DApp.h"
-
-class Transform;
 
 using namespace DirectX;
 
@@ -84,7 +83,7 @@ void D3DApp::Update(const float dt, const float totalTime)
 {
 	UpdateRenderItems(dt, totalTime);
 
-	Chokbar::Engine::GetMainCamera()->GetCameraComponent()->UpdateViewMatrix();
+	Engine::GetMainCamera()->GetCameraComponent()->UpdateViewMatrix();
 
 	for (auto& shader : Resource::GetShaders())
 	{
@@ -438,7 +437,7 @@ void D3DApp::CreateResources()
 
 void D3DApp::GetMeshRenderersRef()
 {
-	m_meshRenderers = Chokbar::Engine::GetCoordinator()->GetAllComponentsOfType<MeshRenderer>()->GetAllData();
+	m_meshRenderers = Engine::GetCoordinator()->GetAllComponentsOfType<MeshRenderer>()->GetAllData();
 }
 #pragma endregion
 

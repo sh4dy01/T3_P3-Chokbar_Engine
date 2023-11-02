@@ -8,7 +8,6 @@
 #include "Core/D3D/MeshType.h"
 #include "Core/D3D/MaterialType.h"
 
-#include "Engine/GameTimer.h"
 #include "Engine/Managers/InputHandler.h"
 
 #ifdef WIN32

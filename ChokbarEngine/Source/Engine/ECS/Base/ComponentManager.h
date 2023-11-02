@@ -4,109 +4,107 @@
 #include "ComponentArray.h"
 #include "Core/D3D/Internal/MeshRenderer.h"
 
-namespace Chokbar {
 
-	class ComponentManager
+class ComponentManager
+{
+public:
+
+	ComponentManager();
+	~ComponentManager();
+
+public:
+
+	template<class T>
+	void RegisterComponent()
 	{
-	public:
+		const char* typeName = typeid(T).name();
 
-		ComponentManager();
-		~ComponentManager();
+		assert(m_ComponentTypes.find(typeName) == m_ComponentTypes.end() && "Registering component type more than once.");
 
-	public:
+		// Add this component type to the component type map
+		m_ComponentTypes.insert({ typeName, m_NextComponentType });
 
-		template<class T>
-		void RegisterComponent()
-		{
-			const char* typeName = typeid(T).name();
+		// Create a ComponentArray pointer and add it to the component arrays map
+		m_ComponentArrays.insert({ typeName, std::make_shared<ComponentArray<T>>() });
 
-			assert(m_ComponentTypes.find(typeName) == m_ComponentTypes.end() && "Registering component type more than once.");
+		DEBUG_LOG("Registered " << typeName << " component to system.");
 
-			// Add this component type to the component type map
-			m_ComponentTypes.insert({ typeName, m_NextComponentType });
+		// Increment the value so that the next component registered will be different
+		++m_NextComponentType;
+	}
 
-			// Create a ComponentArray pointer and add it to the component arrays map
-			m_ComponentArrays.insert({ typeName, std::make_shared<ComponentArray<T>>() });
+	template<class T>
+	ComponentType GetComponentType()
+	{
+		const char* typeName = typeid(T).name();
 
-			DEBUG_LOG("Registered " << typeName << " component to system.");
+		assert(m_ComponentTypes.contains(typeName) && "Component not registered before use.");
 
-			// Increment the value so that the next component registered will be different
-			++m_NextComponentType;
-		}
+		// Return this component's type - used for creating signatures
+		return m_ComponentTypes[typeName];
+	}
 
-		template<class T>
-		ComponentType GetComponentType()
-		{
-			const char* typeName = typeid(T).name();
+	template<class T>
+	void AddComponent(InstanceID entity, T* component)
+	{
+		const char* typeName = typeid(T).name();
 
-			assert(m_ComponentTypes.contains(typeName) && "Component not registered before use.");
+		// Add a component to the array for an entity
+		GetComponentArray<T>()->InsertData(entity, component);
+	}
 
-			// Return this component's type - used for creating signatures
-			return m_ComponentTypes[typeName];
-		}
+	template<class T>
+	void RemoveComponent(InstanceID entity)
+	{
+		// Remove a component from the array for an entity
+		GetComponentArray<T>()->RemoveData(entity);
+	}
 
-		template<class T>
-		void AddComponent(InstanceID entity, T* component)
-		{
-			const char* typeName = typeid(T).name();
+	template<class T>
+	T* GetComponent(InstanceID entity)
+	{
+		// Get a pointer to a component from the array for an entity
+		return GetComponentArray<T>()->GetData(entity);
+	}
 
-			// Add a component to the array for an entity
-			GetComponentArray<T>()->InsertData(entity, component);
-		}
+	template<class T>
+	T* GetAllComponentsOfType()
+	{
+		// Get a pointer to a list of all components of type
+		return GetComponentArray<T>();
+	}
 
-		template<class T>
-		void RemoveComponent(InstanceID entity)
-		{
-			// Remove a component from the array for an entity
-			GetComponentArray<T>()->RemoveData(entity);
-		}
+	template<class T>
+	bool HasComponent(InstanceID entity)
+	{
+		// Check if an entity has a component by checking if the component type's bit is set
+		return GetComponentArray<T>()->HasData(entity);
+	}
 
-		template<class T>
-		T* GetComponent(InstanceID entity)
-		{
-			// Get a pointer to a component from the array for an entity
-			return GetComponentArray<T>()->GetData(entity);
-		}
+	// Notify each component array that an entity has been destroyed
+	// If it has a component for that entity, it will remove it
+	void EntityDestroyed(InstanceID entity);
 
-		template<class T>
-		T* GetAllComponentsOfType()
-		{
-			// Get a pointer to a list of all components of type
-			return GetComponentArray<T>();
-		}
+	// Convenience function to get the statically casted pointer to the ComponentArray of type T.
+	template<class T>
+	std::shared_ptr<ComponentArray<T>> GetComponentArray()
+	{
+		const char* typeName = typeid(T).name();
 
-		template<class T>
-		bool HasComponent(InstanceID entity)
-		{
-			// Check if an entity has a component by checking if the component type's bit is set
-			return GetComponentArray<T>()->HasData(entity);
-		}
+		assert(m_ComponentTypes.find(typeName) != m_ComponentTypes.end() && "Component not registered before use.");
 
-		// Notify each component array that an entity has been destroyed
-		// If it has a component for that entity, it will remove it
-		void EntityDestroyed(InstanceID entity);
+		return std::static_pointer_cast<ComponentArray<T>>(m_ComponentArrays[typeName]);
+	}
 
-		// Convenience function to get the statically casted pointer to the ComponentArray of type T.
-		template<class T>
-		std::shared_ptr<ComponentArray<T>> GetComponentArray()
-		{
-			const char* typeName = typeid(T).name();
+private:
 
-			assert(m_ComponentTypes.find(typeName) != m_ComponentTypes.end() && "Component not registered before use.");
+	// Map from type string pointer to a component type
+	std::unordered_map<const char*, ComponentType> m_ComponentTypes;
 
-			return std::static_pointer_cast<ComponentArray<T>>(m_ComponentArrays[typeName]);
-		}
+	// Map from type string pointer to a component array
+	std::unordered_map<const char*, std::shared_ptr<IComponentArray>> m_ComponentArrays;
 
-	private:
+	// The component type to be assigned to the next registered component - starting at 0
+	ComponentType m_NextComponentType;
 
-		// Map from type string pointer to a component type
-		std::unordered_map<const char*, ComponentType> m_ComponentTypes;
-
-		// Map from type string pointer to a component array
-		std::unordered_map<const char*, std::shared_ptr<IComponentArray>> m_ComponentArrays;
-
-		// The component type to be assigned to the next registered component - starting at 0
-		ComponentType m_NextComponentType;
-
-	};
-}
+};

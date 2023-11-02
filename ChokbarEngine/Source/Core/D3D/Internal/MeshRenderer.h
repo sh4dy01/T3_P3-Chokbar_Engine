@@ -1,4 +1,5 @@
 #pragma once 
+#include "Engine/ECS/Components/Component.h"
 
 class Material;
 class D3DMesh;

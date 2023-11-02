@@ -1,181 +1,177 @@
 #include "Chokbar.h"
-
 #include "Resource.h"
-
 #include "Engine.h"
 
 #include "GameObjects/Camera.h"
 
 #include <numbers>
 
-namespace Chokbar
+
+
+Engine *Engine::m_Instance = nullptr;
+
+Engine::Engine() = default;
+
+Engine::~Engine()
 {
-	Engine *Engine::m_Instance = nullptr;
+	delete m_Instance;
+	m_Instance = nullptr;
+};
 
-	Engine::Engine() = default;
-
-	Engine::~Engine()
+Engine *Engine::GetInstance()
+{
+	if (m_Instance == nullptr)
 	{
-		delete m_Instance;
-		m_Instance = nullptr;
-	};
-
-	Engine *Engine::GetInstance()
-	{
-		if (m_Instance == nullptr)
-		{
-			m_Instance = new Engine();
-		}
-
-		return m_Instance;
+		m_Instance = new Engine();
 	}
 
-	Coordinator *Engine::GetCoordinator()
-	{
-		return &GetInstance()->m_Coordinator;
-	}
+	return m_Instance;
+}
 
-	InputHandler *Engine::GetInput()
-	{
-		return &GetInstance()->m_InputHandler;
-	}
+Coordinator *Engine::GetCoordinator()
+{
+	return &GetInstance()->m_Coordinator;
+}
 
-	Camera *Engine::GetMainCamera()
-	{
-		return GetInstance()->m_CameraManager.GetMainCamera();
-	}
+InputHandler *Engine::GetInput()
+{
+	return &GetInstance()->m_InputHandler;
+}
 
-	PhysicsWorld* Engine::GetPhysicsWorld()
-	{
-		return &GetInstance()->m_PhysicsWorld;
-	}
+Camera *Engine::GetMainCamera()
+{
+	return GetInstance()->m_CameraManager.GetMainCamera();
+}
+
+PhysicsWorld* Engine::GetPhysicsWorld()
+{
+	return &GetInstance()->m_PhysicsWorld;
+}
 
 #pragma region INIT
 
-	void Engine::PreInitialize()
-	{
-		/*
-		Logger::PrintDebugSeperator();
-		Logger::PrintLog(L"Application Starting...\n");
-		Logger::PrintLog(L"Game Name: %s\n", PerGameSettings::GameName());
-		Logger::PrintLog(L"Boot Time: %s\n", Time::GetDateTimeString().c_str());
+void Engine::PreInitialize()
+{
+	/*
+	Logger::PrintDebugSeperator();
+	Logger::PrintLog(L"Application Starting...\n");
+	Logger::PrintLog(L"Game Name: %s\n", PerGameSettings::GameName());
+	Logger::PrintLog(L"Boot Time: %s\n", Time::GetDateTimeString().c_str());
 
-		Logger::PrintDebugSeperator();
-		*/
+	Logger::PrintDebugSeperator();
+	*/
 
-		// SplashScreen::Open();
-	}
+	// SplashScreen::Open();
+}
 
-	void Engine::Initialize()
-	{
-		PreInitialize();
+void Engine::Initialize()
+{
+	PreInitialize();
 
-		m_Coordinator.Init();
-		m_CameraManager.SetMainCamera(new Camera("MainCamera"));
+	m_Coordinator.Init();
+	m_CameraManager.SetMainCamera(new Camera("MainCamera"));
 
-		m_Window.CreateNewWindow(DEFAULT_WIDTH, DEFAULT_HEIGHT, PerGameSettings::GameName(), PerGameSettings::MainIcon(), Win32::RESIZABLE);
-		m_InputHandler.Init(m_Window.GetHandle());
+	m_Window.CreateNewWindow(DEFAULT_WIDTH, DEFAULT_HEIGHT, PerGameSettings::GameName(), PerGameSettings::MainIcon(), Win32::RESIZABLE);
+	m_InputHandler.Init(m_Window.GetHandle());
 
-		OnResize();
+	OnResize();
 
-		D3DApp::GetInstance()->InitializeD3D12(&m_Window);
-	}
+	D3DApp::GetInstance()->InitializeD3D12(&m_Window);
+}
 
 #pragma endregion
 
 #pragma region MAIN
 
-	void Engine::Run()
+void Engine::Run()
+{
+	m_GameTimer.Reset();
+
+	while (!NeedsToClose())
 	{
-		m_GameTimer.Reset();
+		m_Window.PollEvent();
 
-		while (!NeedsToClose())
-		{
-			m_Window.PollEvent();
+		m_GameTimer.Tick();
 
-			m_GameTimer.Tick();
-
-			Update(m_GameTimer.GetDeltaTime());
-			Render();
-		}
+		Update(m_GameTimer.GetDeltaTime());
+		Render();
 	}
+}
 
-	bool Engine::NeedsToClose()
-	{
-		return m_Window.NeedsToClose();
-	}
+bool Engine::NeedsToClose()
+{
+	return m_Window.NeedsToClose();
+}
 
-	void Engine::Update(float dt)
-	{
-		m_InputHandler.Update(dt);
+void Engine::Update(float dt)
+{
+	m_InputHandler.Update(dt);
 
-		m_PhysicsWorld.Update(dt);
-		m_Coordinator.UpdateSystems(dt);
+	m_PhysicsWorld.Update(dt);
+	m_Coordinator.UpdateSystems(dt);
 
-		D3DApp::GetInstance()->Update(dt, m_GameTimer.GetTotalTime());
-		CalculateFrameStats();
-	}
+	D3DApp::GetInstance()->Update(dt, m_GameTimer.GetTotalTime());
+	CalculateFrameStats();
+}
 
-	void Engine::Render()
-	{
-		D3DApp::GetInstance()->Render();
-	}
+void Engine::Render()
+{
+	D3DApp::GetInstance()->Render();
+}
 
 #pragma endregion
 
-	void Engine::CalculateFrameStats()
-	{
+void Engine::CalculateFrameStats()
+{
 		
 
-		// Code computes the average frames per second, and also the
-		// average time it takes to render one frame.  These stats
-		// are appended to the window caption bar.
+	// Code computes the average frames per second, and also the
+	// average time it takes to render one frame.  These stats
+	// are appended to the window caption bar.
 
-		static int frameCnt = 0;
-		static float timeElapsed = 0.0f;
+	static int frameCnt = 0;
+	static float timeElapsed = 0.0f;
 
-		frameCnt++;
+	frameCnt++;
 
-		// Compute averages over one second period.
-		if ((m_GameTimer.GetTotalTime() - timeElapsed) >= 1.0f)
-		{
-			std::wstring windowText;
-			float fps = (float)frameCnt; // fps = frameCnt / 1
-			float mspf = 1000.0f / fps;
-
-			std::wstring fpsStr = std::to_wstring(fps);
-			std::wstring mspfStr = std::to_wstring(mspf);
-
-			windowText = L"    fps: " + fpsStr + L"   mspf: " + mspfStr;
-
-			// Reset for next average.
-			frameCnt = 0;
-			timeElapsed += 1.0f;
-			SetWindowText(m_Window.GetHandle(), windowText.c_str());
-		}
-
-	}
-
-	void Engine::OnResize()
+	// Compute averages over one second period.
+	if ((m_GameTimer.GetTotalTime() - timeElapsed) >= 1.0f)
 	{
-		D3DApp::GetInstance()->OnResize(m_Window.GetWidth(), m_Window.GetHeight());
+		std::wstring windowText;
+		float fps = (float)frameCnt; // fps = frameCnt / 1
+		float mspf = 1000.0f / fps;
 
-		m_CameraManager.GetMainCamera()->GetCameraComponent()->SetLens(70, GetAspectRatio(), 0.5f, 1000.0f);
+		std::wstring fpsStr = std::to_wstring(fps);
+		std::wstring mspfStr = std::to_wstring(mspf);
+
+		windowText = L"    fps: " + fpsStr + L"   mspf: " + mspfStr;
+
+		// Reset for next average.
+		frameCnt = 0;
+		timeElapsed += 1.0f;
+		SetWindowText(m_Window.GetHandle(), windowText.c_str());
 	}
 
-	void Engine::Shutdown()
-	{
-	}
+}
 
-	void Engine::OnApplicationFocus()
-	{
-		m_InputHandler.CaptureCursor();
-	}
+void Engine::OnResize()
+{
+	D3DApp::GetInstance()->OnResize(m_Window.GetWidth(), m_Window.GetHeight());
 
-	void Engine::OnApplicationLostFocus()
-	{
-		m_InputHandler.ReleaseCursor();
-		DEBUG_LOG("Lost Focus");
-	}
+	m_CameraManager.GetMainCamera()->GetCameraComponent()->SetLens(70, GetAspectRatio(), 0.5f, 1000.0f);
+}
 
+void Engine::Shutdown()
+{
+}
+
+void Engine::OnApplicationFocus()
+{
+	m_InputHandler.CaptureCursor();
+}
+
+void Engine::OnApplicationLostFocus()
+{
+	m_InputHandler.ReleaseCursor();
+	DEBUG_LOG("Lost Focus");
 }

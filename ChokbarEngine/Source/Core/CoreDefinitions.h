@@ -8,3 +8,14 @@ typedef std::string  STRING;
 
 #define RELPTR(ptr) if (ptr) { ptr->Release(); ptr = nullptr; }
 #define I(x) x::GetInstance() 
+
+#define _CRTDBG_MAP_ALLOC
+
+/*
+#if defined(DEBUG) | defined(_DEBUG)
+	#include <crtdbg.h>
+	// Replace new to check for memory leaks
+	#define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
+
+#endif
+*/

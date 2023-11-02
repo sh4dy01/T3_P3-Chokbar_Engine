@@ -6,7 +6,7 @@ class SphereCollider : public Collider
 {
 public:
 
-	SphereCollider(const DirectX::XMFLOAT3& center, float radius);
+	SphereCollider();
 
 	const float GetRadius() { return m_Radius; };
 
@@ -15,7 +15,5 @@ public:
 private:
 
 	float m_Radius;
-
-public:
 
 };

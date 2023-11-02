@@ -8,58 +8,54 @@
 #include <cassert>
 
 
-namespace Chokbar {
+class SystemManager
+{
+public:
 
-	class SystemManager
+	SystemManager();
+	~SystemManager();
+
+	void UpdateAllSystems(float dt);
+
+public:
+	template<typename T>
+	std::shared_ptr<T> RegisterSystem()
 	{
-	public:
+		const char* typeName = typeid(T).name();
 
-		SystemManager();
-		~SystemManager();
+		assert(m_Systems.find(typeName) == m_Systems.end() && "Registering system more than once.");
 
-		void UpdateAllSystems(float dt);
+		DEBUG_LOG("Registered " << typeName << " to system manager");
 
-	public:
-		template<typename T>
-		std::shared_ptr<T> RegisterSystem()
-		{
-			const char* typeName = typeid(T).name();
+		// Create a pointer to the system and return it so it can be used externally
+		auto system = std::make_shared<T>();
+		m_Systems.insert({ typeName, system });
+		return system;
+	}
 
-			assert(m_Systems.find(typeName) == m_Systems.end() && "Registering system more than once.");
+	template<typename T>
+	void SetSignature(Signature signature)
+	{
+		const char* typeName = typeid(T).name();
 
-			DEBUG_LOG("Registered " << typeName << " to system manager");
+		assert(m_Systems.contains(typeName) && "System used before registered.");
 
-			// Create a pointer to the system and return it so it can be used externally
-			auto system = std::make_shared<T>();
-			m_Systems.insert({ typeName, system });
-			return system;
-		}
+		// Set the signature for this system
+		m_Signatures.insert({ typeName, signature });
+	}
 
-		template<typename T>
-		void SetSignature(Signature signature)
-		{
-			const char* typeName = typeid(T).name();
+public:
 
-			assert(m_Systems.contains(typeName) && "System used before registered.");
+	// Erase a destroyed entity from all system lists
+	void EntityDestroyed(InstanceID entity);
 
-			// Set the signature for this system
-			m_Signatures.insert({ typeName, signature });
-		}
+	void EntitySignatureChanged(InstanceID entity, Signature entitySignature);
 
-	public:
+private:
 
-		// Erase a destroyed entity from all system lists
-		void EntityDestroyed(InstanceID entity);
+	// Map from system type string pointer to a signature
+	std::unordered_map<const char*, Signature> m_Signatures;
 
-		void EntitySignatureChanged(InstanceID entity, Signature entitySignature);
-
-	private:
-
-		// Map from system type string pointer to a signature
-		std::unordered_map<const char*, Signature> m_Signatures;
-
-		// Map from system type string pointer to a system pointer
-		std::unordered_map<const char*, std::shared_ptr<System>> m_Systems;
-	};
-
-}
+	// Map from system type string pointer to a system pointer
+	std::unordered_map<const char*, std::shared_ptr<System>> m_Systems;
+};

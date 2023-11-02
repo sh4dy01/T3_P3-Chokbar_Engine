@@ -17,8 +17,8 @@ void PlayerSystem::Update(float dt)
 {
 	for (const auto entity : m_RegisteredEntities)
 	{
-		auto player = Chokbar::Engine::GetCoordinator()->GetComponent<PlayerComponent>(entity);
-		auto transform = Chokbar::Engine::GetCoordinator()->GetComponent<Transform>(entity);
+		auto player = Engine::GetCoordinator()->GetComponent<PlayerComponent>(entity);
+		auto transform = Engine::GetCoordinator()->GetComponent<Transform>(entity);
 
 		if (InputHandler::IsKeyHeld('z'))
 		{
@@ -38,11 +38,11 @@ void PlayerSystem::Update(float dt)
 		}
 		if (InputHandler::IsKeyDown(VK_RBUTTON))
 		{
-			Chokbar::Engine::GetMainCamera()->GetCameraComponent()->SetFOV(10.f);
+			Engine::GetMainCamera()->GetCameraComponent()->SetFOV(10.f);
 		}
 		else if (InputHandler::IsKeyUp(VK_RBUTTON))
 		{
-			Chokbar::Engine::GetMainCamera()->GetCameraComponent()->SetFOV(75.f);
+			Engine::GetMainCamera()->GetCameraComponent()->SetFOV(75.f);
 		}
 		if (InputHandler::IsKeyHeld(VK_SHIFT))
 		{

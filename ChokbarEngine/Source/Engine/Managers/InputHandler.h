@@ -1,8 +1,7 @@
 #pragma once
-#include <vector>
 #include <Windows.h>
 #include <algorithm>
-
+#include <vector>
 
 class InputHandler
 {

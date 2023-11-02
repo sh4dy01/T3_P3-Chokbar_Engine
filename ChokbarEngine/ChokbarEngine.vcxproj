@@ -64,6 +64,8 @@
       <PrecompiledHeaderFile>Chokbar.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(ProjectDir)Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ForcedIncludeFiles>
+      </ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <SubSystem>NotSet</SubSystem>
@@ -99,6 +101,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Chokbar.cpp" />
     <ClCompile Include="Source\Common\Logger.cpp" />
     <ClCompile Include="Source\Common\Time.cpp" />
     <ClCompile Include="Source\Core\D3D\D3DApp.cpp" />

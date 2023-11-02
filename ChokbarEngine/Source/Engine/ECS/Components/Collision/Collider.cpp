@@ -1,10 +1,10 @@
 #include "Chokbar.h"
 #include "Collider.h"
-#include "Engine/PhysicsManager.h"
+#include "Rigidbody.h"
 
 Collider::Collider()
+	: m_Center(0, 0, 0)
 {
-	m_Center = DirectX::XMFLOAT3(0, 0, 0);
 }
 
 Collider::~Collider()

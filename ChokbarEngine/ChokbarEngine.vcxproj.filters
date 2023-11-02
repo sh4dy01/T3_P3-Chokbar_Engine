@@ -244,6 +244,9 @@
     <ClCompile Include="Source\Engine\ECS\Components\Collision\TriggerCollisionEvent.cpp">
       <Filter>Source\Engine\ECS\Components\Collision</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Chokbar.cpp">
+      <Filter>Source\pch</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Chokbar.h">

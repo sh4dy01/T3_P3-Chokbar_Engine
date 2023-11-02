@@ -2,36 +2,36 @@
 #include "GameObject.h"
 
 
-Chokbar::GameObject::GameObject()
+GameObject::GameObject()
 	: transform(AddComponent<Transform>())
 {
 }
 
-Chokbar::GameObject::GameObject(const std::string& name)
+GameObject::GameObject(const std::string& name)
 	: Object(name), transform(AddComponent<Transform>())
 {
 }
 
 
-Chokbar::GameObject::~GameObject()
+GameObject::~GameObject()
 = default;
 
-Chokbar::GameObject* Chokbar::GameObject::Instantiate()
+GameObject* GameObject::Instantiate()
 {
 	return new GameObject();
 }
 
-Chokbar::GameObject* Chokbar::GameObject::Instantiate(const std::string& name)
+GameObject* GameObject::Instantiate(const std::string& name)
 {
 	return new GameObject(name);
 }
 
-Chokbar::GameObject* Chokbar::GameObject::Instantiate(GameObject original)
+GameObject* GameObject::Instantiate(GameObject original)
 {
 	return new GameObject(original);
 }
 
-Chokbar::GameObject* Chokbar::GameObject::Instantiate(const GameObject& original, DirectX::XMFLOAT3 position, DirectX::XMFLOAT3 rotation, Transform parent)
+GameObject* GameObject::Instantiate(const GameObject& original, DirectX::XMFLOAT3 position, DirectX::XMFLOAT3 rotation, Transform parent)
 {
 	auto go = new GameObject(original);
 	go->transform->SetPosition(position);

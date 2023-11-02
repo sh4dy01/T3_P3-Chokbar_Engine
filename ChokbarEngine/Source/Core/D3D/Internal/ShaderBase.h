@@ -3,6 +3,8 @@
 
 #include "UploadBuffer.h"
 #include "Core/D3D/Internal/D3DMesh.h"
+#include "Engine/ECS/Components/CameraComponent.h"
+
 
 struct Texture;
 
