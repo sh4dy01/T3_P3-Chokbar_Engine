@@ -22,40 +22,40 @@ D3DMesh* GeometryHandler::CreateCube()
 	float depth = 0.5f;
     
 	// Fill in the front face vertex data.
-	v[0] = Vertex(-width, -height, -depth, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
-	v[1] = Vertex(-width, +height, -depth, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-	v[2] = Vertex(+width, +height, -depth, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
-	v[3] = Vertex(+width, -height, -depth, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f);
+	v[0] = Vertex(-width, -height, -depth, 0.0f, 0.0f, 0.0f, 1.0F, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
+	v[1] = Vertex(-width, +height, -depth, 0.0f, 0.0f, 0.0f, 1.0F, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+	v[2] = Vertex(+width, +height, -depth, 0.0f, 0.0f, 0.0f, 1.0F, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+	v[3] = Vertex(+width, -height, -depth, 0.0f, 0.0f, 0.0f, 1.0F, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f);
 
 	// Fill in the back face vertex data.
-	v[4] = Vertex(-width, -height, +depth, 0.0f, 0.0f, 1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f);
-	v[5] = Vertex(+width, -height, +depth, 0.0f, 0.0f, 1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
-	v[6] = Vertex(+width, +height, +depth, 0.0f, 0.0f, 1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-	v[7] = Vertex(-width, +height, +depth, 0.0f, 0.0f, 1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+	v[4] = Vertex(-width, -height, +depth, 0.0f, 0.0f, 0.0f, 1.0F, 0.0f, 0.0f, 1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f);
+	v[5] = Vertex(+width, -height, +depth, 0.0f, 0.0f, 0.0f, 1.0F, 0.0f, 0.0f, 1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
+	v[6] = Vertex(+width, +height, +depth, 0.0f, 0.0f, 0.0f, 1.0F, 0.0f, 0.0f, 1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+	v[7] = Vertex(-width, +height, +depth, 0.0f, 0.0f, 0.0f, 1.0F, 0.0f, 0.0f, 1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
 
 	// Fill in the top face vertex data.
-	v[8]  = Vertex(-width, +height, -depth, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
-	v[9]  = Vertex(-width, +height, +depth, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-	v[10] = Vertex(+width, +height, +depth, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
-	v[11] = Vertex(+width, +height, -depth, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f);
+	v[8]  = Vertex(-width, +height, -depth, 0.0f, 0.0f, 0.0f, 1.0F, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
+	v[9]  = Vertex(-width, +height, +depth, 0.0f, 0.0f, 0.0f, 1.0F, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+	v[10] = Vertex(+width, +height, +depth, 0.0f, 0.0f, 0.0f, 1.0F, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+	v[11] = Vertex(+width, +height, -depth, 0.0f, 0.0f, 0.0f, 1.0F, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f);
 
 	// Fill in the bottom face vertex data.
-	v[12] = Vertex(-width, -height, -depth, 0.0f, -1.0f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f);
-	v[13] = Vertex(+width, -height, -depth, 0.0f, -1.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
-	v[14] = Vertex(+width, -height, +depth, 0.0f, -1.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-	v[15] = Vertex(-width, -height, +depth, 0.0f, -1.0f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+	v[12] = Vertex(-width, -height, -depth, 0.0f, 0.0f, 0.0f, 1.0F, 0.0f, -1.0f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f);
+	v[13] = Vertex(+width, -height, -depth, 0.0f, 0.0f, 0.0f, 1.0F, 0.0f, -1.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
+	v[14] = Vertex(+width, -height, +depth, 0.0f, 0.0f, 0.0f, 1.0F, 0.0f, -1.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+	v[15] = Vertex(-width, -height, +depth, 0.0f, 0.0f, 0.0f, 1.0F, 0.0f, -1.0f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
 
 	// Fill in the left face vertex data.
-	v[16] = Vertex(-width, -height, +depth, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f);
-	v[17] = Vertex(-width, +height, +depth, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f);
-	v[18] = Vertex(-width, +height, -depth, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f);
-	v[19] = Vertex(-width, -height, -depth, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f);
+	v[16] = Vertex(-width, -height, +depth, 0.0f, 0.0f, 0.0f, 1.0F, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f);
+	v[17] = Vertex(-width, +height, +depth, 0.0f, 0.0f, 0.0f, 1.0F, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f);
+	v[18] = Vertex(-width, +height, -depth, 0.0f, 0.0f, 0.0f, 1.0F, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f);
+	v[19] = Vertex(-width, -height, -depth, 0.0f, 0.0f, 0.0f, 1.0F, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f);
 
 	// Fill in the right face vertex data.
-	v[20] = Vertex(+width, -height, -depth, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f);
-	v[21] = Vertex(+width, +height, -depth, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f);
-	v[22] = Vertex(+width, +height, +depth, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f);
-	v[23] = Vertex(+width, -height, +depth, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
+	v[20] = Vertex(+width, -height, -depth, 0.0f, 0.0f, 0.0f, 1.0F, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f);
+	v[21] = Vertex(+width, +height, -depth, 0.0f, 0.0f, 0.0f, 1.0F, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f);
+	v[22] = Vertex(+width, +height, +depth, 0.0f, 0.0f, 0.0f, 1.0F, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f);
+	v[23] = Vertex(+width, -height, +depth, 0.0f, 0.0f, 0.0f, 1.0F, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
 
 	UINT i[36] = 
 	{
@@ -94,8 +94,8 @@ D3DMesh* GeometryHandler::CreateUVSphere()
 	// Poles: note that there will be texture coordinate distortion as there is
 	// not a unique point on the texture map to assign to the pole when mapping
 	// a rectangular texture onto a sphere.
-	Vertex topVertex(0.0f, +radius, 0.0f, 0.0f, +1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-	Vertex bottomVertex(0.0f, -radius, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
+	Vertex topVertex(0.0f, +radius, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, +1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+	Vertex bottomVertex(0.0f, -radius, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
 
 	vertices.push_back(topVertex);
 
@@ -118,6 +118,8 @@ D3DMesh* GeometryHandler::CreateUVSphere()
 			v.Position.x = radius * sinf(phi) * cosf(theta);
 			v.Position.y = radius * cosf(phi);
 			v.Position.z = radius * sinf(phi) * sinf(theta);
+
+			v.Color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
 			// Partial derivative of P with respect to theta
 			v.TangentU.x = -radius * sinf(phi) * sinf(theta);
@@ -373,20 +375,55 @@ Vertex GeometryHandler::MidPoint(const Vertex& v0, const Vertex& v1)
 
 D3DMesh* GeometryHandler::CreatePyramid()
 {
-	Vertex_Color vList[] =
+	Vertex vList[18];
+
+	vList[0] = Vertex(XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT4(0.8f, 0.1f, 0.1f, 1.0f), XMFLOAT3(0.0f, 1.0f, -1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(0.5f, 0.0f));
+	vList[1] = Vertex(XMFLOAT3(-0.5f, 0.0f, -0.5f), XMFLOAT4(0.8f, 0.1f, 0.1f, 1.0f), XMFLOAT3(0.0f, 1.0f, -1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(0.0f, 1.0f));
+	vList[2] = Vertex(XMFLOAT3(-0.5f, 0.0f, 0.5f), XMFLOAT4(0.8f, 0.1f, 0.1f, 1.0f), XMFLOAT3(0.0f, 1.0f, -1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(1.0f, 1.0f));
+
+	vList[3] = Vertex(XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT4(0.8f, 0.1f, 0.1f, 1.0f), XMFLOAT3(-1.0f, 1.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(0.5f, 0.0f));
+	vList[4] = Vertex(XMFLOAT3(-0.5f, 0.0f, 0.5f), XMFLOAT4(0.8f, 0.1f, 0.1f, 1.0f), XMFLOAT3(-1.0f, 1.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(0.0f, 1.0f));
+	vList[5] = Vertex(XMFLOAT3(0.5f, 0.0f, 0.5f), XMFLOAT4(0.8f, 0.1f, 0.1f, 1.0f), XMFLOAT3(-1.0f, 1.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(1.0f, 1.0f));
+
+	vList[6] = Vertex(XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT4(0.8f, 0.1f, 0.1f, 1.0f), XMFLOAT3(0.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(0.5f, 0.0f));
+	vList[7] = Vertex(XMFLOAT3(0.5f, 0.0f, 0.5f), XMFLOAT4(0.8f, 0.1f, 0.1f, 1.0f), XMFLOAT3(0.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(0.0f, 1.0f));
+	vList[8] = Vertex(XMFLOAT3(0.5f, 0.0f, -0.5f), XMFLOAT4(0.8f, 0.1f, 0.1f, 1.0f), XMFLOAT3(0.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(1.0f, 1.0f));
+
+	vList[9] = Vertex(XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT4(0.8f, 0.1f, 0.1f, 1.0f), XMFLOAT3(1.0f, 1.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(0.5f, 0.0f));
+	vList[10] = Vertex(XMFLOAT3(0.5f, 0.0f, -0.5f), XMFLOAT4(0.8f, 0.1f, 0.1f, 1.0f), XMFLOAT3(1.0f, 1.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(0.0f, 1.0f));
+	vList[11] = Vertex(XMFLOAT3(-0.5f, 0.0f, -0.5f), XMFLOAT4(0.8f, 0.1f, 0.1f, 1.0f), XMFLOAT3(1.0f, 1.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(1.0f, 1.0f));
+
+	vList[12] = Vertex(XMFLOAT3(-0.5f, 0.0f, -0.5f), XMFLOAT4(0.8f, 0.1f, 0.1f, 1.0f), XMFLOAT3(-1.0f, -1.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(0.5f, 0.0f));
+	vList[13] = Vertex(XMFLOAT3(-0.5f, 0.0f, 0.5f), XMFLOAT4(0.8f, 0.1f, 0.1f, 1.0f), XMFLOAT3(-1.0f, -1.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(0.0f, 1.0f));
+	vList[14] = Vertex(XMFLOAT3(0.5f, 0.0f, 0.5f), XMFLOAT4(0.8f, 0.1f, 0.1f, 1.0f), XMFLOAT3(-1.0f, -1.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(1.0f, 1.0f));
+
+	vList[15] = Vertex(XMFLOAT3(0.5f, 0.0f, 0.5f), XMFLOAT4(0.8f, 0.1f, 0.1f, 1.0f), XMFLOAT3(0.0f, -1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(0.5f, 0.0f));
+	vList[16] = Vertex(XMFLOAT3(0.5f, 0.0f, -0.5f), XMFLOAT4(0.8f, 0.1f, 0.1f, 1.0f), XMFLOAT3(0.0f, -1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(0.0f, 1.0f));
+	vList[17] = Vertex(XMFLOAT3(-0.5f, 0.0f, -0.5f), XMFLOAT4(0.8f, 0.1f, 0.1f, 1.0f), XMFLOAT3(0.0f, -1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(1.0f, 1.0f));
+
+	/*Vertex vList[] =
 	{
-		{ XMFLOAT3(0.0f, 1.0f, 0.0f),   Colors::Red       },
-		{ XMFLOAT3(-0.5f, 0.0f, -0.5f), Colors::White     },
+		{ XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT4(0.8f, 0.1f, 0.1f, 1.0f), XMFLOAT3(0.0f, 1.0f, -1.0f),   },
+		{ XMFLOAT3(-0.5f, 0.0f, -0.5f), Colors::White },
 		{ XMFLOAT3(-0.5f, 0.0f, 0.5f),  Colors::LightBlue },
-		{ XMFLOAT3(0.5f, 0.0f, 0.5f),   Colors::White     },
-		{ XMFLOAT3(0.5f, 0.0f, -0.5f),  Colors::White     },
+		{ XMFLOAT3(0.5f, 0.0f, 0.5f),   Colors::White },
+		{ XMFLOAT3(0.5f, 0.0f, -0.5f),  Colors::White },
+	};*/
+
+
+	UINT iList[] = 
+	{
+		0, 1, 2,
+		3, 4, 5,
+		6, 7, 8,
+		9, 10, 11,
+
+		12, 13, 14,
+		15, 16, 17
 	};
 
-
-	UINT iList[] = { 0, 1, 2, 0, 2, 3, 0, 3, 4, 0, 4, 1 };
-
 	D3DMesh* mesh = new D3DMesh();
-	mesh->Create(vList, sizeof(Vertex_Color), _countof(vList), iList, sizeof(UINT), _countof(iList));
+	mesh->Create(vList, sizeof(Vertex), _countof(vList), iList, sizeof(UINT), _countof(iList));
 
 	return mesh;
 }

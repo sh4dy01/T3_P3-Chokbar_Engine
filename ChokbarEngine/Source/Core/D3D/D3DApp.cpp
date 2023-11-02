@@ -298,7 +298,7 @@ void D3DApp::CreateRtvAndDsvDescriptorHeaps()
 	m_pD3dDevice->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(&m_pDsvHeap));
 
 	D3D12_DESCRIPTOR_HEAP_DESC cbvHeapDesc;
-	cbvHeapDesc.NumDescriptors = 10;
+	cbvHeapDesc.NumDescriptors = 50;
 	cbvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 	cbvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	cbvHeapDesc.NodeMask = 0;
@@ -492,9 +492,7 @@ void D3DApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList)
 		args.IndexCount = mr->Mesh->GetIndexCount();
 		args.StartIndexLocation = 0;
 		args.BaseVertexLocation = 0;
-
-		args.Text = mr->GetTextures().empty() ? nullptr : mr->GetTexture(0);
-		args.TextSrvIndex = mr->TextSrvIndex;
+		args.TextSrvIndex = mr->GetTextures().empty() ? -1 : mr->GetTexture(0)->HeapIndex;
 
 		mr->Mat->GetShader()->Draw(args);
 

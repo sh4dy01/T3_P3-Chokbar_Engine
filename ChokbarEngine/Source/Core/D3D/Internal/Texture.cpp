@@ -9,7 +9,7 @@
 using namespace Microsoft::WRL;
 using namespace DirectX;
 
-Texture::Texture(const std::string& filename) : IResourceObject(filename)
+Texture::Texture(const std::string& filename) : IResourceObject(filename), HeapIndex(-1)
 {
 	Resource = nullptr;
 	UploadHeap = nullptr;
@@ -45,4 +45,6 @@ void Texture::LoadTexture(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLi
 
 	Resource = textureResource.Detach();
 	UploadHeap = textureUploadHeap.Detach();
+
+	HeapIndex = I(D3DApp)->UpdateTextureHeap(this);
 }

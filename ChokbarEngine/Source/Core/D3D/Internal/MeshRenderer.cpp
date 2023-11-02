@@ -43,7 +43,6 @@ void MeshRenderer::OnDelete()
 void MeshRenderer::RegisterTexture(Texture* tex)
 {
 	m_textures.push_back(tex);
-	TextSrvIndex = I(D3DApp)->UpdateTextureHeap(tex);
 }
 
 void MeshRenderer::BindMaterial(Material* mat)

@@ -47,12 +47,21 @@ void Application::PreInitialize()
 
 void Application::Initialize()
 {
-	auto* test = new GameObject("f");
+		
+	auto* test2 = new GameObject("ball2");
+	auto* mr2 = new MeshRenderer(MeshType::SPHERE, MaterialType::TEXTURE);
+	test2->AddComponent<MeshRenderer>(mr2);
+	std::string path2 = "Resources/Textures/mars.dds";
+	test2->GetComponent<MeshRenderer>()->RegisterTexture(Resource::Load<Texture>(path2));
+	test2->transform->SetPosition(-1, 1, 1);
+
+	auto* test = new GameObject("ball1");
 	auto* mr = new MeshRenderer(MeshType::SPHERE, MaterialType::TEXTURE);
 	test->AddComponent<MeshRenderer>(mr);
-	std::string path = "Resources/Textures/mars.dds";
+	std::string path = "Resources/Textures/4k.dds";
 	test->GetComponent<MeshRenderer>()->RegisterTexture(Resource::Load<Texture>(path));
 	test->transform->SetPosition(0, 0, 2);
+	
 
 	/*auto* test2 = new GameObject("f");
 	auto* mr2 = new MeshRenderer(MeshType::PYRAMID, MaterialType::SIMPLE);
@@ -60,7 +69,7 @@ void Application::Initialize()
 	test2->transform->SetPosition(0, 0, -2);*/
 
 
-	auto test3 = GameObject::Instantiate("test");
+	auto test3 = GameObject::Instantiate("pyr");
 	test3->AddComponent<MeshRenderer>(new MeshRenderer(MeshType::PYRAMID, MaterialType::SIMPLE));
 	test3->transform->SetScale(6, 6, 6);
 

@@ -3,29 +3,19 @@
 struct Vertex
 {
 	Vertex() {}
-	Vertex(const DirectX::XMFLOAT3& p, const DirectX::XMFLOAT3& n, const DirectX::XMFLOAT3& t, const DirectX::XMFLOAT2& uv);
+	Vertex(const DirectX::XMFLOAT3& p, const DirectX::XMFLOAT4 c, const DirectX::XMFLOAT3& n, const DirectX::XMFLOAT3& t, const DirectX::XMFLOAT2& uv);
 	Vertex(
 		float px, float py, float pz,
+		float cr, float cg, float cb, float ca,
 		float nx, float ny, float nz,
 		float tx, float ty, float tz,
 		float u, float v
 	);
 	DirectX::XMFLOAT3 Position;
+	DirectX::XMFLOAT4 Color;
 	DirectX::XMFLOAT3 Normal;
 	DirectX::XMFLOAT3 TangentU;
 	DirectX::XMFLOAT2 TexC;
-};
-
-struct Vertex_Color
-{
-	Vertex_Color() {}
-	Vertex_Color(const DirectX::XMFLOAT3& position, const DirectX::XMVECTORF32& color);
-	Vertex_Color(
-		float px, float py, float pz,
-		float cr, float cg, float cb, float ca
-	);
-	DirectX::XMFLOAT3 Position;
-	DirectX::XMFLOAT4 Color;
 };
 
 class D3DMesh

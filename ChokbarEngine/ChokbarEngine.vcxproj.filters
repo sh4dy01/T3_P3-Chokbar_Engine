@@ -119,6 +119,15 @@
     <Filter Include="Source\Engine\Managers\Private">
       <UniqueIdentifier>{b7ac141b-745e-449c-8bfb-11f026716638}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Engine\Particles">
+      <UniqueIdentifier>{34ca8197-f943-4ab0-995b-f412c399a07e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\Particles\Public">
+      <UniqueIdentifier>{9e7f4177-c3f3-48a0-9e6c-1efb25d77980}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\Particles\Private">
+      <UniqueIdentifier>{a325436d-d806-481c-bc52-dfa5b8a59218}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Core\PerGameSettings.cpp">
@@ -240,6 +249,15 @@
     </ClCompile>
     <ClCompile Include="Source\Engine\ECS\Systems\PlayerSystem.cpp">
       <Filter>Source\Engine\ECS\Systems\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\ECS\Systems\ParticlesSystem.cpp">
+      <Filter>Source\Engine\ECS\Systems\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Particles\Particle.cpp">
+      <Filter>Source\Engine\Particles\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Particles\ParticlesRenderer.cpp">
+      <Filter>Source\Engine\Particles\Private</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -396,6 +414,15 @@
     </ClInclude>
     <ClInclude Include="Source\Core\D3D\MaterialType.h">
       <Filter>Source\Engine\Core\D3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\ECS\Systems\ParticlesSystem.h">
+      <Filter>Source\Engine\ECS\Systems\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Particles\Particle.h">
+      <Filter>Source\Engine\Particles\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Particles\ParticlesRenderer.h">
+      <Filter>Source\Engine\Particles\Public</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

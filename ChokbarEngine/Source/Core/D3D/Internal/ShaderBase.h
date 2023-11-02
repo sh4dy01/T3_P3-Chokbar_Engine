@@ -14,7 +14,6 @@ struct ShaderDrawArguments
 	{
 		CmdList = nullptr;
 		ItemGeometry = nullptr;
-		Text = nullptr;
 	}
 
 	ID3D12GraphicsCommandList* CmdList;
@@ -25,7 +24,6 @@ struct ShaderDrawArguments
 	UINT StartIndexLocation;
 	UINT BaseVertexLocation;
 
-	Texture* Text;
 	UINT TextSrvIndex;
 };
 
@@ -93,7 +91,6 @@ protected:
 	ID3D12PipelineState* m_pipelineState;
 
 	ID3D12Device* m_generalDevice;
-	ID3D12DescriptorHeap* m_generalCBVHeap;
 	UINT m_cbvDescriptorSize;
 
 	CameraComponent* m_MainCamera;

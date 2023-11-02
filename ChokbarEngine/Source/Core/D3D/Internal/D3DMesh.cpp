@@ -6,16 +6,14 @@
 
 using namespace DirectX;
 
-Vertex::Vertex(const DirectX::XMFLOAT3& p, const DirectX::XMFLOAT3& n, const DirectX::XMFLOAT3& t, const DirectX::XMFLOAT2& uv) : Position(p), Normal(n), TangentU(t), TexC(uv) { }
+Vertex::Vertex(const DirectX::XMFLOAT3& p, const DirectX::XMFLOAT4 c, const DirectX::XMFLOAT3& n, const DirectX::XMFLOAT3& t, const DirectX::XMFLOAT2& uv) : Position(p), Color(c), Normal(n), TangentU(t), TexC(uv) { }
 Vertex::Vertex(
-		float px, float py, float pz,
-		float nx, float ny, float nz,
-		float tx, float ty, float tz,
-		float u, float v
-	) : Position(px, py, pz), Normal(nx, ny, nz), TangentU(tx, ty, tz), TexC(u,v) { }
-
-Vertex_Color::Vertex_Color(const DirectX::XMFLOAT3& position, const DirectX::XMVECTORF32& color) : Position(position), Color(color) { }
-Vertex_Color::Vertex_Color(float px, float py, float pz, float cr, float cg, float cb, float ca) : Position(px, py, pz), Color(cr, cg, cb, ca) { }
+	float px, float py, float pz,
+	float cr, float cg, float cb, float ca,
+	float nx, float ny, float nz,
+	float tx, float ty, float tz,
+	float u, float v
+) : Position(px, py, pz), Color(cr, cg, cb, ca), Normal(nx, ny, nz), TangentU(tx, ty, tz), TexC(u, v) { }
 
 D3DMesh::D3DMesh()
 	: VertexByteStride(0), VertexBufferByteSize(0), IndexFormat(DXGI_FORMAT_R16_UINT), IndexBufferByteSize(0)

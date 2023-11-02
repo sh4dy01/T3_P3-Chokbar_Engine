@@ -10,7 +10,7 @@ using namespace DirectX;
 
 #pragma region SHADER BASE
 ShaderBase::ShaderBase(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, UINT cbvDescriptorSize, std::wstring& filepath)
-	: m_generalDevice(device), m_generalCBVHeap(cbvHeap), m_cbvDescriptorSize(cbvDescriptorSize), m_filepath(filepath)
+	: m_generalDevice(device), m_cbvDescriptorSize(cbvDescriptorSize), m_filepath(filepath)
 {
 	m_passCB = nullptr;
 
@@ -26,7 +26,6 @@ ShaderBase::ShaderBase(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, UINT
 ShaderBase::~ShaderBase()
 {
 	m_generalDevice = nullptr;
-	m_generalCBVHeap = nullptr;
 
 	RELPTR(m_pipelineState);
 	RELPTR(m_rootSignature);
@@ -47,30 +46,11 @@ void ShaderBase::Init()
 
 void ShaderBase::SetInputLayout(VertexType vertexType)
 {
-	switch (vertexType)
-	{
-	case POS_COLOR:
-	{
-		m_inputLayout.push_back({ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 });
-		m_inputLayout.push_back({ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, sizeof(XMFLOAT3), D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 });
-		break;
-	}
-	case POS_TEX:
-	{
-		m_inputLayout.push_back({ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 });
-		m_inputLayout.push_back({ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(XMFLOAT3), D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 });
-		break;
-	}
-	case POS_NORM_TAN_TEX:
-	{
-		m_inputLayout.push_back({ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 });
-		m_inputLayout.push_back({ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(XMFLOAT3), D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 });
-		m_inputLayout.push_back({ "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(XMFLOAT3) * 2, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 });
-		m_inputLayout.push_back({ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(XMFLOAT3) * 3, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 });
-	}
-	default:
-		break;
-	}
+	m_inputLayout.push_back({ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 });
+	m_inputLayout.push_back({ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, sizeof(XMFLOAT3), D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 });
+	m_inputLayout.push_back({ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(XMFLOAT4) + sizeof(XMFLOAT3), D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 });
+	m_inputLayout.push_back({ "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(XMFLOAT4) + sizeof(XMFLOAT3) * 2, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 });
+	m_inputLayout.push_back({ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(XMFLOAT4) + sizeof(XMFLOAT3) * 3, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 });
 }
 
 void ShaderBase::UnBind(UINT index)
@@ -85,32 +65,7 @@ ShaderBase* ShaderBase::Bind()
 	return this;
 }
 
-void ShaderBase::AddObjectCB()
-{
-	const UINT64 cBufferSize = (sizeof(ObjConstants) + 255) & ~255;
-	int index = 0;
-	if (!m_freeIndices.empty())
-	{
-		index = m_freeIndices.top();
-		m_freeIndices.pop();
-	}
-	else
-	{
-		index = m_objectCBs.size();
-	}
-
-	auto cb = new UploadBuffer<ObjConstants>(m_generalDevice, 1, true);
-
-	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc;
-	cbvDesc.BufferLocation = cb->GetResource()->GetGPUVirtualAddress();
-	cbvDesc.SizeInBytes = (UINT)cBufferSize;
-
-	CD3DX12_CPU_DESCRIPTOR_HANDLE cbvHeapHandle(m_generalCBVHeap->GetCPUDescriptorHandleForHeapStart());
-	cbvHeapHandle.Offset(index + 1, m_cbvDescriptorSize);
-
-	m_generalDevice->CreateConstantBufferView(&cbvDesc, cbvHeapHandle);
-	m_objectCBs.push_back(cb);
-}
+void ShaderBase::AddObjectCB() { m_objectCBs.emplace_back(m_generalDevice, 1, true); }
 
 void ShaderBase::UpdateObjectCB(DirectX::XMFLOAT4X4* itemWorldMatrix, UINT cbIndex)
 {
@@ -122,17 +77,7 @@ void ShaderBase::UpdateObjectCB(DirectX::XMFLOAT4X4* itemWorldMatrix, UINT cbInd
 	m_objectCBs[cbIndex]->CopyData(0, &objConstants);
 }
 
-void ShaderBase::CreatePassCB()
-{
-	const UINT64 cBufferSize = (sizeof(PassConstants) + 255) & ~255;
-
-	m_passCB = new UploadBuffer<PassConstants>(m_generalDevice, 1, true);
-	D3D12_GPU_VIRTUAL_ADDRESS passCBAddress = m_passCB->GetResource()->GetGPUVirtualAddress();
-	D3D12_CONSTANT_BUFFER_VIEW_DESC passCBVDesc;
-	passCBVDesc.BufferLocation = passCBAddress;
-	passCBVDesc.SizeInBytes = (UINT)cBufferSize;
-	m_generalDevice->CreateConstantBufferView(&passCBVDesc, m_generalCBVHeap->GetCPUDescriptorHandleForHeapStart());
-}
+void ShaderBase::CreatePassCB() { m_passCB = new UploadBuffer<PassConstants>(m_generalDevice, 1, true); }
 
 void ShaderBase::UpdatePassCB(const float dt, const float totalTime)
 {
@@ -260,8 +205,6 @@ void ShaderSimple::BeginDraw(ID3D12GraphicsCommandList* cmdList)
 
 void ShaderSimple::Draw(ShaderDrawArguments& args)
 {
-	assert(args.Text == nullptr);
-
 	if (args.ItemCBIndex >= m_objectCBs.size())
 		AddObjectCB();
 
@@ -270,7 +213,7 @@ void ShaderSimple::Draw(ShaderDrawArguments& args)
 	args.CmdList->IASetVertexBuffers(0, 1, &args.ItemGeometry->VertexBufferView());
 	args.CmdList->IASetIndexBuffer(&args.ItemGeometry->IndexBufferView());
 
-	auto cbvHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(m_generalCBVHeap->GetGPUDescriptorHandleForHeapStart());
+	auto cbvHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(I(D3DApp)->GetCbvHeap()->GetGPUDescriptorHandleForHeapStart());
 	cbvHandle.Offset(args.ItemCBIndex, m_cbvDescriptorSize);
 
 	args.CmdList->SetGraphicsRootConstantBufferView(0, m_objectCBs[args.ItemCBIndex]->GetResource()->GetGPUVirtualAddress());
@@ -318,7 +261,7 @@ void ShaderTexture::CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT
 
 	auto samplers = GetStaticSamplers();
 
-	CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc(_countof(slotRootParameter), slotRootParameter, 1, samplers.data(), D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
+	CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc(_countof(slotRootParameter), slotRootParameter, 6, samplers.data(), D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
 	ID3DBlob* serializedRootSignature = nullptr;
 	ID3DBlob* errorBlob = nullptr;
@@ -366,7 +309,7 @@ void ShaderTexture::BeginDraw(ID3D12GraphicsCommandList* cmdList)
 
 void ShaderTexture::Draw(ShaderDrawArguments& args)
 {
-	assert(args.Text != nullptr && args.TextSrvIndex >= 0);
+	assert(args.TextSrvIndex >= 0);
 
 	if (args.ItemCBIndex >= m_objectCBs.size())
 		AddObjectCB();
@@ -376,11 +319,12 @@ void ShaderTexture::Draw(ShaderDrawArguments& args)
 	args.CmdList->IASetVertexBuffers(0, 1, &args.ItemGeometry->VertexBufferView());
 	args.CmdList->IASetIndexBuffer(&args.ItemGeometry->IndexBufferView());
 
-	auto cbvHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(m_generalCBVHeap->GetGPUDescriptorHandleForHeapStart());
+	auto cbvHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(I(D3DApp)->GetCbvHeap()->GetGPUDescriptorHandleForHeapStart());
 	cbvHandle.Offset(args.TextSrvIndex, m_cbvDescriptorSize);
 
-	args.CmdList->SetGraphicsRootConstantBufferView(1, m_objectCBs[args.ItemCBIndex]->GetResource()->GetGPUVirtualAddress());
 	args.CmdList->SetGraphicsRootDescriptorTable(0, cbvHandle);
+	args.CmdList->SetGraphicsRootConstantBufferView(1, m_objectCBs[args.ItemCBIndex]->GetResource()->GetGPUVirtualAddress());
+
 
 	args.CmdList->DrawIndexedInstanced(args.IndexCount, 1, args.StartIndexLocation, args.BaseVertexLocation, 0);
 }

@@ -37,6 +37,7 @@ public:
 
 	ID3D12Device* GetDevice() const { return m_pD3dDevice; }
 	ID3D12GraphicsCommandList* GetCommandList() const { return m_pCommandList; }
+	ID3D12DescriptorHeap* GetCbvHeap() const { return m_pCbvHeap; }
 	void BeginList();
 	void EndList();
 

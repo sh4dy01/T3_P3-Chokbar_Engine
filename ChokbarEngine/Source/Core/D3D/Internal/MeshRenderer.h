@@ -29,7 +29,6 @@ public:
 	UINT ObjectCBIndex = -1;
 
 	Material* Mat;
-	UINT TextSrvIndex = -1;
 
 private:
 	std::vector<Texture*> m_textures{};
