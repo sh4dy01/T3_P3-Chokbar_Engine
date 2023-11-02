@@ -4,6 +4,7 @@
 Camera::Camera(const std::string& name)
 	: GameObject(name), m_CameraComponent(AddComponent<CameraComponent>()), m_PlayerComponent(AddComponent<PlayerComponent>())
 {
+	transform->SetPosition(0, 0, -2);
 }
 
 Camera::~Camera()

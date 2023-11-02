@@ -4,18 +4,18 @@
 
 #include "D3DMesh.h"
 
-#define RELPTR(ptr) if (ptr) { ptr->Release(); ptr = nullptr; }
-
 using namespace DirectX;
 
-Vertex::Vertex(const DirectX::XMFLOAT3& position) : Position(position) { }
-Vertex::Vertex(float px, float py, float pz) : Position(px, py, pz) { }
+Vertex::Vertex(const DirectX::XMFLOAT3& p, const DirectX::XMFLOAT3& n, const DirectX::XMFLOAT3& t, const DirectX::XMFLOAT2& uv) : Position(p), Normal(n), TangentU(t), TexC(uv) { }
+Vertex::Vertex(
+		float px, float py, float pz,
+		float nx, float ny, float nz,
+		float tx, float ty, float tz,
+		float u, float v
+	) : Position(px, py, pz), Normal(nx, ny, nz), TangentU(tx, ty, tz), TexC(u,v) { }
 
 Vertex_Color::Vertex_Color(const DirectX::XMFLOAT3& position, const DirectX::XMVECTORF32& color) : Position(position), Color(color) { }
 Vertex_Color::Vertex_Color(float px, float py, float pz, float cr, float cg, float cb, float ca) : Position(px, py, pz), Color(cr, cg, cb, ca) { }
-
-Vertex_UV::Vertex_UV(const DirectX::XMFLOAT3& position, const DirectX::XMFLOAT2& uv) : Position(position), Texcoord(uv) { }
-Vertex_UV::Vertex_UV(float px, float py, float pz, float u, float v) : Position(px, py, pz), Texcoord(u, v) { }
 
 D3DMesh::D3DMesh()
 	: VertexByteStride(0), VertexBufferByteSize(0), IndexFormat(DXGI_FORMAT_R16_UINT), IndexBufferByteSize(0)
@@ -61,9 +61,9 @@ void D3DMesh::DisposeUploaders()
 
 void D3DMesh::Create(const void* vData, UINT vStride, UINT vSize, const void* iData, UINT iStride, UINT iSize)
 {
-	D3DApp::GetInstance()->BeginList();
-	ID3D12Device* device = D3DApp::GetInstance()->GetDevice();
-	ID3D12GraphicsCommandList* cmdList = D3DApp::GetInstance()->GetCommandList();
+	I(D3DApp)->BeginList();
+	ID3D12Device* device = I(D3DApp)->GetDevice();
+	ID3D12GraphicsCommandList* cmdList = I(D3DApp)->GetCommandList();
 
 	const UINT iBufferSize = iStride * iSize;
 	const UINT vBufferSize = vStride * vSize;
@@ -82,7 +82,7 @@ void D3DMesh::Create(const void* vData, UINT vStride, UINT vSize, const void* iD
 	StartIndexLocation = 0;
 	BaseVertexLocation = 0;
 
-	D3DApp::GetInstance()->EndList();
+	I(D3DApp)->EndList();
 
 	DisposeUploaders();
 }

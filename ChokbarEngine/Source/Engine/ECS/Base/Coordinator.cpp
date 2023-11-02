@@ -17,9 +17,9 @@ namespace Chokbar
 
 	Coordinator::~Coordinator()
 	{
-		m_EntityManager.release();
-		m_SystemManager.release();
-		m_ComponentManager.release();
+		m_EntityManager.reset();
+		m_SystemManager.reset();
+		m_ComponentManager.reset();
 	}
 
 	void Coordinator::Init()

@@ -1,5 +1,7 @@
 #include "BlankProject.h"
 
+#include "Engine/Resource.h"
+
 #include "Platform/Windows/WinEntry.h"
 #include "Engine/ECS/Base/GameObject.h"
 #include "Core/D3D/Internal/MeshRenderer.h"
@@ -48,20 +50,18 @@ void Application::PreInitialize()
 
 void Application::Initialize()
 {
-	
-	auto test = new GameObject("f");
-	auto mr = new MeshRenderer(MeshType::PYRAMID, MaterialType::SIMPLE);
-	test->AddComponent<MeshRenderer>(mr);
-	test->transform->SetPosition(0, 0, 0);
 
-	auto *test2 = new GameObject("f");
-	auto *mr2 = new MeshRenderer(MeshType::PYRAMID, MaterialType::SIMPLE);
-	auto *rb2 = new Rigidbody();
-	auto *sphere2 = new Sphere(XMFLOAT3(0, 0, 0), 2.0f);
+	auto* test = new GameObject("f");
+	auto* mr = new MeshRenderer(MeshType::SPHERE, MaterialType::TEXTURE);
+	test->AddComponent<MeshRenderer>(mr);
+	std::string path = "Resources/Textures/mars.dds";
+	test->GetComponent<MeshRenderer>()->RegisterTexture(Resource::Load<Texture>(path));
+	test->transform->SetPosition(0, 0, 2);
+
+	/*auto* test2 = new GameObject("f");
+	auto* mr2 = new MeshRenderer(MeshType::PYRAMID, MaterialType::SIMPLE);
 	test2->AddComponent<MeshRenderer>(mr2);
-	test2->AddComponent<Rigidbody>(rb2);
-	test2->AddComponent<Sphere>(sphere2);
-	test2->transform->SetPosition(0, 0, -2);
+	test2->transform->SetPosition(0, 0, -2);*/
 
 	auto *test3 = new GameObject("f");
 	auto *mr3 = new MeshRenderer(MeshType::PYRAMID, MaterialType::SIMPLE);

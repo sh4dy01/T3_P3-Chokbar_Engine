@@ -2,6 +2,7 @@
 
 #include "Engine/IResourceObject.h"
 #include "Core/D3D/MaterialType.h"
+#include "Core/D3D/Internal/Texture.h"
 
 
 class ShaderBase;
@@ -14,10 +15,11 @@ public:
 	~Resource();
 
 	template <class T = IResourceObject>
-	static T* Load(const std::wstring& filepath)
+	static T* Load(std::string& filepath)
 	{
-		T* resource = new T(filepath);
-		resource->Load();
+		std::string name = filepath.substr(filepath.find_last_of("/") + 1);
+		T* resource = new T(name);
+		resource->Load(filepath);
 		return resource;
 	}
 

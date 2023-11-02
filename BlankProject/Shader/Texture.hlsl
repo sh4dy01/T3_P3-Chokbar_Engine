@@ -1,3 +1,5 @@
+Texture2D gDiffuseMap : register(t0);
+
 cbuffer cbPerObject : register(b0)
 {
     float4x4 gWorld;
@@ -13,29 +15,48 @@ cbuffer cbPass : register(b1)
     float gDeltaTime;
 }
 
+SamplerState gsamPointWrap : register(s0);
+// Not used
+// SamplerState gsamPointClamp         : register(s1);
+// SamplerState gsamLinearWrap         : register(s2);
+// SamplerState gsamLinearClamp        : register(s3);
+// SamplerState gsamAnisotropicWrap    : register(s4);
+// SamplerState gsamAnisotropicClamp   : register(s5);
+
 struct VS_INPUT
 {
-    float3 pos : POSITION;
-    float2 uv : TEXCOORD;
+    float3 Pos : POSITION;
+    float3 Normal : NORMAL;
+    float3 Tangent : TANGENT;
+    float2 TextCoord : TEXCOORD;
 };
 
 struct PS_INPUT
 {
-    float4 pos : SV_POSITION;
-    float2 uv : TEXCOORD;
+    float4 PosH : SV_POSITION;
+    float3 PosW : POSITION;
+    float3 NormalW : NORMAL;
+    float2 TextCoord : TEXCOORD;
 };
 
 PS_INPUT vs_main(VS_INPUT input)
 {
     PS_INPUT output;
 
-    float4 posW = mul(float4(input.pos, 1.0f), gWorld);
-    output.pos = mul(posW, gViewProj);
+    float4 posW = mul(float4(input.Pos, 1.0f), gWorld);
+    output.PosW = posW.xyz;
+    output.PosH = mul(posW, gViewProj);
+    
+    output.NormalW = mul(input.Normal, (float3x3) gWorld);
+    
+    output.TextCoord = input.TextCoord;
         
     return output;
 }
 
 float4 ps_main(PS_INPUT input) : SV_TARGET
 {
-    return float4(1, 0, 0, 1);
+    float4 diffuse = gDiffuseMap.Sample(gsamPointWrap, input.TextCoord);
+    
+    return diffuse;
 }
