@@ -31,7 +31,8 @@ void ParticleSystem::Awake()
 		randomSpeed = (float)(rand() % 200) / 100.0f;
 		randomDirection = XMFLOAT3((float)(rand() % 100) / 100.0f, (float)(rand() % 100) / 100.0f, (float)(rand() % 100) / 100.0f);
 
-		p = new Particle(randomLifeTime, randomSpeed, randomDirection);
+		p = new Particle();
+		p->Init(randomLifeTime, randomSpeed, randomDirection);
 	}
 
 	m_ParticlesRenderer->CreateGlobalMesh(m_Particles);
@@ -39,6 +40,7 @@ void ParticleSystem::Awake()
 
 void ParticleSystem::Start()
 {
+	
 }
 
 void ParticleSystem::Update(float deltaTime)

@@ -3,7 +3,7 @@
 class Particle
 {
 public:
-	Particle(float rLifeTime, float rSpeed, DirectX::XMFLOAT3 rDir);
+	Particle();
 	~Particle();
 
 	void Update(float deltaTime);
@@ -11,8 +11,9 @@ public:
 	bool IsAlive() const { return m_CurrentLifeTime < m_LifeTime; }
 	bool IsActive() const { return m_IsActive; }
 	void ToggleActivity() { m_IsActive = !m_IsActive; }
+
 	void Reset();
-	void Start();
+	void Init(float rLifeTime, float rSpeed, DirectX::XMFLOAT3 rDir);
 
 private:
 	bool m_IsActive;

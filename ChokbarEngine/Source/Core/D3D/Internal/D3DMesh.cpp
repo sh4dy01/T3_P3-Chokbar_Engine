@@ -6,6 +6,7 @@
 
 using namespace DirectX;
 
+Vertex::Vertex() : Position(0.0f, 0.0f, 0.0f), Color(0.0f, 0.0f, 0.0f, 0.0f), Normal(0.0f, 0.0f, 0.0f), TangentU(0.0f, 0.0f, 0.0f), TexC(0.0f, 0.0f) { }
 Vertex::Vertex(const DirectX::XMFLOAT3& p, const DirectX::XMFLOAT4 c, const DirectX::XMFLOAT3& n, const DirectX::XMFLOAT3& t, const DirectX::XMFLOAT2& uv) : Position(p), Color(c), Normal(n), TangentU(t), TexC(uv) { }
 Vertex::Vertex(
 	float px, float py, float pz,

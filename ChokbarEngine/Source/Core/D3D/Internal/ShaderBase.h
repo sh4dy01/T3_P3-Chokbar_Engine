@@ -6,7 +6,7 @@
 
 struct Texture;
 
-enum VertexType { POS, POS_COLOR, POS_TEX, POS_NORM_TEX, POS_NORM_TAN_TEX };
+enum VertexType { VERTEX, PARTICLE };
 
 struct ShaderDrawArguments
 {
@@ -69,7 +69,7 @@ protected:
 	m_objectCBs stores every constant buffer. Each constant buffer is associated to an unique MeshRenderer
 	NOTE : The object constant buffer is associated to the b0 cbuffer in the shader (only true in our project) */
 	std::vector<UploadBuffer<ObjConstants>*> m_objectCBs;
-	std::stack<UINT> m_freeIndices; 
+	std::stack<UINT> m_freeIndices;
 	/* m_passCB stores every information the shader might need about our camera
 	NOTE : The main pass constant buffer is associated to the b1 cbuffer in the shader (only true in our project) */
 	UploadBuffer<PassConstants>* m_passCB;
@@ -153,4 +153,31 @@ private:
 	Creating multiple Samplers allows us to have access to different parse mode in our shader later on. This is useful on big engines.
 	Note that will certainly do not need that much samplers, but it was juste to learn how to use them. */
 	std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> GetStaticSamplers();
+};
+
+class ShaderParticle : public ShaderBase
+{
+public:
+	struct InstanceData
+	{
+		DirectX::XMFLOAT4X4 World = Identity4x4();
+		float Age = 0.0f;
+
+		DirectX::XMFLOAT3 Velocity = { 0.0f, 0.0f, 0.0f };
+		DirectX::XMFLOAT3 Rotation = { 0.0f, 0.0f, 0.0f };
+		float LifeTime = 0.0f;
+	};
+
+public:
+	ShaderParticle(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, UINT cbvDescriptorSize, std::wstring& filepath);
+	~ShaderParticle();
+
+	void Init() override;
+	void CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT& rtvFormat, DXGI_FORMAT& dsvFormat) override;
+
+	void BeginDraw(ID3D12GraphicsCommandList* cmdList) override;
+	void Draw(ShaderDrawArguments& args) override;
+	void EndDraw(ID3D12GraphicsCommandList* cmdList) override;
+
+private:
 };

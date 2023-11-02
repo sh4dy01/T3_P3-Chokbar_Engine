@@ -12,17 +12,17 @@ class MeshRenderer : public Component
 public:
 
 	MeshRenderer();
-	MeshRenderer(MeshType, MaterialType);
-	~MeshRenderer();
-
-	void OnDelete();
-
-	void BindMaterial(Material* mat);
+	MeshRenderer(MeshType meshType, MaterialType matType);
+	virtual ~MeshRenderer();
 
 	Texture* GetTexture(UINT index) const { return m_textures[index]; }
 	std::vector<Texture*> GetTextures() const { return m_textures; }
 	void RegisterTexture(Texture* tex);
 
+protected:
+	void OnDelete();
+
+	void BindMaterial(Material* mat);
 
 public:
 	D3DMesh* Mesh;
@@ -32,5 +32,20 @@ public:
 
 private:
 	std::vector<Texture*> m_textures{};
+};
 
+class ParticleRenderer : public MeshRenderer
+{
+public:
+	ParticleRenderer();
+	ParticleRenderer(MeshType meshType, MaterialType matType, UINT ParticleCount);
+	~ParticleRenderer();
+
+	void Awake(UINT instanceCount);
+	void Update(float dt);
+
+private:
+	std::vector<ShaderParticle::InstanceData> m_particleInstanceData{};
+
+	UINT m_particleCount = 0;
 };

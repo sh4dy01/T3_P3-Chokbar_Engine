@@ -2,7 +2,7 @@
 
 struct Vertex
 {
-	Vertex() {}
+	Vertex();
 	Vertex(const DirectX::XMFLOAT3& p, const DirectX::XMFLOAT4 c, const DirectX::XMFLOAT3& n, const DirectX::XMFLOAT3& t, const DirectX::XMFLOAT2& uv);
 	Vertex(
 		float px, float py, float pz,

@@ -3,10 +3,11 @@
 #include "Particle.h"
 
 #include <cmath>
+using namespace DirectX;
 
 
-Particle::Particle(const float lifeTime, float speed, DirectX::XMFLOAT3 dir)
-	: m_LifeTime(lifeTime), m_CurrentLifeTime(0.0f), m_Speed(speed), m_Direction(dir), m_IsActive(false), m_opacity(1.0f)
+Particle::Particle()
+	: m_LifeTime(0.0f), m_CurrentLifeTime(0.0f), m_Speed(0.0f), m_Direction(XMFLOAT3(0.0f, 0.0f, 0.0f)), m_IsActive(false), m_opacity(1.0f)
 {
 	m_Color1 = DirectX::XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
 	m_Color2 = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
@@ -48,7 +49,11 @@ void Particle::Reset()
 }
 
 
-void Particle::Start()
+void Particle::Init(float rLifeTime, float rSpeed, DirectX::XMFLOAT3 rDir)
 {
+	m_LifeTime = rLifeTime;
+	m_CurrentLifeTime = 0.0f;
+	m_Speed = rSpeed;
+	m_Direction = rDir;
 	m_IsActive = true;
 }

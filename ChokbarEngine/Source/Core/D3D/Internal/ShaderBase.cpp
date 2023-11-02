@@ -42,6 +42,11 @@ ShaderBase::~ShaderBase()
 void ShaderBase::Init()
 {
 	CreatePassCB();
+
+	CompileShader(nullptr, "vs_main", "vs_5_0", &m_vsByteCode);
+	CompileShader(nullptr, "ps_main", "ps_5_0", &m_psByteCode);
+
+	m_MainCamera = Chokbar::Engine::GetMainCamera()->GetCameraComponent();
 }
 
 void ShaderBase::SetInputLayout(VertexType vertexType)
@@ -382,5 +387,93 @@ std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> ShaderTexture::GetStaticSampler
 		8); // maxAnisotropy
 
 	return { pointWrap, pointClamp, linearWrap, linearClamp, anisotropicWrap, anisotropicClamp };
+}
+#pragma endregion
+
+#pragma region SHADER PARTICLE
+ShaderParticle::ShaderParticle(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, UINT cbvDescriptorSize, std::wstring& filepath)
+	: ShaderBase(device, cbvHeap, cbvDescriptorSize, filepath)
+{
+}
+
+ShaderParticle::~ShaderParticle()
+{
+}
+
+void ShaderParticle::CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT& rtvFormat, DXGI_FORMAT& dsvFormat)
+{
+	SetInputLayout(vertexType);
+
+	CD3DX12_ROOT_PARAMETER slotRootParameter[2];
+	slotRootParameter[0].InitAsConstantBufferView(0);
+	slotRootParameter[1].InitAsConstantBufferView(1);
+
+	CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc(_countof(slotRootParameter), slotRootParameter, 0, nullptr, D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
+
+	ID3DBlob* serializedRootSignature = nullptr;
+	ID3DBlob* errorBlob = nullptr;
+
+	HRESULT hr = D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &serializedRootSignature, &errorBlob);
+	ThrowIfFailed(hr);
+	m_generalDevice->CreateRootSignature(0, serializedRootSignature->GetBufferPointer(), serializedRootSignature->GetBufferSize(), IID_PPV_ARGS(&m_rootSignature));
+	ThrowIfFailed(hr);
+
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc;
+	ZeroMemory(&psoDesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
+	psoDesc.InputLayout = { m_inputLayout.data(), (UINT)m_inputLayout.size() };
+	psoDesc.pRootSignature = m_rootSignature;
+	psoDesc.VS = { reinterpret_cast<BYTE*>(m_vsByteCode->GetBufferPointer()), m_vsByteCode->GetBufferSize() };
+	psoDesc.PS = { reinterpret_cast<BYTE*>(m_psByteCode->GetBufferPointer()), m_psByteCode->GetBufferSize() };
+	psoDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
+	psoDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
+	psoDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
+	psoDesc.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
+	psoDesc.SampleMask = UINT_MAX;
+	psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+	psoDesc.NumRenderTargets = 1;
+	psoDesc.RTVFormats[0] = rtvFormat;
+	psoDesc.SampleDesc.Count = 1;
+	psoDesc.SampleDesc.Quality = 0;
+	psoDesc.DSVFormat = dsvFormat;
+
+	hr = m_generalDevice->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&m_pipelineState));
+	ThrowIfFailed(hr);
+
+	RELPTR(serializedRootSignature);
+	RELPTR(errorBlob);
+}
+
+void ShaderParticle::BeginDraw(ID3D12GraphicsCommandList* cmdList)
+{
+	cmdList->SetGraphicsRootSignature(m_rootSignature);
+
+	cmdList->SetGraphicsRootConstantBufferView(1, m_passCB->GetResource()->GetGPUVirtualAddress());
+
+	cmdList->SetPipelineState(m_pipelineState);
+
+	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+}
+
+void ShaderParticle::Draw(ShaderDrawArguments& args)
+{
+	if (args.ItemCBIndex >= m_objectCBs.size())
+		AddObjectCB();
+
+	assert(args.ItemCBIndex <= m_objectCBs.size());
+
+	args.CmdList->IASetVertexBuffers(0, 1, &args.ItemGeometry->VertexBufferView());
+	args.CmdList->IASetIndexBuffer(&args.ItemGeometry->IndexBufferView());
+
+	auto cbvHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(I(D3DApp)->GetCbvHeap()->GetGPUDescriptorHandleForHeapStart());
+	cbvHandle.Offset(args.ItemCBIndex, m_cbvDescriptorSize);
+
+	args.CmdList->SetGraphicsRootConstantBufferView(0, m_objectCBs[args.ItemCBIndex]->GetResource()->GetGPUVirtualAddress());
+
+	args.CmdList->DrawIndexedInstanced(args.IndexCount, 1, args.StartIndexLocation, args.BaseVertexLocation, 0);
+}
+
+void ShaderParticle::EndDraw(ID3D12GraphicsCommandList* cmdList)
+{
+
 }
 #pragma endregion
