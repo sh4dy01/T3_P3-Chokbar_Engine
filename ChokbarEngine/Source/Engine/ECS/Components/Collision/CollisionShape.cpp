@@ -4,7 +4,42 @@
 
 CollisionShape::CollisionShape()
 {
+	m_Center = DirectX::XMFLOAT3(0, 0, 0);
+}
 
+CollisionShape::~CollisionShape()
+{
+	for (auto triggerCollisionEvent : m_triggerCollisionEvents)
+	{
+		if (!triggerCollisionEvent) continue;
+
+		delete triggerCollisionEvent;
+		triggerCollisionEvent = nullptr;
+	}
+}
+
+void CollisionShape::CallOnTriggerEnter(CollisionShape* other)
+{
+	for (auto triggerCollisionEvent : m_triggerCollisionEvents)
+	{
+		triggerCollisionEvent->OnTriggerEnter(other);
+	}
+}
+
+void CollisionShape::CallOnTriggerStay(CollisionShape* other)
+{
+	for (auto triggerCollisionEvent : m_triggerCollisionEvents)
+	{
+		triggerCollisionEvent->OnTriggerStay(other);
+	}
+}
+
+void CollisionShape::CallOnTriggerExit(CollisionShape* other)
+{
+	for (auto triggerCollisionEvent : m_triggerCollisionEvents)
+	{
+		triggerCollisionEvent->OnTriggerExit(other);
+	}
 }
 
 void CollisionShape::OnAddedComponent()
@@ -13,10 +48,9 @@ void CollisionShape::OnAddedComponent()
 	rigidbody->RegisterCollisionShape(this);
 }
 
-
-CollisionShape::ShapeType CollisionShape::GetType() const
+void CollisionShape::RegisterTriggerCollisionEvent(TriggerCollisionEvent* triggerCollisionEvent)
 {
-	return m_type;
+	m_triggerCollisionEvents.push_back(triggerCollisionEvent);
 }
 
 

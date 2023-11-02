@@ -73,47 +73,46 @@ void PhysicsWorld::CheckCollision()
 {
 	if (m_rigidbodies.size() < 2) return;
 
-		for (size_t i = 0; i < m_rigidbodies.size(); i++)
-		{
+	for (size_t i = 0; i < m_rigidbodies.size(); i++)
+	{
 		for (size_t j = 0; j < m_rigidbodies.size(); j++)
-			{
+		{
 			if (i == j) continue;
 
 			if (CheckCollisionShapes(m_rigidbodies[i], m_rigidbodies[j]))
-				{
+			{
 				switch (m_CurrentCollisionInfo->GetState())
-					{
-					case Enter:
+				{
+				case Enter:
 
 					m_CurrentCollisionInfo->GetColliderA()->CallOnTriggerEnter(m_CurrentCollisionInfo->GetColliderB());
 					m_CurrentCollisionInfo->GetColliderB()->CallOnTriggerEnter(m_CurrentCollisionInfo->GetColliderA());
 
-						DEBUG_LOG(m_rigidbodies[i]->gameObject->GetName() << " entered in collision with " << m_rigidbodies[j]->gameObject->GetName())
+					DEBUG_LOG(m_rigidbodies[i]->gameObject->GetName() << " entered in collision with " << m_rigidbodies[j]->gameObject->GetName())
 
-						break;
-					case Stay:
+					break;
+				case Stay:
 
-						//m_rigidbodies[i]->CallOnCollisionStay(m_CurrentCollisionInfo.ColliderB);
-						//m_rigidbodies[j]->CallOnCollisionStay(m_CurrentCollisionInfo.ColliderA);
+					//m_rigidbodies[i]->CallOnCollisionStay(m_CurrentCollisionInfo.ColliderB);
+					//m_rigidbodies[j]->CallOnCollisionStay(m_CurrentCollisionInfo.ColliderA);
 
-						DEBUG_LOG(m_rigidbodies[i]->gameObject->GetName() << " continue colliding with " << m_rigidbodies[j]->gameObject->GetName())
+					DEBUG_LOG(m_rigidbodies[i]->gameObject->GetName() << " continue colliding with " << m_rigidbodies[j]->gameObject->GetName())
 
-						break;
-					case Exit:
+					break;
+				case Exit:
 
-						//m_rigidbodies[i]->CallOnCollisionExit(m_CurrentCollisionInfo.ColliderB);
-						//m_rigidbodies[j]->CallOnCollisionExit(m_CurrentCollisionInfo.ColliderA);
+					//m_rigidbodies[i]->CallOnCollisionExit(m_CurrentCollisionInfo.ColliderB);
+					//m_rigidbodies[j]->CallOnCollisionExit(m_CurrentCollisionInfo.ColliderA);
 
-						DEBUG_LOG(m_rigidbodies[i]->gameObject->GetName() << " exited collision with " << m_rigidbodies[j]->gameObject->GetName())
+					DEBUG_LOG(m_rigidbodies[i]->gameObject->GetName() << " exited collision with " << m_rigidbodies[j]->gameObject->GetName())
 					m_RegisteredCollisionInfos.erase(std::remove(m_RegisteredCollisionInfos.begin(), m_RegisteredCollisionInfos.end(), m_CurrentCollisionInfo), m_RegisteredCollisionInfos.end());
 
-						break;
-					}
-					
-					//m_rigidbodies[i]->SetVelocity(XMFLOAT3(0, 0, 0));
-
-					//DEBUG_LOG(m_rigidbodies[i]->gameObject->GetName() << " collided with " << m_rigidbodies[j]->gameObject->GetName());
+					break;
 				}
+					
+				//m_rigidbodies[i]->SetVelocity(XMFLOAT3(0, 0, 0));
+
+				//DEBUG_LOG(m_rigidbodies[i]->gameObject->GetName() << " collided with " << m_rigidbodies[j]->gameObject->GetName());
 			}
 		}
 	}
@@ -136,12 +135,17 @@ bool PhysicsWorld::CheckCollisionShapes(Rigidbody* rbA, Rigidbody* rbB)
 
 					return true;
 				}
+				// If there is a collision already registered
 				else if (!m_RegisteredCollisionInfos.empty())
 				{
+					// We check if the collision is still occuring and set it to exit
 					if (const auto collisionInfo = GetCollisionInfo(sphereA, sphereB))
 					{
-						collisionInfo->State = Exit;
+						collisionInfo->UpdateState(Exit);
 						m_CurrentCollisionInfo = collisionInfo;
+
+						// return true to handle the exit trigger
+						return true;
 					}
 				}	
 
@@ -207,7 +211,23 @@ CollisionInfo* PhysicsWorld::GetCollisionInfo(const CollisionShape* sphereA, con
 	return nullptr;
 }
 
-bool PhysicsWorld::AreSpheresColliding(Sphere* sphere1, Sphere* sphere2) const
+bool PhysicsWorld::AreSpheresColliding(Sphere* sphereA, Sphere* sphereB) const
 {
-	return sphere1->GetBoundingSphere()->Intersects(*sphere2->GetBoundingSphere());
+	// Load A.
+	XMVECTOR vCenterA = DirectX::XMVectorAdd(XMLoadFloat3(&sphereA->GetCenter()), XMLoadFloat3(&sphereA->transform->GetPosition()));
+	XMVECTOR vRadiusA = DirectX::XMVectorReplicate(sphereA->GetRadius());
+
+	// Load B.
+	XMVECTOR vCenterB = DirectX::XMVectorAdd(XMLoadFloat3(&sphereB->GetCenter()), XMLoadFloat3(&sphereB->transform->GetPosition()));
+	XMVECTOR vRadiusB = DirectX::XMVectorReplicate(sphereB->GetRadius());
+
+	// Distance squared between centers.    
+	XMVECTOR Delta = DirectX::XMVectorSubtract(vCenterB, vCenterA);
+	XMVECTOR DistanceSquared = DirectX::XMVector3LengthSq(Delta);
+
+	// Sum of the radii squared.
+	XMVECTOR RadiusSquared = DirectX::XMVectorAdd(vRadiusA, vRadiusB);
+	RadiusSquared = DirectX::XMVectorMultiply(RadiusSquared, RadiusSquared);
+
+	return DirectX::XMVector3LessOrEqual(DistanceSquared, RadiusSquared);
 }
