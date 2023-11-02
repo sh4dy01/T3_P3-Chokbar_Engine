@@ -70,7 +70,7 @@ void Application::Initialize()
 	auto *sphere3 = new SphereCollider(XMFLOAT3(0, 0, 0), 0);
 	test3->AddComponent<MeshRenderer>(mr3);
 	test3->AddComponent<Rigidbody>(rb3);
-	test3->AddComponent<Sphere>(sphere3);
+	test3->AddComponent<SphereCollider>(sphere3);
 	test3->transform->SetScale(6, 6, 6);
 
 	//GameObject player = GameObject("player");

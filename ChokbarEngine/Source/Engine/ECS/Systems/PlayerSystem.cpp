@@ -38,11 +38,11 @@ void PlayerSystem::Update(float dt)
 		}
 		if (InputHandler::IsKeyDown(VK_RBUTTON))
 		{
-			Engine::GetMainCamera()->GetCameraComponent()->SetFOV(10.f);
+			Chokbar::Engine::GetMainCamera()->GetCameraComponent()->SetFOV(10.f);
 		}
 		else if (InputHandler::IsKeyUp(VK_RBUTTON))
 		{
-			Engine::GetMainCamera()->GetCameraComponent()->SetFOV(75.f);
+			Chokbar::Engine::GetMainCamera()->GetCameraComponent()->SetFOV(75.f);
 		}
 		if (InputHandler::IsKeyHeld(VK_SHIFT))
 		{
