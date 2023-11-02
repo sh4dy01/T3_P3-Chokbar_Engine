@@ -28,11 +28,6 @@ void Rigidbody::RemoveCollisionShape(Collider* shape)
 	std::erase(m_collisionShapes, shape);
 }
 
-void Rigidbody::RegisterOnTriggerCallback(const std::function<void(Collider*)>& callback)
-{
-	m_OnTriggerCallback.push_back(callback);
-}
-
 void Rigidbody::SetMass(float mass)
 {
 	m_mass = mass;
@@ -78,12 +73,4 @@ XMFLOAT3 Rigidbody::GetForce() const
 std::vector<Collider*> Rigidbody::GetAllCollisionShape()
 {
 	return m_collisionShapes;
-}
-
-void Rigidbody::CallOnCollisionEnter(Collider* col)
-{
-	for (const auto& callback : m_OnTriggerCallback)
-	{
-		callback(col);
-	}
 }

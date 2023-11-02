@@ -1,9 +1,9 @@
 #pragma once 
 
-#include <DirectXMath.h>
-#include <functional>
 
 using namespace DirectX;
+
+class Collider;
 
 class Rigidbody : public Component
 {
@@ -14,10 +14,6 @@ public:
 
     void RegisterCollisionShape(Collider* shape);
     void RemoveCollisionShape(Collider* shape);
-
-    void RegisterOnTriggerCallback(const std::function<void(Collider*)>& callback);
-
-    void CallOnCollisionEnter(Collider*);
 
     XMFLOAT3 GetVelocity() const;
     void SetVelocity(const XMFLOAT3& velocity);
@@ -38,9 +34,6 @@ public:
 private:
 
     std::vector<Collider*> m_collisionShapes;
-    std::vector<std::function<void(Collider*)>> m_OnTriggerCallback;
-
-    //std::vector<std::function<void(CollisionShape*)>> m_OnCollisionCallback;
 
     XMFLOAT3 m_velocity;
     XMFLOAT3 m_force;

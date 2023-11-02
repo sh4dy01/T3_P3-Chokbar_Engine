@@ -3,7 +3,7 @@
 
 #include "Core/D3D/Internal/MeshRenderer.h"
 #include "Engine/ECS/Components/PlayerComponent.h"
-#include "Engine/ECS/Components/Collision/CollisionShape.h"
+#include "Engine/ECS/Components/Collision/Collider.h"
 #include "Engine/ECS/Components/Collision/RigidBody.h"
 #include "Engine/ECS/Systems/PlayerSystem.h"
 
@@ -41,7 +41,7 @@ namespace Chokbar
 		RegisterComponent<MeshRenderer>();
 		RegisterComponent<PlayerComponent>();
 		RegisterComponent<Rigidbody>();
-		RegisterComponent<Sphere>();
+		RegisterComponent<SphereCollider>();
 		RegisterComponent<CameraComponent>();
 	}
 
