@@ -36,6 +36,14 @@ void PlayerSystem::Update(float dt)
 		{
 			transform->Translate(player->Speed * dt, 0, 0);
 		}
+		if (InputHandler::IsKeyDown(VK_RBUTTON))
+		{
+			Engine::GetMainCamera()->GetCameraComponent()->SetFOV(10.f);
+		}
+		else if (InputHandler::IsKeyUp(VK_RBUTTON))
+		{
+			Engine::GetMainCamera()->GetCameraComponent()->SetFOV(75.f);
+		}
 		if (InputHandler::IsKeyHeld(VK_SHIFT))
 		{
 			transform->Translate(0, -player->Speed * dt, 0, Transform::Space::World);
