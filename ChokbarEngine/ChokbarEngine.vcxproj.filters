@@ -172,10 +172,10 @@
     <ClCompile Include="Source\Engine\ECS\Components\Component.cpp">
       <Filter>Source\Engine\ECS\Components</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\ECS\Components\Collision\CollisionShape.cpp">
+    <ClCompile Include="Source\Engine\ECS\Components\Collision\Collider.cpp">
       <Filter>Source\Engine\ECS\Components\Collision</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\ECS\Components\Collision\SphereCollision.cpp">
+    <ClCompile Include="Source\Engine\ECS\Components\Collision\SphereCollider.cpp">
       <Filter>Source\Engine\ECS\Components\Collision</Filter>
     </ClCompile>
     <ClCompile Include="Source\Engine\PhysicsManager.cpp">
@@ -240,6 +240,9 @@
     </ClCompile>
     <ClCompile Include="Source\Engine\SplashScreen.cpp">
       <Filter>Source\Engine\Core\D3D\Internal\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\ECS\Components\Collision\TriggerCollisionEvent.cpp">
+      <Filter>Source\Engine\ECS\Components\Collision</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -318,10 +321,10 @@
     <ClInclude Include="Source\Engine\ECS\Components\Component.h">
       <Filter>Source\Engine\ECS\Components</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\ECS\Components\Collision\CollisionShape.h">
+    <ClInclude Include="Source\Engine\ECS\Components\Collision\Collider.h">
       <Filter>Source\Engine\ECS\Components\Collision</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\ECS\Components\Collision\SphereCollision.h">
+    <ClInclude Include="Source\Engine\ECS\Components\Collision\SphereCollider.h">
       <Filter>Source\Engine\ECS\Components\Collision</Filter>
     </ClInclude>
     <ClInclude Include="Source\Engine\PhysicsManager.h">
@@ -399,6 +402,9 @@
     <ClInclude Include="Source\Core\D3D\Internal\ShaderBase.h" />
     <ClInclude Include="Source\Core\D3D\Internal\ShaderBase.h">
       <Filter>Source\Engine\Core\D3D\Internal\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\ECS\Components\Collision\TriggerCollisionEvent.h">
+      <Filter>Source\Engine\ECS\Components\Collision</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
