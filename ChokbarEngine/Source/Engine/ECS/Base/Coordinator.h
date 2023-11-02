@@ -4,12 +4,12 @@
 #include "ComponentManager.h"
 #include "EntityManager.h"
 
+namespace Chokbar
+{
 
-namespace Chokbar {
-
-	class Coordinator {
+	class Coordinator
+	{
 	public:
-
 		Coordinator();
 		~Coordinator();
 
@@ -26,21 +26,19 @@ namespace Chokbar {
 		void DestroyEntity(InstanceID entity);
 
 	private:
-
 		void RegisterComponents();
 		void RegisterSystems();
 
 	public:
-
 		// Component methods
-		template<typename T>
+		template <typename T>
 		void RegisterComponent() const
 		{
 			m_ComponentManager->RegisterComponent<T>();
 		}
 
-		template<typename T>
-		void AddComponent(InstanceID entity, T* component)
+		template <typename T>
+		void AddComponent(InstanceID entity, T *component)
 		{
 			m_ComponentManager->AddComponent<T>(entity, component);
 
@@ -51,7 +49,7 @@ namespace Chokbar {
 			m_SystemManager->EntitySignatureChanged(entity, signature);
 		}
 
-		template<typename T>
+		template <typename T>
 		void RemoveComponent(InstanceID entity) const
 		{
 			m_ComponentManager->RemoveComponent<T>(entity);
@@ -63,51 +61,48 @@ namespace Chokbar {
 			m_SystemManager->EntitySignatureChanged(entity, signature);
 		}
 
-		template<typename T>
-		T* GetComponent(InstanceID entity)
+		template <typename T>
+		T *GetComponent(InstanceID entity)
 		{
 			return m_ComponentManager->GetComponent<T>(entity);
 		}
 
-		template<typename T>
+		template <typename T>
 		bool HasComponent(InstanceID entity) const
 		{
 			return m_ComponentManager->HasComponent<T>(entity);
 		}
 
-		template<typename T>
+		template <typename T>
 		ComponentType GetComponentType() const
 		{
 			return m_ComponentManager->GetComponentType<T>();
 		}
 
-		template<class T>
+		template <class T>
 		std::shared_ptr<ComponentArray<T>> GetAllComponentsOfType()
 		{
 			// Get a pointer to a list of all components of type
 			return m_ComponentManager->GetComponentArray<T>();
 		}
 
-
 		// System methods
-		template<typename T>
+		template <typename T>
 		std::shared_ptr<T> RegisterSystem()
 		{
 			return m_SystemManager->RegisterSystem<T>();
 		}
 
-		template<typename T>
+		template <typename T>
 		void SetSystemSignature(Signature signature) const
 		{
 			m_SystemManager->SetSignature<T>(signature);
 		}
 
 	private:
-
 		std::unique_ptr<ComponentManager> m_ComponentManager;
 		std::unique_ptr<EntityManager> m_EntityManager;
 		std::unique_ptr<SystemManager> m_SystemManager;
-
 	};
 
 }

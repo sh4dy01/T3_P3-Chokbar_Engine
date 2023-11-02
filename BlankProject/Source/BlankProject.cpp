@@ -3,18 +3,22 @@
 #include "Engine/Resource.h"
 
 #include "Platform/Windows/WinEntry.h"
+#include "Engine/ECS/Base/GameObject.h"
+#include "Core/D3D/Internal/MeshRenderer.h"
+#include "Engine/ECS/Components/PlayerComponent.h"
+#include "Engine/ECS/Components/Collision/Rigidbody.h"
+#include "Engine/ECS/Components/Collision/SphereCollision.h"
 
 using namespace Chokbar;
 
-class Application : public Win32::IApplication {
+class Application : public Win32::IApplication
+{
 
 public:
-
 	Application() {}
 	~Application() {}
 
 public:
-
 	void SetupPerGameSettings() override;
 
 	/* Initialize the application */
@@ -29,7 +33,6 @@ public:
 
 	void Shutdown() override;
 };
-
 
 ENTRYAPP(Application);
 
@@ -47,6 +50,7 @@ void Application::PreInitialize()
 
 void Application::Initialize()
 {
+
 	auto* test = new GameObject("f");
 	auto* mr = new MeshRenderer(MeshType::SPHERE, MaterialType::TEXTURE);
 	test->AddComponent<MeshRenderer>(mr);
@@ -58,10 +62,15 @@ void Application::Initialize()
 	auto* mr2 = new MeshRenderer(MeshType::PYRAMID, MaterialType::SIMPLE);
 	test2->AddComponent<MeshRenderer>(mr2);
 	test2->transform->SetPosition(0, 0, -2);*/
+	//test2->transform->SetPosition(-2, 1, -2);
 
-
-	auto test3 = GameObject::Instantiate("test");
-	test3->AddComponent<MeshRenderer>(new MeshRenderer(MeshType::PYRAMID, MaterialType::SIMPLE));
+	auto *test3 = new GameObject("f");
+	auto *mr3 = new MeshRenderer(MeshType::PYRAMID, MaterialType::SIMPLE);
+	auto *rb3 = new Rigidbody();
+	auto *sphere3 = new Sphere(XMFLOAT3(0, 0, 0), 2.0f);
+	test3->AddComponent<MeshRenderer>(mr3);
+	test3->AddComponent<Rigidbody>(rb3);
+	test3->AddComponent<Sphere>(sphere3);
 	test3->transform->SetScale(6, 6, 6);
 
 	//GameObject player = GameObject("player");
@@ -74,8 +83,8 @@ void Application::Run()
 }
 
 void Application::Update(const float dt)
+
 {
-	
 }
 
 void Application::Shutdown()

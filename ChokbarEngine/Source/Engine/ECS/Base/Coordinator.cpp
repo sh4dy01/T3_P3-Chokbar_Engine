@@ -3,10 +3,12 @@
 
 #include "Core/D3D/Internal/MeshRenderer.h"
 #include "Engine/ECS/Components/PlayerComponent.h"
+#include "Engine/ECS/Components/Collision/CollisionShape.h"
+#include "Engine/ECS/Components/Collision/RigidBody.h"
 #include "Engine/ECS/Systems/PlayerSystem.h"
 
-
-namespace Chokbar {
+namespace Chokbar
+{
 
 	Coordinator::Coordinator()
 		: m_ComponentManager(nullptr), m_EntityManager(nullptr), m_SystemManager(nullptr)
@@ -33,17 +35,19 @@ namespace Chokbar {
 
 	void Coordinator::RegisterComponents()
 	{
-		//TODO: Automatize this
+		// TODO: Automatize this
 
 		RegisterComponent<Transform>();
 		RegisterComponent<MeshRenderer>();
 		RegisterComponent<PlayerComponent>();
+		RegisterComponent<Rigidbody>();
+		RegisterComponent<Sphere>();
 		RegisterComponent<CameraComponent>();
 	}
 
 	void Coordinator::RegisterSystems()
 	{
-		//TODO: Automatize this
+		// TODO: Automatize this
 		RegisterSystem<PlayerSystem>();
 		{
 			Signature signature;

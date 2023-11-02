@@ -10,8 +10,7 @@
 
 namespace Chokbar
 {
-	Engine* Engine::m_Instance = nullptr;
-
+	Engine *Engine::m_Instance = nullptr;
 
 	Engine::Engine() = default;
 
@@ -21,28 +20,34 @@ namespace Chokbar
 		m_Instance = nullptr;
 	};
 
-	Engine* Engine::GetInstance()
+	Engine *Engine::GetInstance()
 	{
-		if (m_Instance == nullptr) {
+		if (m_Instance == nullptr)
+		{
 			m_Instance = new Engine();
 		}
 
 		return m_Instance;
 	}
 
-	Coordinator* Engine::GetCoordinator()
+	Coordinator *Engine::GetCoordinator()
 	{
 		return &GetInstance()->m_Coordinator;
 	}
 
-	InputHandler* Engine::GetInput()
+	InputHandler *Engine::GetInput()
 	{
 		return &GetInstance()->m_InputHandler;
 	}
 
-	Camera* Engine::GetMainCamera()
+	Camera *Engine::GetMainCamera()
 	{
 		return GetInstance()->m_CameraManager.GetMainCamera();
+	}
+
+	PhysicsWorld* Engine::GetPhysicsWorld()
+	{
+		return &GetInstance()->m_PhysicsWorld;
 	}
 
 #pragma region INIT
@@ -104,6 +109,7 @@ namespace Chokbar
 	{
 		m_Coordinator.UpdateSystems(dt);
 		m_InputHandler.Update(dt);
+		m_PhysicsWorld.Update();
 
 		D3DApp::GetInstance()->Update(dt, m_GameTimer.GetTotalTime());
 		CalculateFrameStats();
@@ -118,7 +124,7 @@ namespace Chokbar
 
 	void Engine::CalculateFrameStats()
 	{
-		std::wstring windowText;
+		
 
 		// Code computes the average frames per second, and also the
 		// average time it takes to render one frame.  These stats
@@ -132,6 +138,7 @@ namespace Chokbar
 		// Compute averages over one second period.
 		if ((m_GameTimer.GetTotalTime() - timeElapsed) >= 1.0f)
 		{
+			std::wstring windowText;
 			float fps = (float)frameCnt; // fps = frameCnt / 1
 			float mspf = 1000.0f / fps;
 
@@ -143,14 +150,9 @@ namespace Chokbar
 			// Reset for next average.
 			frameCnt = 0;
 			timeElapsed += 1.0f;
+			SetWindowText(m_Window.GetHandle(), windowText.c_str());
 		}
 
-		std::wstring x = std::to_wstring(InputHandler::GetAxisX());
-		std::wstring y = std::to_wstring(InputHandler::GetAxisY());
-
-		windowText += L"    MouseX: " + x + L"   MouseY: " + y;
-
-		SetWindowText(m_Window.GetHandle(), windowText.c_str());
 	}
 
 	void Engine::OnResize()
@@ -160,9 +162,19 @@ namespace Chokbar
 		m_CameraManager.GetMainCamera()->GetCameraComponent()->SetLens(70, GetAspectRatio(), 0.5f, 1000.0f);
 	}
 
-
 	void Engine::Shutdown()
 	{
+	}
+
+	void Engine::OnApplicationFocus()
+	{
+		m_InputHandler.CaptureCursor();
+	}
+
+	void Engine::OnApplicationLostFocus()
+	{
+		m_InputHandler.ReleaseCursor();
+		DEBUG_LOG("Lost Focus");
 	}
 
 }

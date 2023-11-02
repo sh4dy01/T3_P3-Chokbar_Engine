@@ -7,7 +7,7 @@
 
 
 
-static class GeometryHandler
+class GeometryHandler
 {
 public:
 

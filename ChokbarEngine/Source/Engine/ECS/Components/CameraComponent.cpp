@@ -6,6 +6,7 @@
 using namespace DirectX;
 
 CameraComponent::CameraComponent()
+	: m_ViewDirty(true)
 {
 	SetLens(70.0F, 1.0f, 1.0f, 1000.0f);
 }
@@ -132,29 +133,9 @@ void CameraComponent::UpdateWindowWithNewRange()
 	m_FarWindowHeight = 2.0f * m_FarZ * tanf(0.5f * m_FovY);
 }
 
-void CameraComponent::LookAt(FXMVECTOR pos, FXMVECTOR target, FXMVECTOR worldUp)
+void CameraComponent::LookAt(XMFLOAT3 targetPos)
 {
-	//XMStoreFloat4x4(&m_View, DirectX::XMMatrixLookAtLH(pos, target, worldUp));
-
-	XMVECTOR L = XMVector3Normalize(XMVectorSubtract(target, pos));
-	XMVECTOR R = XMVector3Normalize(XMVector3Cross(worldUp, L));
-	XMVECTOR U = XMVector3Cross(L, R);
-
-	XMStoreFloat3(&transform->GetPosition(), pos);
-	XMStoreFloat3(&m_Look, L);
-	XMStoreFloat3(&m_Right, R);
-	XMStoreFloat3(&m_Up, U);
-
-	m_ViewDirty = true;
-}
-
-void CameraComponent::LookAt(const XMFLOAT3& pos, const XMFLOAT3& target, const XMFLOAT3& up)
-{
-	XMVECTOR P = XMLoadFloat3(&pos);
-	XMVECTOR T = XMLoadFloat3(&target);
-	XMVECTOR U = XMLoadFloat3(&up);
-
-	LookAt(P, T, U);
+	m_LookAt = targetPos;
 
 	m_ViewDirty = true;
 }
@@ -170,49 +151,6 @@ XMMATRIX CameraComponent::GetView() const
 XMMATRIX CameraComponent::GetProj() const
 {
 	return XMLoadFloat4x4(&m_Proj);
-}
-
-void CameraComponent::Walk(float d)
-{
-	// mPosition += d*mLook
-	XMVECTOR s = XMVectorReplicate(d);
-	XMVECTOR l = XMLoadFloat3(&m_Look);
-	XMVECTOR p = XMLoadFloat3(&transform->GetPosition());
-	XMStoreFloat3(&transform->GetPosition(), XMVectorMultiplyAdd(s, l, p));
-
-	m_ViewDirty = true;
-
-}
-void CameraComponent::Strafe(float d)
-{
-	// mPosition += d*mRight
-	XMVECTOR s = XMVectorReplicate(d);
-	XMVECTOR r = XMLoadFloat3(&m_Right);
-	XMVECTOR p = XMLoadFloat3(&transform->GetPosition());
-	XMStoreFloat3(&transform->GetPosition(), XMVectorMultiplyAdd(s, r, p));
-
-	m_ViewDirty = true;
-
-}
-void CameraComponent::Pitch(float angle)
-{
-	// Rotate up and look vector about the right vector.
-	XMMATRIX R = XMMatrixRotationAxis(XMLoadFloat3(&m_Right), angle);
-	XMStoreFloat3(&m_Up, XMVector3TransformNormal(XMLoadFloat3(&m_Up), R));
-	XMStoreFloat3(&m_Look, XMVector3TransformNormal(XMLoadFloat3(&m_Look), R));
-
-	m_ViewDirty = true;
-
-}
-void CameraComponent::RotateY(float angle)
-{
-	// Rotate the basis vectors about the world y-axis.
-	XMMATRIX R = XMMatrixRotationY(angle);
-	XMStoreFloat3(&m_Right, XMVector3TransformNormal(XMLoadFloat3(&m_Right), R));
-	XMStoreFloat3(&m_Up, XMVector3TransformNormal(XMLoadFloat3(&m_Up), R));
-	XMStoreFloat3(&m_Look, XMVector3TransformNormal(XMLoadFloat3(&m_Look), R));
-
-	m_ViewDirty = true;
 }
 
 XMFLOAT4X4 CameraComponent::GetView4x4f() const
@@ -232,8 +170,19 @@ void CameraComponent::UpdateProjectionMatrix()
 
 void CameraComponent::UpdateViewMatrix()
 {
-	if (m_ViewDirty)
+	if (transform->IsDirty() || m_ViewDirty)
 	{
+		XMFLOAT3 Position = transform->GetPosition();
+		XMVECTOR pos = XMVectorSet(Position.x, Position.y, Position.z, 1.0F);
+		//XMVECTOR target = XMVectorSet(0.0F, 0.5F, 0.0F, 0.0F);
+		//XMVECTOR target = XMVectorMultiply(XMLoadFloat3(&Position), XMLoadFloat3(&m_Look));
+		XMFLOAT3 forward = transform->GetForward();
+		XMVECTOR target = XMVectorAdd(XMLoadFloat3(&Position), XMLoadFloat3(&forward));
+
+		XMStoreFloat4x4(&m_View, XMMatrixLookAtLH(pos, target, XMLoadFloat3(&transform->GetUp())));
+		m_ViewDirty = false;
+
+		/*
 		XMVECTOR R = XMLoadFloat3(&m_Right);
 		XMVECTOR U = XMLoadFloat3(&m_Up);
 		XMVECTOR L = XMLoadFloat3(&m_Look);
@@ -274,7 +223,7 @@ void CameraComponent::UpdateViewMatrix()
 		m_View(1, 3) = 0.0f;
 		m_View(2, 3) = 0.0f;
 		m_View(3, 3) = 1.0f;
+				*/
 
-		m_ViewDirty = false;
 	}
 }

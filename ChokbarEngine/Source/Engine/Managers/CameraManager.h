@@ -10,6 +10,9 @@ public :
 	~CameraManager();
 
 
+	void CreateDefaultCamera();
+
+
 	void SetMainCamera(Camera* camera);
 	Camera* GetMainCamera() const { return m_MainCamera; }
 

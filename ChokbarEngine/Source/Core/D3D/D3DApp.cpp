@@ -211,7 +211,7 @@ void D3DApp::EnableDebugLayer()
 {
 	// Enable the D3D12 debug layer.
 	D3D12GetDebugInterface(IID_PPV_ARGS(&m_pDebugController));
-	m_pDebugController->EnableDebugLayer();
+	//m_pDebugController->EnableDebugLayer();
 }
 
 void D3DApp::CreateDevice()

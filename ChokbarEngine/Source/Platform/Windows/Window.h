@@ -22,7 +22,6 @@ namespace Win32
 
 		void RegisterNewClass();
 
-
 	protected:
 
 		int m_Width;
@@ -36,7 +35,6 @@ namespace Win32
 	private:
 
 		bool			needsToClose = false;
-
 
 	public:
 
