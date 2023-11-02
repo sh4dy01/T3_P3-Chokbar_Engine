@@ -62,6 +62,7 @@ void Application::Initialize()
 	auto* mr2 = new MeshRenderer(MeshType::PYRAMID, MaterialType::SIMPLE);
 	test2->AddComponent<MeshRenderer>(mr2);
 	test2->transform->SetPosition(0, 0, -2);*/
+	//test2->transform->SetPosition(-2, 1, -2);
 
 	auto *test3 = new GameObject("f");
 	auto *mr3 = new MeshRenderer(MeshType::PYRAMID, MaterialType::SIMPLE);
@@ -70,7 +71,6 @@ void Application::Initialize()
 	test3->AddComponent<MeshRenderer>(mr3);
 	test3->AddComponent<Rigidbody>(rb3);
 	test3->AddComponent<Sphere>(sphere3);
-	test2->transform->SetPosition(-2, 1, -2);
 	test3->transform->SetScale(6, 6, 6);
 
 	//GameObject player = GameObject("player");
