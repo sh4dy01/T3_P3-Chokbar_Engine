@@ -17,17 +17,25 @@ enum CollisionState {
     Exit
 };
 
-struct CollisionInfo
+class CollisionInfo
 {
-    CollisionInfo(CollisionShape* colliderA, CollisionShape* colliderB)
-		: State(Enter), ColliderA(colliderA), ColliderB(colliderB)
-    {
-	    
-    }
+public:
 
-    CollisionState State;
-    CollisionShape* ColliderA;
-    CollisionShape* ColliderB;
+    CollisionInfo(CollisionShape* colliderA, CollisionShape* colliderB);
+    ~CollisionInfo();
+
+    CollisionState GetState() const { return m_State; };
+    void UpdateState(CollisionState state);
+
+    CollisionShape* GetColliderA() const { return m_ColliderA; };
+    CollisionShape* GetColliderB() const { return m_ColliderB; };
+
+private:
+
+    CollisionState m_State;
+    CollisionShape* m_ColliderA;
+    CollisionShape* m_ColliderB;
+
 };
 
 class PhysicsWorld 
@@ -46,7 +54,7 @@ public:
 private:
 
     void CheckCollision();
-    bool CheckCollisionShape(Rigidbody* rbA, Rigidbody* rbB);
+    bool CheckCollisionShapes(Rigidbody* rbA, Rigidbody* rbB);
     void HandleCollision(CollisionShape* sphereA, CollisionShape* sphereB);
 
     bool AreSpheresColliding(Sphere* sphere1, Sphere* sphere2) const;

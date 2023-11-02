@@ -11,7 +11,6 @@ public:
 	virtual ~Component();
 
 	virtual void OnAddedComponent() {};
-	virtual void OnTriggerEnter(CollisionShape* col) {};
 
 	void SetEnabled(bool enabled) { m_isEnabled = enabled; }
 	bool IsEnabled() const { return m_isEnabled; }

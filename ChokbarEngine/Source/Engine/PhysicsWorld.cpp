@@ -2,8 +2,27 @@
 #include "PhysicsWorld.h"
 
 
+CollisionInfo::CollisionInfo(CollisionShape* colliderA, CollisionShape* colliderB)
+	: m_ColliderA(colliderA), m_ColliderB(colliderB), m_State(Enter)
+{
+}
+
+CollisionInfo::~CollisionInfo()
+{
+	delete m_ColliderA;
+	m_ColliderA = nullptr;
+
+	delete m_ColliderB;
+	m_ColliderB = nullptr;
+}
+
+void CollisionInfo::UpdateState(CollisionState newState)
+{
+	m_State = newState;
+}
+
 PhysicsWorld::PhysicsWorld()
-	: m_gridSize(0), m_cellSize(0.0f), UPDATE_RATE(0.02f), m_timer(0.0f)
+	: m_gridSize(0), m_cellSize(0.0f), UPDATE_RATE(0.02f), m_timer(0.0f), m_CurrentCollisionInfo(nullptr)
 {
 
 }
@@ -52,13 +71,15 @@ void PhysicsWorld::RemoveRigidBody(Rigidbody* rigidbody)
 
 void PhysicsWorld::CheckCollision()
 {
-	if (m_rigidbodies.size() >= 2)
-	{
+	if (m_rigidbodies.size() < 2) return;
+
 		for (size_t i = 0; i < m_rigidbodies.size(); i++)
 		{
-			for (size_t j = 1; j < m_rigidbodies.size(); j++)
+		for (size_t j = 0; j < m_rigidbodies.size(); j++)
 			{
-				if (CheckCollisionShape(m_rigidbodies[i], m_rigidbodies[j]))
+			if (i == j) continue;
+
+			if (CheckCollisionShapes(m_rigidbodies[i], m_rigidbodies[j]))
 				{
 					switch (m_CurrentCollisionInfo->State)
 					{
@@ -97,7 +118,7 @@ void PhysicsWorld::CheckCollision()
 	}
 }
 
-bool PhysicsWorld::CheckCollisionShape(Rigidbody* rbA, Rigidbody* rbB)
+bool PhysicsWorld::CheckCollisionShapes(Rigidbody* rbA, Rigidbody* rbB)
 {
 	for (const auto& shapeA : rbA->GetAllCollisionShape())
 	{
@@ -159,7 +180,7 @@ void PhysicsWorld::HandleCollision(CollisionShape* const sphereA, CollisionShape
 	}
 	else
 	{
-		collisionInfo->State = Stay;
+		collisionInfo->UpdateState(Stay);
 		m_CurrentCollisionInfo = collisionInfo;
 	}
 }
@@ -176,7 +197,7 @@ CollisionInfo* PhysicsWorld::GetCollisionInfo(const CollisionShape* sphereA, con
 {
 	for (const auto& collisionInfo : m_RegisteredCollisionInfos)
 	{
-		if (collisionInfo->ColliderA == sphereA && collisionInfo->ColliderB == sphereB)
+		if (collisionInfo->GetColliderA() == sphereA && collisionInfo->GetColliderB() == sphereB)
 		{
 			return collisionInfo;
 		}
