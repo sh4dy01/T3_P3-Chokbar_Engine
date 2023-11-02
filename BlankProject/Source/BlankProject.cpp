@@ -65,7 +65,7 @@ void Application::Initialize()
 	test2->transform->SetPosition(0, 0, -2);*/
 	//test2->transform->SetPosition(-2, 1, -2);
 
-	auto *test3 = new GameObject("Pyramide");
+	auto *test3 = new GameObject("Pyr3");
 	test3->AddComponent<MeshRenderer>(new MeshRenderer(MeshType::PYRAMID, MaterialType::SIMPLE));
 	test3->AddComponent<Rigidbody>();
 	test3->AddComponent<SphereCollider>();

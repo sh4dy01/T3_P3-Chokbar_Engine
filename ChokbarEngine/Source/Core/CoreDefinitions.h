@@ -7,6 +7,8 @@ typedef std::wstring WSTRING;
 typedef std::string  STRING;
 
 #define RELPTR(ptr) if (ptr) { ptr->Release(); ptr = nullptr; }
+#define DELPTR(ptr) if (ptr != nullptr) { delete ptr; ptr = nullptr; }
+
 #define I(x) x::GetInstance() 
 
 #define _CRTDBG_MAP_ALLOC

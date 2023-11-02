@@ -22,11 +22,7 @@ public:
 	{
 		for (auto& component : m_ComponentArray)
 		{
-			if (component)
-			{
-				delete component;
-				component = nullptr;
-			}
+			DELPTR(component);
 		}
 	}
 

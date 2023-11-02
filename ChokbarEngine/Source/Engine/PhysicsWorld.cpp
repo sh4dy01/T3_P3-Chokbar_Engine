@@ -9,10 +9,7 @@ CollisionInfo::CollisionInfo(Collider* colliderA, Collider* colliderB)
 
 CollisionInfo::~CollisionInfo()
 {
-	delete m_ColliderA;
 	m_ColliderA = nullptr;
-
-	delete m_ColliderB;
 	m_ColliderB = nullptr;
 }
 
@@ -37,14 +34,12 @@ PhysicsWorld::~PhysicsWorld()
 {
 	for (auto& rigidbody : m_rigidbodies)
 	{
-		delete rigidbody;
 		rigidbody = nullptr;
 	}
 
 	for (auto& collisionInfo : m_RegisteredCollisionInfos)
 	{
-		delete collisionInfo;
-		collisionInfo = nullptr;
+		DELPTR(collisionInfo);
 	}
 }
 
@@ -66,7 +61,7 @@ void PhysicsWorld::RegisterRigidBody(Rigidbody* rigidbody)
 
 void PhysicsWorld::RemoveRigidBody(Rigidbody* rigidbody)
 {
-	std::erase(m_rigidbodies, rigidbody);
+	//std::erase(m_rigidbodies, rigidbody);
 }
 
 void PhysicsWorld::CheckCollision()

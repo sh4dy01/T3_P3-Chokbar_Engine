@@ -14,8 +14,7 @@ Engine::Engine() = default;
 
 Engine::~Engine()
 {
-	delete m_Instance;
-	m_Instance = nullptr;
+
 };
 
 Engine *Engine::GetInstance()
@@ -163,6 +162,8 @@ void Engine::OnResize()
 
 void Engine::Shutdown()
 {
+	delete m_Instance;
+	m_Instance = nullptr;
 }
 
 void Engine::OnApplicationFocus()

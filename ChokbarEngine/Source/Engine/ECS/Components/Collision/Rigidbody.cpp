@@ -13,7 +13,6 @@ Rigidbody::~Rigidbody()
 
 	for (auto& shape : m_collisionShapes)
 	{
-		delete shape;
 		shape = nullptr;
 	}
 }
