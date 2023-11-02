@@ -81,12 +81,12 @@ void PhysicsWorld::CheckCollision()
 
 			if (CheckCollisionShapes(m_rigidbodies[i], m_rigidbodies[j]))
 				{
-					switch (m_CurrentCollisionInfo->State)
+				switch (m_CurrentCollisionInfo->GetState())
 					{
 					case Enter:
 
-						m_rigidbodies[i]->CallOnCollisionEnter(m_CurrentCollisionInfo->ColliderB);
-						m_rigidbodies[j]->CallOnCollisionEnter(m_CurrentCollisionInfo->ColliderA);
+					m_CurrentCollisionInfo->GetColliderA()->CallOnTriggerEnter(m_CurrentCollisionInfo->GetColliderB());
+					m_CurrentCollisionInfo->GetColliderB()->CallOnTriggerEnter(m_CurrentCollisionInfo->GetColliderA());
 
 						DEBUG_LOG(m_rigidbodies[i]->gameObject->GetName() << " entered in collision with " << m_rigidbodies[j]->gameObject->GetName())
 
@@ -105,6 +105,7 @@ void PhysicsWorld::CheckCollision()
 						//m_rigidbodies[j]->CallOnCollisionExit(m_CurrentCollisionInfo.ColliderA);
 
 						DEBUG_LOG(m_rigidbodies[i]->gameObject->GetName() << " exited collision with " << m_rigidbodies[j]->gameObject->GetName())
+					m_RegisteredCollisionInfos.erase(std::remove(m_RegisteredCollisionInfos.begin(), m_RegisteredCollisionInfos.end(), m_CurrentCollisionInfo), m_RegisteredCollisionInfos.end());
 
 						break;
 					}
