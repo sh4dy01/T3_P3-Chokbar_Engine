@@ -1,6 +1,8 @@
 #include "Chokbar.h"
 #include "ComponentManager.h"
 
+#include <ranges>
+
 namespace Chokbar {
 	ComponentManager::ComponentManager()
 		: m_NextComponentType(0)

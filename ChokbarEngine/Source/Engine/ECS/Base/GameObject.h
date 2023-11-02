@@ -18,8 +18,7 @@ namespace Chokbar
 		template <typename... Component>
 		GameObject(const std::string &name, Component... components)
 		{
-			Component
-				m_Name = name;
+			m_Name = name;
 			transform = Engine::GetCoordinator()->GetComponent<Transform>(m_InstanceID);
 
 			(AddComponent<Component>(), ...);
@@ -27,8 +26,15 @@ namespace Chokbar
 
 		~GameObject();
 
-		template <class Component>
-		Component *AddComponent()
+		static GameObject* Instantiate();
+		static GameObject* Instantiate(const std::string& name);
+		static GameObject* Instantiate(GameObject original);
+		//static Object Instantiate(GameObject original, Transform parent);
+		//static Object Instantiate(Object original, Transform parent, bool instantiateInWorldSpace);
+		static GameObject* Instantiate(const GameObject& original, DirectX::XMFLOAT3 position, DirectX::XMFLOAT3 rotation, Transform parent);
+
+		template<class Component>
+		Component* AddComponent()
 		{
 			auto component = new Component();
 			component->gameObject = this;

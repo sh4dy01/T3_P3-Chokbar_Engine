@@ -4,7 +4,7 @@
 #include <algorithm>
 
 
-static class InputHandler
+class InputHandler
 {
 public:
 	enum class KeyState
@@ -57,7 +57,7 @@ private:
 	static float m_deltaPosX;
 	static float m_deltaPosY;
 
-	const int SENSIBILITY = 100;
+	const int SENSIBILITY = 10;
 
 	float m_timer;
 	const float m_mouseRefresh = 0.1f;

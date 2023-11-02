@@ -25,7 +25,7 @@ D3DApp::D3DApp() :
 	m_4xMsaaQuality(0), m_bufferWidth(DEFAULT_WIDTH), m_bufferHeight(DEFAULT_HEIGHT),
 	m_D3dDriverType(D3D_DRIVER_TYPE_HARDWARE), m_CurrentFenceValue(0), m_RtvDescriptorSize(0),
 	m_DsvDescriptorSize(0), m_CbvSrvUavDescriptorSize(0), m_currBackBuffer(0), m_BackBufferFormat(DXGI_FORMAT_R8G8B8A8_UNORM), m_DepthStencilFormat(DXGI_FORMAT_D24_UNORM_S8_UINT),
-	m_meshRenderers(nullptr)
+	m_meshRenderers(nullptr), m_texIndex(0)
 {
 	m_pDebugController = nullptr;
 
@@ -58,26 +58,26 @@ D3DApp::D3DApp() :
 }
 
 D3DApp::~D3DApp() {
-	m_pDxgiFactory->Release();
-	m_pD3dDevice->Release();
+	RELPTR(m_pDxgiFactory);
+	RELPTR(m_pD3dDevice);
 
-	m_pFence->Release();
+	RELPTR(m_pFence);
 
-	m_pCommandList->Release();
-	m_pCommandAllocator->Release();
-	m_pCommandQueue->Release();
+	RELPTR(m_pCommandList);
+	RELPTR(m_pCommandAllocator);
+	RELPTR(m_pCommandQueue);
 
-	m_pRtvHeap->Release();
-	m_pDsvHeap->Release();
-	m_pCbvHeap->Release();
+	RELPTR(m_pRtvHeap);
+	RELPTR(m_pDsvHeap);
+	RELPTR(m_pCbvHeap);
 
 	for (int i = 0; i < SWAP_CHAIN_BUFFER_COUNT; ++i)
-		m_pSwapChainBuffer[i]->Release();
-	m_pSwapChain->Release();
+		RELPTR(m_pSwapChainBuffer[i]);
+	RELPTR(m_pSwapChain);
 
-	m_pDepthStencilBuffer->Release();
+	RELPTR(m_pDepthStencilBuffer);
 
-	m_pDebugController->Release();
+	RELPTR(m_pDebugController);
 }
 
 void D3DApp::Update(const float dt, const float totalTime)
@@ -115,7 +115,7 @@ void D3DApp::Render()
 	float color[4] = { 0.1f, 0.1f, 0.1f, 1.0f };
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = CurrentBackBufferView();
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = DepthStencilView();
-	m_pCommandList->OMSetRenderTargets(1, &rtvHandle, false, &dsvHandle);
+	m_pCommandList->OMSetRenderTargets(1, &rtvHandle, true, &dsvHandle);
 	m_pCommandList->ClearRenderTargetView(rtvHandle, color, 0, nullptr);
 	m_pCommandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
 
@@ -433,20 +433,19 @@ void D3DApp::CreateResources()
 
 	auto& shaders = Resource::GetShaders();
 	shaders[SIMPLE]->CreatePsoAndRootSignature(VertexType::POS_COLOR, m_BackBufferFormat, m_DepthStencilFormat);
-	shaders[TEXTURE]->CreatePsoAndRootSignature(VertexType::POS_TEX, m_BackBufferFormat, m_DepthStencilFormat);
+	shaders[TEXTURE]->CreatePsoAndRootSignature(VertexType::POS_NORM_TAN_TEX, m_BackBufferFormat, m_DepthStencilFormat);
 }
 
 void D3DApp::GetMeshRenderersRef()
 {
-	m_meshRenderers = Chokbar::Engine::GetCoordinator()->GetAllComponentsOfType<MeshRenderer>()->GetAllData<MeshRenderer>();
+	m_meshRenderers = Chokbar::Engine::GetCoordinator()->GetAllComponentsOfType<MeshRenderer>()->GetAllData();
 }
 #pragma endregion
 
 #pragma region UPDATE 
-void D3DApp::UpdateTextureHeap(Texture* tex)
+int D3DApp::UpdateTextureHeap(Texture* tex)
 {
-	// auto tex = new Texture("Texture01", L"Resources/Textures/4k.dds");
-	// tex = new Texture("Texture02", L"Resources/Textures/angry_winnie.dds");
+	if (!tex) return -1;
 
 	CD3DX12_CPU_DESCRIPTOR_HANDLE hDescriptor(m_pCbvHeap->GetCPUDescriptorHandleForHeapStart());
 	hDescriptor.Offset(m_texIndex, m_CbvSrvUavDescriptorSize);
@@ -460,14 +459,14 @@ void D3DApp::UpdateTextureHeap(Texture* tex)
 	srvDesc.Texture2D.ResourceMinLODClamp = 0.0f;
 	m_pD3dDevice->CreateShaderResourceView(tex->Resource, &srvDesc, hDescriptor);
 
-	m_texIndex++;
+	return m_texIndex++;
 }
 
 void D3DApp::UpdateRenderItems(const float dt, const float totalTime)
 {
 	for (const auto mr : *m_meshRenderers)
 	{
-		if (!mr || !mr->IsEnabled() || !mr->Mat || !mr->Mesh) return;
+		if (!mr || !mr->IsEnabled() || !mr->Mat || !mr->Mesh) continue;
 
 		if (mr->transform->IsDirty())
 			mr->transform->UpdateWorldMatrix();
@@ -478,23 +477,28 @@ void D3DApp::UpdateRenderItems(const float dt, const float totalTime)
 
 void D3DApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList)
 {
-	for (auto mr : *m_meshRenderers)
+	for (const auto mr : *m_meshRenderers)
 	{
 		if (!mr || !mr->IsEnabled() || !mr->Mat || !mr->Mesh) return;
 
 		mr->Mat->GetShader()->BeginDraw(cmdList);
 
 		ShaderDrawArguments args;
+
 		args.CmdList = cmdList;
-		args.RenderItemGeometry = mr->Mesh;
-		args.RenderItemCBIndex = mr->ObjectCBIndex;
+
+		args.ItemGeometry = mr->Mesh;
+		args.ItemCBIndex = mr->ObjectCBIndex;
 		args.IndexCount = mr->Mesh->GetIndexCount();
 		args.StartIndexLocation = 0;
 		args.BaseVertexLocation = 0;
-		args.Text = nullptr;
+
+		args.Text = mr->GetTextures().empty() ? nullptr : mr->GetTexture(0);
+		args.TextSrvIndex = mr->TextSrvIndex;
+
 		mr->Mat->GetShader()->Draw(args);
 
- 		mr->Mat->GetShader()->EndDraw(cmdList);
+		mr->Mat->GetShader()->EndDraw(cmdList);
 	}
 }
 #pragma endregion

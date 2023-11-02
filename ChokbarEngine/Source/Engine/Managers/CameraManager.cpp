@@ -12,6 +12,15 @@ CameraManager::~CameraManager()
 	delete m_MainCamera;
 }
 
+void CameraManager::CreateDefaultCamera()
+{
+	const auto mainCamera = new Camera("MainCamera");
+	mainCamera->transform->SetPosition(0, 2, -5);
+	//mainCamera->GetCameraComponent()->LookAt({ 0, 0, 0 });
+
+	SetMainCamera(mainCamera);
+}
+
 void CameraManager::SetMainCamera(Camera* camera)
 {
 	m_MainCamera = camera;

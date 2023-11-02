@@ -71,7 +71,7 @@ namespace Chokbar
 		PreInitialize();
 
 		m_Coordinator.Init();
-		m_CameraManager.SetMainCamera(new Camera());
+		m_CameraManager.SetMainCamera(new Camera("MainCamera"));
 
 		m_Window.CreateNewWindow(DEFAULT_WIDTH, DEFAULT_HEIGHT, PerGameSettings::GameName(), PerGameSettings::MainIcon(), Win32::RESIZABLE);
 		m_InputHandler.Init(m_Window.GetHandle());
@@ -125,7 +125,7 @@ namespace Chokbar
 
 	void Engine::CalculateFrameStats()
 	{
-		std::wstring windowText;
+		
 
 		// Code computes the average frames per second, and also the
 		// average time it takes to render one frame.  These stats
@@ -139,6 +139,7 @@ namespace Chokbar
 		// Compute averages over one second period.
 		if ((m_GameTimer.GetTotalTime() - timeElapsed) >= 1.0f)
 		{
+			std::wstring windowText;
 			float fps = (float)frameCnt; // fps = frameCnt / 1
 			float mspf = 1000.0f / fps;
 
@@ -150,14 +151,9 @@ namespace Chokbar
 			// Reset for next average.
 			frameCnt = 0;
 			timeElapsed += 1.0f;
+			SetWindowText(m_Window.GetHandle(), windowText.c_str());
 		}
 
-		std::wstring x = std::to_wstring(InputHandler::GetAxisX());
-		std::wstring y = std::to_wstring(InputHandler::GetAxisY());
-
-		windowText += L"    MouseX: " + x + L"   MouseY: " + y;
-
-		SetWindowText(m_Window.GetHandle(), windowText.c_str());
 	}
 
 	void Engine::OnResize()

@@ -5,7 +5,7 @@ class PlayerComponent : public Component
 {
 public:
 
-	float Speed = 1.0f;
+	float Speed = 5.0f;
 
 };
 
