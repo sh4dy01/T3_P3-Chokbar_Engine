@@ -14,10 +14,7 @@ EntityManager::EntityManager()
 EntityManager::~EntityManager()
 {
 	for (auto entity : m_LivingEntities) {
-		if (!entity) continue;
-
-		delete entity;
-		entity = nullptr;
+		DELPTR(entity);
 	}
 }
 

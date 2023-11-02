@@ -14,7 +14,9 @@ GameObject::GameObject(const std::string& name)
 
 
 GameObject::~GameObject()
-= default;
+{
+	transform = nullptr;
+}
 
 GameObject* GameObject::Instantiate()
 {

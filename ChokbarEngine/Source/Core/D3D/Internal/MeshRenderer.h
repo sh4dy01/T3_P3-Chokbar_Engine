@@ -14,7 +14,7 @@ public:
 
 	MeshRenderer();
 	MeshRenderer(MeshType, MaterialType);
-	~MeshRenderer();
+	~MeshRenderer() override;
 
 	void OnDelete();
 

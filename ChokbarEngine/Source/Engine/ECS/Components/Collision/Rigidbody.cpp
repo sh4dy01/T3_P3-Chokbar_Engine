@@ -1,6 +1,8 @@
 #include "Chokbar.h"
 #include "Rigidbody.h"
 
+using namespace DirectX;
+
 Rigidbody::Rigidbody()
 	: m_mass(1.0f), m_isStatic(false), m_velocity(XMFLOAT3(0, 0, 0)), m_force(XMFLOAT3(0, 0, 0))
 {

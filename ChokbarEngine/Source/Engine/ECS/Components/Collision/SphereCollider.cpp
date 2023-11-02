@@ -8,6 +8,10 @@ SphereCollider::SphereCollider()
 	m_type = ShapeType::Sphere;
 }
 
+SphereCollider::~SphereCollider()
+{
+}
+
 /// <summary>
 /// Sets the radius of the sphere.
 /// </summary>

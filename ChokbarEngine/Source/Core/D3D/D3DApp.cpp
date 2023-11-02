@@ -83,7 +83,7 @@ void D3DApp::Update(const float dt, const float totalTime)
 {
 	UpdateRenderItems(dt, totalTime);
 
-	Engine::GetMainCamera()->GetCameraComponent()->UpdateViewMatrix();
+	Engine::GetMainCamera()->UpdateViewMatrix();
 
 	for (auto& shader : Resource::GetShaders())
 	{

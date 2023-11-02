@@ -12,9 +12,6 @@ Camera::Camera(const std::string& name)
 
 Camera::~Camera()
 {
-	delete m_CameraComponent;
 	m_CameraComponent = nullptr;
-
-	delete m_PlayerComponent;
 	m_PlayerComponent = nullptr;
 }

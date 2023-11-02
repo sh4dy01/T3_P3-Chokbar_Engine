@@ -13,11 +13,11 @@ public :
 	void CreateDefaultCamera();
 
 
-	void SetMainCamera(Camera* camera);
-	Camera* GetMainCamera() const { return m_MainCamera; }
+	void SetMainCamera(CameraComponent* camera);
+	CameraComponent* GetMainCamera() const { return m_MainCamera; }
 
 private:
 
-	Camera* m_MainCamera;
+	CameraComponent* m_MainCamera;
 
 };

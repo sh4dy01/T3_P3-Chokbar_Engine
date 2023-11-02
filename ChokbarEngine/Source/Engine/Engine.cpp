@@ -13,9 +13,7 @@ Engine *Engine::m_Instance = nullptr;
 Engine::Engine() = default;
 
 Engine::~Engine()
-{
-
-};
+= default;
 
 Engine *Engine::GetInstance()
 {
@@ -37,7 +35,7 @@ InputHandler *Engine::GetInput()
 	return &GetInstance()->m_InputHandler;
 }
 
-Camera *Engine::GetMainCamera()
+CameraComponent *Engine::GetMainCamera()
 {
 	return GetInstance()->m_CameraManager.GetMainCamera();
 }
@@ -68,7 +66,7 @@ void Engine::Initialize()
 	PreInitialize();
 
 	m_Coordinator.Init();
-	m_CameraManager.SetMainCamera(new Camera("MainCamera"));
+	m_CameraManager.CreateDefaultCamera();
 
 	m_Window.CreateNewWindow(DEFAULT_WIDTH, DEFAULT_HEIGHT, PerGameSettings::GameName(), PerGameSettings::MainIcon(), Win32::RESIZABLE);
 	m_InputHandler.Init(m_Window.GetHandle());
@@ -157,13 +155,12 @@ void Engine::OnResize()
 {
 	D3DApp::GetInstance()->OnResize(m_Window.GetWidth(), m_Window.GetHeight());
 
-	m_CameraManager.GetMainCamera()->GetCameraComponent()->SetLens(70, GetAspectRatio(), 0.5f, 1000.0f);
+	m_CameraManager.GetMainCamera()->SetLens(70, GetAspectRatio(), 0.5f, 1000.0f);
 }
 
 void Engine::Shutdown()
 {
-	delete m_Instance;
-	m_Instance = nullptr;
+	DELPTR(m_Instance);
 }
 
 void Engine::OnApplicationFocus()

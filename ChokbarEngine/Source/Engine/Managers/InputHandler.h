@@ -1,6 +1,5 @@
 #pragma once
 #include <Windows.h>
-#include <algorithm>
 #include <vector>
 
 class InputHandler
@@ -17,6 +16,8 @@ public:
 public:
 
 	InputHandler();
+	~InputHandler();
+
 	void Init(HWND windowHandle);
 	void Update(float dt);
 
@@ -47,6 +48,9 @@ private:
 
 private:
 
+	const float MOUSE_REFRESH_RATE;
+	const int SENSIBILITY = 10;
+
 	bool m_IsFocus;
 
 	static std::vector<char> m_KeyboardInput;
@@ -56,13 +60,10 @@ private:
 	static float m_deltaPosX;
 	static float m_deltaPosY;
 
-	const int SENSIBILITY = 10;
-
-	float m_timer;
-	const float m_mouseRefresh = 0.1f;
+	float m_Timer;
 
 	HWND m_WindowHandle;
 
-	bool m_IsEnabled = false;
+	bool m_IsEnabled;
 
 };

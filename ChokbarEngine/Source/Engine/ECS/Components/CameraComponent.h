@@ -9,7 +9,7 @@ class CameraComponent : public Component
 {
 public:
 	CameraComponent();
-	~CameraComponent();
+	~CameraComponent() override;
 
 	// Get camera basis vectors.
 	DirectX::XMVECTOR GetRight() const;

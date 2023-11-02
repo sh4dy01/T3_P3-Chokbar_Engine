@@ -12,6 +12,7 @@ ComponentManager::ComponentManager()
 
 ComponentManager::~ComponentManager()
 {
+
 }
 
 void ComponentManager::EntityDestroyed(InstanceID entity)

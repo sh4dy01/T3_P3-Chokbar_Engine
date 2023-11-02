@@ -9,7 +9,6 @@ CameraManager::CameraManager()
 CameraManager::~CameraManager()
 {
 	m_MainCamera = nullptr;
-	delete m_MainCamera;
 }
 
 void CameraManager::CreateDefaultCamera()
@@ -18,10 +17,10 @@ void CameraManager::CreateDefaultCamera()
 	mainCamera->transform->SetPosition(0, 2, -5);
 	//mainCamera->GetCameraComponent()->LookAt({ 0, 0, 0 });
 
-	SetMainCamera(mainCamera);
+	SetMainCamera(mainCamera->GetCameraComponent());
 }
 
-void CameraManager::SetMainCamera(Camera* camera)
+void CameraManager::SetMainCamera(CameraComponent* camera)
 {
 	m_MainCamera = camera;
 }

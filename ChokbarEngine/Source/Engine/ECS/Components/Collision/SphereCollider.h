@@ -7,8 +7,9 @@ class SphereCollider : public Collider
 public:
 
 	SphereCollider();
+	~SphereCollider() override;
 
-	const float GetRadius() { return m_Radius; };
+	float GetRadius() const { return m_Radius; };
 
 	void SetRadius(float radius);
 

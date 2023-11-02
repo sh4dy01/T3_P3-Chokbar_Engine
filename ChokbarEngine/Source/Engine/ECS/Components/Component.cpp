@@ -3,4 +3,6 @@
 
 Component::~Component()
 {
+	transform = nullptr;
+	gameObject = nullptr;
 }

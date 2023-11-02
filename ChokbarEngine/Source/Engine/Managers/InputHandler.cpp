@@ -12,7 +12,7 @@ std::vector<InputHandler::KeyState> InputHandler::m_KeyStates = {};
 
 
 InputHandler::InputHandler()
-	: m_WindowHandle(nullptr), m_timer(0.0f), m_mouseRefresh(0.1f)
+	: MOUSE_REFRESH_RATE(0.1f), m_IsFocus(false), m_Timer(0.0f), m_WindowHandle(nullptr), m_IsEnabled(true)
 {
 	m_KeyStates.reserve(m_KeyboardInput.size());
 
@@ -23,6 +23,9 @@ InputHandler::InputHandler()
 
 	GetCursorPos(&m_lastPos);
 }
+
+InputHandler::~InputHandler()
+= default;
 
 
 void InputHandler::Init(HWND windowHandle)
@@ -39,8 +42,8 @@ void InputHandler::Update(float dt)
 {
 	CheckInput();
 
-	m_timer += dt;
-	if (m_timer > m_mouseRefresh)
+	m_Timer += dt;
+	if (m_Timer > MOUSE_REFRESH_RATE)
 	{
 		GetNormalizedMovement();
 
@@ -54,7 +57,7 @@ void InputHandler::Update(float dt)
 			SetCursorPos(windowCenter.x, windowCenter.y);
 		}
 
-		m_timer = 0.0f;
+		m_Timer = 0.0f;
 	}
 }
 

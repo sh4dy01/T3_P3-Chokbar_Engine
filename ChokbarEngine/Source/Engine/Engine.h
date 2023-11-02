@@ -19,7 +19,7 @@ public:
 	static Coordinator *GetCoordinator();
 	static InputHandler *GetInput();
 	static PhysicsWorld *GetPhysicsWorld();
-	static Camera *GetMainCamera();
+	static CameraComponent *GetMainCamera();
 
 	void Initialize();
 	void Run();

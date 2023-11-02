@@ -1,6 +1,7 @@
 #include "Chokbar.h"
 #include "PhysicsWorld.h"
 
+using namespace DirectX;
 
 CollisionInfo::CollisionInfo(Collider* colliderA, Collider* colliderB)
 	: m_ColliderA(colliderA), m_ColliderB(colliderB), m_State(Enter)
@@ -19,13 +20,7 @@ void CollisionInfo::UpdateState(CollisionState newState)
 }
 
 PhysicsWorld::PhysicsWorld()
-	: m_gridSize(0), m_cellSize(0.0f), UPDATE_RATE(0.02f), m_timer(0.0f), m_CurrentCollisionInfo(nullptr)
-{
-
-}
-
-PhysicsWorld::PhysicsWorld(int gridSize, float cellSize)
-	: m_gridSize(gridSize), m_cellSize(cellSize)
+	: UPDATE_RATE(0.02f), m_CurrentCollisionInfo(nullptr), m_gridSize(0), m_cellSize(0.0f), m_timer(0.0f)
 {
 
 }
@@ -41,6 +36,8 @@ PhysicsWorld::~PhysicsWorld()
 	{
 		DELPTR(collisionInfo);
 	}
+
+	m_rigidbodies.clear();
 }
 
 void PhysicsWorld::Update(float dt)
@@ -61,7 +58,9 @@ void PhysicsWorld::RegisterRigidBody(Rigidbody* rigidbody)
 
 void PhysicsWorld::RemoveRigidBody(Rigidbody* rigidbody)
 {
-	//std::erase(m_rigidbodies, rigidbody);
+	if (m_rigidbodies.empty()) return;
+
+	std::erase(m_rigidbodies, rigidbody);
 }
 
 void PhysicsWorld::CheckCollision()

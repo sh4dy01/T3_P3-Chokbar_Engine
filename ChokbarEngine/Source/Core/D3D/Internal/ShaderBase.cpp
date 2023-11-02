@@ -201,7 +201,7 @@ void ShaderSimple::Init()
 	CompileShader(nullptr, "vs_main", "vs_5_0", &m_vsByteCode);
 	CompileShader(nullptr, "ps_main", "ps_5_0", &m_psByteCode);
 
-	m_MainCamera = Engine::GetMainCamera()->GetCameraComponent();
+	m_MainCamera = Engine::GetMainCamera();
 }
 
 void ShaderSimple::CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT& rtvFormat, DXGI_FORMAT& dsvFormat)
@@ -300,7 +300,7 @@ void ShaderTexture::Init()
 	CompileShader(nullptr, "vs_main", "vs_5_0", &m_vsByteCode);
 	CompileShader(nullptr, "ps_main", "ps_5_0", &m_psByteCode);
 
-	m_MainCamera = Engine::GetMainCamera()->GetCameraComponent();
+	m_MainCamera = Engine::GetMainCamera();
 
 }
 

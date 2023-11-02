@@ -1,7 +1,5 @@
 #pragma once
 
-#include <DirectXMath.h>
-
 #include "TypeDef.h"
 
 class Transform;
