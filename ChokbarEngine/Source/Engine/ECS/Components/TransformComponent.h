@@ -18,11 +18,8 @@ public:
 public:
 	Transform();
 
-	void Translate(float x, float y, float z);
-	void Translate(DirectX::XMFLOAT3 translation);
-
-	void TranslateWorld(float x, float y, float z);
-	void TranslateWorld(DirectX::XMFLOAT3 translation);
+	void Translate(float x, float y, float z, Space space = Space::Local);
+	void Translate(DirectX::XMFLOAT3 translation, Space space = Space::Local);
 
 	void RotateYaw(float angle, Space space = Space::Local);
 	void RotatePitch(float angle, Space space = Space::Local);

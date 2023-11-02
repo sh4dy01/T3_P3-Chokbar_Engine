@@ -19,12 +19,10 @@ void PlayerSystem::Update(float dt)
 	{
 		auto player = Chokbar::Engine::GetCoordinator()->GetComponent<PlayerComponent>(entity);
 		auto transform = Chokbar::Engine::GetCoordinator()->GetComponent<Transform>(entity);
-		//camera
 
 		if (InputHandler::IsKeyHeld('z'))
 		{
 			transform->Translate(0, 0, player->Speed * dt);
-			//transform->
 		}
 		if (InputHandler::IsKeyHeld('s'))
 		{
@@ -40,14 +38,12 @@ void PlayerSystem::Update(float dt)
 		}
 		if (InputHandler::IsKeyHeld(VK_SHIFT))
 		{
-			transform->TranslateWorld(0, -player->Speed * dt, 0);
+			transform->Translate(0, -player->Speed * dt, 0, Transform::Space::World);
 		}
 		if (InputHandler::IsKeyHeld(VK_SPACE))
 		{
-			transform->TranslateWorld(0, player->Speed * dt, 0);
+			transform->Translate(0, player->Speed * dt, 0, Transform::Space::World);
 		}
-
-		DEBUG_LOG(std::to_string(transform->GetEulerAngles().z));
 
 		transform->RotateYaw(InputHandler::GetAxisX() * 50.f * dt, Transform::Space::World);
 

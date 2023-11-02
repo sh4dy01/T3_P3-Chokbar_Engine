@@ -22,43 +22,40 @@ Transform::Transform()
 	DirectX::XMStoreFloat4x4(&m_WorldMatrix, DirectX::XMMatrixIdentity());
 }
 
-void Transform::Translate(float x, float y, float z)
+void Transform::Translate(float x, float y, float z, Space space)
 {
-	// Create a translation vector in local space
-	DirectX::XMFLOAT3 translation;
-	translation.x = x;
-	translation.y = y;
-	translation.z = z;
+	switch (space)
+	{
+	case Transform::Local:
+		// Create a translation vector in local space
+		DirectX::XMFLOAT3 translation;
+		translation.x = x;
+		translation.y = y;
+		translation.z = z;
 
-	// Transform the translation vector into world space
-	DirectX::XMVECTOR translationVector = DirectX::XMVector3Transform(DirectX::XMLoadFloat3(&translation), DirectX::XMLoadFloat4x4(&m_RotationMatrix));
+		// Transform the translation vector into world space
+		DirectX::XMVECTOR translationVector = DirectX::XMVector3Transform(DirectX::XMLoadFloat3(&translation), DirectX::XMLoadFloat4x4(&m_RotationMatrix));
 
-	// Update the position in world space
-	m_Position.x += DirectX::XMVectorGetX(translationVector);
-	m_Position.y += DirectX::XMVectorGetY(translationVector);
-	m_Position.z += DirectX::XMVectorGetZ(translationVector);
+		// Update the position in world space
+		m_Position.x += DirectX::XMVectorGetX(translationVector);
+		m_Position.y += DirectX::XMVectorGetY(translationVector);
+		m_Position.z += DirectX::XMVectorGetZ(translationVector);
+		break;
+
+	case Transform::World:
+		// Update the position vector
+		m_Position.x += x;
+		m_Position.y += y;
+		m_Position.z += z;
+		break;
+	}
 
 	// Update the position matrix
 	UpdatePositionMatrix();
 }
-void Transform::Translate(DirectX::XMFLOAT3 translation)
+void Transform::Translate(DirectX::XMFLOAT3 translation, Space space)
 {
-	Translate(translation.x, translation.y, translation.z);
-}
-
-void Transform::TranslateWorld(float x, float y, float z)
-{
-	// Update the position vector
-	m_Position.x += x;
-	m_Position.y += y;
-	m_Position.z += z;
-
-	// Update the position matrix
-	UpdatePositionMatrix();
-}
-void Transform::TranslateWorld(DirectX::XMFLOAT3 translation)
-{
-	TranslateWorld(translation.x, translation.y, translation.z);
+	Translate(translation.x, translation.y, translation.z, space);
 }
 
 void Transform::SetPosition(float x, float y, float z)
