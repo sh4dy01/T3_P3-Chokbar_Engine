@@ -7,7 +7,7 @@
 
 
 
-static class GeometryHandler
+class GeometryHandler
 {
 	struct MeshData
 	{

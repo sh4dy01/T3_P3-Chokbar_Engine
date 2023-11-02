@@ -47,10 +47,10 @@ void PlayerSystem::Update(float dt)
 			transform->TranslateWorld(0, player->Speed * dt, 0);
 		}
 
-		DEBUG_LOG(std::to_string(transform->GetEulerAngles().x));
+		DEBUG_LOG(std::to_string(transform->GetEulerAngles().z));
+
+		transform->RotateYaw(InputHandler::GetAxisX() * 50.f * dt, Transform::Space::World);
 
 		transform->RotatePitch(InputHandler::GetAxisY() * 50.f * dt);
-
-		transform->RotateYaw(InputHandler::GetAxisX() * 50.f * dt);
 	}
 }

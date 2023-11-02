@@ -24,16 +24,19 @@ Transform::Transform()
 
 void Transform::Translate(float x, float y, float z)
 {
-	// Scale the local axis vectors by the translation values
+	// Create a translation vector in local space
 	DirectX::XMFLOAT3 translation;
-	translation.x = m_Right.x * x + m_Up.x * y + m_Forward.x * z;
-	translation.y = m_Right.y * x + m_Up.y * y + m_Forward.y * z;
-	translation.z = m_Right.z * x + m_Up.z * y + m_Forward.z * z;
+	translation.x = x;
+	translation.y = y;
+	translation.z = z;
 
-	// Update the position vector
-	m_Position.x += translation.x;
-	m_Position.y += translation.y;
-	m_Position.z += translation.z;
+	// Transform the translation vector into world space
+	DirectX::XMVECTOR translationVector = DirectX::XMVector3Transform(DirectX::XMLoadFloat3(&translation), DirectX::XMLoadFloat4x4(&m_RotationMatrix));
+
+	// Update the position in world space
+	m_Position.x += DirectX::XMVectorGetX(translationVector);
+	m_Position.y += DirectX::XMVectorGetY(translationVector);
+	m_Position.z += DirectX::XMVectorGetZ(translationVector);
 
 	// Update the position matrix
 	UpdatePositionMatrix();
@@ -92,27 +95,30 @@ void Transform::RotateFromAxisAngle(DirectX::XMFLOAT3 axis, float angle)
 	m_Forward.y = m_RotationMatrix._32;
 	m_Forward.z = m_RotationMatrix._33;
 }
-void Transform::RotateYaw(float angle)
+void Transform::RotateYaw(float angle, Space space)
 {
-	RotateFromAxisAngle(m_Up, angle);
+	DirectX::XMFLOAT3 axis = space == Space::Local ? m_Up : DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f);
+	RotateFromAxisAngle(axis, angle);
 }
-void Transform::RotatePitch(float angle)
+void Transform::RotatePitch(float angle, Space space)
 {
-	RotateFromAxisAngle(m_Right, angle);
+	DirectX::XMFLOAT3 axis = space == Space::Local ? m_Right : DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f);
+	RotateFromAxisAngle(axis, angle);
 }
-void Transform::RotateRoll(float angle)
+void Transform::RotateRoll(float angle, Space space)
 {
-	RotateFromAxisAngle(m_Forward, angle);
+	DirectX::XMFLOAT3 axis = space == Space::Local ? m_Forward : DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f);
+	RotateFromAxisAngle(axis, angle);
 }
-void Transform::Rotate(float pitch = 0.f, float yaw = 0.f, float roll = 0.f)
+void Transform::Rotate(float pitch = 0.f, float yaw = 0.f, float roll = 0.f, Space space)
 {
-	RotatePitch(pitch);
-	RotateYaw(yaw);
-	RotateRoll(roll);
+	RotatePitch(pitch, space);
+	RotateYaw(yaw, space);
+	RotateRoll(roll, space);
 }
-void Transform::Rotate(DirectX::XMFLOAT3 rotation)
+void Transform::Rotate(DirectX::XMFLOAT3 rotation, Space space)
 {
-	Rotate(rotation.x, rotation.y, rotation.z);
+	Rotate(rotation.x, rotation.y, rotation.z, space);
 }
 
 void Transform::Scale(float x, float y, float z)
@@ -134,7 +140,7 @@ void Transform::SetScale(float x, float y, float z)
 	m_Scale.x = x;
 	m_Scale.y = y;
 	m_Scale.z = z;
-		
+
 	UpdateScaleMatrix();
 }
 void Transform::SetScale(DirectX::XMFLOAT3 scaleFactors)

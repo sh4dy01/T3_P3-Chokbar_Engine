@@ -10,6 +10,12 @@
 class Transform : public Component
 {
 public:
+	enum Space
+	{
+		Local,
+		World
+	};
+public:
 	Transform();
 
 	void Translate(float x, float y, float z);
@@ -18,12 +24,12 @@ public:
 	void TranslateWorld(float x, float y, float z);
 	void TranslateWorld(DirectX::XMFLOAT3 translation);
 
-	void RotateYaw(float angle);
-	void RotatePitch(float angle);
-	void RotateRoll(float angle);
+	void RotateYaw(float angle, Space space = Space::Local);
+	void RotatePitch(float angle, Space space = Space::Local);
+	void RotateRoll(float angle, Space space = Space::Local);
 
-	void Rotate(float yaw, float pitch, float roll);
-	void Rotate(DirectX::XMFLOAT3 rotation);
+	void Rotate(float yaw, float pitch, float roll, Space space = Space::Local);
+	void Rotate(DirectX::XMFLOAT3 rotation, Space space = Space::Local);
 
 	void Scale(float x, float y, float z);
 	void Scale(DirectX::XMFLOAT3 scale);
@@ -39,7 +45,6 @@ public:
 	DirectX::XMFLOAT3 GetRight() { return m_Right; }
 	DirectX::XMFLOAT3 GetUp() { return m_Up; }
 	DirectX::XMFLOAT3 GetForward() { return m_Forward; }
-
 
 	DirectX::XMFLOAT3 GetPosition() { return m_Position; }
 	DirectX::XMFLOAT3 GetScale() const { return m_Scale; }

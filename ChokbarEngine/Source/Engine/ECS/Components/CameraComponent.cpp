@@ -179,7 +179,7 @@ void CameraComponent::UpdateViewMatrix()
 		XMFLOAT3 forward = transform->GetForward();
 		XMVECTOR target = XMVectorAdd(XMLoadFloat3(&Position), XMLoadFloat3(&forward));
 
-		XMStoreFloat4x4(&m_View, XMMatrixLookAtLH(pos, target, m_WorldUp));
+		XMStoreFloat4x4(&m_View, XMMatrixLookAtLH(pos, target, XMLoadFloat3(&transform->GetUp())));
 		m_ViewDirty = false;
 
 		/*

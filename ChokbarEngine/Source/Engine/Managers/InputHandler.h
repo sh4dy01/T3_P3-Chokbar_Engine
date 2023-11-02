@@ -4,7 +4,7 @@
 #include <algorithm>
 
 
-static class InputHandler
+class InputHandler
 {
 public:
 	enum class KeyState
