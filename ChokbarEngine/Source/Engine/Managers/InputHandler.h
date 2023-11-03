@@ -47,7 +47,7 @@ private:
 	const float MOUSE_REFRESH_RATE;
 	const int SENSIBILITY = 10;
 
-	bool m_IsFocus;
+	bool m_IsCaptured;
 
 	static std::vector<char> m_KeyboardInput;
 	static std::vector<KeyState> m_KeyStates;

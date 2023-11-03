@@ -175,34 +175,36 @@ void Engine::Shutdown()
 }
 
 
-  void Engine::OnApplicationFocus() {
-    if (m_IsPaused) {
-      TogglePause();
-      m_IsPaused = false;
-    }
-    m_InputHandler.CaptureCursor();
-  }
-
-	void Engine::OnApplicationLostFocus() {
-		if (!m_IsPaused) {
-			TogglePause();
-			m_IsPaused = true;
-		}
-		m_InputHandler.ReleaseCursor();
+void Engine::OnApplicationFocus() 
+{
+	if (m_IsPaused) {
+		TogglePause();
+		m_IsPaused = false;
 	}
 
+	m_InputHandler.CaptureCursor();
+}
 
-	void Engine::TogglePause()
+void Engine::OnApplicationLostFocus() 
+{
+	if (!m_IsPaused) {
+		TogglePause();
+		m_IsPaused = true;
+	}
+	m_InputHandler.ReleaseCursor();
+}
+
+
+void Engine::TogglePause()
+{
+	m_IsPaused = !m_IsPaused;
+
+	if (m_IsPaused)
 	{
-		m_IsPaused = !m_IsPaused;
-
-		if (m_IsPaused)
-		{
-			m_InputHandler.ReleaseCursor(); 
-		}
-		else
-		{
-			m_InputHandler.CaptureCursor(); 
-		}
+		m_InputHandler.ReleaseCursor(); 
+	}
+	else
+	{
+		m_InputHandler.CaptureCursor(); 
 	}
 }

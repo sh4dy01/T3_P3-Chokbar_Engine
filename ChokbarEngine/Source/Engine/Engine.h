@@ -30,18 +30,17 @@ public:
 
 private:
 
-  void PreInitialize();
+	void PreInitialize();
 	void InitComponents();
 	
-
-  void TogglePause();
-  bool IsPaused() const { return m_IsPaused; }
+	void TogglePause();
 
 	void Update(float dt);
 
 	virtual void OnResize();
 
 private:
+
 	void Render();
 	void CalculateFrameStats();
 	bool NeedsToClose();
@@ -54,15 +53,11 @@ private:
 	GameTimer m_GameTimer;
 	Coordinator m_Coordinator;
 	CameraManager m_CameraManager;
-
-	// physic
-	Win32::Window m_Window;
-
 	InputHandler m_InputHandler;
-
 	PhysicsWorld m_PhysicsWorld;
 
-  bool m_IsPaused = false;
+	Win32::Window m_Window;
 
-	};
-}
+	bool m_IsPaused = false;
+
+};

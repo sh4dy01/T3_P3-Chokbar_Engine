@@ -98,9 +98,10 @@ namespace Win32
 			if (wParam == VK_ESCAPE) {
 				Engine::GetInstance()->OnApplicationLostFocus();
 				DEBUG_LOG("Focus lost after escape");
-
-				break;
 			}
+
+			break;
+
 		case WM_LBUTTONDOWN:
 		case WM_RBUTTONDOWN:
 			SetFocus(hwnd);
