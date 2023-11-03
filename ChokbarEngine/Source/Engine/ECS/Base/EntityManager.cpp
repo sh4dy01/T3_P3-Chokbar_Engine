@@ -13,7 +13,9 @@ EntityManager::EntityManager()
 
 EntityManager::~EntityManager()
 {
-	for (auto entity : m_LivingEntities) {
+	for (auto entity : m_LivingEntities) 
+	{
+		if (entity == nullptr) continue;
 		DELPTR(entity);
 	}
 }

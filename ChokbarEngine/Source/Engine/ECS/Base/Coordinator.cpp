@@ -2,10 +2,8 @@
 #include "Coordinator.h"
 
 #include "Core/D3D/Internal/MeshRenderer.h"
-#include "Engine/ECS/Components/PlayerComponent.h"
 #include "Engine/ECS/Components/Collision/Collider.h"
 #include "Engine/ECS/Components/Collision/RigidBody.h"
-#include "Engine/ECS/Systems/PlayerSystem.h"
 
 
 Coordinator::Coordinator()
@@ -37,7 +35,6 @@ void Coordinator::RegisterComponents()
 
 	RegisterComponent<Transform>();
 	RegisterComponent<MeshRenderer>();
-	RegisterComponent<PlayerComponent>();
 	RegisterComponent<Rigidbody>();
 	RegisterComponent<SphereCollider>();
 	RegisterComponent<CameraComponent>();
@@ -45,15 +42,8 @@ void Coordinator::RegisterComponents()
 
 void Coordinator::RegisterSystems()
 {
-	// TODO: Automatize this
-	RegisterSystem<PlayerSystem>();
-	{
-		Signature signature;
-		signature.set(GetComponentType<Transform>());
-		signature.set(GetComponentType<PlayerComponent>());
+	
 
-		SetSystemSignature<PlayerSystem>(signature);
-	}
 }
 
 

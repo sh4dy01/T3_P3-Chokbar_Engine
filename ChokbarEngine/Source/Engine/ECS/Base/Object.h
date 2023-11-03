@@ -10,7 +10,7 @@ public:
 
 	Object();
 	Object(const std::string& name);
-	~Object();
+	virtual ~Object();
 
 	void Destroy() const;
 
@@ -24,6 +24,10 @@ public:
 protected:
 
 	std::string m_Name;
+
+private:
+
 	InstanceID m_InstanceID;
+
 };
 
