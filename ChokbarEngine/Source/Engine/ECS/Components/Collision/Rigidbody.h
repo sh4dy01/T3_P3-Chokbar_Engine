@@ -1,6 +1,5 @@
 #pragma once 
 
-
 using namespace DirectX;
 
 class Collider;
@@ -18,27 +17,22 @@ public:
     XMFLOAT3 GetVelocity() const;
     void SetVelocity(const XMFLOAT3& velocity);
 
-    XMFLOAT3 GetForce() const;
-    void AddForce(const XMFLOAT3& force);
-
     float GetMass() const;
     void SetMass(float mass);
 
     bool IsStatic() const;
     void SetStatic(bool isStatic);
 
-
+    void Move(const XMFLOAT3& displacement);
 
     std::vector<Collider*> GetAllCollisionShape();
 
 private:
-
     std::vector<Collider*> m_collisionShapes;
 
     XMFLOAT3 m_velocity;
-    XMFLOAT3 m_force;
 
-    float m_mass;
+    float m_mass;   
 
     bool m_isStatic;
 };

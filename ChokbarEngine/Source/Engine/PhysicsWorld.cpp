@@ -55,6 +55,18 @@ void PhysicsWorld::Update(float dt)
 	if (m_timer >= UPDATE_RATE)
 	{
 		CheckCollision();
+
+		for (auto& rigidbody : m_rigidbodies)
+		{
+			XMFLOAT3 newPos;
+			DirectX::XMStoreFloat3(&newPos, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&rigidbody->transform->GetPosition()), DirectX::XMLoadFloat3(&rigidbody->GetVelocity())));
+			rigidbody->transform->SetPosition(newPos);
+
+			XMFLOAT3 newVel;
+			XMStoreFloat3(&newVel, XMLoadFloat3(&rigidbody->GetVelocity()) * 0.9f);
+			rigidbody->SetVelocity(newVel);
+		}
+
 		m_timer = 0.0f;
 	}
 }
@@ -90,7 +102,7 @@ void PhysicsWorld::CheckCollision()
 
 					DEBUG_LOG(m_rigidbodies[i]->gameObject->GetName() << " entered in collision with " << m_rigidbodies[j]->gameObject->GetName())
 
-					break;
+						break;
 				case Stay:
 
 					//m_rigidbodies[i]->CallOnCollisionStay(m_CurrentCollisionInfo.ColliderB);
@@ -98,18 +110,18 @@ void PhysicsWorld::CheckCollision()
 
 					DEBUG_LOG(m_rigidbodies[i]->gameObject->GetName() << " continue colliding with " << m_rigidbodies[j]->gameObject->GetName())
 
-					break;
+						break;
 				case Exit:
 
 					//m_rigidbodies[i]->CallOnCollisionExit(m_CurrentCollisionInfo.ColliderB);
 					//m_rigidbodies[j]->CallOnCollisionExit(m_CurrentCollisionInfo.ColliderA);
 
 					DEBUG_LOG(m_rigidbodies[i]->gameObject->GetName() << " exited collision with " << m_rigidbodies[j]->gameObject->GetName())
-					m_RegisteredCollisionInfos.erase(std::remove(m_RegisteredCollisionInfos.begin(), m_RegisteredCollisionInfos.end(), m_CurrentCollisionInfo), m_RegisteredCollisionInfos.end());
+						m_RegisteredCollisionInfos.erase(std::remove(m_RegisteredCollisionInfos.begin(), m_RegisteredCollisionInfos.end(), m_CurrentCollisionInfo), m_RegisteredCollisionInfos.end());
 
 					break;
 				}
-					
+
 				//m_rigidbodies[i]->SetVelocity(XMFLOAT3(0, 0, 0));
 
 				//DEBUG_LOG(m_rigidbodies[i]->gameObject->GetName() << " collided with " << m_rigidbodies[j]->gameObject->GetName());
@@ -147,7 +159,7 @@ bool PhysicsWorld::CheckCollisionShapes(Rigidbody* rbA, Rigidbody* rbB)
 						// return true to handle the exit trigger
 						return true;
 					}
-				}	
+				}
 
 				return false;
 			}

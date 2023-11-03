@@ -2,7 +2,7 @@
 #include "Rigidbody.h"
 
 Rigidbody::Rigidbody(bool isStatic)
-: m_isStatic(isStatic), m_velocity(XMFLOAT3(0, 0, 0))
+: m_isStatic(isStatic), m_velocity(XMFLOAT3(0, 1.f, 0))
 {
 	Chokbar::Engine::GetPhysicsWorld()->RegisterRigidBody(this);
 }
@@ -56,18 +56,6 @@ void Rigidbody::SetVelocity(const XMFLOAT3& velocity)
 XMFLOAT3 Rigidbody::GetVelocity() const
 {
 	return m_velocity;
-}
-
-void Rigidbody::AddForce(const XMFLOAT3& force)
-{
-	m_force.x += force.x;
-	m_force.y += force.y;
-	m_force.z += force.z;
-}
-
-XMFLOAT3 Rigidbody::GetForce() const
-{
-	return m_force;
 }
 
 std::vector<Collider*> Rigidbody::GetAllCollisionShape()
