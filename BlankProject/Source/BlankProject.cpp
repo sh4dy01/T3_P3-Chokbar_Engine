@@ -8,6 +8,7 @@
 #include "Engine/ECS/Components/PlayerComponent.h"
 #include "Engine/ECS/Components/Collision/Rigidbody.h"
 #include "Engine/ECS/Components/Collision/SphereCollider.h"
+#include "ComponentTest.h"
 
 
 class Application : public Win32::IApplication
@@ -69,6 +70,7 @@ void Application::Initialize()
 	test3->AddComponent<MeshRenderer>(new MeshRenderer(MeshType::PYRAMID, MaterialType::SIMPLE));
 	test3->AddComponent<Rigidbody>();
 	test3->AddComponent<SphereCollider>();
+	test3->AddComponent<ComponentTest>();
 	test3->transform->SetScale(6, 6, 6);
 
 	//GameObject player = GameObject("player");

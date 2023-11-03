@@ -99,7 +99,10 @@ public:
 	{
 		const char* typeName = typeid(T).name();
 
-		assert(m_ComponentTypes.contains(typeName) && "Component not registered before use.");
+		if (!m_ComponentTypes.contains(typeName))
+		{
+			RegisterComponent<T>();
+		}
 
 		return std::static_pointer_cast<ComponentArray<T>>(m_ComponentArrays[typeName]);
 	}

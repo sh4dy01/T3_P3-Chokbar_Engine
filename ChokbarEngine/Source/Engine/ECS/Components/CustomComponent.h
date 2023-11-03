@@ -17,7 +17,6 @@ public:
 	//void OnEnable() override;
 	//void OnDisable() override;
 
-private:
 
 	void OnAddedComponent() override;
 	void OnRemovedComponent() override;
