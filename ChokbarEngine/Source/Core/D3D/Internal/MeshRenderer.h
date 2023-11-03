@@ -16,6 +16,7 @@ public:
 	MeshRenderer(MeshType, MaterialType);
 	~MeshRenderer() override;
 
+	void OnAddedComponent() override;
 	void OnDelete();
 
 	void BindMaterial(Material* mat);

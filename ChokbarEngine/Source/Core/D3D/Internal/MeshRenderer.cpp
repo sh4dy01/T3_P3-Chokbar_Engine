@@ -16,8 +16,6 @@ MeshRenderer::MeshRenderer()
 {
 	Mesh = nullptr;
 	Mat = nullptr;
-	Bounds.Center = transform->GetPosition();
-	Bounds.Radius = transform->GetScale().x;
 }
 
 MeshRenderer::MeshRenderer(MeshType meshType, MaterialType matType)
@@ -35,6 +33,12 @@ MeshRenderer::~MeshRenderer()
 	Mesh = nullptr;
 	Mat = nullptr;
 	m_textures.clear();
+}
+
+void MeshRenderer::OnAddedComponent()
+{
+	Bounds.Center = transform->GetPosition();
+	Bounds.Radius = transform->GetScale().x;
 }
 
 void MeshRenderer::OnDelete()

@@ -10,6 +10,13 @@ SystemManager::~SystemManager()
 {
 	m_Systems.clear();
 	m_Signatures.clear();
+
+	for (auto const& pair : m_Systems)
+	{
+		auto const& system = pair.second;
+
+		system->m_RegisteredEntities.clear();
+	}
 }
 
 void SystemManager::UpdateAllSystems(float dt)

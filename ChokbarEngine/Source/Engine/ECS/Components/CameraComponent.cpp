@@ -8,7 +8,7 @@ using namespace DirectX;
 CameraComponent::CameraComponent()
 	: m_ViewDirty(true)
 {
-	SetLens(70.0F, 1.0f, 1.0f, 1000.0f);
+	SetLens(70.0F, 1.0f, BASE_Z_NEAR, BASE_Z_FAR);
 }
 
 CameraComponent::~CameraComponent()
@@ -115,6 +115,13 @@ void CameraComponent::SetAspect(float aspect)
 
 void CameraComponent::SetZRange(float zn, float zf)
 {
+	if (zn < MIN_Z_NEAR) zn = MIN_Z_NEAR;
+	if (zf > MAX_Z_FAR) zf = MAX_Z_FAR;
+	else if (zf <= MIN_Z_NEAR) zf = MIN_Z_NEAR + 0.1f;
+
+	if (zn >= zf) zn = zf - .1f;
+	else if (zf <= zn) zf = zn + .1f;
+
 	m_NearZ = zn;
 	m_FarZ = zf;
 
@@ -173,6 +180,13 @@ XMFLOAT4X4 CameraComponent::GetProj4x4f() const
 void CameraComponent::UpdateProjectionMatrix()
 {
 	XMStoreFloat4x4(&m_Proj, XMMatrixPerspectiveFovLH(XMConvertToRadians(m_FovY), m_Aspect, m_NearZ, m_FarZ));
+
+	UpdateFrustum();
+}
+
+void CameraComponent::UpdateFrustum()
+{
+	BoundingFrustum::CreateFromMatrix(m_Frustum, GetProj());
 }
 
 void CameraComponent::UpdateViewMatrix()

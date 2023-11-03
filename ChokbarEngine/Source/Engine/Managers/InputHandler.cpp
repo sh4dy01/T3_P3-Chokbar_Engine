@@ -7,7 +7,7 @@ POINT InputHandler::m_lastPos = { 0, 0 };
 float InputHandler::m_deltaPosX = 0.0f;
 float InputHandler::m_deltaPosY = 0.0f;
 
-std::vector<char> InputHandler::m_KeyboardInput = { 'Z', 'Q', 'S', 'D', VK_SHIFT, VK_SPACE ,VK_LBUTTON, VK_RBUTTON, VK_ESCAPE };
+std::vector<char> InputHandler::m_KeyboardInput = { 'Z', 'Q', 'S', 'D', VK_SHIFT, VK_SPACE ,VK_LBUTTON, VK_RBUTTON, VK_ESCAPE, VK_LEFT, VK_UP, VK_RIGHT, VK_DOWN };
 std::vector<InputHandler::KeyState> InputHandler::m_KeyStates = {};
 
 

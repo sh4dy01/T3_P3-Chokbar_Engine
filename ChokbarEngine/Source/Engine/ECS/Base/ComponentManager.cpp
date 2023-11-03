@@ -72,6 +72,8 @@ void ComponentManager::RegisterCustomComponent(CustomComponent* customComponent)
 
 void ComponentManager::UnregisterCustomComponent(CustomComponent* customComponent)
 {
+	if (m_CustomComponents.empty()) return;
+
 	std::erase(m_CustomComponents, customComponent);
 }
 
