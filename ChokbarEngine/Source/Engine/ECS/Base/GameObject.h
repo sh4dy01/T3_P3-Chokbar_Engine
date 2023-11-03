@@ -73,7 +73,15 @@ public:
 		return Engine::GetCoordinator()->HasComponent<T>(m_InstanceID);
 	}
 
+	bool IsActive() const { return m_IsActive; }
+	void SetActive(bool value) { m_IsActive = value; }
+
 public:
 
 	Transform *transform;
+
+private:
+
+	bool m_IsActive;
+
 };

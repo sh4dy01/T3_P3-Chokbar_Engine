@@ -3,7 +3,7 @@
 
 
 GameObject::GameObject()
-	: transform(AddComponent<Transform>())
+	: transform(AddComponent<Transform>()), m_IsActive(true)
 {
 }
 
