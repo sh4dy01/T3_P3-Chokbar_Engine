@@ -30,8 +30,12 @@ public:
 
 private:
 
+  void PreInitialize();
 	void InitComponents();
-	void PreInitialize();
+	
+
+  void TogglePause();
+  bool IsPaused() const { return m_IsPaused; }
 
 	void Update(float dt);
 
@@ -58,5 +62,7 @@ private:
 
 	PhysicsWorld m_PhysicsWorld;
 
-	bool m_IsGamePaused = false;
-};
+  bool m_IsPaused = false;
+
+	};
+}

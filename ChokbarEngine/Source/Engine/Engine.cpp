@@ -59,9 +59,11 @@ void Engine::PreInitialize()
 	// SplashScreen::Open();
 }
 
+
 void Engine::Initialize()
 {
 	PreInitialize();
+	OnApplicationFocus();
 
 	m_Coordinator.Init();
 
@@ -85,6 +87,8 @@ void Engine::Run()
 
 	while (!NeedsToClose())
 	{
+    if (m_IsPaused) return;
+    
 		m_Window.PollEvent();
 
 		m_GameTimer.Tick();
@@ -170,13 +174,35 @@ void Engine::Shutdown()
 	DELPTR(m_Instance);
 }
 
-void Engine::OnApplicationFocus()
-{
-	m_InputHandler.CaptureCursor();
-}
 
-void Engine::OnApplicationLostFocus()
-{
-	m_InputHandler.ReleaseCursor();
-	DEBUG_LOG("Lost Focus");
+  void Engine::OnApplicationFocus() {
+    if (m_IsPaused) {
+      TogglePause();
+      m_IsPaused = false;
+    }
+    m_InputHandler.CaptureCursor();
+  }
+
+	void Engine::OnApplicationLostFocus() {
+		if (!m_IsPaused) {
+			TogglePause();
+			m_IsPaused = true;
+		}
+		m_InputHandler.ReleaseCursor();
+	}
+
+
+	void Engine::TogglePause()
+	{
+		m_IsPaused = !m_IsPaused;
+
+		if (m_IsPaused)
+		{
+			m_InputHandler.ReleaseCursor(); 
+		}
+		else
+		{
+			m_InputHandler.CaptureCursor(); 
+		}
+	}
 }

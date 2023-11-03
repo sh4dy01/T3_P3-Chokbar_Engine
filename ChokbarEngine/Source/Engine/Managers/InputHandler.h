@@ -21,6 +21,8 @@ public:
 	void Init(HWND windowHandle);
 	void Update(float dt);
 
+	void SetCursorToWindowCenter();
+
 	static bool IsKeyDown(char key);
 	static bool IsKeyUp(char key);
 	static bool IsKeyHeld(char key);
@@ -34,17 +36,11 @@ public:
 	void CaptureCursor();
 	void ReleaseCursor();
 
-	void EnableCursor();
-	void DisableCursor();
 
 private:
 
 	void CheckInput();
 	void GetNormalizedMovement();
-
-	void HideCursor();
-	void ShowCursor();
-
 
 private:
 
@@ -63,7 +59,4 @@ private:
 	float m_Timer;
 
 	HWND m_WindowHandle;
-
-	bool m_IsEnabled;
-
 };
