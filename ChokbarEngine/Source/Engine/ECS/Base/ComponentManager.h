@@ -2,8 +2,7 @@
 
 #include "TypeDef.h"
 #include "ComponentArray.h"
-#include "Core/D3D/Internal/MeshRenderer.h"
-
+#include "Engine/ECS/Components/CustomComponent.h"
 
 class ComponentManager
 {
@@ -14,12 +13,27 @@ public:
 
 public:
 
+	void AwakeAllComponents();
+	void StartAllComponents();
+	void UpdateAllComponents();
+	void FixedUpdateAllComponents();
+	void LateUpdateAllComponents();
+
+	void RegisterCustomComponent(CustomComponent* customComponent);
+	void UnregisterCustomComponent(CustomComponent* customComponent);
+
+	// Notify each component array that an entity has been destroyed
+	// If it has a component for that entity, it will remove it
+	void EntityDestroyed(InstanceID entity);
+
+public:
+
 	template<class T>
 	void RegisterComponent()
 	{
 		const char* typeName = typeid(T).name();
 
-		assert(m_ComponentTypes.find(typeName) == m_ComponentTypes.end() && "Registering component type more than once.");
+		assert(!m_ComponentTypes.contains(typeName) && "Registering component type more than once.");
 
 		// Add this component type to the component type map
 		m_ComponentTypes.insert({ typeName, m_NextComponentType });
@@ -47,14 +61,12 @@ public:
 	template<class T>
 	void AddComponent(InstanceID entity, T* component)
 	{
-		const char* typeName = typeid(T).name();
-
 		// Add a component to the array for an entity
 		GetComponentArray<T>()->InsertData(entity, component);
 	}
 
 	template<class T>
-	void RemoveComponent(InstanceID entity)
+	void RemoveComponent(InstanceID entity, T* component)
 	{
 		// Remove a component from the array for an entity
 		GetComponentArray<T>()->RemoveData(entity);
@@ -81,17 +93,13 @@ public:
 		return GetComponentArray<T>()->HasData(entity);
 	}
 
-	// Notify each component array that an entity has been destroyed
-	// If it has a component for that entity, it will remove it
-	void EntityDestroyed(InstanceID entity);
-
 	// Convenience function to get the statically casted pointer to the ComponentArray of type T.
 	template<class T>
 	std::shared_ptr<ComponentArray<T>> GetComponentArray()
 	{
 		const char* typeName = typeid(T).name();
 
-		assert(m_ComponentTypes.find(typeName) != m_ComponentTypes.end() && "Component not registered before use.");
+		assert(m_ComponentTypes.contains(typeName) && "Component not registered before use.");
 
 		return std::static_pointer_cast<ComponentArray<T>>(m_ComponentArrays[typeName]);
 	}
@@ -103,6 +111,8 @@ private:
 
 	// Map from type string pointer to a component array
 	std::unordered_map<const char*, std::shared_ptr<IComponentArray>> m_ComponentArrays;
+
+	std::vector<CustomComponent*> m_CustomComponents;
 
 	// The component type to be assigned to the next registered component - starting at 0
 	ComponentType m_NextComponentType;

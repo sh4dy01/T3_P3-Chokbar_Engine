@@ -247,6 +247,9 @@
     <ClCompile Include="Source\Chokbar.cpp">
       <Filter>Source\pch</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Engine\ECS\Components\CustomComponent.cpp">
+      <Filter>Source\Engine\ECS\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Chokbar.h">
@@ -320,9 +323,6 @@
     </ClInclude>
     <ClInclude Include="Source\Engine\ECS\Base\Object.h">
       <Filter>Source\Engine\ECS\Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Engine\ECS\Components\Component.h">
-      <Filter>Source\Engine\ECS\Components</Filter>
     </ClInclude>
     <ClInclude Include="Source\Engine\ECS\Components\Collision\Collider.h">
       <Filter>Source\Engine\ECS\Components\Collision</Filter>
@@ -408,6 +408,12 @@
     </ClInclude>
     <ClInclude Include="Source\Engine\ECS\Components\Collision\TriggerCollisionEvent.h">
       <Filter>Source\Engine\ECS\Components\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\ECS\Components\Component.h">
+      <Filter>Source\Engine\ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\ECS\Components\CustomComponent.h">
+      <Filter>Source\Engine\ECS\Components</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

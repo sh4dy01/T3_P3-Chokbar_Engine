@@ -62,6 +62,41 @@ InstanceID Coordinator::CreateNewObject(Object* go) const
 	return m_EntityManager->RegisterEntity(go);
 }
 
+void Coordinator::AwakeComponents()
+{
+	m_ComponentManager->AwakeAllComponents();
+}
+
+void Coordinator::StartComponents()
+{
+	m_ComponentManager->StartAllComponents();
+}
+
+void Coordinator::UpdateComponents()
+{
+	m_ComponentManager->UpdateAllComponents();
+}
+
+void Coordinator::LateUpdateComponents()
+{
+	m_ComponentManager->LateUpdateAllComponents();
+}
+
+void Coordinator::FixedUpdateComponents()
+{
+	m_ComponentManager->FixedUpdateAllComponents();
+}
+
+void Coordinator::RegisterCustomComponent(CustomComponent* customComponent)
+{
+	m_ComponentManager->RegisterCustomComponent(customComponent);
+}
+
+void Coordinator::UnregisterCustomComponent(CustomComponent* customComponent)
+{
+	m_ComponentManager->UnregisterCustomComponent(customComponent);
+}
+
 /*
 InstanceID Coordinator::CreateNewObject(Transform* transform)
 {

@@ -28,7 +28,9 @@ public:
 	void OnApplicationFocus();
 	void OnApplicationLostFocus();
 
-protected:
+private:
+
+	void InitComponents();
 	void PreInitialize();
 
 	void Update(float dt);

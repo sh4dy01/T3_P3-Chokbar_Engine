@@ -46,7 +46,10 @@ void PhysicsWorld::Update(float dt)
 
 	if (m_timer >= UPDATE_RATE)
 	{
+		Engine::GetCoordinator()->FixedUpdateComponents();
+
 		CheckCollision();
+
 		m_timer = 0.0f;
 	}
 }

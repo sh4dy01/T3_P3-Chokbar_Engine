@@ -20,10 +20,21 @@ public:
 	InstanceID CreateNewObject(Object* go) const;
 	// Create a new game object ID
 	//GameObject* CreateNewObject(Transform* transform);
+
+	void AwakeComponents();
+	void StartComponents();
+	void UpdateComponents();
+	void LateUpdateComponents();
+	void FixedUpdateComponents();
+
+	void RegisterCustomComponent(CustomComponent* customComponent);
+	void UnregisterCustomComponent(CustomComponent* customComponent);
+
 	void UpdateSystems(float dt);
 	void DestroyEntity(InstanceID entity);
 
 private:
+
 	void RegisterComponents();
 	void RegisterSystems();
 
@@ -48,7 +59,7 @@ public:
 	}
 
 	template <typename T>
-	void RemoveComponent(InstanceID entity) const
+	void RemoveComponent(InstanceID entity, T* component) const
 	{
 		m_ComponentManager->RemoveComponent<T>(entity);
 

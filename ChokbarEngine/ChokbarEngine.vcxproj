@@ -128,6 +128,7 @@
     <ClCompile Include="Source\Engine\ECS\Components\CameraComponent.cpp" />
     <ClCompile Include="Source\Engine\ECS\Components\Collision\TriggerCollisionEvent.cpp" />
     <ClCompile Include="Source\Engine\ECS\Components\Component.cpp" />
+    <ClCompile Include="Source\Engine\ECS\Components\CustomComponent.cpp" />
     <ClCompile Include="Source\Engine\ECS\Components\PlayerComponent.cpp" />
     <ClCompile Include="Source\Engine\ECS\Components\TransformComponent.cpp" />
     <ClCompile Include="Source\Engine\ECS\Systems\PlayerSystem.cpp" />
@@ -171,6 +172,7 @@
     <ClInclude Include="Source\Engine\ECS\Components\Collision\Rigidbody.h" />
     <ClInclude Include="Source\Engine\ECS\Components\Collision\SphereCollider.h" />
     <ClInclude Include="Source\Engine\ECS\Components\Collision\TriggerCollisionEvent.h" />
+    <ClInclude Include="Source\Engine\ECS\Components\CustomComponent.h" />
     <ClInclude Include="Source\Engine\PhysicsManager.h" />
     <ClInclude Include="Source\Engine\PhysicsWorld.h" />
     <ClInclude Include="Source\Engine\ECS\Components\CameraComponent.h" />

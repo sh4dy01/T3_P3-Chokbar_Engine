@@ -84,6 +84,8 @@ void Engine::Run()
 {
 	m_GameTimer.Reset();
 
+	InitComponents();
+
 	while (!NeedsToClose())
 	{
 		m_Window.PollEvent();
@@ -95,6 +97,12 @@ void Engine::Run()
 	}
 }
 
+void Engine::InitComponents()
+{
+	m_Coordinator.AwakeComponents();
+	m_Coordinator.StartComponents();
+}
+
 bool Engine::NeedsToClose()
 {
 	return m_Window.NeedsToClose();
@@ -102,10 +110,13 @@ bool Engine::NeedsToClose()
 
 void Engine::Update(float dt)
 {
+	m_PhysicsWorld.Update(dt);
+
 	m_InputHandler.Update(dt);
 
-	m_PhysicsWorld.Update(dt);
 	m_Coordinator.UpdateSystems(dt);
+	m_Coordinator.UpdateComponents();
+	m_Coordinator.LateUpdateComponents();
 
 	D3DApp::GetInstance()->Update(dt, m_GameTimer.GetTotalTime());
 	CalculateFrameStats();
