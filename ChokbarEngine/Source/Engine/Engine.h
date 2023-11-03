@@ -32,6 +32,9 @@ namespace Chokbar
 		void OnApplicationFocus();
 		void OnApplicationLostFocus();
 
+		void TogglePause();
+		bool IsPaused() const { return m_IsPaused; }
+
 	protected:
 		void PreInitialize();
 
@@ -60,6 +63,7 @@ namespace Chokbar
 
 		PhysicsWorld m_PhysicsWorld;
 
-		bool m_IsGamePaused = false;
+		bool m_IsPaused = false;
+
 	};
 }

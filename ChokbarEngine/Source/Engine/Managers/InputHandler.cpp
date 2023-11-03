@@ -7,7 +7,7 @@ POINT InputHandler::m_lastPos = { 0, 0 };
 float InputHandler::m_deltaPosX = 0.0f;
 float InputHandler::m_deltaPosY = 0.0f;
 
-std::vector<char> InputHandler::m_KeyboardInput = { 'Z', 'Q', 'S', 'D', VK_SHIFT, VK_SPACE ,VK_LBUTTON, VK_RBUTTON };
+std::vector<char> InputHandler::m_KeyboardInput = { 'Z', 'Q', 'S', 'D', VK_SHIFT, VK_SPACE ,VK_LBUTTON, VK_RBUTTON, VK_ESCAPE };
 std::vector<InputHandler::KeyState> InputHandler::m_KeyStates = {};
 
 
@@ -46,16 +46,21 @@ void InputHandler::Update(float dt)
 
 		if (m_IsFocus)
 		{
-			RECT rect;
-			GetClientRect(m_WindowHandle, &rect);
-			POINT windowCenter = { rect.right / 2, rect.bottom / 2 };
-
-			ClientToScreen(m_WindowHandle, &windowCenter);
-			SetCursorPos(windowCenter.x, windowCenter.y);
+			SetCursorToWindowCenter();
 		}
 
 		m_timer = 0.0f;
 	}
+}
+
+void InputHandler::SetCursorToWindowCenter()
+{
+	RECT rect;
+	GetClientRect(m_WindowHandle, &rect);
+	POINT windowCenter = { rect.right / 2, rect.bottom / 2 };
+
+	ClientToScreen(m_WindowHandle, &windowCenter);
+	SetCursorPos(windowCenter.x, windowCenter.y);
 }
 
 /// <summary>
@@ -107,13 +112,18 @@ void InputHandler::CaptureCursor()
 	ClipCursor(&clipRect);
 
 	m_lastPos = windowCenter;
+
+	while (ShowCursor(FALSE) >= 0); // Use a loop to ensure the cursor is hidden
+
 }
 
 void InputHandler::ReleaseCursor()
 {
 	m_IsFocus = false;
 
-	ClipCursor(nullptr); // Libérez le mouvement du curseur.
+	ClipCursor(nullptr);
+	while (ShowCursor(TRUE) < 0); // Use a loop to ensure the cursor is shown
+
 }
 
 /// <summary>
@@ -222,32 +232,4 @@ float InputHandler::GetAxisX()
 float InputHandler::GetAxisY()
 {
 	return m_deltaPosY;
-}
-
-void InputHandler::EnableCursor()
-{
-	if (!m_IsEnabled)
-	{
-		ShowCursor();
-		m_IsEnabled = true;
-	}
-}
-
-void InputHandler::DisableCursor()
-{
-	if (m_IsEnabled)
-	{
-		HideCursor();
-		m_IsEnabled = false;
-	}
-}
-
-void InputHandler::HideCursor()
-{
-	while (::ShowCursor(false) >= 0);
-}
-
-void InputHandler::ShowCursor()
-{
-	while (::ShowCursor(true) < 0);
 }

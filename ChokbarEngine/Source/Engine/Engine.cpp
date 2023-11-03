@@ -75,6 +75,7 @@ namespace Chokbar
 
 		m_Window.CreateNewWindow(DEFAULT_WIDTH, DEFAULT_HEIGHT, PerGameSettings::GameName(), PerGameSettings::MainIcon(), Win32::RESIZABLE);
 		m_InputHandler.Init(m_Window.GetHandle());
+		OnApplicationFocus();
 
 		OnResize();
 
@@ -107,14 +108,17 @@ namespace Chokbar
 
 	void Engine::Update(float dt)
 	{
-		m_InputHandler.Update(dt);
+		if (m_IsPaused) return;
 
+		m_InputHandler.Update(dt);
 		m_PhysicsWorld.Update(dt);
 		m_Coordinator.UpdateSystems(dt);
 
 		D3DApp::GetInstance()->Update(dt, m_GameTimer.GetTotalTime());
+
 		CalculateFrameStats();
 	}
+
 
 	void Engine::Render()
 	{
@@ -167,15 +171,34 @@ namespace Chokbar
 	{
 	}
 
-	void Engine::OnApplicationFocus()
-	{
+	void Engine::OnApplicationFocus() {
+		if (m_IsPaused) {
+			TogglePause();
+			m_IsPaused = false;
+		}
 		m_InputHandler.CaptureCursor();
 	}
 
-	void Engine::OnApplicationLostFocus()
-	{
+	void Engine::OnApplicationLostFocus() {
+		if (!m_IsPaused) {
+			TogglePause();
+			m_IsPaused = true;
+		}
 		m_InputHandler.ReleaseCursor();
-		DEBUG_LOG("Lost Focus");
 	}
 
+
+	void Engine::TogglePause()
+	{
+		m_IsPaused = !m_IsPaused;
+
+		if (m_IsPaused)
+		{
+			m_InputHandler.ReleaseCursor(); 
+		}
+		else
+		{
+			m_InputHandler.CaptureCursor(); 
+		}
+	}
 }
