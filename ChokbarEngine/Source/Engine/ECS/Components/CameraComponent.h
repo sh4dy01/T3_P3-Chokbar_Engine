@@ -43,33 +43,31 @@ public:
 	// Define camera space via LookAt parameters.
 	void LookAt(DirectX::XMFLOAT3 targetPos);
 
-
 	// Get View/Proj matrices.
 	DirectX::XMMATRIX GetView()const;
 	DirectX::XMMATRIX GetProj()const;
 
-	// Strafe/Walk the camera a distance d.
-	void Strafe(float d);
-	void Walk(float d);
-
-	// Rotate the camera.
-	void Pitch(float angle);
-	void RotateY(float angle);
-
 	DirectX::XMFLOAT4X4 GetView4x4f()const;
 	DirectX::XMFLOAT4X4 GetProj4x4f()const;
+
+	DirectX::BoundingFrustum GetFrustum() const { return m_Frustum; }
 
 	// After modifying camera position/orientation, call to rebuild the view matrix.
 	void UpdateViewMatrix();
 
-private:
 
-	void __vectorcall LookAt(DirectX::FXMVECTOR pos, DirectX::FXMVECTOR target, DirectX::FXMVECTOR worldUp);
+private:
 
 	void UpdateWindowWithNewRange();
 	void UpdateProjectionMatrix();
+	void UpdateFrustum();
 
 private:
+
+	const float MIN_Z_NEAR = 0.1f;
+	const float MAX_Z_FAR = 1000.f;
+	const float BASE_Z_NEAR = 0.5f;
+	const float BASE_Z_FAR = 1000;
 
 	const DirectX::XMVECTOR m_WorldUp = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
@@ -90,6 +88,8 @@ private:
 	float m_FarWindowHeight = 0.0f;
 
 	bool m_ViewDirty;
+
+	DirectX::BoundingFrustum m_Frustum;
 
 	// Cache View/Proj matrices.
 	DirectX::XMFLOAT4X4 m_View = Identity4x4();
