@@ -16,6 +16,8 @@ MeshRenderer::MeshRenderer()
 {
 	Mesh = nullptr;
 	Mat = nullptr;
+	Bounds.Center = transform->GetPosition();
+	Bounds.Radius = transform->GetScale().x;
 }
 
 MeshRenderer::MeshRenderer(MeshType meshType, MaterialType matType)

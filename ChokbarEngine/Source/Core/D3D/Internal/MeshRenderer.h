@@ -29,6 +29,8 @@ public:
 	D3DMesh* Mesh;
 	UINT ObjectCBIndex = -1;
 
+	DirectX::BoundingSphere Bounds;
+
 	Material* Mat;
 	UINT TextSrvIndex = -1;
 
