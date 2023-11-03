@@ -7,7 +7,7 @@ POINT InputHandler::m_lastPos = { 0, 0 };
 float InputHandler::m_deltaPosX = 0.0f;
 float InputHandler::m_deltaPosY = 0.0f;
 
-std::vector<char> InputHandler::m_KeyboardInput = { 'Z', 'Q', 'S', 'D', VK_SHIFT, VK_SPACE ,VK_LBUTTON, VK_RBUTTON };
+std::vector<char> InputHandler::m_KeyboardInput = { 'Z', 'Q', 'S', 'D', VK_SHIFT, VK_SPACE ,VK_LBUTTON, VK_RBUTTON, VK_ESCAPE };
 std::vector<InputHandler::KeyState> InputHandler::m_KeyStates = {};
 
 
@@ -113,7 +113,7 @@ void InputHandler::ReleaseCursor()
 {
 	m_IsFocus = false;
 
-	ClipCursor(nullptr); // Libérez le mouvement du curseur.
+	ClipCursor(nullptr);
 }
 
 /// <summary>

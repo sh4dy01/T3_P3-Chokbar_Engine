@@ -84,11 +84,20 @@ namespace Win32
 		case WM_QUIT:
 			break;
 		case WM_SETFOCUS:
+			ShowCursor(FALSE);
 			Engine::GetInstance()->OnApplicationFocus();
 			break;
 
 		case WM_KILLFOCUS:
+			ShowCursor(TRUE);
 			Engine::GetInstance()->OnApplicationLostFocus();
+			break;
+
+		case WM_KEYDOWN:
+			if (wParam == VK_ESCAPE) {
+				ShowCursor(TRUE);
+				Engine::GetInstance()->OnApplicationLostFocus();
+			}
 			break;
 		case WM_CLOSE:
 			window->needsToClose = true;

@@ -107,14 +107,18 @@ namespace Chokbar
 
 	void Engine::Update(float dt)
 	{
-		m_InputHandler.Update(dt);
+		if (!m_IsPaused)
+		{
+			m_InputHandler.Update(dt);
+			m_PhysicsWorld.Update(dt);
+			m_Coordinator.UpdateSystems(dt);
 
-		m_PhysicsWorld.Update(dt);
-		m_Coordinator.UpdateSystems(dt);
+			D3DApp::GetInstance()->Update(dt, m_GameTimer.GetTotalTime());
 
-		D3DApp::GetInstance()->Update(dt, m_GameTimer.GetTotalTime());
-		CalculateFrameStats();
+			CalculateFrameStats();
+		}
 	}
+
 
 	void Engine::Render()
 	{
@@ -169,13 +173,38 @@ namespace Chokbar
 
 	void Engine::OnApplicationFocus()
 	{
+		// When the application regains focus, unpause if it was paused due to losing focus
+		if (m_IsPausedDueToLostFocus)
+		{
+			TogglePause();
+			m_IsPausedDueToLostFocus = false; // Reset the flag
+		}
 		m_InputHandler.CaptureCursor();
 	}
 
 	void Engine::OnApplicationLostFocus()
 	{
+		if (!m_IsPaused)
+		{
+			TogglePause();
+			m_IsPausedDueToLostFocus = true; // Set a flag indicating the pause was due to losing focus
+		}
 		m_InputHandler.ReleaseCursor();
 		DEBUG_LOG("Lost Focus");
 	}
 
+
+	void Engine::TogglePause()
+	{
+		m_IsPaused = !m_IsPaused;
+
+		if (m_IsPaused)
+		{
+			m_InputHandler.ReleaseCursor(); 
+		}
+		else
+		{
+			m_InputHandler.CaptureCursor(); 
+		}
+	}
 }
