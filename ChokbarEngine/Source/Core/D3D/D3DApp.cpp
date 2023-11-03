@@ -24,7 +24,7 @@ D3DApp::D3DApp() :
 	m_4xMsaaQuality(0), m_bufferWidth(DEFAULT_WIDTH), m_bufferHeight(DEFAULT_HEIGHT),
 	m_D3dDriverType(D3D_DRIVER_TYPE_HARDWARE), m_CurrentFenceValue(0), m_RtvDescriptorSize(0),
 	m_DsvDescriptorSize(0), m_CbvSrvUavDescriptorSize(0), m_currBackBuffer(0), m_BackBufferFormat(DXGI_FORMAT_R8G8B8A8_UNORM), m_DepthStencilFormat(DXGI_FORMAT_D24_UNORM_S8_UINT),
-	m_meshRenderers(nullptr), m_texIndex(0)
+	m_meshRenderers(nullptr), m_texIndex(0), m_IsVsyncEnabled(false)
 {
 	m_pDebugController = nullptr;
 
@@ -139,7 +139,9 @@ void D3DApp::Render()
 	m_pCommandQueue->ExecuteCommandLists(_countof(cmdLists), cmdLists);
 
 	// Present the back buffer to the screen and swap the front/back buffer
-	m_pSwapChain->Present(0, 0);
+
+	m_pSwapChain->Present(m_IsVsyncEnabled ? 1 : 0, 0);
+
 	m_currBackBuffer = (m_currBackBuffer + 1) % SWAP_CHAIN_BUFFER_COUNT;
 
 	FlushCommandQueue();

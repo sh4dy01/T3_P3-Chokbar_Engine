@@ -1,6 +1,7 @@
 #pragma once
 
 #include "D3DUtils.h"
+#include <DirectXCollision.h>
 
 #pragma region GLOBAL VARIABLES
 
@@ -32,6 +33,8 @@ public:
 
 	int UpdateTextureHeap(Texture* tex);
 
+	void SetVsync(bool vsync) { m_IsVsyncEnabled = vsync; }
+
 
 	int m_bufferWidth;
 	int m_bufferHeight;
@@ -59,6 +62,8 @@ private:
 	void DrawRenderItems(ID3D12GraphicsCommandList* cmdList);
 	void UpdateRenderItems(const float dt, const float totalTime);
 
+	bool IsObjectInFrustum(const DirectX::XMMATRIX& invView, const MeshRenderer* mr);
+
 	D3D12_CPU_DESCRIPTOR_HANDLE CurrentBackBufferView() const;
 	D3D12_CPU_DESCRIPTOR_HANDLE DepthStencilView() const;
 
@@ -73,6 +78,7 @@ private:
 
 	ID3D12Debug* m_pDebugController;
 
+	bool m_IsVsyncEnabled;
 	bool m_4xMsaaState;	  // 4X MSAA (4.1.8) enabled. Default is false.
 	UINT m_4xMsaaQuality; // quality level of 4X MSAA
 
