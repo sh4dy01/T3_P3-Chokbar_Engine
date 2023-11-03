@@ -99,16 +99,17 @@ namespace Win32
 				Engine::GetInstance()->OnApplicationLostFocus();
 				DEBUG_LOG("Focus lost after escape");
 			}
-
 			break;
 
 		case WM_LBUTTONDOWN:
 		case WM_RBUTTONDOWN:
-			SetFocus(hwnd);
-			Engine::GetInstance()->OnApplicationFocus();
-			DEBUG_LOG("Focus gained after escape");
-
+			if (GetFocus() != hwnd) {
+				SetFocus(hwnd);
+				Engine::GetInstance()->OnApplicationFocus();
+				DEBUG_LOG("Focus set to window after mouse click.");
+			}
 			break;
+
 
 		case WM_CLOSE:
 			window->needsToClose = true;
