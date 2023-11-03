@@ -63,9 +63,7 @@ namespace Chokbar
 
 		PhysicsWorld m_PhysicsWorld;
 
-		bool m_IsGamePaused = false;
 		bool m_IsPaused = false;
-		bool m_IsPausedDueToLostFocus = false;
 
 	};
 }

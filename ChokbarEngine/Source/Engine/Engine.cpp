@@ -75,6 +75,7 @@ namespace Chokbar
 
 		m_Window.CreateNewWindow(DEFAULT_WIDTH, DEFAULT_HEIGHT, PerGameSettings::GameName(), PerGameSettings::MainIcon(), Win32::RESIZABLE);
 		m_InputHandler.Init(m_Window.GetHandle());
+		OnApplicationFocus();
 
 		OnResize();
 
@@ -107,16 +108,15 @@ namespace Chokbar
 
 	void Engine::Update(float dt)
 	{
-		if (!m_IsPaused)
-		{
-			m_InputHandler.Update(dt);
-			m_PhysicsWorld.Update(dt);
-			m_Coordinator.UpdateSystems(dt);
+		if (m_IsPaused) return;
 
-			D3DApp::GetInstance()->Update(dt, m_GameTimer.GetTotalTime());
+		m_InputHandler.Update(dt);
+		m_PhysicsWorld.Update(dt);
+		m_Coordinator.UpdateSystems(dt);
 
-			CalculateFrameStats();
-		}
+		D3DApp::GetInstance()->Update(dt, m_GameTimer.GetTotalTime());
+
+		CalculateFrameStats();
 	}
 
 
@@ -171,26 +171,20 @@ namespace Chokbar
 	{
 	}
 
-	void Engine::OnApplicationFocus()
-	{
-		// When the application regains focus, unpause if it was paused due to losing focus
-		if (m_IsPausedDueToLostFocus)
-		{
+	void Engine::OnApplicationFocus() {
+		if (m_IsPaused) {
 			TogglePause();
-			m_IsPausedDueToLostFocus = false; // Reset the flag
+			m_IsPaused = false;
 		}
 		m_InputHandler.CaptureCursor();
 	}
 
-	void Engine::OnApplicationLostFocus()
-	{
-		if (!m_IsPaused)
-		{
+	void Engine::OnApplicationLostFocus() {
+		if (!m_IsPaused) {
 			TogglePause();
-			m_IsPausedDueToLostFocus = true; // Set a flag indicating the pause was due to losing focus
+			m_IsPaused = true;
 		}
 		m_InputHandler.ReleaseCursor();
-		DEBUG_LOG("Lost Focus");
 	}
 
 
