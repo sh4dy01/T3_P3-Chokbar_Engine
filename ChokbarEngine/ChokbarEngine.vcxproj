@@ -60,7 +60,7 @@
       <ConformanceMode>false</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>Chokbar.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(ProjectDir)Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -108,6 +108,8 @@
     <ClCompile Include="Source\Core\D3D\Internal\D3DMesh.cpp" />
     <ClCompile Include="Source\Core\D3D\Internal\Material.cpp" />
     <ClCompile Include="Source\Core\D3D\Internal\MeshRenderer.cpp" />
+    <ClCompile Include="Source\Core\D3D\Internal\Particle.cpp" />
+    <ClCompile Include="Source\Core\D3D\Internal\ParticleRenderer.cpp" />
     <ClCompile Include="Source\Core\D3D\Internal\ShaderBase.cpp" />
     <ClCompile Include="Source\Core\D3D\Internal\Texture.cpp" />
     <ClCompile Include="Source\Core\D3D\Internal\UpdloadBuffer.cpp" />
@@ -128,15 +130,12 @@
     <ClCompile Include="Source\Engine\ECS\Components\Component.cpp" />
     <ClCompile Include="Source\Engine\ECS\Components\PlayerComponent.cpp" />
     <ClCompile Include="Source\Engine\ECS\Components\TransformComponent.cpp" />
-    <ClCompile Include="Source\Engine\ECS\Systems\ParticlesSystem.cpp" />
     <ClCompile Include="Source\Engine\ECS\Systems\PlayerSystem.cpp" />
     <ClCompile Include="Source\Engine\Engine.cpp" />
     <ClCompile Include="Source\Engine\GameTimer.cpp" />
     <ClCompile Include="Source\Engine\IResourceObject.cpp" />
     <ClCompile Include="Source\Engine\Managers\CameraManager.cpp" />
     <ClCompile Include="Source\Engine\Managers\InputHandler.cpp" />
-    <ClCompile Include="Source\Engine\Particles\Particle.cpp" />
-    <ClCompile Include="Source\Engine\Particles\ParticlesRenderer.cpp" />
     <ClCompile Include="Source\Engine\Resource.cpp" />
     <ClCompile Include="Source\GameObjects\Camera.cpp" />
     <ClCompile Include="Source\Platform\Windows\IApplication.cpp" />
@@ -158,6 +157,8 @@
     <ClInclude Include="Source\Core\D3D\Internal\D3DMesh.h" />
     <ClInclude Include="Source\Core\D3D\Internal\Material.h" />
     <ClInclude Include="Source\Core\D3D\Internal\MeshRenderer.h" />
+    <ClInclude Include="Source\Core\D3D\Internal\Particle.h" />
+    <ClInclude Include="Source\Core\D3D\Internal\ParticleRenderer.h" />
     <ClInclude Include="Source\Core\D3D\Internal\ShaderBase.h" />
     <ClInclude Include="Source\Core\D3D\Internal\Texture.h" />
     <ClInclude Include="Source\Core\D3D\Internal\UploadBuffer.h" />
@@ -171,12 +172,9 @@
     <ClInclude Include="Source\Engine\Collision\SphereCollision.h" />
     <ClInclude Include="Source\Engine\Collision\TriangleCollision.h" />
     <ClInclude Include="Source\Engine\ECS\Components\CameraComponent.h" />
-    <ClInclude Include="Source\Engine\ECS\Systems\ParticlesSystem.h" />
     <ClInclude Include="Source\Engine\Managers\CameraManager.h" />
     <ClInclude Include="Source\Engine\Managers\InputHandler.h" />
     <ClInclude Include="Source\Engine\ECS\Systems\PlayerSystem.h" />
-    <ClInclude Include="Source\Engine\Particles\Particle.h" />
-    <ClInclude Include="Source\Engine\Particles\ParticlesRenderer.h" />
     <ClInclude Include="Source\Engine\SphereCollision.h" />
     <ClInclude Include="Source\Engine\ECS\Base\ComponentArray.h" />
     <ClInclude Include="Source\Engine\ECS\Base\ComponentManager.h" />

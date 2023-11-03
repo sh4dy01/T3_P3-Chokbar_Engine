@@ -250,14 +250,11 @@
     <ClCompile Include="Source\Engine\ECS\Systems\PlayerSystem.cpp">
       <Filter>Source\Engine\ECS\Systems\Private</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\ECS\Systems\ParticlesSystem.cpp">
-      <Filter>Source\Engine\ECS\Systems\Private</Filter>
+    <ClCompile Include="Source\Core\D3D\Internal\ParticleRenderer.cpp">
+      <Filter>Source\Engine\Core\D3D\Internal\Private</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Particles\Particle.cpp">
-      <Filter>Source\Engine\Particles\Private</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Engine\Particles\ParticlesRenderer.cpp">
-      <Filter>Source\Engine\Particles\Private</Filter>
+    <ClCompile Include="Source\Core\D3D\Internal\Particle.cpp">
+      <Filter>Source\Engine\Core\D3D\Internal\Private</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -415,14 +412,11 @@
     <ClInclude Include="Source\Core\D3D\MaterialType.h">
       <Filter>Source\Engine\Core\D3D</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\ECS\Systems\ParticlesSystem.h">
-      <Filter>Source\Engine\ECS\Systems\Public</Filter>
+    <ClInclude Include="Source\Core\D3D\Internal\ParticleRenderer.h">
+      <Filter>Source\Engine\Core\D3D\Internal\Public</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Particles\Particle.h">
-      <Filter>Source\Engine\Particles\Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Engine\Particles\ParticlesRenderer.h">
-      <Filter>Source\Engine\Particles\Public</Filter>
+    <ClInclude Include="Source\Core\D3D\Internal\Particle.h">
+      <Filter>Source\Engine\Core\D3D\Internal\Public</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,8 +1,5 @@
 #include "Chokbar.h"
 
-#include "Engine/Particles/Particle.h"
-#include "Engine/Particles/ParticlesRenderer.h"
-
 #include "ParticlesSystem.h"
 
 using namespace DirectX;

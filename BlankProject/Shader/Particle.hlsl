@@ -1,22 +1,17 @@
-cbuffer cbPerObject : register(b0)
+struct InstanceData
 {
-	float4x4 gWorld;
+    float4x4 World;
+    float AgeRatio;
 };
 
-cbuffer cbPass : register(b1)
+StructuredBuffer<InstanceData> gInstanceData : register(t0, space1);
+
+cbuffer cbPass : register(b0)
 {
     float4x4 gView;
-    // float4x4 gInvView;
     float4x4 gProj;
-    // float4x4 gInvProj;
     float4x4 gViewProj;
-    // float4x4 gInvViewProj;
     float3 gEyePosW;
-    //float cbPerObjectPad1;
-    //float2 gRenderTargetSize;
-    //float2 gInvRenderTargetSize;
-    //float gNearZ;
-    //float gFarZ;
     float gTotalTime;
     float gDeltaTime;
 }
@@ -36,9 +31,12 @@ struct PS_INPUT
     float4 color : COLOR;
 };
 
-PS_INPUT vs_main(VS_INPUT input)
+PS_INPUT vs_main(VS_INPUT input, uint instanceID : SV_InstanceID)
 {
     PS_INPUT output;
+    
+    InstanceData instance = gInstanceData[instanceID];
+    float4x4 gWorld = instance.World;
 
     float4 posW = mul(float4(input.pos, 1.0f), gWorld);
     output.pos = mul(posW, gViewProj);

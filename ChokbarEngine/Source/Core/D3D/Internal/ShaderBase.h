@@ -2,11 +2,12 @@
 #include <stack>
 
 #include "UploadBuffer.h"
-#include "Core/D3D/Internal/D3DMesh.h"
 
 struct Texture;
+class ParticleRenderer;
+struct InstanceData;
 
-enum VertexType { VERTEX, PARTICLE };
+enum VertexType { VERTEX };
 
 struct ShaderDrawArguments
 {
@@ -100,7 +101,7 @@ public:
 	virtual void CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT& rtvFormat, DXGI_FORMAT& dsvFormat) = 0;
 
 	virtual void BeginDraw(ID3D12GraphicsCommandList* cmdList) = 0;
-	virtual void Draw(ShaderDrawArguments& args) = 0;
+	virtual void Draw(MeshRenderer* drawnMeshR) = 0;
 	virtual void EndDraw(ID3D12GraphicsCommandList* cmdList) = 0;
 
 	UINT GetCreatedIndex() { return (UINT)m_objectCBs.size() - 1; }
@@ -131,7 +132,7 @@ public:
 	void CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT& rtvFormat, DXGI_FORMAT& dsvFormat) override;
 
 	void BeginDraw(ID3D12GraphicsCommandList* cmdList) override;
-	void Draw(ShaderDrawArguments& args) override;
+	void Draw(MeshRenderer* drawnMeshR) override;
 	void EndDraw(ID3D12GraphicsCommandList* cmdList) override;
 };
 
@@ -145,7 +146,7 @@ public:
 	void CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT& rtvFormat, DXGI_FORMAT& dsvFormat) override;
 
 	void BeginDraw(ID3D12GraphicsCommandList* cmdList) override;
-	void Draw(ShaderDrawArguments& args) override;
+	void Draw(MeshRenderer* drawnMeshR) override;
 	void EndDraw(ID3D12GraphicsCommandList* cmdList) override;
 
 private:
@@ -158,17 +159,6 @@ private:
 class ShaderParticle : public ShaderBase
 {
 public:
-	struct InstanceData
-	{
-		DirectX::XMFLOAT4X4 World = Identity4x4();
-		float Age = 0.0f;
-
-		DirectX::XMFLOAT3 Velocity = { 0.0f, 0.0f, 0.0f };
-		DirectX::XMFLOAT3 Rotation = { 0.0f, 0.0f, 0.0f };
-		float LifeTime = 0.0f;
-	};
-
-public:
 	ShaderParticle(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, UINT cbvDescriptorSize, std::wstring& filepath);
 	~ShaderParticle();
 
@@ -176,8 +166,12 @@ public:
 	void CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT& rtvFormat, DXGI_FORMAT& dsvFormat) override;
 
 	void BeginDraw(ID3D12GraphicsCommandList* cmdList) override;
-	void Draw(ShaderDrawArguments& args) override;
+	void Draw(MeshRenderer* drawnMeshR) override;
 	void EndDraw(ID3D12GraphicsCommandList* cmdList) override;
 
+	void UpdateParticleInstanceDataBuffer(int startIndex, const void* data);
 private:
+	void DrawAsParticle(ParticleRenderer* drawnMeshR);
+
+	UploadBuffer<InstanceData>* m_particleInstanceDataBuffer;
 };

@@ -132,6 +132,7 @@ private:
 	DXGI_FORMAT m_DepthStencilFormat;
 
 	std::array<MeshRenderer*, MAX_ENTITIES>* m_meshRenderers;
+	std::array<ParticleRenderer*, MAX_ENTITIES>* m_particleRenderers;
 
 	UINT m_texIndex;
 

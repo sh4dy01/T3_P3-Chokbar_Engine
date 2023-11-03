@@ -48,6 +48,10 @@ void Resource::CreateShaders(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap
 	m_shaders[MaterialType::TEXTURE] = new ShaderTexture(device, cbvHeap, cbvSrvDescriptorSize, shaderPathTex);
 	m_shaders[MaterialType::TEXTURE]->Init();
 
+	std::wstring shaderPathParticle = L"Shader/Particle.hlsl";
+	m_shaders[MaterialType::PARTICLE] = new ShaderParticle(device, cbvHeap, cbvSrvDescriptorSize, shaderPathParticle);
+	m_shaders[MaterialType::PARTICLE]->Init();
+
 	CreateMaterials();
 }
 
@@ -58,4 +62,7 @@ void Resource::CreateMaterials()
 
 	m_materials[MaterialType::TEXTURE] = new Material();
 	m_materials[MaterialType::TEXTURE]->SetShader(m_shaders[MaterialType::TEXTURE]);
+
+	m_materials[MaterialType::PARTICLE] = new Material();
+	m_materials[MaterialType::PARTICLE]->SetShader(m_shaders[MaterialType::PARTICLE]);
 }

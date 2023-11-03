@@ -7,7 +7,7 @@ using namespace DirectX;
 
 
 Particle::Particle()
-	: m_LifeTime(0.0f), m_CurrentLifeTime(0.0f), m_Speed(0.0f), m_Direction(XMFLOAT3(0.0f, 0.0f, 0.0f)), m_IsActive(false), m_opacity(1.0f)
+	: m_LifeTime(0.0f), m_CurrentLifeTime(0.0f),m_Velocity(XMFLOAT3(0.0f, 0.0f, 0.0f)), m_AngularVelocity(XMFLOAT3(0.0f, 0.0f, 0.0f)), m_IsActive(false)
 {
 	m_Color1 = DirectX::XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
 	m_Color2 = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
@@ -19,9 +19,6 @@ Particle::~Particle()
 
 void Particle::Update(float deltaTime)
 {
-	float ratio = m_CurrentLifeTime / m_LifeTime;
-	m_opacity = std::lerp(0, 1, ratio);
-
 	m_CurrentLifeTime -= deltaTime;
 
 	/*
@@ -42,18 +39,18 @@ void Particle::Update(float deltaTime)
 void Particle::Reset()
 {
 	m_CurrentLifeTime = 0.0f;
-	m_Direction = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
-	m_Speed = 0.0f;
-
-	//TODO reset position & rotation
+	m_AngularVelocity = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
+	m_Velocity = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
 }
 
 
-void Particle::Init(float rLifeTime, float rSpeed, DirectX::XMFLOAT3 rDir)
+void Particle::Init(float rLifeTime, DirectX::XMFLOAT3 rVel, DirectX::XMFLOAT3 rAngVel)
 {
 	m_LifeTime = rLifeTime;
 	m_CurrentLifeTime = 0.0f;
-	m_Speed = rSpeed;
-	m_Direction = rDir;
+
+	m_AngularVelocity = rAngVel;
+	m_Velocity = rVel;
+
 	m_IsActive = true;
 }

@@ -1,6 +1,7 @@
 #include "BlankProject.h"
 
 #include "Engine/Resource.h"
+#include "Core/D3D/Internal/ParticleRenderer.h"
 
 #include "Platform/Windows/WinEntry.h"
 
@@ -28,8 +29,8 @@ public:
 	void Run() override;
 
 	void Shutdown() override;
-};
 
+};
 
 ENTRYAPP(Application);
 
@@ -46,20 +47,22 @@ void Application::PreInitialize()
 }
 
 void Application::Initialize()
-{
-		
-	auto* test2 = new GameObject("ball2");
-	auto* mr2 = new MeshRenderer(MeshType::SPHERE, MaterialType::TEXTURE);
-	test2->AddComponent<MeshRenderer>(mr2);
-	std::string path2 = "Resources/Textures/mars.dds";
-	test2->GetComponent<MeshRenderer>()->RegisterTexture(Resource::Load<Texture>(path2));
-	test2->transform->SetPosition(-1, 1, 1);
+{		
+	auto* test = new GameObject("ball");
 
-	auto* test = new GameObject("ball1");
-	auto* mr = new MeshRenderer(MeshType::SPHERE, MaterialType::TEXTURE);
+	auto* mr = new MeshRenderer();
+	mr->Init(MeshType::SPHERE, MaterialType::TEXTURE);
+
+	auto* pr = new ParticleRenderer();
+	pr->Init(MeshType::CUBE, MaterialType::PARTICLE);
+	pr->SetParticleCount(1000);
+
 	test->AddComponent<MeshRenderer>(mr);
-	std::string path = "Resources/Textures/4k.dds";
+	test->AddComponent<ParticleRenderer>(pr);
+
+	std::string path = "Resources/Textures/mars.dds";
 	test->GetComponent<MeshRenderer>()->RegisterTexture(Resource::Load<Texture>(path));
+
 	test->transform->SetPosition(0, 0, 2);
 	
 
@@ -68,11 +71,15 @@ void Application::Initialize()
 	test2->AddComponent<MeshRenderer>(mr2);
 	test2->transform->SetPosition(0, 0, -2);*/
 
-
+	/*
 	auto test3 = GameObject::Instantiate("pyr");
-	test3->AddComponent<MeshRenderer>(new MeshRenderer(MeshType::PYRAMID, MaterialType::SIMPLE));
-	test3->transform->SetScale(6, 6, 6);
 
+	auto* mr3 = new MeshRenderer();
+	mr3->Init(MeshType::PYRAMID, MaterialType::SIMPLE);
+	test3->AddComponent<MeshRenderer>(mr3);
+
+	test3->transform->SetScale(6, 6, 6);
+	*/
 	//GameObject player = GameObject("player");
 	//player.AddComponent<PlayerComponent>();
 }
@@ -84,7 +91,6 @@ void Application::Run()
 
 void Application::Update(const float dt)
 {
-	
 }
 
 void Application::Shutdown()

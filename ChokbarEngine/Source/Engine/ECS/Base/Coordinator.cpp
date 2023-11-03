@@ -2,6 +2,7 @@
 #include "Coordinator.h"
 
 #include "Core/D3D/Internal/MeshRenderer.h"
+#include "Core/D3D/Internal/ParticleRenderer.h"
 #include "Engine/ECS/Components/PlayerComponent.h"
 #include "Engine/ECS/Systems/PlayerSystem.h"
 
@@ -39,6 +40,7 @@ namespace Chokbar {
 		RegisterComponent<MeshRenderer>();
 		RegisterComponent<PlayerComponent>();
 		RegisterComponent<CameraComponent>();
+		RegisterComponent<ParticleRenderer>();
 	}
 
 	void Coordinator::RegisterSystems()

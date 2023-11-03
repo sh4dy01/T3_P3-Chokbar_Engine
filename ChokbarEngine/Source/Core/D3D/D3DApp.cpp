@@ -9,6 +9,7 @@
 #include "Core/D3D/Internal/Texture.h"
 #include "Core/D3D/Internal/ShaderBase.h"
 #include "Core/D3D/Internal/MeshRenderer.h"
+#include "Core/D3D/Internal/ParticleRenderer.h"
 #include "Core/D3D/Internal/Material.h"
 #include "Engine/Engine.h"
 #include "D3DApp.h"
@@ -78,6 +79,9 @@ D3DApp::~D3DApp() {
 	RELPTR(m_pDepthStencilBuffer);
 
 	RELPTR(m_pDebugController);
+
+	NULLPTR(m_meshRenderers);
+	NULLPTR(m_particleRenderers);
 }
 
 void D3DApp::Update(const float dt, const float totalTime)
@@ -432,8 +436,8 @@ void D3DApp::CreateResources()
 	Resource::CreateResources(m_pD3dDevice, m_pCbvHeap, m_CbvSrvUavDescriptorSize);
 
 	auto& shaders = Resource::GetShaders();
-	shaders[SIMPLE]->CreatePsoAndRootSignature(VertexType::POS_COLOR, m_BackBufferFormat, m_DepthStencilFormat);
-	shaders[TEXTURE]->CreatePsoAndRootSignature(VertexType::POS_NORM_TAN_TEX, m_BackBufferFormat, m_DepthStencilFormat);
+	shaders[SIMPLE]->CreatePsoAndRootSignature(VertexType::VERTEX, m_BackBufferFormat, m_DepthStencilFormat);
+	shaders[TEXTURE]->CreatePsoAndRootSignature(VertexType::VERTEX, m_BackBufferFormat, m_DepthStencilFormat);
 }
 
 void D3DApp::GetMeshRenderersRef()
@@ -473,30 +477,29 @@ void D3DApp::UpdateRenderItems(const float dt, const float totalTime)
 
 		mr->Mat->GetShader()->UpdateObjectCB(mr->transform->GetWorldMatrix(), mr->ObjectCBIndex);
 	}
+
+	for (const auto pr : *m_particleRenderers)
+	{
+		if (!pr || !pr->IsEnabled() || !pr->Mat || !pr->Mesh) continue;
+
+		pr->Mat->GetShader()->UpdateObjectCB(pr->transform->GetWorldMatrix(), pr->ObjectCBIndex);
+	}
 }
 
 void D3DApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList)
 {
-	for (const auto mr : *m_meshRenderers)
+	for (MeshRenderer* mr : *m_meshRenderers)
 	{
-		if (!mr || !mr->IsEnabled() || !mr->Mat || !mr->Mesh) return;
+		if (!mr) return;
 
-		mr->Mat->GetShader()->BeginDraw(cmdList);
+		if (!mr->IsEnabled() || !mr->Mat || !mr->Mesh) return;
 
-		ShaderDrawArguments args;
+		auto shader = mr->Mat->GetShader();
+		shader->BeginDraw(cmdList);
 
-		args.CmdList = cmdList;
+		shader->Draw(mr);
 
-		args.ItemGeometry = mr->Mesh;
-		args.ItemCBIndex = mr->ObjectCBIndex;
-		args.IndexCount = mr->Mesh->GetIndexCount();
-		args.StartIndexLocation = 0;
-		args.BaseVertexLocation = 0;
-		args.TextSrvIndex = mr->GetTextures().empty() ? -1 : mr->GetTexture(0)->HeapIndex;
-
-		mr->Mat->GetShader()->Draw(args);
-
-		mr->Mat->GetShader()->EndDraw(cmdList);
+		shader->EndDraw(cmdList);
 	}
 }
 #pragma endregion
