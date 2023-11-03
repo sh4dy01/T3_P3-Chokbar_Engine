@@ -98,8 +98,6 @@ protected:
 	ID3D12DescriptorHeap* m_generalCBVHeap;
 	UINT m_cbvDescriptorSize;
 
-	CameraComponent* m_MainCamera;
-
 public:
 	virtual void Init() = 0;
 	virtual void CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT& rtvFormat, DXGI_FORMAT& dsvFormat) = 0;

@@ -2,8 +2,6 @@
 #include "Resource.h"
 #include "Engine.h"
 
-#include "GameObjects/Camera.h"
-
 #include <numbers>
 
 
@@ -66,12 +64,9 @@ void Engine::Initialize()
 	PreInitialize();
 
 	m_Coordinator.Init();
-	m_CameraManager.CreateDefaultCamera();
 
 	m_Window.CreateNewWindow(DEFAULT_WIDTH, DEFAULT_HEIGHT, PerGameSettings::GameName(), PerGameSettings::MainIcon(), Win32::RESIZABLE);
 	m_InputHandler.Init(m_Window.GetHandle());
-
-	OnResize();
 
 	D3DApp::GetInstance()->InitializeD3D12(&m_Window);
 }
@@ -85,6 +80,8 @@ void Engine::Run()
 	m_GameTimer.Reset();
 
 	InitComponents();
+
+	OnResize();
 
 	while (!NeedsToClose())
 	{
@@ -165,8 +162,7 @@ void Engine::CalculateFrameStats()
 void Engine::OnResize()
 {
 	D3DApp::GetInstance()->OnResize(m_Window.GetWidth(), m_Window.GetHeight());
-
-	m_CameraManager.GetMainCamera()->SetLens(70, GetAspectRatio(), 0.5f, 1000.0f);
+	m_CameraManager.GetMainCamera()->SetAspect(GetAspectRatio());
 }
 
 void Engine::Shutdown()
