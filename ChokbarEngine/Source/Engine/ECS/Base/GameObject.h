@@ -16,32 +16,55 @@ public:
 	GameObject(const std::string &name, Component... components)
 	{
 		m_Name = name;
-		transform = Engine::GetCoordinator()->GetComponent<Transform>(m_InstanceID);
+		transform = Engine::GetCoordinator()->GetComponent<Transform>(GetInstanceID());
 
 		(AddComponent<Component>(), ...);
 	}
 
-	~GameObject();
+	virtual ~GameObject() override;
 
-	static GameObject* Instantiate();
-	static GameObject* Instantiate(const std::string& name);
-	static GameObject* Instantiate(GameObject original);
+	template <class GameObject>
+	static GameObject* Instantiate() 
+	{
+		return  new GameObject();
+	}
+
+	template <class GameObject>
+	static GameObject* Instantiate(const std::string& name)
+	{
+		auto go = new GameObject();
+		go->SetName(name);
+
+		return go;
+	}
 	//static Object Instantiate(GameObject original, Transform parent);
 	//static Object Instantiate(Object original, Transform parent, bool instantiateInWorldSpace);
-	static GameObject* Instantiate(const GameObject& original, DirectX::XMFLOAT3 position, DirectX::XMFLOAT3 rotation, Transform parent);
 
-	template<class Component>
-	Component* AddComponent()
+	/*
+	template <class GameObject>
+	static GameObject* Instantiate(DirectX::XMFLOAT3 position, DirectX::XMFLOAT3 rotation, Transform parent)
 	{
-		auto component = new Component();
+		auto go = new GameObject(original);
+		go->transform->SetPosition(position);
+		go->transform->Rotate(rotation);
+
+		//TODO: Set parent
+
+		return go;
+	}*/
+
+	template<class T>
+	T* AddComponent()
+	{
+		auto component = new T();
 		component->gameObject = this;
 		component->transform = transform;
 		component->SetEnabled(true);
 		component->OnAddedComponent();
 
-		DEBUG_LOG("Adding component: " + std::string(typeid(Component).name()) + " to " + m_Name + " entity");
+		DEBUG_LOG("Adding component: " + std::string(typeid(T).name()) + " to " + m_Name + " entity");
 
-		Engine::GetCoordinator()->AddComponent<Component>(m_InstanceID, component);
+		Engine::GetCoordinator()->AddComponent<T>(GetInstanceID(), component);
 
 		return component;
 	}
@@ -56,7 +79,7 @@ public:
 
 		DEBUG_LOG("Adding component: " + std::string(typeid(Component).name()) + " to " + m_Name + " entity");
 
-		Engine::GetCoordinator()->AddComponent<Component>(m_InstanceID, component);
+		Engine::GetCoordinator()->AddComponent<Component>(GetInstanceID(), component);
 
 		return component;
 	}
@@ -64,13 +87,13 @@ public:
 	template <class T>
 	T *GetComponent()
 	{
-		return Engine::GetCoordinator()->GetComponent<T>(m_InstanceID);
+		return Engine::GetCoordinator()->GetComponent<T>(GetInstanceID());
 	}
 
 	template <class T>
 	bool HasComponent()
 	{
-		return Engine::GetCoordinator()->HasComponent<T>(m_InstanceID);
+		return Engine::GetCoordinator()->HasComponent<T>(GetInstanceID());
 	}
 
 	bool IsActive() const { return m_IsActive; }
