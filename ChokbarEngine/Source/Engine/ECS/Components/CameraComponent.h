@@ -11,6 +11,8 @@ public:
 	CameraComponent();
 	~CameraComponent() override;
 
+	void OnAddedComponent() override;
+
 	// Get camera basis vectors.
 	DirectX::XMVECTOR GetRight() const;
 	DirectX::XMFLOAT3 GetRight3f() const;
