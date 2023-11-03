@@ -19,6 +19,7 @@ static const int SWAP_CHAIN_BUFFER_COUNT = 2;
 #pragma endregion
 
 class MeshRenderer;
+class ParticleRenderer;
 class Texture;
 
 class D3DApp

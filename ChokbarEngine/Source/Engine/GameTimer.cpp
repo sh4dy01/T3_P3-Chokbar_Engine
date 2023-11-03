@@ -3,7 +3,7 @@
 
 namespace Chokbar
 {
-	float GameTimer::m_DeltaTime = -1.0f;
+	double GameTimer::m_DeltaTime = -1.0f;
 
 	GameTimer::GameTimer()
 		: m_SecondsPerCount(0.0), m_BaseTime(0), m_PausedTime(0), m_StopTime(0), m_PrevTime(0), m_CurrTime(0), isStopped(false)
@@ -76,12 +76,11 @@ namespace Chokbar
 		}
 
 		// Get the time this frame
-		__int64 currTime = 0;
-		QueryPerformanceCounter(reinterpret_cast<LARGE_INTEGER*>(&currTime));
-		m_CurrTime = currTime;
+		m_CurrTime = GetCurrentFrameTime();
 
 		// Time difference between this frame and the previous.
-		m_DeltaTime = (m_CurrTime - m_PrevTime) * m_SecondsPerCount;
+		m_DeltaTime = (double)(m_CurrTime - m_PrevTime) * m_SecondsPerCount;
+		//::OutputDebugStringA(std::to_string(m_DeltaTime).c_str());
 
 		// Prepare for next frame.
 		m_PrevTime = m_CurrTime;
@@ -92,10 +91,10 @@ namespace Chokbar
 		}
 	}
 
-	float GameTimer::GetCurrentFrameTime()
+	double GameTimer::GetCurrentFrameTime()
 	{
 		__int64 currTime;
-		QueryPerformanceCounter(reinterpret_cast<LARGE_INTEGER*>(&currTime));
+		QueryPerformanceCounter((LARGE_INTEGER*)&currTime);
 
 		return currTime;
 	}

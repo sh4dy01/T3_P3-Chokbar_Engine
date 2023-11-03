@@ -13,7 +13,7 @@ using namespace DirectX;
 
 ParticleRenderer::ParticleRenderer() : MeshRenderer()
 {
-
+	srand(time(NULL));
 }
 
 ParticleRenderer::~ParticleRenderer()
@@ -46,17 +46,20 @@ void ParticleRenderer::Regenerate()
 	{
 		p = new Particle();
 
-		float rLiftTime = rand() % 4 + 1.0f;
+		float rLiftTime = rand() % 30 + 1.0f;
 
-		float randomDirX = (((float)(rand() % 100) / 100.0f) - 0.5f) * 2.0f; // Get a random number between -1 and 1
-		float randomDirY = (((float)(rand() % 100) / 100.0f) - 0.5f) * 2.0f; // ..
-		float randomDirZ = (((float)(rand() % 100) / 100.0f) - 0.5f) * 2.0f; // ..
+		float randomDirX = (((float)(rand() % 100) * 0.01f) - 0.5f) * 2.0f; // Get a random number between -1 and 1
+		float randomDirY = (((float)(rand() % 100) * 0.01f) - 0.5f) * 2.0f; // ..
+		float randomDirZ = (((float)(rand() % 100) * 0.01f) - 0.5f) * 2.0f; // ..
 		DirectX::XMFLOAT3 rVel = { randomDirX, randomDirY, randomDirZ };
 
-		float randomRotX = (((float)(rand() % 100) / 10.0f) - 5.0f) * 2.0f; // Get a random number between -10 and 10
-		float randomRotY = (((float)(rand() % 100) / 10.0f) - 5.0f) * 2.0f; // ..
-		float randomRotZ = (((float)(rand() % 100) / 10.0f) - 5.0f) * 2.0f; // ..
+		float randomRotX = (((float)(rand() % 100) * 0.1f) - 5.0f) * 2.0f; // Get a random number between -10 and 10
+		float randomRotY = (((float)(rand() % 100) * 0.1f) - 5.0f) * 2.0f; // ..
+		float randomRotZ = (((float)(rand() % 100) * 0.1f) - 5.0f) * 2.0f; // ..
 		DirectX::XMFLOAT3 rAngVel = { randomRotX, randomRotY, randomRotZ };
+
+		float randomScale = ((float)(rand() % 100) * 0.01f) * 0.25f; // Get a random number between 0 and 0.25
+		p->m_Transform->SetScale(randomScale, randomScale, randomScale);
 
 		p->Init(rLiftTime, rVel, rAngVel);
 	}
@@ -75,23 +78,27 @@ void ParticleRenderer::Update(float dt)
 
 		InstanceData& pid = m_particleInstanceData[i];
 
+		
 		if (!p->IsAlive())
 		{
 			p->Reset();
 			p->ToggleActivity();
 			continue;
 		}
-
+		
 		p->m_CurrentLifeTime += dt;
-		pid.AgeRatio = p->m_CurrentLifeTime / p->m_LifeTime;
+		pid.AgeRatio =  (p->m_LifeTime - p->m_CurrentLifeTime) / p->m_LifeTime;
 
-		XMFLOAT3 dtVel3x3, dtRot3x3;
+		// Update position
+		float falseDt = 0.03f;
+		p->m_Transform->Translate(p->m_Velocity.x * falseDt, p->m_Velocity.y * falseDt, p->m_Velocity.z * falseDt);
 
-		XMStoreFloat3(&dtVel3x3, XMLoadFloat3(&p->m_Velocity) * dt);
-		XMStoreFloat3(&dtRot3x3, XMLoadFloat3(&p->m_AngularVelocity) * dt);
+		// Update rotation
+		p->m_Transform->Rotate(p->m_AngularVelocity.x * falseDt, p->m_AngularVelocity.y * falseDt, p->m_AngularVelocity.z * falseDt);
 
-		XMMATRIX transfo = XMMatrixRotationRollPitchYaw(dtRot3x3.x, dtRot3x3.y, dtRot3x3.z) * XMMatrixTranslation(dtVel3x3.x, dtVel3x3.y, dtVel3x3.z);
-		XMStoreFloat4x4(&pid.World, XMMatrixTranspose(transfo));
+		// Update InstanceData World matrix
+		p->m_Transform->UpdateWorldMatrix();
+		pid.World = *p->m_Transform->GetWorldMatrix();
 	}
 
 	UpdateShaderBuffer();
@@ -101,6 +108,9 @@ void ParticleRenderer::UpdateShaderBuffer()
 {
 	if (ShaderParticle* shader = dynamic_cast<ShaderParticle*>(Mat->GetShader()))
 	{
-		shader->UpdateParticleInstanceDataBuffer(0, m_particleInstanceData.data());
+		for(int i = 0; i < m_particleInstanceData.size(); i++)
+		{
+			shader->UpdateParticleInstanceDataBuffer(i, &m_particleInstanceData[i]);
+		}
 	}
 }

@@ -302,7 +302,7 @@ void D3DApp::CreateRtvAndDsvDescriptorHeaps()
 	m_pD3dDevice->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(&m_pDsvHeap));
 
 	D3D12_DESCRIPTOR_HEAP_DESC cbvHeapDesc;
-	cbvHeapDesc.NumDescriptors = 50;
+	cbvHeapDesc.NumDescriptors = 2000;
 	cbvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 	cbvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	cbvHeapDesc.NodeMask = 0;
@@ -435,14 +435,16 @@ void D3DApp::CreateResources()
 {
 	Resource::CreateResources(m_pD3dDevice, m_pCbvHeap, m_CbvSrvUavDescriptorSize);
 
-	auto& shaders = Resource::GetShaders();
-	shaders[SIMPLE]->CreatePsoAndRootSignature(VertexType::VERTEX, m_BackBufferFormat, m_DepthStencilFormat);
-	shaders[TEXTURE]->CreatePsoAndRootSignature(VertexType::VERTEX, m_BackBufferFormat, m_DepthStencilFormat);
+	for (auto& sh : Resource::GetShaders())
+	{
+		sh.second->CreatePsoAndRootSignature(VertexType::VERTEX, m_BackBufferFormat, m_DepthStencilFormat);
+	}
 }
 
 void D3DApp::GetMeshRenderersRef()
 {
 	m_meshRenderers = Chokbar::Engine::GetCoordinator()->GetAllComponentsOfType<MeshRenderer>()->GetAllData();
+	m_particleRenderers = Chokbar::Engine::GetCoordinator()->GetAllComponentsOfType<ParticleRenderer>()->GetAllData();
 }
 #pragma endregion
 
@@ -468,7 +470,7 @@ int D3DApp::UpdateTextureHeap(Texture* tex)
 
 void D3DApp::UpdateRenderItems(const float dt, const float totalTime)
 {
-	for (const auto mr : *m_meshRenderers)
+	for (MeshRenderer* mr : *m_meshRenderers)
 	{
 		if (!mr || !mr->IsEnabled() || !mr->Mat || !mr->Mesh) continue;
 
@@ -478,11 +480,11 @@ void D3DApp::UpdateRenderItems(const float dt, const float totalTime)
 		mr->Mat->GetShader()->UpdateObjectCB(mr->transform->GetWorldMatrix(), mr->ObjectCBIndex);
 	}
 
-	for (const auto pr : *m_particleRenderers)
+	for (ParticleRenderer* pr : *m_particleRenderers)
 	{
 		if (!pr || !pr->IsEnabled() || !pr->Mat || !pr->Mesh) continue;
 
-		pr->Mat->GetShader()->UpdateObjectCB(pr->transform->GetWorldMatrix(), pr->ObjectCBIndex);
+		pr->Update(dt);
 	}
 }
 
@@ -490,14 +492,28 @@ void D3DApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList)
 {
 	for (MeshRenderer* mr : *m_meshRenderers)
 	{
-		if (!mr) return;
+		if (!mr) continue;
 
-		if (!mr->IsEnabled() || !mr->Mat || !mr->Mesh) return;
+		if (!mr->IsEnabled() || !mr->Mat || !mr->Mesh) continue;
 
 		auto shader = mr->Mat->GetShader();
 		shader->BeginDraw(cmdList);
 
-		shader->Draw(mr);
+		shader->Draw(cmdList, mr);
+
+		shader->EndDraw(cmdList);
+	}
+
+	for (ParticleRenderer* pr : *m_particleRenderers)
+	{
+		if (!pr) continue;
+
+		if (!pr->IsEnabled() || !pr->Mat || !pr->Mesh) continue;
+
+		auto shader = pr->Mat->GetShader();
+		shader->BeginDraw(cmdList);
+
+		shader->Draw(cmdList, pr);
 
 		shader->EndDraw(cmdList);
 	}
