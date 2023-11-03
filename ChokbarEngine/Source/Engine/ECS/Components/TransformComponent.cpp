@@ -135,6 +135,16 @@ void Transform::Scale(DirectX::XMFLOAT3 scaleFactors)
 	Scale(scaleFactors.x, scaleFactors.y, scaleFactors.z);
 }
 
+void Transform::SetScale(float newScale)
+{
+	// Set the scale factors directly
+	m_Scale.x = newScale;
+	m_Scale.y = newScale;
+	m_Scale.z = newScale;
+
+	UpdateScaleMatrix();
+}
+
 void Transform::SetScale(float x, float y, float z)
 {
 	// Set the scale factors directly
@@ -144,6 +154,7 @@ void Transform::SetScale(float x, float y, float z)
 
 	UpdateScaleMatrix();
 }
+
 void Transform::SetScale(DirectX::XMFLOAT3 scaleFactors)
 {
 	SetScale(scaleFactors.x, scaleFactors.y, scaleFactors.z);

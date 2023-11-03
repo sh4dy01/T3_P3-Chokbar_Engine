@@ -33,6 +33,7 @@ public:
 	void SetPosition(float x, float y, float z);
 	void SetPosition(DirectX::XMFLOAT3 position);
 
+	void SetScale(float scale);
 	void SetScale(float x, float y, float z);
 	void SetScale(DirectX::XMFLOAT3 scale);
 
