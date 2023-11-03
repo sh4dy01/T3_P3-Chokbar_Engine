@@ -87,11 +87,11 @@ void Engine::Run()
 
 	while (!NeedsToClose())
 	{
-		if (m_IsPaused) continue;
-    
 		m_Window.PollEvent();
 
 		m_GameTimer.Tick();
+
+		if (m_IsPaused) continue;
 
 		Update(m_GameTimer.GetDeltaTime());
 		Render();
@@ -111,9 +111,6 @@ bool Engine::NeedsToClose()
 
 void Engine::Update(float dt)
 {
-
-	if (m_IsPaused) return;
-
 	m_PhysicsWorld.Update(dt);
 
 	m_InputHandler.Update(dt);
