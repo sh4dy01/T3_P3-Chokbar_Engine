@@ -14,8 +14,10 @@ public:
 	virtual void OnRemovedComponent() {};
 
 	void SetEnabled(bool enabled) { m_isEnabled = enabled; }
-	bool IsEnabled() const { return m_isEnabled; }
+	void SetInitialized() { m_isInitialized = true; }
 
+	bool IsEnabled() const { return m_isEnabled; }
+	bool IsInitialized() const { return m_isInitialized; }
 	bool IsCustomComponent() const { return m_isCustomComponent; }
 
 public:
@@ -30,5 +32,6 @@ protected:
 private:
 
 	bool m_isEnabled;
+	bool m_isInitialized;
 
 };
