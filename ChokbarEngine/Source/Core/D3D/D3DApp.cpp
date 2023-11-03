@@ -24,7 +24,7 @@ D3DApp::D3DApp() :
 	m_4xMsaaQuality(0), m_bufferWidth(DEFAULT_WIDTH), m_bufferHeight(DEFAULT_HEIGHT),
 	m_D3dDriverType(D3D_DRIVER_TYPE_HARDWARE), m_CurrentFenceValue(0), m_RtvDescriptorSize(0),
 	m_DsvDescriptorSize(0), m_CbvSrvUavDescriptorSize(0), m_currBackBuffer(0), m_BackBufferFormat(DXGI_FORMAT_R8G8B8A8_UNORM), m_DepthStencilFormat(DXGI_FORMAT_D24_UNORM_S8_UINT),
-	m_meshRenderers(nullptr), m_texIndex(0), m_IsVsyncEnabled(false)
+	m_IsVsyncEnabled(true), m_IsFrustumCullingEnabled(true), m_texIndex(0)
 {
 	m_pDebugController = nullptr;
 
@@ -465,43 +465,85 @@ int D3DApp::UpdateTextureHeap(Texture* tex)
 
 void D3DApp::UpdateRenderItems(const float dt, const float totalTime)
 {
+	const XMMATRIX view = CameraManager::GetMainCamera()->GetView();
+	const XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(view), view);
+
+	int visibleMeshRendered = 0;
 	for (const auto mr : *m_meshRenderers)
 	{
-		if (!mr || !mr->IsEnabled() || !mr->Mat || !mr->Mesh) continue;
+		if (!mr || !mr->IsEnabled() || !mr->transform->IsDirty()) continue;
 
-		if (mr->transform->IsDirty())
-			mr->transform->UpdateWorldMatrix();
+		mr->transform->UpdateWorldMatrix();
+		mr->Bounds.Center = mr->transform->GetPosition();
+		mr->Bounds.Radius = mr->transform->GetScale().x;
 
-		mr->Mat->GetShader()->UpdateObjectCB(mr->transform->GetWorldMatrix(), mr->ObjectCBIndex);
+		if (m_IsFrustumCullingEnabled && IsObjectInFrustum(invView, mr))
+		{
+			visibleMeshRendered++;
+
+			mr->Mat->GetShader()->UpdateObjectCB(mr->transform->GetWorldMatrix(), mr->ObjectCBIndex);
+		}
 	}
+
+	DEBUG_LOG("Visible Mesh Updated: " << visibleMeshRendered)
 }
 
 void D3DApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList)
 {
+	const XMMATRIX view = CameraManager::GetMainCamera()->GetView();
+	const XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(view), view);
+
+	int visibleMeshRendered = 0;
 	for (const auto mr : *m_meshRenderers)
 	{
-		if (!mr || !mr->IsEnabled() || !mr->Mat || !mr->Mesh) return;
+		if (!mr || !mr->IsEnabled()) continue;
 
-		mr->Mat->GetShader()->BeginDraw(cmdList);
+		if (m_IsFrustumCullingEnabled && IsObjectInFrustum(invView, mr))
+		{
+			visibleMeshRendered++;
 
-		ShaderDrawArguments args;
+			mr->Mat->GetShader()->BeginDraw(cmdList);
 
-		args.CmdList = cmdList;
+			ShaderDrawArguments args;
 
-		args.ItemGeometry = mr->Mesh;
-		args.ItemCBIndex = mr->ObjectCBIndex;
-		args.IndexCount = mr->Mesh->GetIndexCount();
-		args.StartIndexLocation = 0;
-		args.BaseVertexLocation = 0;
+			args.CmdList = cmdList;
 
-		args.Text = mr->GetTextures().empty() ? nullptr : mr->GetTexture(0);
-		args.TextSrvIndex = mr->TextSrvIndex;
+			args.ItemGeometry = mr->Mesh;
+			args.ItemCBIndex = mr->ObjectCBIndex;
+			args.IndexCount = mr->Mesh->GetIndexCount();
+			args.StartIndexLocation = 0;
+			args.BaseVertexLocation = 0;
 
-		mr->Mat->GetShader()->Draw(args);
+			args.Text = mr->GetTextures().empty() ? nullptr : mr->GetTexture(0);
+			args.TextSrvIndex = mr->TextSrvIndex;
 
-		mr->Mat->GetShader()->EndDraw(cmdList);
+			mr->Mat->GetShader()->Draw(args);
+
+			mr->Mat->GetShader()->EndDraw(cmdList);
+		}
 	}
+
+	DEBUG_LOG("Visible Mesh Rendered: " << visibleMeshRendered)
 }
+
+bool D3DApp::IsObjectInFrustum(const XMMATRIX& invView, const MeshRenderer* const mr)
+{
+	const XMMATRIX world = XMLoadFloat4x4(mr->transform->GetWorldMatrix());
+	//XMMATRIX texTransform = XMLoadFloat4x4(&instanceData[i].TexTransform);
+
+	const XMMATRIX invWorld = XMMatrixInverse(&XMMatrixDeterminant(world), world);
+
+	// View space to the object's local space.
+	const XMMATRIX viewToLocal = XMMatrixMultiply(invView, invWorld);
+
+	// Get the local space bounding frustum of the camera in view space.
+	BoundingFrustum localSpaceFrustum;
+	CameraManager::GetMainCamera()->GetFrustum().Transform(localSpaceFrustum, viewToLocal);
+
+	// Perform the box/frustum intersection test in local space.
+	return localSpaceFrustum.Contains(mr->Bounds) != DirectX::DISJOINT; //|| (mFrustumCullingEnabled == false)
+}
+
 #pragma endregion
 
 #pragma region CONSTANTS

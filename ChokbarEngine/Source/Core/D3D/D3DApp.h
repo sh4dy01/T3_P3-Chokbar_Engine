@@ -79,6 +79,7 @@ private:
 	ID3D12Debug* m_pDebugController;
 
 	bool m_IsVsyncEnabled;
+	bool m_IsFrustumCullingEnabled;
 	bool m_4xMsaaState;	  // 4X MSAA (4.1.8) enabled. Default is false.
 	UINT m_4xMsaaQuality; // quality level of 4X MSAA
 
