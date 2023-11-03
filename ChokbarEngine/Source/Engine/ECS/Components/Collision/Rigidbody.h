@@ -1,7 +1,6 @@
 #pragma once 
 
-
-using namespace DirectX;
+#include <DirectXMath.h>
 
 class Collider;
 
@@ -9,17 +8,17 @@ class Rigidbody : public Component
 {
 public:
 
-    Rigidbody(bool isStatic);
+    Rigidbody();
     ~Rigidbody() override;
 
     void RegisterCollisionShape(Collider* shape);
     void RemoveCollisionShape(Collider* shape);
 
-    XMFLOAT3 GetVelocity() const;
-    void SetVelocity(const XMFLOAT3& velocity);
+    DirectX::XMFLOAT3 GetVelocity() const;
+    void SetVelocity(const DirectX::XMFLOAT3& velocity);
 
-    XMFLOAT3 GetForce() const;
-    void AddForce(const XMFLOAT3& force);
+    DirectX::XMFLOAT3 GetForce() const;
+    void AddForce(const DirectX::XMFLOAT3& force);
 
     float GetMass() const;
     void SetMass(float mass);
@@ -35,8 +34,8 @@ private:
 
     std::vector<Collider*> m_collisionShapes;
 
-    XMFLOAT3 m_velocity;
-    XMFLOAT3 m_force;
+    DirectX::XMFLOAT3 m_velocity;
+    DirectX::XMFLOAT3 m_force;
 
     float m_mass;
 

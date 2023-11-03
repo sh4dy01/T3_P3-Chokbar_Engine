@@ -3,9 +3,8 @@
 #include <Windows.h>
 
 #include <string>
+#include <vector>
 
 #include "../resource.h"
-
-#include "Engine/Engine.h"
 
 #include "Core/CoreMinimal.h"

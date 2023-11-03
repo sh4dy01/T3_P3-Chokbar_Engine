@@ -1,4 +1,5 @@
 #pragma once 
+#include "Engine/ECS/Components/Component.h"
 
 class Material;
 class D3DMesh;
@@ -13,7 +14,7 @@ public:
 
 	MeshRenderer();
 	MeshRenderer(MeshType, MaterialType);
-	~MeshRenderer();
+	~MeshRenderer() override;
 
 	void OnDelete();
 

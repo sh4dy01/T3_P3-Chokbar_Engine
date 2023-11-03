@@ -3,6 +3,8 @@
 
 #include "UploadBuffer.h"
 #include "Core/D3D/Internal/D3DMesh.h"
+#include "Engine/ECS/Components/CameraComponent.h"
+
 
 struct Texture;
 
@@ -95,8 +97,6 @@ protected:
 	ID3D12Device* m_generalDevice;
 	ID3D12DescriptorHeap* m_generalCBVHeap;
 	UINT m_cbvDescriptorSize;
-
-	CameraComponent* m_MainCamera;
 
 public:
 	virtual void Init() = 0;

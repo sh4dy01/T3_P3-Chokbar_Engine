@@ -12,7 +12,7 @@ std::vector<InputHandler::KeyState> InputHandler::m_KeyStates = {};
 
 
 InputHandler::InputHandler()
-	: m_WindowHandle(nullptr), m_timer(0.0f), m_mouseRefresh(0.1f)
+	: MOUSE_REFRESH_RATE(0.1f), m_IsCaptured(false), m_Timer(0.0f), m_WindowHandle(nullptr)
 {
 	m_KeyStates.reserve(m_KeyboardInput.size());
 
@@ -24,11 +24,14 @@ InputHandler::InputHandler()
 	GetCursorPos(&m_lastPos);
 }
 
+InputHandler::~InputHandler()
+= default;
+
 
 void InputHandler::Init(HWND windowHandle)
 {
 	m_WindowHandle = windowHandle;
-	m_IsFocus = false;
+	m_IsCaptured = false;
 }
 
 /// <summary>
@@ -39,17 +42,17 @@ void InputHandler::Update(float dt)
 {
 	CheckInput();
 
-	m_timer += dt;
-	if (m_timer > m_mouseRefresh)
+	m_Timer += dt;
+	if (m_Timer > MOUSE_REFRESH_RATE)
 	{
 		GetNormalizedMovement();
 
-		if (m_IsFocus)
+		if (m_IsCaptured)
 		{
 			SetCursorToWindowCenter();
 		}
 
-		m_timer = 0.0f;
+		m_Timer = 0.0f;
 	}
 }
 
@@ -100,7 +103,7 @@ void InputHandler::CheckInput()
 
 void InputHandler::CaptureCursor()
 {
-	m_IsFocus = true;
+	m_IsCaptured = true;
 
 	RECT rect;
 	GetClientRect(m_WindowHandle, &rect);
@@ -114,12 +117,11 @@ void InputHandler::CaptureCursor()
 	m_lastPos = windowCenter;
 
 	while (ShowCursor(FALSE) >= 0); // Use a loop to ensure the cursor is hidden
-
 }
 
 void InputHandler::ReleaseCursor()
 {
-	m_IsFocus = false;
+	m_IsCaptured = false;
 
 	ClipCursor(nullptr);
 	while (ShowCursor(TRUE) < 0); // Use a loop to ensure the cursor is shown

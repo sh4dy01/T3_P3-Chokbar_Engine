@@ -1,40 +1,35 @@
 #pragma once
 
 #include "TypeDef.h"
-
+#include "Object.h"
 #include <array>
 #include <queue>
 
+class EntityManager
+{
+public:
 
-namespace Chokbar {
-
-	class EntityManager
-	{
-	public:
-
-		// Initialize the queue with all the entities
-		EntityManager(); 
-		~EntityManager();
+	// Initialize the queue with all the entities
+	EntityManager(); 
+	~EntityManager();
 	
-	public:
+public:
 
-		InstanceID RegisterEntity(Object* go);
-		void DestroyEntity(InstanceID entity);
-		void SetSignature(InstanceID entity, Signature signature);
-		Signature GetSignature(InstanceID entity);
+	InstanceID RegisterEntity(Object* go);
+	void DestroyEntity(InstanceID entity);
+	void SetSignature(InstanceID entity, Signature signature);
+	Signature GetSignature(InstanceID entity);
 
-	private:
+private:
 
-		// A Queue is used because it's the most efficient way to remove the first element and add an element at the end
-		std::queue<InstanceID> m_AvailableEntities;
+	// A Queue is used because it's the most efficient way to remove the first element and add an element at the end
+	std::queue<InstanceID> m_AvailableEntities;
 
-		// Array with fixed size to store the signatures of each entity
-		std::array<Signature, MAX_ENTITIES> m_AllSignatures;
+	// Array with fixed size to store the signatures of each entity
+	std::array<Signature, MAX_ENTITIES> m_AllSignatures;
 
-		std::array<Object*, MAX_ENTITIES> m_LivingEntities = {};
+	std::array<Object*, MAX_ENTITIES> m_LivingEntities = {};
 
-		// Keep track of the number of living entities
-		uint32_t m_LivingEntityCount;
-	};
-
-}
+	// Keep track of the number of living entities
+	uint32_t m_LivingEntityCount;
+};

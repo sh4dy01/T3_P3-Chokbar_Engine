@@ -60,10 +60,12 @@
       <ConformanceMode>false</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>Chokbar.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(ProjectDir)Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ForcedIncludeFiles>
+      </ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <SubSystem>NotSet</SubSystem>
@@ -99,6 +101,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Chokbar.cpp" />
     <ClCompile Include="Source\Common\Logger.cpp" />
     <ClCompile Include="Source\Common\Time.cpp" />
     <ClCompile Include="Source\Core\D3D\D3DApp.cpp" />
@@ -125,9 +128,8 @@
     <ClCompile Include="Source\Engine\ECS\Components\CameraComponent.cpp" />
     <ClCompile Include="Source\Engine\ECS\Components\Collision\TriggerCollisionEvent.cpp" />
     <ClCompile Include="Source\Engine\ECS\Components\Component.cpp" />
-    <ClCompile Include="Source\Engine\ECS\Components\PlayerComponent.cpp" />
+    <ClCompile Include="Source\Engine\ECS\Components\CustomComponent.cpp" />
     <ClCompile Include="Source\Engine\ECS\Components\TransformComponent.cpp" />
-    <ClCompile Include="Source\Engine\ECS\Systems\PlayerSystem.cpp" />
     <ClCompile Include="Source\Engine\Engine.cpp" />
     <ClCompile Include="Source\Engine\GameTimer.cpp" />
     <ClCompile Include="Source\Engine\PhysicsManager.cpp" />
@@ -137,7 +139,6 @@
     <ClCompile Include="Source\Engine\Managers\CameraManager.cpp" />
     <ClCompile Include="Source\Engine\Managers\InputHandler.cpp" />
     <ClCompile Include="Source\Engine\Resource.cpp" />
-    <ClCompile Include="Source\GameObjects\Camera.cpp" />
     <ClCompile Include="Source\Platform\Windows\IApplication.cpp" />
     <ClCompile Include="Source\Platform\Windows\Win32Utils.cpp" />
     <ClCompile Include="Source\Platform\Windows\Window.cpp" />
@@ -168,12 +169,12 @@
     <ClInclude Include="Source\Engine\ECS\Components\Collision\Rigidbody.h" />
     <ClInclude Include="Source\Engine\ECS\Components\Collision\SphereCollider.h" />
     <ClInclude Include="Source\Engine\ECS\Components\Collision\TriggerCollisionEvent.h" />
+    <ClInclude Include="Source\Engine\ECS\Components\CustomComponent.h" />
     <ClInclude Include="Source\Engine\PhysicsManager.h" />
     <ClInclude Include="Source\Engine\PhysicsWorld.h" />
     <ClInclude Include="Source\Engine\ECS\Components\CameraComponent.h" />
     <ClInclude Include="Source\Engine\Managers\CameraManager.h" />
     <ClInclude Include="Source\Engine\Managers\InputHandler.h" />
-    <ClInclude Include="Source\Engine\ECS\Systems\PlayerSystem.h" />
     <ClInclude Include="Source\Engine\ECS\Base\ComponentArray.h" />
     <ClInclude Include="Source\Engine\ECS\Base\ComponentManager.h" />
     <ClInclude Include="Source\Engine\ECS\Base\Coordinator.h" />
@@ -184,7 +185,6 @@
     <ClInclude Include="Source\Engine\ECS\Base\SystemManager.h" />
     <ClInclude Include="Source\Engine\ECS\Base\TypeDef.h" />
     <ClInclude Include="Source\Engine\ECS\Components\Component.h" />
-    <ClInclude Include="Source\Engine\ECS\Components\PlayerComponent.h" />
     <ClInclude Include="Source\Engine\ECS\Components\TransformComponent.h" />
     <ClInclude Include="Source\Engine\Engine.h" />
     <ClInclude Include="Source\Engine\GameTimer.h" />

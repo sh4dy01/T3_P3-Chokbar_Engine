@@ -1,42 +1,39 @@
 #include "Chokbar.h"
 #include "Collider.h"
-#include "Engine/PhysicsManager.h"
+#include "Rigidbody.h"
 
 Collider::Collider()
+	: m_Center(0, 0, 0)
 {
-	m_Center = DirectX::XMFLOAT3(0, 0, 0);
 }
 
 Collider::~Collider()
 {
 	for (auto triggerCollisionEvent : m_triggerCollisionEvents)
 	{
-		if (!triggerCollisionEvent) continue;
-
-		delete triggerCollisionEvent;
-		triggerCollisionEvent = nullptr;
+		DELPTR(triggerCollisionEvent);
 	}
 }
 
-void Collider::CallOnTriggerEnter(Collider* other)
+void Collider::CallOnTriggerEnter(Collider* other) const
 {
-	for (auto triggerCollisionEvent : m_triggerCollisionEvents)
+	for (const auto triggerCollisionEvent : m_triggerCollisionEvents)
 	{
 		triggerCollisionEvent->OnTriggerEnter(other);
 	}
 }
 
-void Collider::CallOnTriggerStay(Collider* other)
+void Collider::CallOnTriggerStay(Collider* other) const
 {
-	for (auto triggerCollisionEvent : m_triggerCollisionEvents)
+	for (const auto triggerCollisionEvent : m_triggerCollisionEvents)
 	{
 		triggerCollisionEvent->OnTriggerStay(other);
 	}
 }
 
-void Collider::CallOnTriggerExit(Collider* other)
+void Collider::CallOnTriggerExit(Collider* other) const
 {
-	for (auto triggerCollisionEvent : m_triggerCollisionEvents)
+	for (const auto triggerCollisionEvent : m_triggerCollisionEvents)
 	{
 		triggerCollisionEvent->OnTriggerExit(other);
 	}
@@ -44,7 +41,7 @@ void Collider::CallOnTriggerExit(Collider* other)
 
 void Collider::OnAddedComponent()
 {
-	Rigidbody* rigidbody = gameObject->GetComponent<Rigidbody>();
+	const auto rigidbody = gameObject->GetComponent<Rigidbody>();
 	rigidbody->RegisterCollisionShape(this);
 }
 

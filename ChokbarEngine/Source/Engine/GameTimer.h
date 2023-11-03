@@ -1,39 +1,37 @@
 #pragma once
 
-namespace Chokbar 
-{
-	class GameTimer {
 
-	public:
+class GameTimer {
 
-		GameTimer();
-		~GameTimer();
+public:
 
-
-		void Reset();	// Call before message loop.
-		void Start();	// Call when unpaused.
-		void Stop();	// Call when paused.
-		void Tick();	// Call every frame.
-
-		float GetCurrentFrameTime();
-
-		float GetTotalTime();
-		float GetGameTime() const { return m_CurrTime; }
-		static float GetDeltaTime() { return m_DeltaTime; }
+	GameTimer();
+	~GameTimer();
 
 
-	private:
+	void Reset();	// Call before message loop.
+	void Start();	// Call when unpaused.
+	void Stop();	// Call when paused.
+	void Tick();	// Call every frame.
 
-		double m_SecondsPerCount;
-		static float m_DeltaTime;
+	float GetCurrentFrameTime();
 
-		float m_BaseTime;
-		float m_PausedTime;
-		float m_StopTime;
-		float m_PrevTime;
-		float m_CurrTime;
+	float GetTotalTime();
+	float GetGameTime() const { return m_CurrTime; }
+	static float GetDeltaTime() { return m_DeltaTime; }
 
-		bool isStopped;
 
-	};
-}
+private:
+
+	double m_SecondsPerCount;
+	static float m_DeltaTime;
+
+	float m_BaseTime;
+	float m_PausedTime;
+	float m_StopTime;
+	float m_PrevTime;
+	float m_CurrTime;
+
+	bool isStopped;
+
+};

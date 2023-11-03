@@ -42,7 +42,6 @@ class PhysicsWorld
 public:
 
     PhysicsWorld();
-    PhysicsWorld(int gridSize, float cellSize);
     ~PhysicsWorld();
 
     void RegisterRigidBody(Rigidbody* rigidbody);
@@ -64,7 +63,7 @@ private:
 
 private:
 
-    const float UPDATE_RATE = 0.02f;
+    const float UPDATE_RATE;
 
     //struct SpatialGridCell {
 //    std::list<CollisionShape*> objects;

@@ -1,10 +1,7 @@
 #pragma once 
-#include <DirectXMath.h>
-#include <vector>
 
 #include "Internal/D3DMesh.h"
 #include "Core/D3D/MeshType.h"
-
 
 
 class GeometryHandler
