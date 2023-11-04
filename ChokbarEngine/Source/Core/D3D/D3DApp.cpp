@@ -149,7 +149,7 @@ void D3DApp::Render()
 	m_pCommandQueue->ExecuteCommandLists(_countof(cmdLists), cmdLists);
 
 	// Present the back buffer to the screen and swap the front/back buffer
-	m_pSwapChain->Present(0, 0);
+	m_pSwapChain->Present(1, 0);
 	m_currBackBuffer = (m_currBackBuffer + 1) % SWAP_CHAIN_BUFFER_COUNT;
 
 	FlushCommandQueue();

@@ -12,7 +12,7 @@ public:
 	MeshRenderer();
 	~MeshRenderer() override;
 
-	void Init(MeshType meshType, MaterialType matType);
+	virtual void Init(MeshType meshType, MaterialType matType);
 
 	Texture* GetTexture(UINT index) const { return m_textures[index]; }
 	std::vector<Texture*> GetTextures() const { return m_textures; }

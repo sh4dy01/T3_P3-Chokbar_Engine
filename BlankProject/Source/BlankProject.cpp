@@ -50,24 +50,24 @@ void Application::PreInitialize()
 }
 
 void Application::Initialize()
-{		
+{
 	auto* test = new GameObject("ball");
+	test->transform->SetPosition(-3, 0, 10);
+
 
 	auto* mr = new MeshRenderer();
-	mr->Init(MeshType::SPHERE, MaterialType::TEXTURE);
-
 	auto* pr = new ParticleRenderer();
-	pr->Init(MeshType::CUBE, MaterialType::PARTICLE);
-	pr->SetParticleCount(1000);
 
 	test->AddComponent<MeshRenderer>(mr);
 	test->AddComponent<ParticleRenderer>(pr);
+	mr->Init(MeshType::SPHERE, MaterialType::TEXTURE);
+	pr->Init(MeshType::CUBE, MaterialType::PARTICLE);
+	pr->SetParticleCount(100);
 
 	std::string path = "Resources/Textures/mars.dds";
 	test->GetComponent<MeshRenderer>()->RegisterTexture(Resource::Load<Texture>(path));
 
-	test->transform->SetPosition(0, 0, 2);
-	
+
 	auto player = GameObject::Instantiate<Player>();
 	player->transform->SetPosition(0, 0, -5);
 

@@ -82,7 +82,7 @@ public:
 	void ToggleActivity() { m_IsActive = !m_IsActive; }
 
 	void Reset();
-	void Init(float rLifeTime, DirectX::XMFLOAT3 rVel, DirectX::XMFLOAT3 rAngVel);
+	void Init(float rLifeTime, DirectX::XMFLOAT3 rVel, DirectX::XMFLOAT3 rAngVel, DirectX::XMFLOAT3 parentPos);
 
 	float m_CurrentLifeTime;
 	float m_LifeTime;

@@ -22,10 +22,16 @@ ParticleRenderer::~ParticleRenderer()
 		DELPTR(p);
 }
 
+void ParticleRenderer::Init(MeshType meshType, MaterialType matType)
+{
+	MeshRenderer::Init(meshType, matType);
+
+	Regenerate();
+}
+
 void ParticleRenderer::SetParticleCount(UINT count)
 {
-	m_particleCount = count;
-	Regenerate();
+	m_particleCount = count > MAX_PARTICLE_COUNT ? MAX_PARTICLE_COUNT : count;
 }
 
 UINT ParticleRenderer::GetParticleCount() const
@@ -59,10 +65,10 @@ void ParticleRenderer::Regenerate()
 		float randomRotZ = (((float)(rand() % 100) * 0.1f) - 5.0f) * 2.0f; // ..
 		DirectX::XMFLOAT3 rAngVel = { randomRotX, randomRotY, randomRotZ };
 
-		float randomScale = ((float)(rand() % 100) * 0.01f) * 0.25f; // Get a random number between 0 and 0.25
+		float randomScale = (((float)(rand() % 100) * 0.01f) * 0.25f) + 0.1f; // Get a random number between 0.1f and 0.35f
 		p->m_Transform->SetScale(randomScale, randomScale, randomScale);
 
-		p->Init(rLiftTime, rVel, rAngVel);
+		p->Init(rLiftTime, rVel, rAngVel, transform->GetPosition());
 	}
 
 	UpdateShaderBuffer();

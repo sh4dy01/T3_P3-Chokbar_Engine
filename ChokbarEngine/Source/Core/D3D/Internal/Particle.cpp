@@ -220,13 +220,15 @@ void Particle::Reset()
 	m_Velocity = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
 }
 
-void Particle::Init(float rLifeTime, DirectX::XMFLOAT3 rVel, DirectX::XMFLOAT3 rAngVel)
+void Particle::Init(float rLifeTime, DirectX::XMFLOAT3 rVel, DirectX::XMFLOAT3 rAngVel, DirectX::XMFLOAT3 parentPos)
 {
 	m_LifeTime = rLifeTime;
 	m_CurrentLifeTime = 0.0f;
 
 	m_AngularVelocity = rAngVel;
 	m_Velocity = rVel;
+
+	m_Transform->SetPosition(parentPos);
 
 	m_IsActive = true;
 }

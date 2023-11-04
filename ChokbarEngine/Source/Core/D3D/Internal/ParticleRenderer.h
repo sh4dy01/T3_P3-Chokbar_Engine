@@ -10,7 +10,7 @@ public:
 	ParticleRenderer();
 	~ParticleRenderer();
 
-	void Regenerate();
+	void Init(MeshType meshType, MaterialType matType) override;
 	void Update(float dt);
 
 	void SetParticleCount(UINT count);
@@ -24,5 +24,6 @@ private:
 
 	UINT m_particleCount = 0;
 
+	void Regenerate();
 	void UpdateShaderBuffer();
 };
