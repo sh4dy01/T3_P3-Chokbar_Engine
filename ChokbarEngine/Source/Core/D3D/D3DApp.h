@@ -129,6 +129,8 @@ private:
 
 	std::array<MeshRenderer*, MAX_ENTITIES>* m_meshRenderers;
 
+	DirectX::BoundingFrustum m_Frustum;
+
 	UINT m_texIndex;
 
 

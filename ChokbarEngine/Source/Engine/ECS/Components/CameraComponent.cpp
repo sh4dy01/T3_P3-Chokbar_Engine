@@ -180,13 +180,6 @@ XMFLOAT4X4 CameraComponent::GetProj4x4f() const
 void CameraComponent::UpdateProjectionMatrix()
 {
 	XMStoreFloat4x4(&m_Proj, XMMatrixPerspectiveFovLH(XMConvertToRadians(m_FovY), m_Aspect, m_NearZ, m_FarZ));
-
-	UpdateFrustum();
-}
-
-void CameraComponent::UpdateFrustum()
-{
-	BoundingFrustum::CreateFromMatrix(m_Frustum, GetProj());
 }
 
 void CameraComponent::UpdateViewMatrix()

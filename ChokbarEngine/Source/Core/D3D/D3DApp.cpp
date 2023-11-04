@@ -151,6 +151,8 @@ void D3DApp::OnResize(int newWidth, int newHeight)
 {
 	m_bufferWidth = newWidth;
 	m_bufferHeight = newHeight;
+
+	BoundingFrustum::CreateFromMatrix(m_Frustum, Engine::GetMainCamera()->GetProj());
 }
 
 D3DApp* D3DApp::GetInstance()
@@ -474,8 +476,9 @@ void D3DApp::UpdateRenderItems(const float dt, const float totalTime)
 		if (!mr || !mr->IsEnabled() || !mr->transform->IsDirty()) continue;
 
 		mr->transform->UpdateWorldMatrix();
+
 		mr->Bounds.Center = mr->transform->GetPosition();
-		mr->Bounds.Radius = mr->transform->GetScale().x;
+		mr->Bounds.Radius = mr->transform->GetMaxScale();
 
 		if (m_IsFrustumCullingEnabled && IsObjectInFrustum(invView, mr))
 		{
@@ -538,9 +541,9 @@ bool D3DApp::IsObjectInFrustum(const XMMATRIX& invView, const MeshRenderer* cons
 
 	// Get the local space bounding frustum of the camera in view space.
 	BoundingFrustum localSpaceFrustum;
-	CameraManager::GetMainCamera()->GetFrustum().Transform(localSpaceFrustum, viewToLocal);
+	m_Frustum.Transform(localSpaceFrustum, viewToLocal);
 
-	// Perform the box/frustum intersection test in local space.
+	// Perform the sphere/frustum intersection test in local space.
 	return localSpaceFrustum.Contains(mr->Bounds) != DirectX::DISJOINT; //|| (mFrustumCullingEnabled == false)
 }
 

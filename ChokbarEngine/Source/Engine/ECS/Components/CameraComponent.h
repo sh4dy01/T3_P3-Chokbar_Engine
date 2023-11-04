@@ -50,8 +50,6 @@ public:
 	DirectX::XMFLOAT4X4 GetView4x4f()const;
 	DirectX::XMFLOAT4X4 GetProj4x4f()const;
 
-	DirectX::BoundingFrustum GetFrustum() const { return m_Frustum; }
-
 	// After modifying camera position/orientation, call to rebuild the view matrix.
 	void UpdateViewMatrix();
 
@@ -60,7 +58,6 @@ private:
 
 	void UpdateWindowWithNewRange();
 	void UpdateProjectionMatrix();
-	void UpdateFrustum();
 
 private:
 
