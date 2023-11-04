@@ -238,7 +238,6 @@
     <ClCompile Include="Source\Engine\ECS\Components\CustomComponent.cpp">
       <Filter>Source\Engine\ECS\Components</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameObjects\Camera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Chokbar.h">

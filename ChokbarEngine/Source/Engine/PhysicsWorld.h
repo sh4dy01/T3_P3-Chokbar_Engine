@@ -53,11 +53,11 @@ private:
 
     void CheckCollision();
     bool CheckCollisionShapes(Rigidbody* rbA, Rigidbody* rbB);
-    void HandleCollision(Collider* sphereA, Collider* sphereB);
+    CollisionInfo* HandleCollision(Collider* sphereA, Collider* sphereB);
 
-    bool AreSpheresColliding(SphereCollider* sphere1, SphereCollider* sphere2) const;
+    bool AreSpheresColliding(const SphereCollider* sphere1, const SphereCollider* sphere2) const;
 
-    void CreateNewCollisionInfo(Collider* sphereA, Collider* sphereB);
+    CollisionInfo* CreateNewCollisionInfo(Collider* sphereA, Collider* sphereB);
     CollisionInfo* GetCollisionInfo(const Collider* sphereA, const Collider* sphereB) const;
 
 

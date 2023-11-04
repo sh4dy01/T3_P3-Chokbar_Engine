@@ -49,13 +49,28 @@ void Application::PreInitialize()
 
 void Application::Initialize()
 {
-	auto player = GameObject::Instantiate<Player>();
-	player->transform->SetPosition(0, 0, -5);
+	GameObject::Instantiate<Player>()->transform->SetPosition(0, 0, -5);
 
-	auto ast = GameObject::Instantiate<Asteroid>();
+	DirectX::XMFLOAT3 pos = { 0, 0, 0 };
+	float scale = 1;
 
-	ast = nullptr;
-	player = nullptr;
+	int range = 10;
+	int scaleRange = 10;
+	for (int i = 0; i < 100; i++)
+	{
+		// create a vector3 with random values of range -10 to 10
+		pos = {
+			static_cast<float>(rand() % range - range/2),
+			static_cast<float>(rand() % range - range / 2),
+			0
+		};
+
+		scale  = static_cast<float>(rand() % scaleRange + 1);
+
+		const auto go = GameObject::Instantiate<Asteroid>();
+		go->transform->SetPosition(pos);
+		//go->transform->SetScale(scale);
+	}
 }
 
 void Application::Run()
