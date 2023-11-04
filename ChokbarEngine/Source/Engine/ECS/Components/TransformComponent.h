@@ -30,6 +30,8 @@ public:
 	void Scale(float x, float y, float z);
 	void Scale(DirectX::XMFLOAT3 scale);
 
+	float GetMaxScale() const;
+
 	void SetPosition(float x, float y, float z);
 	void SetPosition(DirectX::XMFLOAT3 position);
 

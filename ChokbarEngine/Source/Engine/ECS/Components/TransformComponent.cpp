@@ -135,6 +135,12 @@ void Transform::Scale(DirectX::XMFLOAT3 scaleFactors)
 	Scale(scaleFactors.x, scaleFactors.y, scaleFactors.z);
 }
 
+float Transform::GetMaxScale() const
+{
+	return max(max(m_Scale.x, m_Scale.y), m_Scale.z);
+
+}
+
 void Transform::SetScale(float newScale)
 {
 	// Set the scale factors directly
@@ -195,7 +201,7 @@ void Transform::UpdateRotationMatrix()
 void Transform::UpdateScaleMatrix()
 {
 	m_Dirty = true;
-	// Convert the quaternion to a rotation matrix
+
 	// Scale the orientation vectors
 	DirectX::XMVECTOR scaledRight = DirectX::XMVectorScale(DirectX::XMLoadFloat3(&m_Right), m_Scale.x);
 	DirectX::XMVECTOR scaledUp = DirectX::XMVectorScale(DirectX::XMLoadFloat3(&m_Up), m_Scale.y);

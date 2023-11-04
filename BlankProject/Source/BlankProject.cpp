@@ -54,22 +54,22 @@ void Application::Initialize()
 	DirectX::XMFLOAT3 pos = { 0, 0, 0 };
 	float scale = 1;
 
-	int range = 10;
+	int range = 300;
 	int scaleRange = 10;
-	for (int i = 0; i < 100; i++)
+	for (int i = 0; i < 300; i++)
 	{
 		// create a vector3 with random values of range -10 to 10
 		pos = {
 			static_cast<float>(rand() % range - range/2),
 			static_cast<float>(rand() % range - range / 2),
-			0
+			static_cast<float>(rand() % range - range / 2)
 		};
 
 		scale  = static_cast<float>(rand() % scaleRange + 1);
 
 		const auto go = GameObject::Instantiate<Asteroid>();
 		go->transform->SetPosition(pos);
-		//go->transform->SetScale(scale);
+		go->transform->SetScale(scale);
 	}
 }
 

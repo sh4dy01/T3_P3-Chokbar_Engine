@@ -165,8 +165,9 @@ void Engine::CalculateFrameStats()
 
 void Engine::OnResize()
 {
+	CameraManager::GetMainCamera()->SetAspect(GetAspectRatio());
+
 	D3DApp::GetInstance()->OnResize(m_Window.GetWidth(), m_Window.GetHeight());
-	m_CameraManager.GetMainCamera()->SetAspect(GetAspectRatio());
 }
 
 void Engine::Shutdown()

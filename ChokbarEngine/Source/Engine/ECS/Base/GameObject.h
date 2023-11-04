@@ -23,6 +23,11 @@ public:
 
 	virtual ~GameObject() override;
 
+	static GameObject* Instantiate()
+	{
+		return  new GameObject();
+	}
+
 	template <class GameObject>
 	static GameObject* Instantiate() 
 	{
