@@ -24,7 +24,7 @@ public:
 	static float GetGameTime()  { return m_CurrTime; }
 	static float GetFixedTime() { return m_FixedTime; }
 
-	static float UnscaledGetDeltaTime() { return m_DeltaTime; }
+	static float GetUnscaledDeltaTime() { return m_DeltaTime; }
 	static float GetDeltaTime() { return m_DeltaTime * m_TimeScale; }
 
 	static float GetTimeScale() { return m_TimeScale; }
