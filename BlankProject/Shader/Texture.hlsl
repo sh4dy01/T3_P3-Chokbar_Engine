@@ -16,19 +16,14 @@ cbuffer cbPass : register(b1)
 }
 
 SamplerState gsamPointWrap : register(s0);
-// Not used
-// SamplerState gsamPointClamp         : register(s1);
-// SamplerState gsamLinearWrap         : register(s2);
-// SamplerState gsamLinearClamp        : register(s3);
-// SamplerState gsamAnisotropicWrap    : register(s4);
-// SamplerState gsamAnisotropicClamp   : register(s5);
 
 struct VS_INPUT
 {
     float3 Pos : POSITION;
+    float4 Color : COLOR;
     float3 Normal : NORMAL;
     float3 Tangent : TANGENT;
-    float2 TextCoord : TEXCOORD;
+    float2 uv : TEXCOORD;
 };
 
 struct PS_INPUT
@@ -36,7 +31,7 @@ struct PS_INPUT
     float4 PosH : SV_POSITION;
     float3 PosW : POSITION;
     float3 NormalW : NORMAL;
-    float2 TextCoord : TEXCOORD;
+    float2 uv : TEXCOORD;
 };
 
 PS_INPUT vs_main(VS_INPUT input)
@@ -49,14 +44,15 @@ PS_INPUT vs_main(VS_INPUT input)
     
     output.NormalW = mul(input.Normal, (float3x3) gWorld);
     
-    output.TextCoord = input.TextCoord;
+    output.uv = input.uv;
         
     return output;
 }
 
 float4 ps_main(PS_INPUT input) : SV_TARGET
 {
-    float4 diffuse = gDiffuseMap.Sample(gsamPointWrap, input.TextCoord);
-    
+    //return float4(1, 0, 0, 1);
+    float4 diffuse = gDiffuseMap.Sample(gsamPointWrap, input.uv);
     return diffuse;
+
 }

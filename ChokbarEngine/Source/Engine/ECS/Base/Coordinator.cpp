@@ -5,7 +5,6 @@
 #include "Engine/ECS/Components/Collision/Collider.h"
 #include "Engine/ECS/Components/Collision/RigidBody.h"
 
-
 Coordinator::Coordinator()
 	: m_ComponentManager(nullptr), m_EntityManager(nullptr), m_SystemManager(nullptr)
 {
@@ -38,6 +37,7 @@ void Coordinator::RegisterComponents()
 	RegisterComponent<Rigidbody>();
 	RegisterComponent<SphereCollider>();
 	RegisterComponent<CameraComponent>();
+  RegisterComponent<ParticleRenderer>();
 }
 
 void Coordinator::RegisterSystems()
