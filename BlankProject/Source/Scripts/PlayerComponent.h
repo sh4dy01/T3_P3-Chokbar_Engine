@@ -13,7 +13,8 @@ public:
 
 private:
 
-	float m_Speed = 2.0f;
+	float m_Speed = 4.0f;
+	int zIncrement = 5;
 
 	CameraComponent* m_pCamera;
 

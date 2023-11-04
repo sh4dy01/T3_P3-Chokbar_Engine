@@ -67,7 +67,7 @@ private:
 	const float MIN_Z_NEAR = 0.1f;
 	const float MAX_Z_FAR = 1000.f;
 	const float BASE_Z_NEAR = 0.5f;
-	const float BASE_Z_FAR = 1000;
+	const float BASE_Z_FAR = 500;
 
 	const DirectX::XMVECTOR m_WorldUp = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
