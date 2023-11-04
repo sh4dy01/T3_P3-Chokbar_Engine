@@ -4,7 +4,7 @@
 #include "Texture.h"
 
 #include "Core/D3D/External/DDSTextureLoader.h"
-#include <wrl.h>
+#include <wrl/client.h>
 
 using namespace Microsoft::WRL;
 using namespace DirectX;

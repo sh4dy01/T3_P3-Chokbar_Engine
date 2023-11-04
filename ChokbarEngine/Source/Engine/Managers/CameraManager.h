@@ -1,6 +1,5 @@
 #pragma once
-#include "GameObjects/Camera.h"
-
+#include "Engine/ECS/Components/CameraComponent.h"
 
 class CameraManager
 {
@@ -9,12 +8,11 @@ public :
 	CameraManager();
 	~CameraManager();
 
-
-	void SetMainCamera(Camera* camera);
-	Camera* GetMainCamera() const { return m_MainCamera; }
+	static void SetMainCamera(CameraComponent* camera);
+	static CameraComponent* GetMainCamera() { return m_MainCamera; }
 
 private:
 
-	Camera* m_MainCamera;
+	static CameraComponent* m_MainCamera;
 
 };

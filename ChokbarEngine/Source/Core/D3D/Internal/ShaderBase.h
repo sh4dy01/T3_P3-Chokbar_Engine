@@ -94,8 +94,6 @@ protected:
 	ID3D12Device* m_generalDevice;
 	UINT m_cbvDescriptorSize;
 
-	CameraComponent* m_MainCamera;
-
 public:
 	virtual void Init() = 0;
 	virtual void CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT& rtvFormat, DXGI_FORMAT& dsvFormat) = 0;

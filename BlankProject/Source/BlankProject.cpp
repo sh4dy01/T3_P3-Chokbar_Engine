@@ -1,21 +1,24 @@
 #include "BlankProject.h"
+#include "Platform/Windows/WinEntry.h"
 
 #include "Engine/Resource.h"
 #include "Core/D3D/Internal/ParticleRenderer.h"
+#include "Engine/Engine.h"
 
-#include "Platform/Windows/WinEntry.h"
+#include "GameObjects/Camera.h"
+#include "GameObjects/Player.h"
+#include "GameObjects/Asteroid.h"
 
-using namespace Chokbar;
 
-class Application : public Win32::IApplication {
+
+class Application : public Win32::IApplication
+{
 
 public:
-
 	Application() {}
 	~Application() {}
 
 public:
-
 	void SetupPerGameSettings() override;
 
 	/* Initialize the application */
@@ -65,23 +68,10 @@ void Application::Initialize()
 
 	test->transform->SetPosition(0, 0, 2);
 	
+	auto player = GameObject::Instantiate<Player>();
+	player->transform->SetPosition(0, 0, -5);
 
-	/*auto* test2 = new GameObject("f");
-	auto* mr2 = new MeshRenderer(MeshType::PYRAMID, MaterialType::SIMPLE);
-	test2->AddComponent<MeshRenderer>(mr2);
-	test2->transform->SetPosition(0, 0, -2);*/
-
-	/*
-	auto test3 = GameObject::Instantiate("pyr");
-
-	auto* mr3 = new MeshRenderer();
-	mr3->Init(MeshType::PYRAMID, MaterialType::SIMPLE);
-	test3->AddComponent<MeshRenderer>(mr3);
-
-	test3->transform->SetScale(6, 6, 6);
-	*/
-	//GameObject player = GameObject("player");
-	//player.AddComponent<PlayerComponent>();
+	player = nullptr;
 }
 
 void Application::Run()
@@ -90,6 +80,7 @@ void Application::Run()
 }
 
 void Application::Update(const float dt)
+
 {
 }
 

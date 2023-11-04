@@ -9,7 +9,9 @@ class CameraComponent : public Component
 {
 public:
 	CameraComponent();
-	~CameraComponent();
+	~CameraComponent() override;
+
+	void OnAddedComponent() override;
 
 	// Get camera basis vectors.
 	DirectX::XMVECTOR GetRight() const;
@@ -39,8 +41,7 @@ public:
 	void SetLens(float fovY, float aspect, float zn, float zf);
 
 	// Define camera space via LookAt parameters.
-	void __vectorcall LookAt(DirectX::FXMVECTOR pos, DirectX::FXMVECTOR target, DirectX::FXMVECTOR worldUp);
-	void LookAt(const DirectX::XMFLOAT3& pos, const DirectX::XMFLOAT3& target, const DirectX::XMFLOAT3& up);
+	void LookAt(DirectX::XMFLOAT3 targetPos);
 
 
 	// Get View/Proj matrices.
@@ -63,10 +64,17 @@ public:
 
 private:
 
+	void __vectorcall LookAt(DirectX::FXMVECTOR pos, DirectX::FXMVECTOR target, DirectX::FXMVECTOR worldUp);
+
 	void UpdateWindowWithNewRange();
 	void UpdateProjectionMatrix();
 
 private:
+
+	const DirectX::XMVECTOR m_WorldUp = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+
+	DirectX::XMFLOAT3 m_LookAt = { 0.0f, 0.0f, 1.0f };
+
 
 	// CameraComponent coordinate system with coordinates relative to world space
 	DirectX::XMFLOAT3 m_Right = { 1.0f, 0.0f, 0.0f };
@@ -81,9 +89,7 @@ private:
 	float m_NearWindowHeight = 0.0f;
 	float m_FarWindowHeight = 0.0f;
 
-	bool m_ViewDirty = true;
-
-	Transform* m_Target;
+	bool m_ViewDirty;
 
 	// Cache View/Proj matrices.
 	DirectX::XMFLOAT4X4 m_View = Identity4x4();

@@ -4,10 +4,6 @@
     <Filter Include="Source">
       <UniqueIdentifier>{1dbb11b6-7a2a-4e08-97be-c9df9a41844f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\Public">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
     <Filter Include="Resources">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
@@ -18,17 +14,35 @@
     <Filter Include="Resources\Icons">
       <UniqueIdentifier>{15324fc2-6742-46fa-a087-4bbb72c73f45}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\Public\Private">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
     <Filter Include="Resources\Textures">
       <UniqueIdentifier>{86997fae-a36e-4534-ae35-30788f0e3f9a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Source">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Source\Source\Scripts">
+      <UniqueIdentifier>{646a91ac-18b1-445b-af3f-9c16e52359d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Source\GameObjects">
+      <UniqueIdentifier>{cde6e016-f063-4abf-ae97-9f4fec802737}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\BlankProject.cpp">
-      <Filter>Source\Public\Private</Filter>
+      <Filter>Source\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scripts\PlayerComponent.cpp">
+      <Filter>Source\Source\Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GameObjects\Asteroid.cpp">
+      <Filter>Source\Source\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GameObjects\Camera.cpp">
+      <Filter>Source\Source\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GameObjects\Player.cpp">
+      <Filter>Source\Source\GameObjects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -36,7 +50,19 @@
       <Filter>Resources</Filter>
     </ClInclude>
     <ClInclude Include="Source\BlankProject.h">
-      <Filter>Source\Public</Filter>
+      <Filter>Source\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scripts\PlayerComponent.h">
+      <Filter>Source\Source\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GameObjects\Asteroid.h">
+      <Filter>Source\Source\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GameObjects\Camera.h">
+      <Filter>Source\Source\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GameObjects\Player.h">
+      <Filter>Source\Source\GameObjects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

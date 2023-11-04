@@ -6,6 +6,7 @@
 
 #include "D3DMath.h"
 
+#include "Engine/ECS/Components/TransformComponent.h"
 #include "Core/D3D/Internal/Texture.h"
 #include "Core/D3D/Internal/ShaderBase.h"
 #include "Core/D3D/Internal/MeshRenderer.h"
@@ -13,8 +14,6 @@
 #include "Core/D3D/Internal/Material.h"
 #include "Engine/Engine.h"
 #include "D3DApp.h"
-
-class Transform;
 
 using namespace DirectX;
 
@@ -88,7 +87,7 @@ void D3DApp::Update(const float dt, const float totalTime)
 {
 	UpdateRenderItems(dt, totalTime);
 
-	Chokbar::Engine::GetMainCamera()->GetCameraComponent()->UpdateViewMatrix();
+	Engine::GetMainCamera()->UpdateViewMatrix();
 
 	for (auto& shader : Resource::GetShaders())
 	{
@@ -215,7 +214,7 @@ void D3DApp::EnableDebugLayer()
 {
 	// Enable the D3D12 debug layer.
 	D3D12GetDebugInterface(IID_PPV_ARGS(&m_pDebugController));
-	m_pDebugController->EnableDebugLayer();
+	//m_pDebugController->EnableDebugLayer();
 }
 
 void D3DApp::CreateDevice()
@@ -443,8 +442,8 @@ void D3DApp::CreateResources()
 
 void D3DApp::GetMeshRenderersRef()
 {
-	m_meshRenderers = Chokbar::Engine::GetCoordinator()->GetAllComponentsOfType<MeshRenderer>()->GetAllData();
-	m_particleRenderers = Chokbar::Engine::GetCoordinator()->GetAllComponentsOfType<ParticleRenderer>()->GetAllData();
+	m_meshRenderers = Engine::GetCoordinator()->GetAllComponentsOfType<MeshRenderer>()->GetAllData();
+	m_particleRenderers = Engine::GetCoordinator()->GetAllComponentsOfType<ParticleRenderer>()->GetAllData();
 }
 #pragma endregion
 

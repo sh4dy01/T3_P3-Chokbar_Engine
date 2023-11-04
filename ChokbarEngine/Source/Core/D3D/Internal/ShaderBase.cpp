@@ -21,8 +21,6 @@ ShaderBase::ShaderBase(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, UINT
 
 	m_vsByteCode = nullptr;
 	m_psByteCode = nullptr;
-
-	m_MainCamera = nullptr;
 }
 
 ShaderBase::~ShaderBase()
@@ -37,8 +35,6 @@ ShaderBase::~ShaderBase()
 
 	m_objectCBs.clear();
 	m_passCB = nullptr;
-
-	m_MainCamera = nullptr;
 }
 
 void ShaderBase::Init()
@@ -88,8 +84,8 @@ void ShaderBase::CreatePassCB() { m_passCB = new UploadBuffer<PassConstants>(m_g
 
 void ShaderBase::UpdatePassCB(const float dt, const float totalTime)
 {
-	const XMMATRIX camView = m_MainCamera->GetView();
-	const XMMATRIX camProj = m_MainCamera->GetProj();
+	const XMMATRIX camView = CameraManager::GetMainCamera()->GetView();
+	const XMMATRIX camProj = CameraManager::GetMainCamera()->GetProj();
 
 	XMMATRIX viewProj = XMMatrixMultiply(camView, camProj);
 	// XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(camView), camView);
@@ -104,7 +100,7 @@ void ShaderBase::UpdatePassCB(const float dt, const float totalTime)
 	XMStoreFloat4x4(&mainPassCB.ViewProj, XMMatrixTranspose(viewProj));
 	// XMStoreFloat4x4(&mainPassCB.InvViewProj, XMMatrixTranspose(invViewProj));
 
-	mainPassCB.EyePosW = m_MainCamera->transform->GetPosition();
+	mainPassCB.EyePosW = CameraManager::GetMainCamera()->transform->GetPosition();
 	// mainPassCB.RenderTargetSize = XMFLOAT2(m_bufferWidth, m_bufferHeight);
 	// mainPassCB.InvRenderTargetSize = XMFLOAT2(1.0f / m_bufferWidth, 1.0f / m_bufferHeight);
 	// mainPassCB.NearZ = m_camera.NearZ;

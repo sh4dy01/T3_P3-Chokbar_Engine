@@ -1,6 +1,5 @@
 #include "Chokbar.h"
 #include "D3Dmath.h"
-#include <DirectXColors.h>
 
 using namespace DirectX;
 

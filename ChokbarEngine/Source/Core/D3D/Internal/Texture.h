@@ -1,6 +1,7 @@
 #pragma once 
 
 #include "Engine/IResourceObject.h"
+#include <d3d12.h>
 
 class Texture : public IResourceObject
 {
