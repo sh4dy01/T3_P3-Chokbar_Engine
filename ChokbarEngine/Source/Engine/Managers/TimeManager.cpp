@@ -1,23 +1,26 @@
 #include "Chokbar.h"
-#include "GameTimer.h"
+#include "TimeManager.h"
 
 
-float GameTimer::m_DeltaTime = -1.0f;
+float TimeManager::m_DeltaTime = 0.0f;
+float TimeManager::m_CurrTime = 0.0f;
+float TimeManager::m_TimeScale = 1.0f;
+float TimeManager::m_FixedTime = 0.02f;
 
-GameTimer::GameTimer()
-	: m_SecondsPerCount(0.0), m_BaseTime(0), m_PausedTime(0), m_StopTime(0), m_PrevTime(0), m_CurrTime(0), isStopped(false)
+
+TimeManager::TimeManager()
+	: m_SecondsPerCount(0.0), m_BaseTime(0), m_PausedTime(0), m_StopTime(0), m_PrevTime(0), isStopped(false)
 {
 	__int64 countsPerSec = 0;
 	QueryPerformanceFrequency(reinterpret_cast<LARGE_INTEGER*>(&countsPerSec));
 
 	m_SecondsPerCount = 1.0 / static_cast<double>(countsPerSec);
-
 }
 
-GameTimer::~GameTimer()
+TimeManager::~TimeManager()
 = default;
 
-void GameTimer::Reset()
+void TimeManager::Reset()
 {
 	const auto currTime = GetCurrentFrameTime();
 
@@ -27,7 +30,7 @@ void GameTimer::Reset()
 	isStopped = false;
 }
 
-void GameTimer::Start()
+void TimeManager::Start()
 {
 	const auto startTime = GetCurrentFrameTime();
 
@@ -53,7 +56,7 @@ void GameTimer::Start()
 	}
 }
 
-void GameTimer::Stop()
+void TimeManager::Stop()
 {
 	if (!isStopped)
 	{
@@ -66,7 +69,7 @@ void GameTimer::Stop()
 	}
 }
 
-void GameTimer::Tick()
+void TimeManager::Tick()
 {
 	if (isStopped)
 	{
@@ -91,7 +94,7 @@ void GameTimer::Tick()
 	}
 }
 
-float GameTimer::GetCurrentFrameTime()
+__int64 TimeManager::GetCurrentFrameTime()
 {
 	__int64 currTime;
 	QueryPerformanceCounter(reinterpret_cast<LARGE_INTEGER*>(&currTime));
@@ -99,7 +102,7 @@ float GameTimer::GetCurrentFrameTime()
 	return currTime;
 }
 
-float GameTimer::GetTotalTime()
+float TimeManager::GetTotalTime()
 {
 	// If we are stopped, do not count the time that has passed
 	// since we stopped. Moreover, if we previously already had
@@ -132,4 +135,14 @@ float GameTimer::GetTotalTime()
 
 		return static_cast<float>(((m_CurrTime - m_PausedTime) - m_BaseTime) * m_SecondsPerCount);
 	}
+}
+
+void TimeManager::SetTimeScale(float timeScale)
+{
+	m_TimeScale = timeScale <= 0.0f ? 0 : timeScale;
+}
+
+void TimeManager::SetFixedTime(float fixedTime)
+{
+	m_FixedTime = fixedTime <= 0.0f ? 0 : fixedTime;
 }

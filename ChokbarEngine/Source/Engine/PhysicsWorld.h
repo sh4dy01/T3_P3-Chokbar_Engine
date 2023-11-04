@@ -2,12 +2,7 @@
 #include "ECS/Components/Collision/Rigidbody.h"
 #include "ECS/Components/Collision/SphereCollider.h"
 
-#include <DirectXMath.h>
-#include <DirectXCollision.h>
-
-#include <list>
 #include <vector>
-#include <algorithm>
 
 
 enum CollisionState {
@@ -62,8 +57,6 @@ private:
 
 
 private:
-
-    const float UPDATE_RATE;
 
     //struct SpatialGridCell {
 //    std::list<CollisionShape*> objects;

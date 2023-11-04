@@ -20,7 +20,7 @@ void CollisionInfo::UpdateState(CollisionState newState)
 }
 
 PhysicsWorld::PhysicsWorld()
-	: UPDATE_RATE(0.02f), m_CurrentCollisionInfo(nullptr), m_gridSize(0), m_cellSize(0.0f), m_timer(0.0f)
+	: m_CurrentCollisionInfo(nullptr), m_gridSize(0), m_cellSize(0.0f), m_timer(0.0f)
 {
 
 }
@@ -44,7 +44,7 @@ void PhysicsWorld::Update(float dt)
 {
 	m_timer += dt;
 
-	if (m_timer >= UPDATE_RATE)
+	if (m_timer >= TimeManager::GetFixedTime())
 	{
 		Engine::GetCoordinator()->FixedUpdateComponents();
 

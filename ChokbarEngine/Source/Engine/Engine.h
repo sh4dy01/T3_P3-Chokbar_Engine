@@ -2,10 +2,10 @@
 
 #include "Engine/Managers/InputHandler.h"
 #include "Engine/ECS/Base/Coordinator.h"
-#include "GameTimer.h"
 #include "Platform/Windows/Window.h"
 #include "PhysicsWorld.h"
 #include "Engine/Managers/CameraManager.h"
+#include "Managers/TimeManager.h"
 
 
 class Engine
@@ -50,7 +50,7 @@ private:
 private:
 	static Engine *m_Instance;
 
-	GameTimer m_GameTimer;
+	TimeManager m_TimeManager;
 	Coordinator m_Coordinator;
 	CameraManager m_CameraManager;
 	InputHandler m_InputHandler;
