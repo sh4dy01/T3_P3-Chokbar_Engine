@@ -191,6 +191,7 @@ Particle::Particle()
 
 Particle::~Particle()
 {
+	DELPTR(m_Transform);
 }
 
 void Particle::Update(float deltaTime)

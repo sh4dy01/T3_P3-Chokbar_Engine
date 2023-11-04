@@ -18,7 +18,8 @@ ParticleRenderer::ParticleRenderer() : MeshRenderer()
 
 ParticleRenderer::~ParticleRenderer()
 {
-
+	for (auto& p : m_particles)
+		DELPTR(p);
 }
 
 void ParticleRenderer::SetParticleCount(UINT count)

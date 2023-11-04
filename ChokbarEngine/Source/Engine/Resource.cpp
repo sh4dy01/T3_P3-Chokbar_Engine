@@ -10,8 +10,7 @@ std::unordered_map<MaterialType, Material*> Resource::m_materials;
 
 Resource::~Resource()
 {
-	m_shaders.clear();
-	m_materials.clear();
+
 }
 
 Material* Resource::LoadMaterial(MaterialType matType)
@@ -23,6 +22,12 @@ void Resource::CreateResources(ID3D12Device* device, ID3D12DescriptorHeap* cbvHe
 {
 	CreateShaders(device, cbvHeap, cbvSrvDescriptorSize);
 	CreateMaterials();
+}
+
+void Resource::ReleaseResources()
+{
+	m_shaders.clear();
+	m_materials.clear();
 }
 
 ShaderBase* Resource::FindShader(MaterialType& id)

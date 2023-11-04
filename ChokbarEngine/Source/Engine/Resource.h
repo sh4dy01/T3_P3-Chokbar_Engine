@@ -27,6 +27,7 @@ public:
 	static Material* LoadMaterial(MaterialType matType);
 
 	static void CreateResources(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, UINT cbvSrvDescriptorSize);
+	static void ReleaseResources();
 
 	static std::unordered_map<MaterialType, ShaderBase*>& GetShaders() { return m_shaders; }
 

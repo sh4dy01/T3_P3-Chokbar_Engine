@@ -81,6 +81,12 @@ D3DApp::~D3DApp() {
 
 	NULLPTR(m_meshRenderers);
 	NULLPTR(m_particleRenderers);
+
+	// Delete all static meshes from GeometryHandler
+	GeometryHandler::DestroyAllMeshes();
+
+	// Delete all resources
+	Resource::ReleaseResources();
 }
 
 void D3DApp::Update(const float dt, const float totalTime)
