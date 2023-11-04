@@ -20,18 +20,21 @@ EntityManager::~EntityManager()
 	}
 }
 
-InstanceID EntityManager::RegisterEntity(Object* go)
+InstanceID EntityManager::GetNewInstanceID()
 {
-	assert(m_LivingEntityCount < MAX_ENTITIES && "Entities limit exceeded");
-
 	InstanceID id = m_AvailableEntities.front();
 	m_AvailableEntities.pop();
 
-	m_LivingEntities[id] = go;
+	return id;
+}
+
+void EntityManager::RegisterGameObject(GameObject* go)
+{
+	assert(m_LivingEntityCount < MAX_ENTITIES && "Entities limit exceeded");
+
+	m_LivingEntities[go->GetInstanceID()] = go;
 
 	++m_LivingEntityCount;
-
-	return id;
 }
 
 void EntityManager::DestroyEntity(InstanceID entity)
@@ -59,4 +62,16 @@ Signature EntityManager::GetSignature(InstanceID entity)
 	assert(entity < MAX_ENTITIES && "InstanceID id is out of range");
 
 	return m_AllSignatures[entity];
+}
+
+GameObject* EntityManager::GetEntityByName(const std::string& name) const
+{
+	for (const auto entity : m_LivingEntities)
+	{
+		if (entity == nullptr) continue;
+		if (entity->GetName() == name) 
+			return entity;
+	}
+
+	return nullptr;
 }
