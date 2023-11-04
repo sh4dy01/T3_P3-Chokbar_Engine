@@ -11,7 +11,7 @@
 #include "Core/D3D/MaterialType.h"
 
 #include "Engine/Engine.h"
-#include "Engine/GameTimer.h"
+#include "Engine/Managers/TimeManager.h"
 #include "Engine/Managers/CameraManager.h"
 
 #include "Engine/ECS/Base/GameObject.h"
