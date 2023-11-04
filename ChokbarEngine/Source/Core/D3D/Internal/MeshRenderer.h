@@ -12,8 +12,6 @@ public:
 	MeshRenderer();
 	~MeshRenderer() override;
 
-	void OnDelete();
-
 	void Init(MeshType meshType, MaterialType matType);
 
 	Texture* GetTexture(UINT index) const { return m_textures[index]; }
