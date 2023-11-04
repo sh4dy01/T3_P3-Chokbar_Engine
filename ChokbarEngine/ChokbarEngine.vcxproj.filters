@@ -113,6 +113,15 @@
     <Filter Include="Source\Engine\Managers\Private">
       <UniqueIdentifier>{b7ac141b-745e-449c-8bfb-11f026716638}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Engine\Particles">
+      <UniqueIdentifier>{34ca8197-f943-4ab0-995b-f412c399a07e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\Particles\Public">
+      <UniqueIdentifier>{9e7f4177-c3f3-48a0-9e6c-1efb25d77980}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\Particles\Private">
+      <UniqueIdentifier>{a325436d-d806-481c-bc52-dfa5b8a59218}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Core\PerGameSettings.cpp">
@@ -223,9 +232,6 @@
     <ClCompile Include="Source\Engine\Managers\InputHandler.cpp">
       <Filter>Source\Engine\Managers\Private</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\SplashScreen.cpp">
-      <Filter>Source\Engine\Core\D3D\Internal\Private</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Engine\ECS\Components\Collision\TriggerCollisionEvent.cpp">
       <Filter>Source\Engine\ECS\Components\Collision</Filter>
     </ClCompile>
@@ -237,6 +243,12 @@
     </ClCompile>
     <ClCompile Include="Source\Engine\Managers\TimeManager.cpp">
       <Filter>Source\Engine\Managers\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Core\D3D\Internal\ParticleRenderer.cpp">
+      <Filter>Source\Engine\Core\D3D\Internal\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Core\D3D\Internal\Particle.cpp">
+      <Filter>Source\Engine\Core\D3D\Internal\Private</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -369,10 +381,12 @@
     <ClInclude Include="Source\Core\D3D\MaterialType.h">
       <Filter>Source\Engine\Core\D3D</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\SplashScreen.h">
+    <ClInclude Include="Source\Core\D3D\Internal\ParticleRenderer.h">
       <Filter>Source\Engine\Core\D3D\Internal\Public</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Core\D3D\Internal\ShaderBase.h" />
+    <ClInclude Include="Source\Core\D3D\Internal\Particle.h">
+      <Filter>Source\Engine\Core\D3D\Internal\Public</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Core\D3D\Internal\ShaderBase.h">
       <Filter>Source\Engine\Core\D3D\Internal\Public</Filter>
     </ClInclude>

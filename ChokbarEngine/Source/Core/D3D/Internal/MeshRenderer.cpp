@@ -1,9 +1,12 @@
 #include "Chokbar.h"
 
+#include "Core/D3D/MeshType.h"
+#include "Core/D3D/MaterialType.h"
+
 #include "Engine/Resource.h"
 #include "Engine/ECS/Components/Component.h"
 #include "D3DMesh.h"
-#include "../D3DMath.h"
+#include "Core/D3D/D3DMath.h"
 
 #include "Material.h"
 #include "ShaderBase.h"
@@ -11,19 +14,12 @@
 
 #include "MeshRenderer.h"
 
+using namespace DirectX;
 
 MeshRenderer::MeshRenderer()
 {
 	Mesh = nullptr;
 	Mat = nullptr;
-}
-
-MeshRenderer::MeshRenderer(MeshType meshType, MaterialType matType)
-{
-	Mesh = GeometryHandler::GetMesh(meshType);
-
-	Material* mat = Resource::LoadMaterial(matType);
-	BindMaterial(mat);
 }
 
 MeshRenderer::~MeshRenderer()
@@ -35,6 +31,14 @@ MeshRenderer::~MeshRenderer()
 	m_textures.clear();
 }
 
+void MeshRenderer::Init(MeshType meshType, MaterialType matType)
+{
+	Mesh = GeometryHandler::GetMesh(meshType);
+
+	Material* mat = Resource::LoadMaterial(matType);
+	BindMaterial(mat);
+}
+
 void MeshRenderer::OnDelete()
 {
 	Mat->GetShader()->UnBind(ObjectCBIndex);
@@ -43,7 +47,6 @@ void MeshRenderer::OnDelete()
 void MeshRenderer::RegisterTexture(Texture* tex)
 {
 	m_textures.push_back(tex);
-	TextSrvIndex = I(D3DApp)->UpdateTextureHeap(tex);
 }
 
 void MeshRenderer::BindMaterial(Material* mat)

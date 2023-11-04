@@ -3,5 +3,7 @@
 
 enum MaterialType { 
 	SIMPLE, 
-	TEXTURE 
+	TEXTURE,
+	PARTICLE,
+	NONE
 };

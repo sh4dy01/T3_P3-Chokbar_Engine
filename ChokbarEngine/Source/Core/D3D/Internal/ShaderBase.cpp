@@ -1,7 +1,9 @@
 #include "Chokbar.h"
 
 #include "Core/DebugUtils.h"
+#include "D3DMesh.h"
 #include "Texture.h"
+#include "ParticleRenderer.h"
 #include "Core/D3D/D3DUtils.h"
 
 #include "ShaderBase.h"
@@ -10,7 +12,7 @@ using namespace DirectX;
 
 #pragma region SHADER BASE
 ShaderBase::ShaderBase(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, UINT cbvDescriptorSize, std::wstring& filepath)
-	: m_generalDevice(device), m_generalCBVHeap(cbvHeap), m_cbvDescriptorSize(cbvDescriptorSize), m_filepath(filepath)
+	: m_generalDevice(device), m_cbvDescriptorSize(cbvDescriptorSize), m_filepath(filepath)
 {
 	m_passCB = nullptr;
 
@@ -24,7 +26,6 @@ ShaderBase::ShaderBase(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, UINT
 ShaderBase::~ShaderBase()
 {
 	m_generalDevice = nullptr;
-	m_generalCBVHeap = nullptr;
 
 	RELPTR(m_pipelineState);
 	RELPTR(m_rootSignature);
@@ -39,34 +40,18 @@ ShaderBase::~ShaderBase()
 void ShaderBase::Init()
 {
 	CreatePassCB();
+
+	CompileShader(nullptr, "vs_main", "vs_5_1", &m_vsByteCode);
+	CompileShader(nullptr, "ps_main", "ps_5_1", &m_psByteCode);
 }
 
 void ShaderBase::SetInputLayout(VertexType vertexType)
 {
-	switch (vertexType)
-	{
-	case POS_COLOR:
-	{
-		m_inputLayout.push_back({ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 });
-		m_inputLayout.push_back({ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, sizeof(XMFLOAT3), D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 });
-		break;
-	}
-	case POS_TEX:
-	{
-		m_inputLayout.push_back({ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 });
-		m_inputLayout.push_back({ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(XMFLOAT3), D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 });
-		break;
-	}
-	case POS_NORM_TAN_TEX:
-	{
-		m_inputLayout.push_back({ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 });
-		m_inputLayout.push_back({ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(XMFLOAT3), D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 });
-		m_inputLayout.push_back({ "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(XMFLOAT3) * 2, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 });
-		m_inputLayout.push_back({ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(XMFLOAT3) * 3, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 });
-	}
-	default:
-		break;
-	}
+	m_inputLayout.push_back({ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 });
+	m_inputLayout.push_back({ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 });
+	m_inputLayout.push_back({ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 28, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 });
+	m_inputLayout.push_back({ "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 40, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 });
+	m_inputLayout.push_back({ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 52, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 });
 }
 
 void ShaderBase::UnBind(UINT index)
@@ -81,32 +66,7 @@ ShaderBase* ShaderBase::Bind()
 	return this;
 }
 
-void ShaderBase::AddObjectCB()
-{
-	const UINT64 cBufferSize = (sizeof(ObjConstants) + 255) & ~255;
-	int index = 0;
-	if (!m_freeIndices.empty())
-	{
-		index = m_freeIndices.top();
-		m_freeIndices.pop();
-	}
-	else
-	{
-		index = m_objectCBs.size();
-	}
-
-	auto cb = new UploadBuffer<ObjConstants>(m_generalDevice, 1, true);
-
-	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc;
-	cbvDesc.BufferLocation = cb->GetResource()->GetGPUVirtualAddress();
-	cbvDesc.SizeInBytes = (UINT)cBufferSize;
-
-	CD3DX12_CPU_DESCRIPTOR_HANDLE cbvHeapHandle(m_generalCBVHeap->GetCPUDescriptorHandleForHeapStart());
-	cbvHeapHandle.Offset(index + 1, m_cbvDescriptorSize);
-
-	m_generalDevice->CreateConstantBufferView(&cbvDesc, cbvHeapHandle);
-	m_objectCBs.push_back(cb);
-}
+void ShaderBase::AddObjectCB() { m_objectCBs.emplace_back(new UploadBuffer<ObjConstants>(m_generalDevice, 1, true)); }
 
 void ShaderBase::UpdateObjectCB(DirectX::XMFLOAT4X4* itemWorldMatrix, UINT cbIndex)
 {
@@ -118,17 +78,7 @@ void ShaderBase::UpdateObjectCB(DirectX::XMFLOAT4X4* itemWorldMatrix, UINT cbInd
 	m_objectCBs[cbIndex]->CopyData(0, &objConstants);
 }
 
-void ShaderBase::CreatePassCB()
-{
-	const UINT64 cBufferSize = (sizeof(PassConstants) + 255) & ~255;
-
-	m_passCB = new UploadBuffer<PassConstants>(m_generalDevice, 1, true);
-	D3D12_GPU_VIRTUAL_ADDRESS passCBAddress = m_passCB->GetResource()->GetGPUVirtualAddress();
-	D3D12_CONSTANT_BUFFER_VIEW_DESC passCBVDesc;
-	passCBVDesc.BufferLocation = passCBAddress;
-	passCBVDesc.SizeInBytes = (UINT)cBufferSize;
-	m_generalDevice->CreateConstantBufferView(&passCBVDesc, m_generalCBVHeap->GetCPUDescriptorHandleForHeapStart());
-}
+void ShaderBase::CreatePassCB() { m_passCB = new UploadBuffer<PassConstants>(m_generalDevice, 1, true); }
 
 void ShaderBase::UpdatePassCB(const float dt, const float totalTime)
 {
@@ -174,7 +124,7 @@ void ShaderBase::CompileShader(const D3D_SHADER_MACRO* defines, const std::strin
 
 	if (errors != nullptr)
 	{
-		std::cout << ((char*)errors->GetBufferPointer()) << std::endl;
+		MessageBoxA(0, (char*)errors->GetBufferPointer(), 0, 0);
 		errors->Release();
 	}
 	ThrowIfFailed(hr);
@@ -194,8 +144,6 @@ ShaderSimple::~ShaderSimple()
 void ShaderSimple::Init()
 {
 	ShaderBase::Init();
-	CompileShader(nullptr, "vs_main", "vs_5_0", &m_vsByteCode);
-	CompileShader(nullptr, "ps_main", "ps_5_0", &m_psByteCode);
 }
 
 void ShaderSimple::CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT& rtvFormat, DXGI_FORMAT& dsvFormat)
@@ -252,24 +200,19 @@ void ShaderSimple::BeginDraw(ID3D12GraphicsCommandList* cmdList)
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
-void ShaderSimple::Draw(ShaderDrawArguments& args)
+void ShaderSimple::Draw(ID3D12GraphicsCommandList* cmdList, MeshRenderer* drawnMeshR)
 {
-	assert(args.Text == nullptr);
-
-	if (args.ItemCBIndex >= m_objectCBs.size())
+	if (drawnMeshR->ObjectCBIndex >= m_objectCBs.size())
 		AddObjectCB();
 
-	assert(args.ItemCBIndex <= m_objectCBs.size());
+	assert(drawnMeshR->ObjectCBIndex <= m_objectCBs.size());
 
-	args.CmdList->IASetVertexBuffers(0, 1, &args.ItemGeometry->VertexBufferView());
-	args.CmdList->IASetIndexBuffer(&args.ItemGeometry->IndexBufferView());
+	cmdList->IASetVertexBuffers(0, 1, &drawnMeshR->Mesh->VertexBufferView());
+	cmdList->IASetIndexBuffer(&drawnMeshR->Mesh->IndexBufferView());
 
-	auto cbvHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(m_generalCBVHeap->GetGPUDescriptorHandleForHeapStart());
-	cbvHandle.Offset(args.ItemCBIndex, m_cbvDescriptorSize);
+	cmdList->SetGraphicsRootConstantBufferView(0, m_objectCBs[drawnMeshR->ObjectCBIndex]->GetResource()->GetGPUVirtualAddress());
 
-	args.CmdList->SetGraphicsRootConstantBufferView(0, m_objectCBs[args.ItemCBIndex]->GetResource()->GetGPUVirtualAddress());
-
-	args.CmdList->DrawIndexedInstanced(args.IndexCount, 1, args.StartIndexLocation, args.BaseVertexLocation, 0);
+	cmdList->DrawIndexedInstanced(drawnMeshR->Mesh->GetIndexCount(), 1, 0, 0, 0);
 }
 
 void ShaderSimple::EndDraw(ID3D12GraphicsCommandList* cmdList)
@@ -291,8 +234,6 @@ ShaderTexture::~ShaderTexture()
 void ShaderTexture::Init()
 {
 	ShaderBase::Init();
-	CompileShader(nullptr, "vs_main", "vs_5_0", &m_vsByteCode);
-	CompileShader(nullptr, "ps_main", "ps_5_0", &m_psByteCode);
 }
 
 void ShaderTexture::CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT& rtvFormat, DXGI_FORMAT& dsvFormat)
@@ -309,7 +250,7 @@ void ShaderTexture::CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT
 
 	auto samplers = GetStaticSamplers();
 
-	CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc(_countof(slotRootParameter), slotRootParameter, 1, samplers.data(), D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
+	CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc(_countof(slotRootParameter), slotRootParameter, 6, samplers.data(), D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
 	ID3DBlob* serializedRootSignature = nullptr;
 	ID3DBlob* errorBlob = nullptr;
@@ -355,25 +296,26 @@ void ShaderTexture::BeginDraw(ID3D12GraphicsCommandList* cmdList)
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
-void ShaderTexture::Draw(ShaderDrawArguments& args)
+void ShaderTexture::Draw(ID3D12GraphicsCommandList* cmdList, MeshRenderer* drawnMeshR)
 {
-	assert(args.Text != nullptr && args.TextSrvIndex >= 0);
+	assert(drawnMeshR->GetTexture(0)->HeapIndex >= 0);
 
-	if (args.ItemCBIndex >= m_objectCBs.size())
+	if (drawnMeshR->ObjectCBIndex >= m_objectCBs.size())
 		AddObjectCB();
 
-	assert(args.ItemCBIndex <= m_objectCBs.size());
+	assert(drawnMeshR->ObjectCBIndex <= m_objectCBs.size());
 
-	args.CmdList->IASetVertexBuffers(0, 1, &args.ItemGeometry->VertexBufferView());
-	args.CmdList->IASetIndexBuffer(&args.ItemGeometry->IndexBufferView());
+	cmdList->IASetVertexBuffers(0, 1, &drawnMeshR->Mesh->VertexBufferView());
+	cmdList->IASetIndexBuffer(&drawnMeshR->Mesh->IndexBufferView());
 
-	auto cbvHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(m_generalCBVHeap->GetGPUDescriptorHandleForHeapStart());
-	cbvHandle.Offset(args.TextSrvIndex, m_cbvDescriptorSize);
+	auto cbvHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(I(D3DApp)->GetCbvHeap()->GetGPUDescriptorHandleForHeapStart());
+	cbvHandle.Offset(drawnMeshR->GetTexture(0)->HeapIndex, m_cbvDescriptorSize);
 
-	args.CmdList->SetGraphicsRootConstantBufferView(1, m_objectCBs[args.ItemCBIndex]->GetResource()->GetGPUVirtualAddress());
-	args.CmdList->SetGraphicsRootDescriptorTable(0, cbvHandle);
+	cmdList->SetGraphicsRootDescriptorTable(0, cbvHandle);
+	cmdList->SetGraphicsRootConstantBufferView(1, m_objectCBs[drawnMeshR->ObjectCBIndex]->GetResource()->GetGPUVirtualAddress());
 
-	args.CmdList->DrawIndexedInstanced(args.IndexCount, 1, args.StartIndexLocation, args.BaseVertexLocation, 0);
+
+	cmdList->DrawIndexedInstanced(drawnMeshR->Mesh->GetIndexCount(), 1, 0, 0, 0);
 }
 
 void ShaderTexture::EndDraw(ID3D12GraphicsCommandList* cmdList)
@@ -429,5 +371,124 @@ std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> ShaderTexture::GetStaticSampler
 		8); // maxAnisotropy
 
 	return { pointWrap, pointClamp, linearWrap, linearClamp, anisotropicWrap, anisotropicClamp };
+}
+#pragma endregion
+
+#pragma region SHADER PARTICLE
+ShaderParticle::ShaderParticle(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, UINT cbvDescriptorSize, std::wstring& filepath)
+	: ShaderBase(device, cbvHeap, cbvDescriptorSize, filepath)
+{
+}
+
+ShaderParticle::~ShaderParticle()
+{
+}
+
+void ShaderParticle::Init()
+{
+	ShaderBase::Init();
+
+	m_particleInstanceDataBuffer = new UploadBuffer<InstanceData>(m_generalDevice, MAX_PARTICLE_COUNT, false);
+}
+
+void ShaderParticle::CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT& rtvFormat, DXGI_FORMAT& dsvFormat)
+{
+	SetInputLayout(vertexType);
+
+	CD3DX12_ROOT_PARAMETER slotRootParameter[2];
+	slotRootParameter[0].InitAsShaderResourceView(0, 1);
+	slotRootParameter[1].InitAsConstantBufferView(0);
+
+	CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc(_countof(slotRootParameter), slotRootParameter, 0, nullptr, D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
+
+	ID3DBlob* serializedRootSignature = nullptr;
+	ID3DBlob* errorBlob = nullptr;
+
+	HRESULT hr = D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &serializedRootSignature, &errorBlob);
+	ThrowIfFailed(hr);
+	m_generalDevice->CreateRootSignature(0, serializedRootSignature->GetBufferPointer(), serializedRootSignature->GetBufferSize(), IID_PPV_ARGS(&m_rootSignature));
+	ThrowIfFailed(hr);
+
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc;
+	ZeroMemory(&psoDesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
+	psoDesc.InputLayout = { m_inputLayout.data(), (UINT)m_inputLayout.size() };
+	psoDesc.pRootSignature = m_rootSignature;
+	psoDesc.VS = { reinterpret_cast<BYTE*>(m_vsByteCode->GetBufferPointer()), m_vsByteCode->GetBufferSize() };
+	psoDesc.PS = { reinterpret_cast<BYTE*>(m_psByteCode->GetBufferPointer()), m_psByteCode->GetBufferSize() };
+	psoDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
+
+	D3D12_BLEND_DESC blendDesc = {};
+	blendDesc.AlphaToCoverageEnable = false;
+	blendDesc.RenderTarget[0].BlendEnable = true;
+	blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
+	blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+	blendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
+	blendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;
+	blendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
+	blendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
+	blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+	psoDesc.BlendState = blendDesc;
+
+	psoDesc.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
+	psoDesc.SampleMask = UINT_MAX;
+	psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+	psoDesc.NumRenderTargets = 1;
+	psoDesc.RTVFormats[0] = rtvFormat;
+	psoDesc.SampleDesc.Count = 1;
+	psoDesc.SampleDesc.Quality = 0;
+	psoDesc.DSVFormat = dsvFormat;
+
+	hr = m_generalDevice->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&m_pipelineState));
+	ThrowIfFailed(hr);
+
+	RELPTR(serializedRootSignature);
+	RELPTR(errorBlob);
+}
+
+void ShaderParticle::BeginDraw(ID3D12GraphicsCommandList* cmdList)
+{
+	cmdList->SetGraphicsRootSignature(m_rootSignature);
+
+	cmdList->SetGraphicsRootConstantBufferView(1, m_passCB->GetResource()->GetGPUVirtualAddress());
+
+	cmdList->SetPipelineState(m_pipelineState);
+
+	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+}
+
+void ShaderParticle::Draw(ID3D12GraphicsCommandList* cmdList, MeshRenderer* drawnMeshR)
+{
+	ParticleRenderer* pr = (ParticleRenderer*)drawnMeshR;
+	assert(pr);
+	DrawAsParticle(cmdList, pr);
+}
+
+void ShaderParticle::DrawAsParticle(ID3D12GraphicsCommandList* cmdList, ParticleRenderer* drawnMeshR)
+{
+	if (drawnMeshR->ObjectCBIndex >= m_objectCBs.size())
+		AddObjectCB();
+
+	assert(drawnMeshR->ObjectCBIndex <= m_objectCBs.size());
+
+	cmdList->IASetVertexBuffers(0, 1, &drawnMeshR->Mesh->VertexBufferView());
+	cmdList->IASetIndexBuffer(&drawnMeshR->Mesh->IndexBufferView());
+
+	auto cbvHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(I(D3DApp)->GetCbvHeap()->GetGPUDescriptorHandleForHeapStart());
+	cbvHandle.Offset(drawnMeshR->ObjectCBIndex, m_cbvDescriptorSize);
+
+	cmdList->SetGraphicsRootShaderResourceView(0, m_particleInstanceDataBuffer->GetResource()->GetGPUVirtualAddress());
+	//cmdList->SetGraphicsRootConstantBufferView(0, m_objectCBs[drawnMeshR->ObjectCBIndex]->GetResource()->GetGPUVirtualAddress());
+
+	cmdList->DrawIndexedInstanced(drawnMeshR->Mesh->GetIndexCount(), drawnMeshR->GetParticleCount(), 0, 0, 0);
+}
+
+void ShaderParticle::EndDraw(ID3D12GraphicsCommandList* cmdList)
+{
+
+}
+
+void ShaderParticle::UpdateParticleInstanceDataBuffer(int startIndex, const void* data)
+{
+	m_particleInstanceDataBuffer->CopyData(startIndex, data);
 }
 #pragma endregion
