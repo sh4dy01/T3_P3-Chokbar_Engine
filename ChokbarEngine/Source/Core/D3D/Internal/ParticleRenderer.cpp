@@ -90,11 +90,10 @@ void ParticleRenderer::Update(float dt)
 		pid.AgeRatio =  (p->m_LifeTime - p->m_CurrentLifeTime) / p->m_LifeTime;
 
 		// Update position
-		float falseDt = 0.03f;
-		p->m_Transform->Translate(p->m_Velocity.x * falseDt, p->m_Velocity.y * falseDt, p->m_Velocity.z * falseDt);
+		p->m_Transform->Translate(p->m_Velocity.x * dt, p->m_Velocity.y * dt, p->m_Velocity.z * dt);
 
 		// Update rotation
-		p->m_Transform->Rotate(p->m_AngularVelocity.x * falseDt, p->m_AngularVelocity.y * falseDt, p->m_AngularVelocity.z * falseDt);
+		p->m_Transform->Rotate(p->m_AngularVelocity.x * dt, p->m_AngularVelocity.y * dt, p->m_AngularVelocity.z * dt);
 
 		// Update InstanceData World matrix
 		p->m_Transform->UpdateWorldMatrix();
