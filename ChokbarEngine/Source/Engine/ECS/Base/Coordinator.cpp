@@ -2,6 +2,7 @@
 #include "Coordinator.h"
 
 #include "Core/D3D/Internal/MeshRenderer.h"
+#include "Core/D3D/Internal/ParticleRenderer.h"
 #include "Engine/ECS/Components/Collision/Collider.h"
 #include "Engine/ECS/Components/Collision/RigidBody.h"
 
@@ -37,18 +38,18 @@ void Coordinator::RegisterComponents()
 	RegisterComponent<Rigidbody>();
 	RegisterComponent<SphereCollider>();
 	RegisterComponent<CameraComponent>();
-  RegisterComponent<ParticleRenderer>();
+	RegisterComponent<ParticleRenderer>();
 }
 
 void Coordinator::RegisterSystems()
 {
-	
+
 
 }
 
 
 InstanceID Coordinator::CreateNewObject(Object* go) const
-{		
+{
 	return m_EntityManager->RegisterEntity(go);
 }
 

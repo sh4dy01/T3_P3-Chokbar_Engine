@@ -6,7 +6,9 @@ Asteroid::Asteroid()
 	m_Name = "Asteroid";
 
 	AddComponent<Rigidbody>();
-	AddComponent<MeshRenderer>(new MeshRenderer(SPHERE, SIMPLE));
+	MeshRenderer* meshRenderer = new MeshRenderer();
+	meshRenderer->Init(MeshType::SPHERE, MaterialType::SIMPLE);
+	AddComponent<MeshRenderer>(new MeshRenderer());
 	AddComponent<SphereCollider>();
 }
 

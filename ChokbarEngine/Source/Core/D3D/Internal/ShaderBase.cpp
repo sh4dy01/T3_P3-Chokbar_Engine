@@ -43,8 +43,6 @@ void ShaderBase::Init()
 
 	CompileShader(nullptr, "vs_main", "vs_5_1", &m_vsByteCode);
 	CompileShader(nullptr, "ps_main", "ps_5_1", &m_psByteCode);
-
-	m_MainCamera = Chokbar::Engine::GetMainCamera()->GetCameraComponent();
 }
 
 void ShaderBase::SetInputLayout(VertexType vertexType)
