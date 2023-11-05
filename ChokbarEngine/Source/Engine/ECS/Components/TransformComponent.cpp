@@ -57,9 +57,18 @@ void Transform::Translate(float x, float y, float z, Space space)
 	// Update the position matrix
 	UpdatePositionMatrix();
 }
+
 void Transform::Translate(DirectX::XMFLOAT3 translation, Space space)
 {
 	Translate(translation.x, translation.y, translation.z, space);
+}
+
+void Transform::Translate(DirectX::XMVECTOR translation, Space space)
+{
+	DirectX::XMFLOAT3 translationFloat3;
+	DirectX::XMStoreFloat3(&translationFloat3, translation);
+
+	Translate(translationFloat3, space);
 }
 
 void Transform::SetPosition(float x, float y, float z)
