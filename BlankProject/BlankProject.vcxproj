@@ -108,7 +108,10 @@
     <ClCompile Include="Source\GameObjects\Asteroid.cpp" />
     <ClCompile Include="Source\GameObjects\Camera.cpp" />
     <ClCompile Include="Source\GameObjects\Player.cpp" />
-    <ClCompile Include="Source\Scripts\PlayerComponent.cpp" />
+    <ClCompile Include="Source\GameObjects\Projectile.cpp" />
+    <ClCompile Include="Source\Scripts\PlayerMovement.cpp" />
+    <ClCompile Include="Source\Scripts\PlayerShoot.cpp" />
+    <ClCompile Include="Source\Scripts\ProjectileBehavior.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
@@ -116,7 +119,10 @@
     <ClInclude Include="Source\GameObjects\Asteroid.h" />
     <ClInclude Include="Source\GameObjects\Camera.h" />
     <ClInclude Include="Source\GameObjects\Player.h" />
-    <ClInclude Include="Source\Scripts\PlayerComponent.h" />
+    <ClInclude Include="Source\GameObjects\Projectile.h" />
+    <ClInclude Include="Source\Scripts\PlayerMovement.h" />
+    <ClInclude Include="Source\Scripts\PlayerShoot.h" />
+    <ClInclude Include="Source\Scripts\ProjectileBehavior.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="BlankProject.rc" />
