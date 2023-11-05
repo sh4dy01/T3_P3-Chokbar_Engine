@@ -22,6 +22,7 @@ public:
 	Signature GetSignature(InstanceID entity);
 	GameObject* GetEntityByName(const std::string& name) const;
 
+
 private:
 
 	// A Queue is used because it's the most efficient way to remove the first element and add an element at the end
