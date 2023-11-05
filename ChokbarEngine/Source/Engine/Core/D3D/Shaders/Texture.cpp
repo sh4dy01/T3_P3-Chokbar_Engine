@@ -3,7 +3,9 @@
 
 #include "Texture.h"
 
-#include "Core/D3D/External/DDSTextureLoader.h"
+#include "D3D/Base/D3DRenderer.h"
+
+#include "D3D/External/DDSTextureLoader.h"
 #include <wrl/client.h>
 
 using namespace Microsoft::WRL;
@@ -25,7 +27,7 @@ void Texture::Load(const std::string& filepath)
 {
 	m_filepath = filepath;
 
-	auto app = I(D3DApp);
+	auto app = I(D3DRenderer);
 	app->BeginList();
 
 	LoadTexture(app->GetDevice(), app->GetCommandList());
@@ -46,5 +48,5 @@ void Texture::LoadTexture(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLi
 	Resource = textureResource.Detach();
 	UploadHeap = textureUploadHeap.Detach();
 
-	HeapIndex = I(D3DApp)->UpdateTextureHeap(this);
+	HeapIndex = I(D3DRenderer)->UpdateTextureHeap(this);
 }

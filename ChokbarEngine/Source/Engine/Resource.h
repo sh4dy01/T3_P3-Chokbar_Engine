@@ -1,13 +1,11 @@
 #pragma once
 
-#include "Engine/IResourceObject.h"
-#include "Core/D3D/MaterialType.h"
-#include "Core/D3D/Internal/Texture.h"
-
 #include <unordered_map>
 
 class ShaderBase;
 class Material;
+struct ID3D12Device;
+struct ID3D12DescriptorHeap;
 
 class Resource
 {

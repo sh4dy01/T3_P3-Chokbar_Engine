@@ -1,7 +1,7 @@
 #include "Chokbar.h"
 
-#include "Core/D3D/Internal/ShaderBase.h"
-#include "Core/D3D/Internal/Material.h"
+#include "D3D/Shaders/ShaderBase.h"
+#include "D3D/Shaders/Material.h"
 
 #include "Resource.h"
 

@@ -1,8 +1,6 @@
 #pragma once 
 
-#include "Internal/D3DMesh.h"
-#include "Core/D3D/MeshType.h"
-
+#include "D3DMesh.h"
 
 class GeometryHandler
 {

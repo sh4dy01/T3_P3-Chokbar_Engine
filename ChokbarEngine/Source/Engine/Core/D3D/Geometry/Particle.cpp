@@ -1,5 +1,7 @@
 #include "Chokbar.h"
 
+#include "D3D/Base/D3DUtils.h"
+
 #include "Particle.h"
 
 #include <cmath>

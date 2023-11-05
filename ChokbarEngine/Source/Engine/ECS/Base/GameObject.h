@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Object.h"
-#include "Core/DebugUtils.h"
+#include "Engine/Core/DebugUtils.h"
 #include "Engine/ECS/Components/TransformComponent.h"
 
 class Engine;

@@ -1,10 +1,11 @@
 #include "Chokbar.h"
 
-#include "Core/DebugUtils.h"
-#include "D3DMesh.h"
+#include "D3D/Geometry/D3DMesh.h"
 #include "Texture.h"
-#include "ParticleRenderer.h"
-#include "Core/D3D/D3DUtils.h"
+#include "D3D/Renderers/MeshRenderer.h"
+#include "D3D/Renderers/ParticleRenderer.h"
+#include "D3D/Base/D3DUtils.h"
+#include "D3D/Base/D3DRenderer.h"
 
 #include "ShaderBase.h"
 
@@ -330,7 +331,7 @@ void ShaderTexture::Draw(ID3D12GraphicsCommandList* cmdList, MeshRenderer* drawn
 	cmdList->IASetVertexBuffers(0, 1, &drawnMeshR->Mesh->VertexBufferView());
 	cmdList->IASetIndexBuffer(&drawnMeshR->Mesh->IndexBufferView());
 
-	auto cbvHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(I(D3DApp)->GetCbvHeap()->GetGPUDescriptorHandleForHeapStart());
+	auto cbvHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(I(D3DRenderer)->GetCbvHeap()->GetGPUDescriptorHandleForHeapStart());
 	cbvHandle.Offset(drawnMeshR->GetTexture(0)->HeapIndex, m_cbvDescriptorSize);
 
 	cmdList->SetGraphicsRootDescriptorTable(0, cbvHandle);
@@ -446,7 +447,7 @@ void ShaderParticle::DrawAsParticle(ID3D12GraphicsCommandList* cmdList, Particle
 	cmdList->IASetVertexBuffers(0, 1, &drawnMeshR->Mesh->VertexBufferView());
 	cmdList->IASetIndexBuffer(&drawnMeshR->Mesh->IndexBufferView());
 
-	auto cbvHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(I(D3DApp)->GetCbvHeap()->GetGPUDescriptorHandleForHeapStart());
+	auto cbvHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(I(D3DRenderer)->GetCbvHeap()->GetGPUDescriptorHandleForHeapStart());
 	cbvHandle.Offset(drawnMeshR->ObjectCBIndex, m_cbvDescriptorSize);
 
 	cmdList->SetGraphicsRootShaderResourceView(0, m_particleInstanceDataBuffer->GetResource()->GetGPUVirtualAddress());
@@ -475,4 +476,10 @@ ShaderSkybox::ShaderSkybox(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, 
 ShaderSkybox::~ShaderSkybox()
 {
 }
+void ShaderSkybox::Init()
+{
+	ShaderTexture::Init();
+}
+
+
 #pragma endregion

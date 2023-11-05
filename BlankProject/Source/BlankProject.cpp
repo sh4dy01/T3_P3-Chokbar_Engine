@@ -2,7 +2,6 @@
 #include "Platform/Windows/WinEntry.h"
 
 #include "Engine/Resource.h"
-#include "Core/D3D/Internal/ParticleRenderer.h"
 #include "Engine/Engine.h"
 
 #include "GameObjects/Camera.h"

@@ -17,9 +17,9 @@
 #include <DirectXMath.h>
 #include <DirectXColors.h>
 
-#include <Core/D3D/External/d3dx12.h>
+#include "D3D/External/d3dx12.h"
 #include <dxgi1_6.h>
 #include <d3dcompiler.h>
 
-#include "Core/Core.h"
+#include "Core.h"
 

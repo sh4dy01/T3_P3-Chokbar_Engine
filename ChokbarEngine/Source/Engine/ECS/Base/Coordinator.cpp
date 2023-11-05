@@ -1,8 +1,8 @@
 #include "Chokbar.h"
 #include "Coordinator.h"
 
-#include "Core/D3D/Internal/MeshRenderer.h"
-#include "Core/D3D/Internal/ParticleRenderer.h"
+#include "D3D/Renderers/MeshRenderer.h"
+#include "D3D/Renderers/ParticleRenderer.h"
 #include "Engine/ECS/Components/Collision/Collider.h"
 #include "Engine/ECS/Components/Collision/RigidBody.h"
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Particle.h"
+#include "D3D/Geometry/Particle.h"
 
 #define MAX_PARTICLE_COUNT 1000
 

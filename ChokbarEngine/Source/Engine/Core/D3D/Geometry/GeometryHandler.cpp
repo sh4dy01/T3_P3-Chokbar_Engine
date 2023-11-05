@@ -1,5 +1,8 @@
 #include "Chokbar.h"
-#include "D3Dmath.h"
+
+#include "Engine/Core/D3D/Base/MeshType.h"
+
+#include "GeometryHandler.h"
 
 using namespace DirectX;
 

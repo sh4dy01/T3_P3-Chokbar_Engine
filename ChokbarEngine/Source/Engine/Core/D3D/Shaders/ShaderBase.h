@@ -5,6 +5,7 @@
 
 struct Texture;
 class ParticleRenderer;
+class MeshRenderer;
 struct InstanceData;
 
 enum VertexType { VERTEX };
@@ -165,9 +166,4 @@ public:
 	~ShaderSkybox();
 
 	void Init() override;
-	void CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT& rtvFormat, DXGI_FORMAT& dsvFormat) override;
-
-	void BeginDraw(ID3D12GraphicsCommandList* cmdList) override;
-	void Draw(ID3D12GraphicsCommandList* cmdList, MeshRenderer* drawnMeshR) override;
-	void EndDraw(ID3D12GraphicsCommandList* cmdList) override;
 };

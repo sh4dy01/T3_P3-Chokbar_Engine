@@ -1,11 +1,10 @@
 #include "Chokbar.h"
 
 #include "MeshRenderer.h"
-#include "UploadBuffer.h"
-#include "Particle.h"
 
-#include "Material.h"
-#include "ShaderBase.h"
+#include "D3D/Shaders/UploadBuffer.h"
+#include "D3D/Shaders/Material.h"
+#include "D3D/Shaders/ShaderBase.h"
 
 #include "ParticleRenderer.h"
 

@@ -1,8 +1,7 @@
 #include "Chokbar.h"
 
-#include "Core/D3D/D3DMath.h"
-
 #include "D3DMesh.h"
+#include "D3D/Base/D3DRenderer.h"
 
 using namespace DirectX;
 
@@ -60,9 +59,9 @@ void D3DMesh::DisposeUploaders()
 
 void D3DMesh::Create(const void* vData, UINT vStride, UINT vSize, const void* iData, UINT iStride, UINT iSize)
 {
-	I(D3DApp)->BeginList();
-	ID3D12Device* device = I(D3DApp)->GetDevice();
-	ID3D12GraphicsCommandList* cmdList = I(D3DApp)->GetCommandList();
+	I(D3DRenderer)->BeginList();
+	ID3D12Device* device = I(D3DRenderer)->GetDevice();
+	ID3D12GraphicsCommandList* cmdList = I(D3DRenderer)->GetCommandList();
 
 	const UINT iBufferSize = iStride * iSize;
 	const UINT vBufferSize = vStride * vSize;
@@ -81,7 +80,7 @@ void D3DMesh::Create(const void* vData, UINT vStride, UINT vSize, const void* iD
 	StartIndexLocation = 0;
 	BaseVertexLocation = 0;
 
-	I(D3DApp)->EndList();
+	I(D3DRenderer)->EndList();
 
 	DisposeUploaders();
 }

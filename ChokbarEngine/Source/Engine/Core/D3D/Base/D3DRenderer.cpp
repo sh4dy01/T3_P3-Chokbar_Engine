@@ -1,26 +1,25 @@
 #include "Chokbar.h"
 
-#include "Core/DebugUtils.h"
-
 #include "Engine/Resource.h"
-
-#include "D3DMath.h"
+#include "Engine/Engine.h"
 
 #include "Engine/ECS/Components/TransformComponent.h"
-#include "Core/D3D/Internal/Texture.h"
-#include "Core/D3D/Internal/ShaderBase.h"
-#include "Core/D3D/Internal/MeshRenderer.h"
-#include "Core/D3D/Internal/ParticleRenderer.h"
-#include "Core/D3D/Internal/Material.h"
-#include "Engine/Engine.h"
-#include "D3DApp.h"
+
+#include "D3D/Shaders/Texture.h"
+#include "D3D/Shaders/ShaderBase.h"
+#include "D3D/Shaders/Material.h"
+#include "D3D/Renderers/MeshRenderer.h"
+#include "D3D/Renderers/ParticleRenderer.h"
+#include "D3D/Geometry/GeometryHandler.h"
+
+#include "D3DRenderer.h"
 
 using namespace DirectX;
 
 #pragma region BASIC
-D3DApp* D3DApp::m_pApp = nullptr;
+D3DRenderer* D3DRenderer::m_pApp = nullptr;
 
-D3DApp::D3DApp() :
+D3DRenderer::D3DRenderer() :
 	m_pInstance(nullptr), m_4xMsaaState(false),
 	m_4xMsaaQuality(0), m_bufferWidth(DEFAULT_WIDTH), m_bufferHeight(DEFAULT_HEIGHT),
 	m_D3dDriverType(D3D_DRIVER_TYPE_HARDWARE), m_CurrentFenceValue(0), m_RtvDescriptorSize(0),
@@ -48,7 +47,7 @@ D3DApp::D3DApp() :
 
 	if (m_pApp != nullptr)
 	{
-		MessageBox(NULL, L"Only one instance of D3DApp can be created.", L"Error", MB_OK);
+		MessageBox(NULL, L"Only one instance of D3DRenderer can be created.", L"Error", MB_OK);
 		return;
 	}
 
@@ -57,7 +56,7 @@ D3DApp::D3DApp() :
 	m_pInstance = HInstance();
 }
 
-D3DApp::~D3DApp() {
+D3DRenderer::~D3DRenderer() {
 	RELPTR(m_pDxgiFactory);
 	RELPTR(m_pD3dDevice);
 
@@ -89,7 +88,7 @@ D3DApp::~D3DApp() {
 	Resource::ReleaseResources();
 }
 
-void D3DApp::Update(const float dt, const float totalTime)
+void D3DRenderer::Update(const float dt, const float totalTime)
 {
 	UpdateRenderItems(dt, totalTime);
 
@@ -101,7 +100,7 @@ void D3DApp::Update(const float dt, const float totalTime)
 	}
 }
 
-void D3DApp::Render()
+void D3DRenderer::Render()
 {
 	// Reset the commandQueue and prepare it for the next frame
 	m_pCommandAllocator->Reset();
@@ -155,23 +154,23 @@ void D3DApp::Render()
 	FlushCommandQueue();
 }
 
-void D3DApp::OnResize(int newWidth, int newHeight)
+void D3DRenderer::OnResize(int newWidth, int newHeight)
 {
 	m_bufferWidth = newWidth;
 	m_bufferHeight = newHeight;
 }
 
-D3DApp* D3DApp::GetInstance()
+D3DRenderer* D3DRenderer::GetInstance()
 {
 	if (m_pApp == nullptr)
 	{
-		m_pApp = new D3DApp();
+		m_pApp = new D3DRenderer();
 	}
 
 	return m_pApp;
 }
 
-void D3DApp::InitializeD3D12(Win32::Window* window)
+void D3DRenderer::InitializeD3D12(Win32::Window* window)
 {
 #if defined(DEBUG) || defined(_DEBUG)
 	EnableDebugLayer();
@@ -199,13 +198,13 @@ void D3DApp::InitializeD3D12(Win32::Window* window)
 #pragma endregion
 
 #pragma region COMMAND_LIST_PUBLIC
-void D3DApp::BeginList()
+void D3DRenderer::BeginList()
 {
 	m_pCommandAllocator->Reset();
 	m_pCommandList->Reset(m_pCommandAllocator, nullptr);
 }
 
-void D3DApp::EndList()
+void D3DRenderer::EndList()
 {
 	HRESULT hr = m_pCommandList->Close();
 
@@ -216,14 +215,14 @@ void D3DApp::EndList()
 #pragma endregion
 
 #pragma region D3DX12_COMPONENTS
-void D3DApp::EnableDebugLayer()
+void D3DRenderer::EnableDebugLayer()
 {
 	// Enable the D3D12 debug layer.
 	D3D12GetDebugInterface(IID_PPV_ARGS(&m_pDebugController));
 	//m_pDebugController->EnableDebugLayer();
 }
 
-void D3DApp::CreateDevice()
+void D3DRenderer::CreateDevice()
 {
 	CreateDXGIFactory1(IID_PPV_ARGS(&m_pDxgiFactory));
 
@@ -234,7 +233,7 @@ void D3DApp::CreateDevice()
 #endif
 }
 
-void D3DApp::CreateFenceAndGetDescriptorsSizes()
+void D3DRenderer::CreateFenceAndGetDescriptorsSizes()
 {
 	m_pD3dDevice->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&m_pFence));
 
@@ -243,7 +242,7 @@ void D3DApp::CreateFenceAndGetDescriptorsSizes()
 	m_CbvSrvUavDescriptorSize = m_pD3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 }
 
-void D3DApp::CheckMSAAQualitySupport()
+void D3DRenderer::CheckMSAAQualitySupport()
 {
 	D3D12_FEATURE_DATA_MULTISAMPLE_QUALITY_LEVELS msQualityLevels;
 	msQualityLevels.Format = m_BackBufferFormat;
@@ -261,7 +260,7 @@ void D3DApp::CheckMSAAQualitySupport()
 	assert(m_4xMsaaQuality > 0 && "Unexpected MSAA quality level.");
 }
 
-void D3DApp::CreateSwapChain(HWND windowHandle)
+void D3DRenderer::CreateSwapChain(HWND windowHandle)
 {
 	// Release the previous swapchain we will be recreating.
 	if (m_pSwapChain != nullptr) m_pSwapChain->Release();
@@ -287,7 +286,7 @@ void D3DApp::CreateSwapChain(HWND windowHandle)
 	m_pDxgiFactory->CreateSwapChain(m_pCommandQueue, &sd, &m_pSwapChain);
 }
 
-void D3DApp::CreateRtvAndDsvDescriptorHeaps()
+void D3DRenderer::CreateRtvAndDsvDescriptorHeaps()
 {
 	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc;
 	rtvHeapDesc.NumDescriptors = SWAP_CHAIN_BUFFER_COUNT;
@@ -316,7 +315,7 @@ void D3DApp::CreateRtvAndDsvDescriptorHeaps()
 
 }
 
-void D3DApp::CreateDepthStencilBuffer()
+void D3DRenderer::CreateDepthStencilBuffer()
 {
 	BeginList();
 
@@ -358,7 +357,7 @@ void D3DApp::CreateDepthStencilBuffer()
 	EndList();
 }
 
-void D3DApp::CreateRenderTargetView()
+void D3DRenderer::CreateRenderTargetView()
 {
 	CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHeapHandle(m_pRtvHeap->GetCPUDescriptorHandleForHeapStart());
 	for (UINT i = 0; i < SWAP_CHAIN_BUFFER_COUNT; i++)
@@ -376,7 +375,7 @@ void D3DApp::CreateRenderTargetView()
 #pragma endregion
 
 #pragma region COMMAND_LIST_PRIVATE
-void D3DApp::DEBUG_CreateInfoQueue()
+void D3DRenderer::DEBUG_CreateInfoQueue()
 {
 	ID3D12InfoQueue* InfoQueue = nullptr;
 	m_pD3dDevice->QueryInterface(IID_PPV_ARGS(&InfoQueue));
@@ -385,7 +384,7 @@ void D3DApp::DEBUG_CreateInfoQueue()
 	InfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, false);
 }
 
-void D3DApp::CreateCommandObjects()
+void D3DRenderer::CreateCommandObjects()
 {
 	D3D12_COMMAND_QUEUE_DESC queueDesc = {};
 	queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
@@ -409,7 +408,7 @@ void D3DApp::CreateCommandObjects()
 	m_pCommandList->Close();
 }
 
-void D3DApp::FlushCommandQueue()
+void D3DRenderer::FlushCommandQueue()
 {
 	// Advance the fence value to mark commands up to this fence point.
 	m_CurrentFenceValue++;
@@ -436,7 +435,7 @@ void D3DApp::FlushCommandQueue()
 
 #pragma region CREATE_INTERNAL_COMPONENTS
 
-void D3DApp::CreateResources()
+void D3DRenderer::CreateResources()
 {
 	Resource::CreateResources(m_pD3dDevice, m_pCbvHeap, m_CbvSrvUavDescriptorSize);
 
@@ -446,7 +445,7 @@ void D3DApp::CreateResources()
 	}
 }
 
-void D3DApp::GetMeshRenderersRef()
+void D3DRenderer::GetMeshRenderersRef()
 {
 	m_meshRenderers = Engine::GetCoordinator()->GetAllComponentsOfType<MeshRenderer>()->GetAllData();
 	m_particleRenderers = Engine::GetCoordinator()->GetAllComponentsOfType<ParticleRenderer>()->GetAllData();
@@ -454,7 +453,7 @@ void D3DApp::GetMeshRenderersRef()
 #pragma endregion
 
 #pragma region UPDATE 
-int D3DApp::UpdateTextureHeap(Texture* tex)
+int D3DRenderer::UpdateTextureHeap(Texture* tex)
 {
 	if (!tex) return -1;
 
@@ -473,7 +472,7 @@ int D3DApp::UpdateTextureHeap(Texture* tex)
 	return m_texIndex++;
 }
 
-void D3DApp::UpdateRenderItems(const float dt, const float totalTime)
+void D3DRenderer::UpdateRenderItems(const float dt, const float totalTime)
 {
 	for (MeshRenderer* mr : *m_meshRenderers)
 	{
@@ -493,7 +492,7 @@ void D3DApp::UpdateRenderItems(const float dt, const float totalTime)
 	}
 }
 
-void D3DApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList)
+void D3DRenderer::DrawRenderItems(ID3D12GraphicsCommandList* cmdList)
 {
 	for (MeshRenderer* mr : *m_meshRenderers)
 	{
@@ -526,7 +525,7 @@ void D3DApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList)
 #pragma endregion
 
 #pragma region CONSTANTS
-D3D12_CPU_DESCRIPTOR_HANDLE D3DApp::CurrentBackBufferView() const
+D3D12_CPU_DESCRIPTOR_HANDLE D3DRenderer::CurrentBackBufferView() const
 {
 
 	// CD3DX12 constructor to offset to the RTV of the current back buffer.
@@ -537,7 +536,7 @@ D3D12_CPU_DESCRIPTOR_HANDLE D3DApp::CurrentBackBufferView() const
 	);
 }
 
-D3D12_CPU_DESCRIPTOR_HANDLE D3DApp::DepthStencilView() const
+D3D12_CPU_DESCRIPTOR_HANDLE D3DRenderer::DepthStencilView() const
 {
 	return m_pDsvHeap->GetCPUDescriptorHandleForHeapStart();
 }

@@ -1,16 +1,14 @@
 #include "Chokbar.h"
 
-#include "Core/D3D/MeshType.h"
-#include "Core/D3D/MaterialType.h"
-
 #include "Engine/Resource.h"
 #include "Engine/ECS/Components/Component.h"
-#include "D3DMesh.h"
-#include "Core/D3D/D3DMath.h"
 
-#include "Material.h"
-#include "ShaderBase.h"
-#include "Texture.h"
+#include "D3D/Geometry/D3DMesh.h"
+#include "D3D/Geometry/GeometryHandler.h"
+
+#include "D3D/Shaders/Material.h"
+#include "D3D/Shaders/ShaderBase.h"
+#include "D3D/Shaders/Texture.h"
 
 #include "MeshRenderer.h"
 

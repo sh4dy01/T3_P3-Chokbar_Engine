@@ -12,14 +12,14 @@ class MeshRenderer;
 class ParticleRenderer;
 class Texture;
 
-class D3DApp
+class D3DRenderer
 {
 public:
-	D3DApp();
-	~D3DApp();
+	D3DRenderer();
+	~D3DRenderer();
 
 public:
-	static D3DApp* GetInstance();
+	static D3DRenderer* GetInstance();
 
 	void InitializeD3D12(Win32::Window* window);
 	void OnResize(int, int);
@@ -69,7 +69,7 @@ private:
 	void DEBUG_CreateInfoQueue();
 
 private:
-	static D3DApp* m_pApp;
+	static D3DRenderer* m_pApp;
 
 	HINSTANCE m_pInstance;
 
