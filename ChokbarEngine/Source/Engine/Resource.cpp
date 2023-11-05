@@ -5,12 +5,25 @@
 
 #include "Resource.h"
 
+#include <ranges>
+
 std::unordered_map<MaterialType, ShaderBase*> Resource::m_shaders;
 std::unordered_map<MaterialType, Material*> Resource::m_materials;
 
 Resource::~Resource()
 {
+	for (auto& shader : m_shaders)
+	{
+		DELPTR(shader.second);
+	}
+
 	m_shaders.clear();
+
+	for (auto& mat : m_materials)
+	{
+		DELPTR(mat.second);
+	}
+
 	m_materials.clear();
 }
 

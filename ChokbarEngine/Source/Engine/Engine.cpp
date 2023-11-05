@@ -11,7 +11,9 @@ Engine *Engine::m_Instance = nullptr;
 Engine::Engine() = default;
 
 Engine::~Engine()
-= default;
+{
+	delete D3DApp::GetInstance();
+}
 
 Engine *Engine::GetInstance()
 {

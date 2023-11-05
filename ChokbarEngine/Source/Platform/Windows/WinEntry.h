@@ -31,6 +31,8 @@ int CALLBACK WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
 
 		EntryApp->Shutdown();
 
+		DELPTR(EntryApp)
+
 	}
 	catch (DxException& e)
 	{
