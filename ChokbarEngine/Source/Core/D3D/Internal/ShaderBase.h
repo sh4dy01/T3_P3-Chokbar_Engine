@@ -9,25 +9,6 @@ struct InstanceData;
 
 enum VertexType { VERTEX };
 
-struct ShaderDrawArguments
-{
-	ShaderDrawArguments() : ItemCBIndex(-1), IndexCount(0), StartIndexLocation(0), BaseVertexLocation(0)
-	{
-		CmdList = nullptr;
-		ItemGeometry = nullptr;
-	}
-
-	ID3D12GraphicsCommandList* CmdList;
-
-	UINT ItemCBIndex;
-	D3DMesh* ItemGeometry;
-	UINT IndexCount;
-	UINT StartIndexLocation;
-	UINT BaseVertexLocation;
-
-	UINT TextSrvIndex;
-};
-
 class ShaderBase
 {
 public:
@@ -42,12 +23,16 @@ protected:
 
 	struct PassConstants
 	{
-		DirectX::XMFLOAT4X4 View;
-		DirectX::XMFLOAT4X4 Proj;
-		DirectX::XMFLOAT4X4 ViewProj;
+		DirectX::XMFLOAT4X4 View = Identity4x4();
+		DirectX::XMFLOAT4X4 Proj = Identity4x4();
+		DirectX::XMFLOAT4X4 ViewProj = Identity4x4();
+
+		DirectX::XMFLOAT4 LightColor = { 1.0f, 0.0f, 1.0f, 1.0f };
 
 		DirectX::XMFLOAT3 EyePosW = { 0.0f, 0.0f, 0.0f };
 		float TotalTime = 0.0f;
+
+		DirectX::XMFLOAT3 LightDirection = { -1.0f, -1.0f, 0.0f };
 		float DeltaTime = 0.0f;
 	};
 
@@ -118,6 +103,11 @@ public:
 
 protected:
 	void SetInputLayout(VertexType vertexType);
+
+	/* Samplers defines how we want to parse our texture in our shader.
+	Creating multiple Samplers allows us to have access to different parse mode in our shader later on. This is useful on big engines.
+	Note that will certainly do not need that much samplers, but it was juste to learn how to use them. */
+	std::array<const CD3DX12_STATIC_SAMPLER_DESC, 2> GetStaticSamplers();
 };
 
 class ShaderSimple : public ShaderBase
@@ -146,12 +136,6 @@ public:
 	void BeginDraw(ID3D12GraphicsCommandList* cmdList) override;
 	void Draw(ID3D12GraphicsCommandList* cmdList, MeshRenderer* drawnMeshR) override;
 	void EndDraw(ID3D12GraphicsCommandList* cmdList) override;
-
-private:
-	/* Samplers defines how we want to parse our texture in our shader.
-	Creating multiple Samplers allows us to have access to different parse mode in our shader later on. This is useful on big engines.
-	Note that will certainly do not need that much samplers, but it was juste to learn how to use them. */
-	std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> GetStaticSamplers();
 };
 
 class ShaderParticle : public ShaderBase
@@ -172,4 +156,18 @@ private:
 	void DrawAsParticle(ID3D12GraphicsCommandList* cmdList, ParticleRenderer* drawnMeshR);
 
 	UploadBuffer<InstanceData>* m_particleInstanceDataBuffer;
+};
+
+class ShaderSkybox : public ShaderTexture
+{
+public:
+	ShaderSkybox(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, UINT cbvDescriptorSize, std::wstring& filepath);
+	~ShaderSkybox();
+
+	void Init() override;
+	void CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT& rtvFormat, DXGI_FORMAT& dsvFormat) override;
+
+	void BeginDraw(ID3D12GraphicsCommandList* cmdList) override;
+	void Draw(ID3D12GraphicsCommandList* cmdList, MeshRenderer* drawnMeshR) override;
+	void EndDraw(ID3D12GraphicsCommandList* cmdList) override;
 };

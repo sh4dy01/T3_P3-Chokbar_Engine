@@ -17,3 +17,15 @@ inline DirectX::XMFLOAT4X4 Identity4x4()
 	return Id;
 }
 #pragma endregion
+
+/* ------------------------------------------------------------------------- */
+/* HELPER STRUCTS                                                            */
+/* ------------------------------------------------------------------------- */
+#pragma region HelperStructs
+struct LightData
+{
+	DirectX::XMFLOAT3 Color = { 1.0f, 1.0f, 1.0f };
+	DirectX::XMFLOAT3 Direction = { -1.0f, -1.0f, 0.0f };
+};
+
+#pragma endregion

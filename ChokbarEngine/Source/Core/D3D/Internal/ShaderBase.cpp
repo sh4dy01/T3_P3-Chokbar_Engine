@@ -25,7 +25,7 @@ ShaderBase::ShaderBase(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, UINT
 
 ShaderBase::~ShaderBase()
 {
-	m_generalDevice = nullptr;
+	NULLPTR(m_generalDevice);
 
 	RELPTR(m_pipelineState);
 	RELPTR(m_rootSignature);
@@ -34,7 +34,7 @@ ShaderBase::~ShaderBase()
 	RELPTR(m_psByteCode);
 
 	m_objectCBs.clear();
-	m_passCB = nullptr;
+	NULLPTR(m_passCB);
 }
 
 void ShaderBase::Init()
@@ -52,6 +52,26 @@ void ShaderBase::SetInputLayout(VertexType vertexType)
 	m_inputLayout.push_back({ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 28, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 });
 	m_inputLayout.push_back({ "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 40, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 });
 	m_inputLayout.push_back({ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 52, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 });
+}
+
+std::array<const CD3DX12_STATIC_SAMPLER_DESC, 2> ShaderBase::GetStaticSamplers()
+{
+	const CD3DX12_STATIC_SAMPLER_DESC pointWrap(
+		0, // shaderRegister
+		D3D12_FILTER_MIN_MAG_MIP_POINT, // filter
+		D3D12_TEXTURE_ADDRESS_MODE_WRAP, // addressU
+		D3D12_TEXTURE_ADDRESS_MODE_WRAP, // addressV
+		D3D12_TEXTURE_ADDRESS_MODE_WRAP); // addressW
+
+	const CD3DX12_STATIC_SAMPLER_DESC linearWrap(
+		2, // shaderRegister
+		D3D12_FILTER_MIN_MAG_MIP_LINEAR, // filter
+		D3D12_TEXTURE_ADDRESS_MODE_WRAP, // addressU
+		D3D12_TEXTURE_ADDRESS_MODE_WRAP, // addressV
+		D3D12_TEXTURE_ADDRESS_MODE_WRAP); // addressW
+
+
+	return { pointWrap, linearWrap };
 }
 
 void ShaderBase::UnBind(UINT index)
@@ -98,6 +118,8 @@ void ShaderBase::UpdatePassCB(const float dt, const float totalTime)
 	XMStoreFloat4x4(&mainPassCB.ViewProj, XMMatrixTranspose(viewProj));
 	// XMStoreFloat4x4(&mainPassCB.InvViewProj, XMMatrixTranspose(invViewProj));
 
+	mainPassCB.LightColor = XMFLOAT4(0.9f, 0.7f, 0.7f, 1.0f);
+	mainPassCB.LightDirection = XMFLOAT3(-1.0f, -1.0f, 0.0f);
 	mainPassCB.EyePosW = CameraManager::GetMainCamera()->transform->GetPosition();
 	// mainPassCB.RenderTargetSize = XMFLOAT2(m_bufferWidth, m_bufferHeight);
 	// mainPassCB.InvRenderTargetSize = XMFLOAT2(1.0f / m_bufferWidth, 1.0f / m_bufferHeight);
@@ -125,7 +147,7 @@ void ShaderBase::CompileShader(const D3D_SHADER_MACRO* defines, const std::strin
 	if (errors != nullptr)
 	{
 		MessageBoxA(0, (char*)errors->GetBufferPointer(), 0, 0);
-		errors->Release();
+		RELPTR(errors);
 	}
 	ThrowIfFailed(hr);
 }
@@ -250,7 +272,7 @@ void ShaderTexture::CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT
 
 	auto samplers = GetStaticSamplers();
 
-	CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc(_countof(slotRootParameter), slotRootParameter, 6, samplers.data(), D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
+	CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc(_countof(slotRootParameter), slotRootParameter, 2, samplers.data(), D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
 	ID3DBlob* serializedRootSignature = nullptr;
 	ID3DBlob* errorBlob = nullptr;
@@ -321,67 +343,18 @@ void ShaderTexture::Draw(ID3D12GraphicsCommandList* cmdList, MeshRenderer* drawn
 void ShaderTexture::EndDraw(ID3D12GraphicsCommandList* cmdList)
 {
 }
-
-std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> ShaderTexture::GetStaticSamplers()
-{
-	const CD3DX12_STATIC_SAMPLER_DESC pointWrap(
-		0, // shaderRegister
-		D3D12_FILTER_MIN_MAG_MIP_POINT, // filter
-		D3D12_TEXTURE_ADDRESS_MODE_WRAP, // addressU
-		D3D12_TEXTURE_ADDRESS_MODE_WRAP, // addressV
-		D3D12_TEXTURE_ADDRESS_MODE_WRAP); // addressW
-
-	const CD3DX12_STATIC_SAMPLER_DESC pointClamp(
-		1, // shaderRegister
-		D3D12_FILTER_MIN_MAG_MIP_POINT, // filter
-		D3D12_TEXTURE_ADDRESS_MODE_CLAMP, // addressU
-		D3D12_TEXTURE_ADDRESS_MODE_CLAMP, // addressV
-		D3D12_TEXTURE_ADDRESS_MODE_CLAMP); // addressW
-
-	const CD3DX12_STATIC_SAMPLER_DESC linearWrap(
-		2, // shaderRegister
-		D3D12_FILTER_MIN_MAG_MIP_LINEAR, // filter
-		D3D12_TEXTURE_ADDRESS_MODE_WRAP, // addressU
-		D3D12_TEXTURE_ADDRESS_MODE_WRAP, // addressV
-		D3D12_TEXTURE_ADDRESS_MODE_WRAP); // addressW
-
-	const CD3DX12_STATIC_SAMPLER_DESC linearClamp(
-		3, // shaderRegister
-		D3D12_FILTER_MIN_MAG_MIP_LINEAR, // filter
-		D3D12_TEXTURE_ADDRESS_MODE_CLAMP, // addressU
-		D3D12_TEXTURE_ADDRESS_MODE_CLAMP, // addressV
-		D3D12_TEXTURE_ADDRESS_MODE_CLAMP); // addressW
-
-	const CD3DX12_STATIC_SAMPLER_DESC anisotropicWrap(
-		4, // shaderRegister
-		D3D12_FILTER_ANISOTROPIC, // filter
-		D3D12_TEXTURE_ADDRESS_MODE_WRAP, // addressU
-		D3D12_TEXTURE_ADDRESS_MODE_WRAP, // addressV
-		D3D12_TEXTURE_ADDRESS_MODE_WRAP, // addressW
-		0.0f, // mipLODBias
-		8); // maxAnisotropy
-
-	const CD3DX12_STATIC_SAMPLER_DESC anisotropicClamp(
-		5, // shaderRegister
-		D3D12_FILTER_ANISOTROPIC, // filter
-		D3D12_TEXTURE_ADDRESS_MODE_CLAMP, // addressU
-		D3D12_TEXTURE_ADDRESS_MODE_CLAMP, // addressV
-		D3D12_TEXTURE_ADDRESS_MODE_CLAMP, // addressW
-		0.0f, // mipLODBias
-		8); // maxAnisotropy
-
-	return { pointWrap, pointClamp, linearWrap, linearClamp, anisotropicWrap, anisotropicClamp };
-}
 #pragma endregion
 
 #pragma region SHADER PARTICLE
 ShaderParticle::ShaderParticle(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, UINT cbvDescriptorSize, std::wstring& filepath)
 	: ShaderBase(device, cbvHeap, cbvDescriptorSize, filepath)
 {
+	m_particleInstanceDataBuffer = nullptr;
 }
 
 ShaderParticle::~ShaderParticle()
 {
+	NULLPTR(m_particleInstanceDataBuffer);
 }
 
 void ShaderParticle::Init()
@@ -490,5 +463,16 @@ void ShaderParticle::EndDraw(ID3D12GraphicsCommandList* cmdList)
 void ShaderParticle::UpdateParticleInstanceDataBuffer(int startIndex, const void* data)
 {
 	m_particleInstanceDataBuffer->CopyData(startIndex, data);
+}
+#pragma endregion
+
+#pragma region SHADER SKYBOX
+ShaderSkybox::ShaderSkybox(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, UINT cbvDescriptorSize, std::wstring& filepath)
+	: ShaderTexture(device, cbvHeap, cbvDescriptorSize, filepath)
+{
+}
+
+ShaderSkybox::~ShaderSkybox()
+{
 }
 #pragma endregion
