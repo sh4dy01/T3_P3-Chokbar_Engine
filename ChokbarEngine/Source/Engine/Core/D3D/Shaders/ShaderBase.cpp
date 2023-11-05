@@ -65,7 +65,7 @@ std::array<const CD3DX12_STATIC_SAMPLER_DESC, 2> ShaderBase::GetStaticSamplers()
 		D3D12_TEXTURE_ADDRESS_MODE_WRAP); // addressW
 
 	const CD3DX12_STATIC_SAMPLER_DESC linearWrap(
-		2, // shaderRegister
+		1, // shaderRegister
 		D3D12_FILTER_MIN_MAG_MIP_LINEAR, // filter
 		D3D12_TEXTURE_ADDRESS_MODE_WRAP, // addressU
 		D3D12_TEXTURE_ADDRESS_MODE_WRAP, // addressV
@@ -223,7 +223,7 @@ void ShaderSimple::BeginDraw(ID3D12GraphicsCommandList* cmdList)
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
-void ShaderSimple::Draw(ID3D12GraphicsCommandList* cmdList, MeshRenderer* drawnMeshR)
+void ShaderSimple::Draw(ID3D12GraphicsCommandList* cmdList, IRenderer* drawnMeshR)
 {
 	if (drawnMeshR->ObjectCBIndex >= m_objectCBs.size())
 		AddObjectCB();
@@ -273,7 +273,7 @@ void ShaderTexture::CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT
 
 	auto samplers = GetStaticSamplers();
 
-	CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc(_countof(slotRootParameter), slotRootParameter, 2, samplers.data(), D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
+	CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc(_countof(slotRootParameter), slotRootParameter, samplers.size(), samplers.data(), D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
 	ID3DBlob* serializedRootSignature = nullptr;
 	ID3DBlob* errorBlob = nullptr;
@@ -282,6 +282,12 @@ void ShaderTexture::CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT
 	ThrowIfFailed(hr);
 	hr = m_generalDevice->CreateRootSignature(0, serializedRootSignature->GetBufferPointer(), serializedRootSignature->GetBufferSize(), IID_PPV_ARGS(&m_rootSignature));
 	ThrowIfFailed(hr);
+
+	if (errorBlob != nullptr)
+	{
+		MessageBoxA(0, (char*)errorBlob->GetBufferPointer(), 0, 0);
+		RELPTR(errorBlob);
+	}
 
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc;
 	ZeroMemory(&psoDesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
@@ -305,7 +311,6 @@ void ShaderTexture::CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT
 	ThrowIfFailed(hr);
 
 	RELPTR(serializedRootSignature);
-	RELPTR(errorBlob);
 }
 
 void ShaderTexture::BeginDraw(ID3D12GraphicsCommandList* cmdList)
@@ -319,7 +324,7 @@ void ShaderTexture::BeginDraw(ID3D12GraphicsCommandList* cmdList)
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
-void ShaderTexture::Draw(ID3D12GraphicsCommandList* cmdList, MeshRenderer* drawnMeshR)
+void ShaderTexture::Draw(ID3D12GraphicsCommandList* cmdList, IRenderer* drawnMeshR)
 {
 	assert(drawnMeshR->GetTexture(0)->HeapIndex >= 0);
 
@@ -430,7 +435,7 @@ void ShaderParticle::BeginDraw(ID3D12GraphicsCommandList* cmdList)
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
-void ShaderParticle::Draw(ID3D12GraphicsCommandList* cmdList, MeshRenderer* drawnMeshR)
+void ShaderParticle::Draw(ID3D12GraphicsCommandList* cmdList, IRenderer* drawnMeshR)
 {
 	ParticleRenderer* pr = (ParticleRenderer*)drawnMeshR;
 	assert(pr);
@@ -476,10 +481,9 @@ ShaderSkybox::ShaderSkybox(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, 
 ShaderSkybox::~ShaderSkybox()
 {
 }
+
 void ShaderSkybox::Init()
 {
 	ShaderTexture::Init();
 }
-
-
 #pragma endregion

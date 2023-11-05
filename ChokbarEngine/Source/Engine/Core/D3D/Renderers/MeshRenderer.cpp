@@ -1,54 +1,41 @@
 #include "Chokbar.h"
 
-#include "Engine/Resource.h"
 #include "Engine/ECS/Components/Component.h"
-
-#include "D3D/Geometry/D3DMesh.h"
-#include "D3D/Geometry/GeometryHandler.h"
-
 #include "D3D/Shaders/Material.h"
 #include "D3D/Shaders/ShaderBase.h"
-#include "D3D/Shaders/Texture.h"
 
 #include "MeshRenderer.h"
 
 using namespace DirectX;
 
-MeshRenderer::MeshRenderer()
+MeshRenderer::MeshRenderer() : IRenderer()
 {
-	Mesh = nullptr;
-	Mat = nullptr;
 }
 
 MeshRenderer::~MeshRenderer()
 {
-	OnDelete();
-
-	Mesh = nullptr;
-	Mat = nullptr;
-	m_textures.clear();
 }
 
-void MeshRenderer::Init(MeshType meshType, MaterialType matType)
+void MeshRenderer::Render(ID3D12GraphicsCommandList* cmdList)
 {
-	Mesh = GeometryHandler::GetMesh(meshType);
+	if (!IsEnabled() || !Mat || !Mesh) return;
 
-	Material* mat = Resource::LoadMaterial(matType);
-	BindMaterial(mat);
+	auto shader = Mat->GetShader();
+	shader->BeginDraw(cmdList);
+
+	shader->Draw(cmdList, this);
+
+	shader->EndDraw(cmdList);
+
 }
 
-void MeshRenderer::OnDelete()
+void MeshRenderer::Update(float dt)
 {
-	Mat->GetShader()->UnBind(ObjectCBIndex);
+	if (!IsEnabled() || !Mat || !Mesh) return;
+
+	if (transform->IsDirty())
+		transform->UpdateWorldMatrix();
+
+	Mat->GetShader()->UpdateObjectCB(transform->GetWorldMatrix(), ObjectCBIndex);
 }
 
-void MeshRenderer::RegisterTexture(Texture* tex)
-{
-	m_textures.push_back(tex);
-}
-
-void MeshRenderer::BindMaterial(Material* mat)
-{
-	Mat = mat;
-	ObjectCBIndex = Mat->GetShader()->Bind()->GetCreatedIndex();
-}

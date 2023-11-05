@@ -25,7 +25,7 @@ cbuffer cbPass : register(b1)
     float gDeltaTime;
 }
 
-SamplerState gsamPointWrap : register(s0);
+SamplerState gsamPointWrap  : register(s0);
 SamplerState gsamLinearWrap : register(s1);
 
 struct VS_INPUT
@@ -41,8 +41,6 @@ struct PS_INPUT
 {
     float4 PosH : SV_POSITION;
     float3 PosL : POSITION;
-    float3 NormalL : NORMAL;
-    float2 uv : TEXCOORD;
 };
 
 PS_INPUT vs_main(VS_INPUT input)
@@ -66,5 +64,5 @@ PS_INPUT vs_main(VS_INPUT input)
 
 float4 ps_main(PS_INPUT input) : SV_TARGET
 {
-    return gCubeMap.Sample(gsamLinearWrap, input.PosL);
+    return gCubeMap.Sample(gsamLinearWrap, input.PosL.xy);
 }

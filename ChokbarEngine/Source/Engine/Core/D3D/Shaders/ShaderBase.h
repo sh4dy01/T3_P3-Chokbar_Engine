@@ -85,7 +85,7 @@ public:
 	virtual void CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT& rtvFormat, DXGI_FORMAT& dsvFormat) = 0;
 
 	virtual void BeginDraw(ID3D12GraphicsCommandList* cmdList) = 0;
-	virtual void Draw(ID3D12GraphicsCommandList* cmdList, MeshRenderer* drawnMeshR) = 0;
+	virtual void Draw(ID3D12GraphicsCommandList* cmdList, IRenderer* drawnMeshR) = 0;
 	virtual void EndDraw(ID3D12GraphicsCommandList* cmdList) = 0;
 
 	UINT GetCreatedIndex() { return (UINT)m_objectCBs.size() - 1; }
@@ -121,7 +121,7 @@ public:
 	void CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT& rtvFormat, DXGI_FORMAT& dsvFormat) override;
 
 	void BeginDraw(ID3D12GraphicsCommandList* cmdList) override;
-	void Draw(ID3D12GraphicsCommandList* cmdList, MeshRenderer* drawnMeshR) override;
+	void Draw(ID3D12GraphicsCommandList* cmdList, IRenderer* drawnMeshR) override;
 	void EndDraw(ID3D12GraphicsCommandList* cmdList) override;
 };
 
@@ -135,7 +135,7 @@ public:
 	void CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT& rtvFormat, DXGI_FORMAT& dsvFormat) override;
 
 	void BeginDraw(ID3D12GraphicsCommandList* cmdList) override;
-	void Draw(ID3D12GraphicsCommandList* cmdList, MeshRenderer* drawnMeshR) override;
+	void Draw(ID3D12GraphicsCommandList* cmdList, IRenderer* drawnMeshR) override;
 	void EndDraw(ID3D12GraphicsCommandList* cmdList) override;
 };
 
@@ -149,7 +149,7 @@ public:
 	void CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT& rtvFormat, DXGI_FORMAT& dsvFormat) override;
 
 	void BeginDraw(ID3D12GraphicsCommandList* cmdList) override;
-	void Draw(ID3D12GraphicsCommandList* cmdList, MeshRenderer* drawnMeshR) override;
+	void Draw(ID3D12GraphicsCommandList* cmdList, IRenderer* drawnMeshR) override;
 	void EndDraw(ID3D12GraphicsCommandList* cmdList) override;
 
 	void UpdateParticleInstanceDataBuffer(int startIndex, const void* data);

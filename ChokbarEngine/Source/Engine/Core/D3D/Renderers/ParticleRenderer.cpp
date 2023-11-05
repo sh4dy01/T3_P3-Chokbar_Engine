@@ -1,6 +1,6 @@
 #include "Chokbar.h"
 
-#include "MeshRenderer.h"
+#include "IRenderer.h"
 
 #include "D3D/Shaders/UploadBuffer.h"
 #include "D3D/Shaders/Material.h"
@@ -10,7 +10,7 @@
 
 using namespace DirectX;
 
-ParticleRenderer::ParticleRenderer() : MeshRenderer()
+ParticleRenderer::ParticleRenderer() : IRenderer()
 {
 	srand(time(NULL));
 }
@@ -23,9 +23,28 @@ ParticleRenderer::~ParticleRenderer()
 
 void ParticleRenderer::Init(MeshType meshType, MaterialType matType)
 {
-	MeshRenderer::Init(meshType, matType);
+	IRenderer::Init(meshType, matType);
 
 	Regenerate();
+}
+
+void ParticleRenderer::Render(ID3D12GraphicsCommandList* cmdList)
+{
+	if (!IsEnabled() || !Mat || !Mesh) return;
+
+	auto shader = Mat->GetShader();
+	shader->BeginDraw(cmdList);
+
+	shader->Draw(cmdList, this);
+
+	shader->EndDraw(cmdList);
+}
+
+void ParticleRenderer::Update(float dt)
+{
+	if (!IsEnabled() || !Mat || !Mesh) return;
+
+	UpdateParticles(dt);
 }
 
 void ParticleRenderer::SetParticleCount(UINT count)
@@ -73,7 +92,7 @@ void ParticleRenderer::Regenerate()
 	UpdateShaderBuffer();
 }
 
-void ParticleRenderer::Update(float dt)
+void ParticleRenderer::UpdateParticles(float dt)
 {
 	for (UINT i = 0; i < MAX_PARTICLE_COUNT; i++)
 	{
@@ -84,16 +103,16 @@ void ParticleRenderer::Update(float dt)
 
 		InstanceData& pid = m_particleInstanceData[i];
 
-		
+
 		if (!p->IsAlive())
 		{
 			p->Reset();
 			p->ToggleActivity();
 			continue;
 		}
-		
+
 		p->m_CurrentLifeTime += dt;
-		pid.AgeRatio =  (p->m_LifeTime - p->m_CurrentLifeTime) / p->m_LifeTime;
+		pid.AgeRatio = (p->m_LifeTime - p->m_CurrentLifeTime) / p->m_LifeTime;
 
 		// Update position
 		p->m_Transform->Translate(p->m_Velocity.x * dt, p->m_Velocity.y * dt, p->m_Velocity.z * dt);
@@ -113,7 +132,7 @@ void ParticleRenderer::UpdateShaderBuffer()
 {
 	if (ShaderParticle* shader = dynamic_cast<ShaderParticle*>(Mat->GetShader()))
 	{
-		for(int i = 0; i < m_particleInstanceData.size(); i++)
+		for (int i = 0; i < m_particleInstanceData.size(); i++)
 		{
 			shader->UpdateParticleInstanceDataBuffer(i, &m_particleInstanceData[i]);
 		}

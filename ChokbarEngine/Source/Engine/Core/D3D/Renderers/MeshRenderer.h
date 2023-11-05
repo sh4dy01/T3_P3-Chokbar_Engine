@@ -1,34 +1,15 @@
 #pragma once 
 #include "Engine/ECS/Components/Component.h"
+#include "IRenderer.h"
 
-class Material;
-class D3DMesh;
-class Texture;
-
-class MeshRenderer : public Component
+// Double inheritance is not a good idea, I know.
+class MeshRenderer : public Component, public IRenderer
 {
 public:
-
 	MeshRenderer();
 	~MeshRenderer() override;
 
-	virtual void Init(MeshType meshType, MaterialType matType);
-
-	Texture* GetTexture(UINT index) const { return m_textures[index]; }
-	std::vector<Texture*> GetTextures() const { return m_textures; }
-	void RegisterTexture(Texture* tex);
-
-protected:
-	void OnDelete();
-
-	void BindMaterial(Material* mat);
-
 public:
-	D3DMesh* Mesh;
-	UINT ObjectCBIndex = -1;
-
-	Material* Mat;
-
-private:
-	std::vector<Texture*> m_textures{};
+	void Render(ID3D12GraphicsCommandList* cmdList) override;
+	void Update(float dt) override;
 };

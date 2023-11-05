@@ -476,18 +476,13 @@ void D3DRenderer::UpdateRenderItems(const float dt, const float totalTime)
 {
 	for (MeshRenderer* mr : *m_meshRenderers)
 	{
-		if (!mr || !mr->IsEnabled() || !mr->Mat || !mr->Mesh) continue;
-
-		if (mr->transform->IsDirty())
-			mr->transform->UpdateWorldMatrix();
-
-		mr->Mat->GetShader()->UpdateObjectCB(mr->transform->GetWorldMatrix(), mr->ObjectCBIndex);
+		if (!mr) continue;
+		mr->Update(dt);
 	}
 
 	for (ParticleRenderer* pr : *m_particleRenderers)
 	{
-		if (!pr || !pr->IsEnabled() || !pr->Mat || !pr->Mesh) continue;
-
+		if (!pr) continue;
 		pr->Update(dt);
 	}
 }
@@ -497,29 +492,13 @@ void D3DRenderer::DrawRenderItems(ID3D12GraphicsCommandList* cmdList)
 	for (MeshRenderer* mr : *m_meshRenderers)
 	{
 		if (!mr) continue;
-
-		if (!mr->IsEnabled() || !mr->Mat || !mr->Mesh) continue;
-
-		auto shader = mr->Mat->GetShader();
-		shader->BeginDraw(cmdList);
-
-		shader->Draw(cmdList, mr);
-
-		shader->EndDraw(cmdList);
+		mr->Render(m_pCommandList);
 	}
 
 	for (ParticleRenderer* pr : *m_particleRenderers)
 	{
 		if (!pr) continue;
-
-		if (!pr->IsEnabled() || !pr->Mat || !pr->Mesh) continue;
-
-		auto shader = pr->Mat->GetShader();
-		shader->BeginDraw(cmdList);
-
-		shader->Draw(cmdList, pr);
-
-		shader->EndDraw(cmdList);
+		pr->Render(m_pCommandList);
 	}
 }
 #pragma endregion
