@@ -10,6 +10,7 @@
 #include "D3D/Shaders/Material.h"
 #include "D3D/Renderers/MeshRenderer.h"
 #include "D3D/Renderers/ParticleRenderer.h"
+#include "D3D/Renderers/SkyRenderer.h"
 #include "D3D/Geometry/GeometryHandler.h"
 
 #include "D3DRenderer.h"
@@ -90,7 +91,7 @@ D3DRenderer::~D3DRenderer() {
 
 void D3DRenderer::Update(const float dt, const float totalTime)
 {
-	UpdateRenderItems(dt, totalTime);
+	UpdateRenderedObjects(dt, totalTime);
 
 	Engine::GetMainCamera()->UpdateViewMatrix();
 
@@ -131,7 +132,7 @@ void D3DRenderer::Render()
 	ID3D12DescriptorHeap* descriptorHeaps[] = { m_pCbvHeap };
 	m_pCommandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 
-	DrawRenderItems(m_pCommandList);
+	RenderObjects();
 
 	// Set resource barrier to transition the back buffer from render target to present
 	// This allows to present the back buffer (D3D12_RESOURCE_STATE_PRESENT state)
@@ -192,7 +193,7 @@ void D3DRenderer::InitializeD3D12(Win32::Window* window)
 	GeometryHandler::CreateAllMeshes();
 
 	CreateResources();
-	GetMeshRenderersRef();
+	GetRenderComponentsRef();
 
 }
 #pragma endregion
@@ -443,12 +444,14 @@ void D3DRenderer::CreateResources()
 	{
 		sh.second->CreatePsoAndRootSignature(VertexType::VERTEX, m_BackBufferFormat, m_DepthStencilFormat);
 	}
+
 }
 
-void D3DRenderer::GetMeshRenderersRef()
+void D3DRenderer::GetRenderComponentsRef()
 {
 	m_meshRenderers = Engine::GetCoordinator()->GetAllComponentsOfType<MeshRenderer>()->GetAllData();
 	m_particleRenderers = Engine::GetCoordinator()->GetAllComponentsOfType<ParticleRenderer>()->GetAllData();
+	m_skyRenderers = Engine::GetCoordinator()->GetAllComponentsOfType<SkyRenderer>()->GetAllData();
 }
 #pragma endregion
 
@@ -472,7 +475,7 @@ int D3DRenderer::UpdateTextureHeap(Texture* tex)
 	return m_texIndex++;
 }
 
-void D3DRenderer::UpdateRenderItems(const float dt, const float totalTime)
+void D3DRenderer::UpdateRenderedObjects(const float dt, const float totalTime)
 {
 	for (MeshRenderer* mr : *m_meshRenderers)
 	{
@@ -487,7 +490,7 @@ void D3DRenderer::UpdateRenderItems(const float dt, const float totalTime)
 	}
 }
 
-void D3DRenderer::DrawRenderItems(ID3D12GraphicsCommandList* cmdList)
+void D3DRenderer::RenderObjects()
 {
 	for (MeshRenderer* mr : *m_meshRenderers)
 	{
@@ -500,6 +503,9 @@ void D3DRenderer::DrawRenderItems(ID3D12GraphicsCommandList* cmdList)
 		if (!pr) continue;
 		pr->Render(m_pCommandList);
 	}
+
+	//m_skyRenderers->at(0)->Render(m_pCommandList);
+
 }
 #pragma endregion
 

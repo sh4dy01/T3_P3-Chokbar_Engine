@@ -3,6 +3,7 @@
 
 #include "D3D/Renderers/MeshRenderer.h"
 #include "D3D/Renderers/ParticleRenderer.h"
+#include "D3D/Renderers/SkyRenderer.h"
 #include "Engine/ECS/Components/Collision/Collider.h"
 #include "Engine/ECS/Components/Collision/RigidBody.h"
 
@@ -39,6 +40,7 @@ void Coordinator::RegisterComponents()
 	RegisterComponent<SphereCollider>();
 	RegisterComponent<CameraComponent>();
 	RegisterComponent<ParticleRenderer>();
+	RegisterComponent<SkyRenderer>();
 }
 
 void Coordinator::RegisterSystems()

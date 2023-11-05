@@ -233,6 +233,9 @@
     <ClCompile Include="Source\Engine\Core\PerGameSettings.cpp">
       <Filter>Source\Engine\Core</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Engine\Core\D3D\Renderers\SkyRenderer.cpp">
+      <Filter>Source\Engine\Core\D3D\Renderers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Chokbar.h">
@@ -398,6 +401,9 @@
     </ClInclude>
     <ClInclude Include="Source\Engine\Core\PerGameSettings.h">
       <Filter>Source\Engine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Core\D3D\Renderers\SkyRenderer.h">
+      <Filter>Source\Engine\Core\D3D\Renderers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

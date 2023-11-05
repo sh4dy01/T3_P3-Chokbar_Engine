@@ -65,4 +65,5 @@ PS_INPUT vs_main(VS_INPUT input)
 float4 ps_main(PS_INPUT input) : SV_TARGET
 {
     return gCubeMap.Sample(gsamLinearWrap, input.PosL.xy);
+
 }

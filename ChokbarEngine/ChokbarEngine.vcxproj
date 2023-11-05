@@ -114,6 +114,7 @@
     <ClCompile Include="Source\Engine\Core\D3D\Renderers\IRenderer.cpp" />
     <ClCompile Include="Source\Engine\Core\D3D\Renderers\MeshRenderer.cpp" />
     <ClCompile Include="Source\Engine\Core\D3D\Renderers\ParticleRenderer.cpp" />
+    <ClCompile Include="Source\Engine\Core\D3D\Renderers\SkyRenderer.cpp" />
     <ClCompile Include="Source\Engine\Core\D3D\Shaders\Material.cpp" />
     <ClCompile Include="Source\Engine\Core\D3D\Shaders\ShaderBase.cpp" />
     <ClCompile Include="Source\Engine\Core\D3D\Shaders\Texture.cpp" />
@@ -167,6 +168,7 @@
     <ClInclude Include="Source\Engine\Core\D3D\Renderers\IRenderer.h" />
     <ClInclude Include="Source\Engine\Core\D3D\Renderers\MeshRenderer.h" />
     <ClInclude Include="Source\Engine\Core\D3D\Renderers\ParticleRenderer.h" />
+    <ClInclude Include="Source\Engine\Core\D3D\Renderers\SkyRenderer.h" />
     <ClInclude Include="Source\Engine\Core\D3D\Shaders\Material.h" />
     <ClInclude Include="Source\Engine\Core\D3D\Shaders\ShaderBase.h" />
     <ClInclude Include="Source\Engine\Core\D3D\Shaders\Texture.h" />

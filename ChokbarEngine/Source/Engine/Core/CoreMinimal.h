@@ -14,6 +14,9 @@
 #include "Engine/Managers/TimeManager.h"
 #include "Engine/Managers/CameraManager.h"
 
+// Resources includes
+#include "Engine/Resource.h"
+
 // Components includes
 #include "Engine/ECS/Base/GameObject.h"
 #include "Engine/ECS/Components/TransformComponent.h"
@@ -25,6 +28,7 @@
 // D3D includes
 #include "D3D/Renderers/MeshRenderer.h"
 #include "D3D/Renderers/ParticleRenderer.h"
+#include "D3D/Renderers/SkyRenderer.h"
 #include "D3D/Shaders/Texture.h"
 
 #include "Engine/Managers/InputHandler.h"
