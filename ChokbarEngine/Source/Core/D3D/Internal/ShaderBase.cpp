@@ -66,7 +66,12 @@ ShaderBase* ShaderBase::Bind()
 	return this;
 }
 
-void ShaderBase::AddObjectCB() { m_objectCBs.emplace_back(new UploadBuffer<ObjConstants>(m_generalDevice, 1, true)); }
+void ShaderBase::AddObjectCB() 
+{ 
+	auto ub = new UploadBuffer<ObjConstants>(m_generalDevice, 1, true);
+	m_objectCBs.push_back(ub);
+	NULLPTR(ub);
+}
 
 void ShaderBase::UpdateObjectCB(DirectX::XMFLOAT4X4* itemWorldMatrix, UINT cbIndex)
 {

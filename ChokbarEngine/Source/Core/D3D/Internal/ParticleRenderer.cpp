@@ -18,7 +18,10 @@ ParticleRenderer::ParticleRenderer() : MeshRenderer()
 
 ParticleRenderer::~ParticleRenderer()
 {
-
+	for (auto& p : m_particles)
+	{
+		DELPTR(p);
+	}
 }
 
 void ParticleRenderer::SetParticleCount(UINT count)
@@ -78,16 +81,16 @@ void ParticleRenderer::Update(float dt)
 
 		InstanceData& pid = m_particleInstanceData[i];
 
-		
+
 		if (!p->IsAlive())
 		{
 			p->Reset();
 			p->ToggleActivity();
 			continue;
 		}
-		
+
 		p->m_CurrentLifeTime += dt;
-		pid.AgeRatio =  (p->m_LifeTime - p->m_CurrentLifeTime) / p->m_LifeTime;
+		pid.AgeRatio = (p->m_LifeTime - p->m_CurrentLifeTime) / p->m_LifeTime;
 
 		// Update position
 		p->m_Transform->Translate(p->m_Velocity.x * dt, p->m_Velocity.y * dt, p->m_Velocity.z * dt);
@@ -107,7 +110,7 @@ void ParticleRenderer::UpdateShaderBuffer()
 {
 	if (ShaderParticle* shader = dynamic_cast<ShaderParticle*>(Mat->GetShader()))
 	{
-		for(int i = 0; i < m_particleInstanceData.size(); i++)
+		for (int i = 0; i < m_particleInstanceData.size(); i++)
 		{
 			shader->UpdateParticleInstanceDataBuffer(i, &m_particleInstanceData[i]);
 		}

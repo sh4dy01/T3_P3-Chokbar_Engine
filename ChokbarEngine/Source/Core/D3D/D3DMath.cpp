@@ -12,6 +12,14 @@ void GeometryHandler::CreateAllMeshes()
 	m_Meshes[2] = CreatePyramid();
 }
 
+void GeometryHandler::DestroyAllMeshes()
+{
+	for (int i = 0; i < _countof(m_Meshes); ++i)
+	{
+		DELPTR(m_Meshes[i]);
+	}
+}
+
 D3DMesh* GeometryHandler::CreateCube()
 {
 	Vertex v[24];
@@ -19,7 +27,7 @@ D3DMesh* GeometryHandler::CreateCube()
 	float width = 0.5f;
 	float height = 0.5f;
 	float depth = 0.5f;
-    
+
 	// Fill in the front face vertex data.
 	v[0] = Vertex(-width, -height, -depth, 0.0f, 0.0f, 0.0f, 1.0F, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
 	v[1] = Vertex(-width, +height, -depth, 0.0f, 0.0f, 0.0f, 1.0F, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f);
@@ -33,8 +41,8 @@ D3DMesh* GeometryHandler::CreateCube()
 	v[7] = Vertex(-width, +height, +depth, 0.0f, 0.0f, 0.0f, 1.0F, 0.0f, 0.0f, 1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
 
 	// Fill in the top face vertex data.
-	v[8]  = Vertex(-width, +height, -depth, 0.0f, 0.0f, 0.0f, 1.0F, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
-	v[9]  = Vertex(-width, +height, +depth, 0.0f, 0.0f, 0.0f, 1.0F, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+	v[8] = Vertex(-width, +height, -depth, 0.0f, 0.0f, 0.0f, 1.0F, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
+	v[9] = Vertex(-width, +height, +depth, 0.0f, 0.0f, 0.0f, 1.0F, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f);
 	v[10] = Vertex(+width, +height, +depth, 0.0f, 0.0f, 0.0f, 1.0F, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
 	v[11] = Vertex(+width, +height, -depth, 0.0f, 0.0f, 0.0f, 1.0F, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f);
 
@@ -56,7 +64,7 @@ D3DMesh* GeometryHandler::CreateCube()
 	v[22] = Vertex(+width, +height, +depth, 0.0f, 0.0f, 0.0f, 1.0F, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f);
 	v[23] = Vertex(+width, -height, +depth, 0.0f, 0.0f, 0.0f, 1.0F, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
 
-	UINT i[36] = 
+	UINT i[36] =
 	{
 		0, 1,  2,  0,  2,  3,
 
@@ -410,7 +418,7 @@ D3DMesh* GeometryHandler::CreatePyramid()
 	};*/
 
 
-	UINT iList[] = 
+	UINT iList[] =
 	{
 		0, 1, 2,
 		3, 4, 5,

@@ -9,6 +9,7 @@ class GeometryHandler
 public:
 
 	static void CreateAllMeshes();
+	static void DestroyAllMeshes();
 
 	static D3DMesh* GetMesh(MeshType type) { return m_Meshes[type]; }
 
