@@ -41,6 +41,8 @@ void MeshRenderer::Init(MeshType meshType, MaterialType matType)
 
 void MeshRenderer::OnDelete()
 {
+	if (!Mat) return;
+
 	Mat->GetShader()->UnBind(ObjectCBIndex);
 }
 
