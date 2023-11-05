@@ -57,6 +57,10 @@ void Resource::CreateShaders(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap
 	m_shaders[MaterialType::PARTICLE] = new ShaderParticle(device, cbvHeap, cbvSrvDescriptorSize, shaderPathParticle);
 	m_shaders[MaterialType::PARTICLE]->Init();
 
+	std::wstring shaderPathSkybox = L"Shader/Sky.hlsl";
+	m_shaders[MaterialType::SKYBOX] = new ShaderSkybox(device, cbvHeap, cbvSrvDescriptorSize, shaderPathSkybox);
+	m_shaders[MaterialType::SKYBOX]->Init();
+
 	CreateMaterials();
 }
 
@@ -70,4 +74,7 @@ void Resource::CreateMaterials()
 
 	m_materials[MaterialType::PARTICLE] = new Material();
 	m_materials[MaterialType::PARTICLE]->SetShader(m_shaders[MaterialType::PARTICLE]);
+
+	m_materials[MaterialType::SKYBOX] = new Material();
+	m_materials[MaterialType::SKYBOX]->SetShader(m_shaders[MaterialType::SKYBOX]);
 }
