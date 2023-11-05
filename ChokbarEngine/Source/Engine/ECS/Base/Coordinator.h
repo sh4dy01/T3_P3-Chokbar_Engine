@@ -33,13 +33,19 @@ public:
 	void RegisterCustomComponent(CustomComponent* customComponent);
 	void UnregisterCustomComponent(CustomComponent* customComponent);
 
+	void RegisterDestroyedEntity(InstanceID entity);
+
+	void DestroyRegisteredEntites();
+
 	void UpdateSystems(float dt);
-	void DestroyEntity(InstanceID entity);
+
 
 private:
 
 	void RegisterComponents();
 	void RegisterSystems();
+
+	void DestroyEntity(InstanceID entity);
 
 public:
 
@@ -126,6 +132,10 @@ public:
 #pragma endregion
 
 private:
+
+	std::vector<InstanceID> m_EntitesToUpdate;
+	std::vector<InstanceID> m_EntitiesToDestroy;
+
 	std::unique_ptr<ComponentManager> m_ComponentManager;
 	std::unique_ptr<EntityManager> m_EntityManager;
 	std::unique_ptr<SystemManager> m_SystemManager;

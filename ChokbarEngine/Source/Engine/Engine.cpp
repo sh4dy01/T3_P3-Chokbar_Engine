@@ -94,6 +94,9 @@ void Engine::Run()
 		if (m_IsPaused) continue;
 
 		Update(m_TimeManager.GetDeltaTime());
+
+		m_Coordinator.DestroyRegisteredEntites();
+
 		Render();
 	}
 }
@@ -120,6 +123,7 @@ void Engine::Update(float dt)
 	m_Coordinator.LateUpdateComponents();
 
 	D3DApp::GetInstance()->Update(dt, m_TimeManager.GetTotalTime());
+
 	CalculateFrameStats();
 }
 
