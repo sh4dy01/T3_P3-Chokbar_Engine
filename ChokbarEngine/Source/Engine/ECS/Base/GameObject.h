@@ -60,11 +60,12 @@ public:
 		component->gameObject = this;
 		component->transform = transform;
 		component->SetEnabled(true);
-		component->OnAddedComponent();
 
 		DEBUG_LOG("Adding component: " + std::string(typeid(T).name()) + " to " + m_Name + " entity");
 
 		Engine::GetCoordinator()->AddComponent<T>(GetInstanceID(), component);
+
+		component->OnAddedComponent();
 
 		return component;
 	}
@@ -75,11 +76,12 @@ public:
 		component->gameObject = this;
 		component->transform = transform;
 		component->SetEnabled(true);
-		component->OnAddedComponent();
 
 		DEBUG_LOG("Adding component: " + std::string(typeid(Component).name()) + " to " + m_Name + " entity");
 
 		Engine::GetCoordinator()->AddComponent<Component>(GetInstanceID(), component);
+
+		component->OnAddedComponent();
 
 		return component;
 	}
