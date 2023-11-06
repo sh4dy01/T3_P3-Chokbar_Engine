@@ -47,4 +47,5 @@ private:
 	Rigidbody* m_AttachedRigidbody;
 	std::vector<TriggerCollisionEvent*> m_triggerCollisionEvents;
 
+
 };

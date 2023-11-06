@@ -1,6 +1,6 @@
 #pragma once
-#include "ECS/Components/Collision/Rigidbody.h"
-#include "ECS/Components/Collision/SphereCollider.h"
+#include "../ECS/Components/Collision/Rigidbody.h"
+#include "../ECS/Components/Collision/SphereCollider.h"
 
 #include <vector>
 
@@ -34,9 +34,9 @@ private:
 
 class PhysicsWorld 
 {
+    friend class Engine;
 public:
 
-    PhysicsWorld();
     ~PhysicsWorld();
 
     void RegisterCollider(Collider* collider);
@@ -45,6 +45,8 @@ public:
     void Update(float dt);
    
 private:
+
+    PhysicsWorld();
 
     void CheckCollision();
     bool AreShapesColliding(Collider* shapeA, Collider* shapeB);

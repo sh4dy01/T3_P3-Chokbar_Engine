@@ -1,6 +1,8 @@
 #include "Chokbar.h"
 #include "CustomComponent.h"
 
+#include "Engine/Engine.h"
+
 CustomComponent::CustomComponent()
 {
 	m_isCustomComponent = true;
@@ -12,10 +14,10 @@ CustomComponent::~CustomComponent()
 
 void CustomComponent::OnAddedComponent()
 {
-	Engine::GetCoordinator()->RegisterCustomComponent(this);
+	Coordinator::GetInstance()->RegisterCustomComponent(this);
 }
 
 void CustomComponent::OnRemovedComponent()
 {
-	Engine::GetCoordinator()->UnregisterCustomComponent(this);
+	Coordinator::GetInstance()->UnregisterCustomComponent(this);
 }

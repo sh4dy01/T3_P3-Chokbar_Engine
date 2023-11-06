@@ -7,8 +7,11 @@
 #include "Engine/ECS/Components/Collision/Collider.h"
 #include "Engine/ECS/Components/Collision/RigidBody.h"
 
+
+
+Coordinator* Coordinator::m_Instance = nullptr;
+
 Coordinator::Coordinator()
-	: m_ComponentManager(nullptr), m_EntityManager(nullptr), m_SystemManager(nullptr)
 {
 }
 
@@ -49,18 +52,28 @@ void Coordinator::RegisterSystems()
 
 }
 
-GameObject* Coordinator::GetEntityByName(const std::string& name) const
+GameObject* Coordinator::GetEntityByName(const std::string& name)
 {
 	return m_EntityManager->GetEntityByName(name);
 }
 
 
-InstanceID Coordinator::GetNewInstanceID() const
+Coordinator* Coordinator::GetInstance()
+{
+	if (!m_Instance)
+	{
+		m_Instance = new Coordinator();
+	}
+
+	return m_Instance;
+}
+
+InstanceID Coordinator::GetNewInstanceID()
 {
 	return m_EntityManager->GetNewInstanceID();
 }
 
-void Coordinator::RegisterGameObject(GameObject* go) const
+void Coordinator::RegisterGameObject(GameObject* go)
 {
 	return m_EntityManager->RegisterGameObject(go);
 }

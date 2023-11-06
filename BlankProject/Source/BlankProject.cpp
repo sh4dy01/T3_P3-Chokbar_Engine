@@ -1,8 +1,6 @@
 #include "BlankProject.h"
 #include "Platform/Windows/WinEntry.h"
 
-#include "Engine/Engine.h"
-
 #include "GameObjects/Camera.h"
 #include "GameObjects/Player.h"
 #include "GameObjects/Asteroid.h"

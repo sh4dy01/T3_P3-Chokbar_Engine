@@ -10,7 +10,6 @@
 #include "D3D/Base/MeshType.h"
 #include "D3D/Base/MaterialType.h"
 
-#include "Engine/Engine.h"
 #include "Engine/Managers/TimeManager.h"
 #include "Engine/Managers/CameraManager.h"
 
