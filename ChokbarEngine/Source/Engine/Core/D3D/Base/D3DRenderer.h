@@ -32,7 +32,7 @@ public:
 	void BeginList();
 	void EndList();
 
-	int UpdateTextureHeap(Texture* tex);
+	int UpdateTextureHeap(Texture* tex, D3D12_SRV_DIMENSION textType);
 
 
 	int m_bufferWidth;

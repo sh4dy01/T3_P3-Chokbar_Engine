@@ -227,7 +227,16 @@ void D3DRenderer::CreateDevice()
 {
 	CreateDXGIFactory1(IID_PPV_ARGS(&m_pDxgiFactory));
 
-	D3D12CreateDevice(nullptr, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&m_pD3dDevice));
+	HRESULT hr = D3D12CreateDevice(nullptr, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&m_pD3dDevice));
+
+	if (FAILED(hr))
+	{
+		IDXGIAdapter* pWarpAdapter;
+		ThrowIfFailed(m_pDxgiFactory->EnumWarpAdapter(IID_PPV_ARGS(&pWarpAdapter)));
+
+		ThrowIfFailed(D3D12CreateDevice(pWarpAdapter, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&m_pD3dDevice)));
+		RELPTR(pWarpAdapter);
+	}
 
 #if defined(DEBUG) || defined(_DEBUG)
 	// DEBUG_CreateInfoQueue();
@@ -456,7 +465,7 @@ void D3DRenderer::GetRenderComponentsRef()
 #pragma endregion
 
 #pragma region UPDATE 
-int D3DRenderer::UpdateTextureHeap(Texture* tex)
+int D3DRenderer::UpdateTextureHeap(Texture* tex, D3D12_SRV_DIMENSION textType)
 {
 	if (!tex) return -1;
 
@@ -465,8 +474,8 @@ int D3DRenderer::UpdateTextureHeap(Texture* tex)
 
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	srvDesc.ViewDimension = textType;
 	srvDesc.Format = tex->Resource->GetDesc().Format;
-	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 	srvDesc.Texture2D.MostDetailedMip = 0;
 	srvDesc.Texture2D.MipLevels = tex->Resource->GetDesc().MipLevels;
 	srvDesc.Texture2D.ResourceMinLODClamp = 0.0f;
@@ -504,7 +513,11 @@ void D3DRenderer::RenderObjects()
 		pr->Render(m_pCommandList);
 	}
 
-	//m_skyRenderers->at(0)->Render(m_pCommandList);
+	// Render the first registered skybox only
+	if (SkyRenderer* sr = m_skyRenderers->at(0))
+	{
+		sr->Render(m_pCommandList);
+	}
 
 }
 #pragma endregion

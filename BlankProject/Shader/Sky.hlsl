@@ -4,7 +4,7 @@ struct LightData
     float3 Dir;
 };
 
-Texture2D gCubeMap : register(t0);
+TextureCube gCubeMap : register(t0);
 
 cbuffer cbPerObject : register(b0)
 {
@@ -64,6 +64,6 @@ PS_INPUT vs_main(VS_INPUT input)
 
 float4 ps_main(PS_INPUT input) : SV_TARGET
 {
-    return gCubeMap.Sample(gsamLinearWrap, input.PosL.xy);
+    return gCubeMap.Sample(gsamLinearWrap, input.PosL);
 
 }

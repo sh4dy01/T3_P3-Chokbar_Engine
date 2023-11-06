@@ -91,11 +91,13 @@ void Engine::Run()
 	{
 		m_Window.PollEvent();
 
+		Sleep(1);
 		m_TimeManager.Tick();
 
 		if (m_IsPaused) continue;
 
 		Update(m_TimeManager.GetDeltaTime());
+		//DEBUG_LOG(m_TimeManager.GetDeltaTime());
 		Render();
 	}
 }

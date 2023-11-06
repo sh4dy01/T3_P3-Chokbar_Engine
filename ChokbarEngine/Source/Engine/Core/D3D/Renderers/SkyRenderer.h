@@ -1,5 +1,6 @@
 #pragma once 
 
+// Double inheritance is not a good idea, I know.
 class SkyRenderer : public Component, public IRenderer
 {
 	friend class D3DRenderer;

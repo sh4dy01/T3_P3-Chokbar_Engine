@@ -11,7 +11,7 @@ D3DMesh* GeometryHandler::m_Meshes[4];
 void GeometryHandler::CreateAllMeshes()
 {
 	m_Meshes[0] = CreateCube();
-	m_Meshes[1] = CreateUVSphere();
+	m_Meshes[1] = CreateGeoSphere();
 	m_Meshes[2] = CreatePyramid();
 }
 
