@@ -16,10 +16,11 @@ public:
 	template <class T = IResourceObject>
 	static T* Load(std::string& filepath)
 	{
-		std::string name = filepath.substr(filepath.find_last_of("/") + 1);
+		std::string name = filepath.substr(filepath.find_last_of("/") + 1).substr(0, filepath.find_last_of("."));
 		T* resource = new T(name);
 		resource->Load(filepath);
-		return resource;
+		m_resources[name] = resource;
+		return m_resources[name];
 	}
 
 	static Material* LoadMaterial(MaterialType matType);
@@ -28,16 +29,17 @@ public:
 	static void ReleaseResources();
 
 	static std::unordered_map<MaterialType, ShaderBase*>& GetShaders() { return m_shaders; }
+	static std::unordered_map<std::string, IResourceObject*>& GetResources() { return m_resources; }
+	static IResourceObject* GetResource(std::string& name) { return m_resources[name]; }
 
 private:
 	static std::unordered_map<MaterialType, ShaderBase*> m_shaders;
 	static std::unordered_map<MaterialType, Material*> m_materials;
+	static std::unordered_map<std::string, IResourceObject*> m_resources;
 
 	static ShaderBase* FindShader(MaterialType& id);
 
 	static void CreateShaders(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, UINT cbvSrvDescriptorSize);
 
 	static void CreateMaterials();
-
-
 };
