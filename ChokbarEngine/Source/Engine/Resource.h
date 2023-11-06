@@ -17,10 +17,20 @@ public:
 	template <class T = IResourceObject>
 	static T* Load(std::string& filepath)
 	{
-		std::string name = filepath.substr(filepath.find_last_of("/") + 1).substr(0, filepath.find_last_of("."));
+		auto dot = filepath.find_last_of(".");
+		std::string name = filepath.substr(filepath.find_last_of("/") + 1, filepath.find_last_of("."));
+
+		if (auto iter = m_resources.find(name) != m_resources.end())
+		{
+			IResourceObject* resource = m_resources[name];
+			T* cRes = reinterpret_cast<T*>(resource);
+			return cRes;
+		}
+
 		T* resource = new T(name);
 		resource->Load(filepath);
 		m_resources[name] = resource;
+
 		return resource;
 	}
 

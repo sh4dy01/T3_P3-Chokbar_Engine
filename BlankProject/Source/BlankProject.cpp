@@ -70,7 +70,7 @@ void Application::Initialize()
 
 	auto* mr3 = new MeshRenderer();
 	mr3->Init(MeshType::SPHERE, MaterialType::TEXTURE);
-	std::string path3 = "Resources/Textures/angry_winnie.dds";
+	std::string path3 = "Resources/Textures/4k.dds";
 	mr3->RegisterTexture(Resource::Load<Texture>(path3));
 	test3->AddComponent<MeshRenderer>(mr3);
 
