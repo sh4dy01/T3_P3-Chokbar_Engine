@@ -3,6 +3,8 @@
 struct InstanceData
 {
 	DirectX::XMFLOAT4X4 World = Identity4x4();
+	DirectX::XMFLOAT4 Color1 = DirectX::XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
+	DirectX::XMFLOAT4 Color2 = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 	float AgeRatio = 0.0f;
 };
 
@@ -79,10 +81,14 @@ public:
 
 	bool IsAlive() const { return m_CurrentLifeTime < m_LifeTime; }
 	bool IsActive() const { return m_IsActive; }
-	void ToggleActivity() { m_IsActive = !m_IsActive; }
+
+	void Sleep() { m_IsActive = false; }
+	void Awake() { m_IsActive = true; }
 
 	void Reset();
 	void Init(float rLifeTime, DirectX::XMFLOAT3 rVel, DirectX::XMFLOAT3 rAngVel, DirectX::XMFLOAT3 parentPos);
+
+
 
 	float m_CurrentLifeTime;
 	float m_LifeTime;
@@ -94,7 +100,4 @@ public:
 
 private:
 	bool m_IsActive;
-
-	DirectX::XMFLOAT4 m_Color1;
-	DirectX::XMFLOAT4 m_Color2;
 };
