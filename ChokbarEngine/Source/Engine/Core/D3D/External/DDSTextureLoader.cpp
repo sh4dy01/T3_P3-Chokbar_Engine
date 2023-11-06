@@ -17,11 +17,12 @@
 // http://go.microsoft.com/fwlink/?LinkId=248926
 // http://go.microsoft.com/fwlink/?LinkId=248929
 //--------------------------------------------------------------------------------------
-#include "Chokbar.h"
 #include <algorithm>
 #include <memory>
 
 #include "DDSTextureLoader.h" 
+
+#include <cassert>
 
 using namespace Microsoft::WRL;
 
