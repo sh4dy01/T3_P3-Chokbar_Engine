@@ -236,6 +236,9 @@
     <ClCompile Include="Source\Engine\Core\D3D\Renderers\SkyRenderer.cpp">
       <Filter>Source\Engine\Core\D3D\Renderers</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Engine\Core\D3D\Shaders\Cubemap.cpp">
+      <Filter>Source\Engine\Core\D3D\Shaders</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Chokbar.h">
@@ -404,6 +407,9 @@
     </ClInclude>
     <ClInclude Include="Source\Engine\Core\D3D\Renderers\SkyRenderer.h">
       <Filter>Source\Engine\Core\D3D\Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Core\D3D\Shaders\Cubemap.h">
+      <Filter>Source\Engine\Core\D3D\Shaders</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
