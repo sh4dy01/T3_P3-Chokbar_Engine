@@ -17,7 +17,10 @@ public:
 
 
 	// Create a new game object ID
-	InstanceID CreateNewObject(Object* go) const;
+	InstanceID GetNewInstanceID() const;
+	void RegisterGameObject(GameObject* go) const;
+
+
 	// Create a new game object ID
 	//GameObject* CreateNewObject(Transform* transform);
 
@@ -39,7 +42,9 @@ private:
 	void RegisterSystems();
 
 public:
-	// Component methods
+
+#pragma region Component methods
+
 	template <typename T>
 	void RegisterComponent() const
 	{
@@ -95,7 +100,17 @@ public:
 		return m_ComponentManager->GetComponentArray<T>();
 	}
 
-	// System methods
+#pragma endregion
+
+#pragma region Entity methods
+
+	GameObject* GetEntityByName(const std::string& name) const;
+
+
+#pragma endregion
+
+#pragma region System methods
+
 	template <typename T>
 	std::shared_ptr<T> RegisterSystem()
 	{
@@ -107,6 +122,8 @@ public:
 	{
 		m_SystemManager->SetSignature<T>(signature);
 	}
+
+#pragma endregion
 
 private:
 	std::unique_ptr<ComponentManager> m_ComponentManager;

@@ -1,7 +1,8 @@
 #include "Chokbar.h"
 
-#include "Core/D3D/Internal/ShaderBase.h"
-#include "Core/D3D/Internal/Material.h"
+#include "D3D/Shaders/ShaderBase.h"
+#include "D3D/Shaders/Material.h"
+#include "IResourceObject.h"
 
 #include "Resource.h"
 
@@ -9,6 +10,7 @@
 
 std::unordered_map<MaterialType, ShaderBase*> Resource::m_shaders;
 std::unordered_map<MaterialType, Material*> Resource::m_materials;
+std::unordered_map<std::string, IResourceObject*> Resource::m_resources;
 
 Resource::~Resource()
 {
@@ -38,6 +40,12 @@ void Resource::CreateResources(ID3D12Device* device, ID3D12DescriptorHeap* cbvHe
 	CreateMaterials();
 }
 
+void Resource::ReleaseResources()
+{
+	m_shaders.clear();
+	m_materials.clear();
+}
+
 ShaderBase* Resource::FindShader(MaterialType& id)
 {
 	auto iter = m_shaders.find(id);
@@ -65,6 +73,10 @@ void Resource::CreateShaders(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap
 	m_shaders[MaterialType::PARTICLE] = new ShaderParticle(device, cbvHeap, cbvSrvDescriptorSize, shaderPathParticle);
 	m_shaders[MaterialType::PARTICLE]->Init();
 
+	std::wstring shaderPathSkybox = L"Shader/Sky.hlsl";
+	m_shaders[MaterialType::SKYBOX] = new ShaderSkybox(device, cbvHeap, cbvSrvDescriptorSize, shaderPathSkybox);
+	m_shaders[MaterialType::SKYBOX]->Init();
+
 	CreateMaterials();
 }
 
@@ -78,4 +90,7 @@ void Resource::CreateMaterials()
 
 	m_materials[MaterialType::PARTICLE] = new Material();
 	m_materials[MaterialType::PARTICLE]->SetShader(m_shaders[MaterialType::PARTICLE]);
+
+	m_materials[MaterialType::SKYBOX] = new Material();
+	m_materials[MaterialType::SKYBOX]->SetShader(m_shaders[MaterialType::SKYBOX]);
 }

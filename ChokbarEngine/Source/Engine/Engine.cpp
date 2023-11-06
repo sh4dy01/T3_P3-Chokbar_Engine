@@ -2,6 +2,8 @@
 #include "Resource.h"
 #include "Engine.h"
 
+#include "D3D/Base/D3DRenderer.h"
+
 #include <numbers>
 
 
@@ -72,7 +74,7 @@ void Engine::Initialize()
 	m_InputHandler.Init(m_Window.GetHandle());
 	OnApplicationFocus();
 
-	D3DApp::GetInstance()->InitializeD3D12(&m_Window);
+	D3DRenderer::GetInstance()->InitializeD3D12(&m_Window);
 }
 
 #pragma endregion
@@ -91,11 +93,13 @@ void Engine::Run()
 	{
 		m_Window.PollEvent();
 
+		Sleep(1);
 		m_TimeManager.Tick();
 
 		if (m_IsPaused) continue;
 
 		Update(m_TimeManager.GetDeltaTime());
+		//DEBUG_LOG(m_TimeManager.GetDeltaTime());
 		Render();
 	}
 }
@@ -121,13 +125,13 @@ void Engine::Update(float dt)
 	m_Coordinator.UpdateComponents();
 	m_Coordinator.LateUpdateComponents();
 
-	D3DApp::GetInstance()->Update(dt, m_TimeManager.GetTotalTime());
+	D3DRenderer::GetInstance()->Update(dt, m_TimeManager.GetTotalTime());
 	CalculateFrameStats();
 }
 
 void Engine::Render()
 {
-	D3DApp::GetInstance()->Render();
+	D3DRenderer::GetInstance()->Render();
 }
 
 #pragma endregion
@@ -167,7 +171,7 @@ void Engine::CalculateFrameStats()
 
 void Engine::OnResize()
 {
-	D3DApp::GetInstance()->OnResize(m_Window.GetWidth(), m_Window.GetHeight());
+	D3DRenderer::GetInstance()->OnResize(m_Window.GetWidth(), m_Window.GetHeight());
 	m_CameraManager.GetMainCamera()->SetAspect(GetAspectRatio());
 }
 

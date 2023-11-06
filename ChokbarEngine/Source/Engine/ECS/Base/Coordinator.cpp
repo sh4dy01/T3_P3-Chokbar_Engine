@@ -1,8 +1,9 @@
 #include "Chokbar.h"
 #include "Coordinator.h"
 
-#include "Core/D3D/Internal/MeshRenderer.h"
-#include "Core/D3D/Internal/ParticleRenderer.h"
+#include "D3D/Renderers/MeshRenderer.h"
+#include "D3D/Renderers/ParticleRenderer.h"
+#include "D3D/Renderers/SkyRenderer.h"
 #include "Engine/ECS/Components/Collision/Collider.h"
 #include "Engine/ECS/Components/Collision/RigidBody.h"
 
@@ -39,6 +40,7 @@ void Coordinator::RegisterComponents()
 	RegisterComponent<SphereCollider>();
 	RegisterComponent<CameraComponent>();
 	RegisterComponent<ParticleRenderer>();
+	RegisterComponent<SkyRenderer>();
 }
 
 void Coordinator::RegisterSystems()
@@ -47,10 +49,20 @@ void Coordinator::RegisterSystems()
 
 }
 
-
-InstanceID Coordinator::CreateNewObject(Object* go) const
+GameObject* Coordinator::GetEntityByName(const std::string& name) const
 {
-	return m_EntityManager->RegisterEntity(go);
+	return m_EntityManager->GetEntityByName(name);
+}
+
+
+InstanceID Coordinator::GetNewInstanceID() const
+{
+	return m_EntityManager->GetNewInstanceID();
+}
+
+void Coordinator::RegisterGameObject(GameObject* go) const
+{
+	return m_EntityManager->RegisterGameObject(go);
 }
 
 void Coordinator::AwakeComponents()
