@@ -52,7 +52,8 @@ void Application::PreInitialize()
 void Application::Initialize()
 {
 	GameObject::Instantiate<Player>()->transform->SetPosition(0, 0, -5);
-	auto origin = GameObject::Instantiate()->AddComponent<MeshRenderer>(new MeshRenderer(PYRAMID, SIMPLE));
+	auto origin = GameObject::Instantiate()->AddComponent<MeshRenderer>();
+	origin->Init(MeshType::SPHERE, MaterialType::SIMPLE);
 
 	DirectX::XMFLOAT3 pos = { 0, 0, 0 };
 	float scale = 1;
@@ -105,8 +106,7 @@ void Application::Initialize()
 
 		go->GetComponent<MeshRenderer>()->Bounds.Center = pos;
 		go->GetComponent<MeshRenderer>()->Bounds.Radius = scale;
-
-	player = nullptr;
+	*/
 }
 
 void Application::Run()

@@ -3,17 +3,18 @@
 
 #include "Core/D3D/D3DUtils.h"
 #include "Engine/ECS/Components/Component.h"
-/*
+
 struct Plane
 {
 	Plane() = default;
-	Plane(const DirectX::XMFLOAT3& normal, float distance)
-		: normal(normal), distance(distance)
+	Plane(const DirectX::XMFLOAT3 point, const DirectX::XMFLOAT3& normal)
+		: position(point), normal(normal)
 	{
 	}
 
 	// unit vector
 	XMFLOAT3 normal = { 0.f, 1.f, 0.f };
+	XMFLOAT3 position = { 0.f, 0.f, 0.f };
 
 	// distance from origin to the nearest point in the plane
 	float     distance = 0.f;
@@ -30,7 +31,7 @@ struct Frustum
 	Plane farFace;
 	Plane nearFace;
 };
-*/
+
 class CameraComponent : public Component
 {
 public:
@@ -113,7 +114,7 @@ private:
 
 	bool m_ViewDirty;
 
-	//Frustum m_Frustum;
+	Frustum m_Frustum;
 
 	// Cache View/Proj matrices.
 	DirectX::XMFLOAT4X4 m_View = Identity4x4();

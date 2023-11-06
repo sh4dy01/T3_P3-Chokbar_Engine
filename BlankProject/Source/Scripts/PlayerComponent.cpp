@@ -65,7 +65,7 @@ void PlayerComponent::Update()
 	}
 	else if (InputHandler::IsKeyHeld(VK_SHIFT))
 	{
-		transform->Translate(0, -m_Speed * GameTimer::GetDeltaTime(), 0, Transform::Space::World);
+		transform->Translate(0, -m_Speed * TimeManager::GetDeltaTime(), 0, Transform::Space::World);
 	}
 
 	transform->RotateYaw(InputHandler::GetAxisX() * 50.f * TimeManager::GetDeltaTime(), Transform::Space::World);

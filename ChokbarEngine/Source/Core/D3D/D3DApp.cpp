@@ -476,18 +476,15 @@ void D3DApp::UpdateRenderItems(const float dt, const float totalTime)
 	BoundingFrustum::CreateFromMatrix(m_Frustum, Engine::GetMainCamera()->GetProj());
 	m_Frustum.Origin = Engine::GetMainCamera()->transform->GetPosition();
 	m_Frustum.Orientation = Engine::GetMainCamera()->transform->GetQuaternion();
-	//m_Frustum.Origin = Engine::GetMainCamera()->transform->GetPosition();
-	//m_Frustum.Orientation = Engine::GetMainCamera()->transform->GetQuaternion();
 
 
 	const XMMATRIX view = CameraManager::GetMainCamera()->GetView();
 	const XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(view), view);
 
-	int visibleMeshRendered = 0;
+	int visibleMeshUpdated = 0;
 	for (const auto mr : *m_meshRenderers)
-	for (MeshRenderer* mr : *m_meshRenderers)
 	{
-		if (!mr || !mr->IsEnabled()) continue;
+		if (!mr || !mr->IsEnabled() || !mr->Mat) continue;
 
 		mr->transform->UpdateWorldMatrix();
 
@@ -496,15 +493,10 @@ void D3DApp::UpdateRenderItems(const float dt, const float totalTime)
 
 		if (m_IsFrustumCullingEnabled && IsObjectInFrustum(invView, mr))
 		{
-			visibleMeshRendered++;
+			visibleMeshUpdated++;
 
 			mr->Mat->GetShader()->UpdateObjectCB(mr->transform->GetWorldMatrix(), mr->ObjectCBIndex);
 		}
-	}
-
-	DEBUG_LOG("Visible Mesh Updated: " << visibleMeshRendered)
-}
-		mr->Mat->GetShader()->UpdateObjectCB(mr->transform->GetWorldMatrix(), mr->ObjectCBIndex);
 	}
 
 	for (ParticleRenderer* pr : *m_particleRenderers)
@@ -513,22 +505,33 @@ void D3DApp::UpdateRenderItems(const float dt, const float totalTime)
 
 		pr->Update(dt);
 	}
+
+	DEBUG_LOG("Visible Mesh Updated: " << visibleMeshUpdated)
 }
 
 void D3DApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList)
 {
+	const XMMATRIX view = CameraManager::GetMainCamera()->GetView();
+	const XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(view), view);
+
+	int visibleMeshRendered = 0;
 	for (MeshRenderer* mr : *m_meshRenderers)
 	{
 		if (!mr) continue;
 
 		if (!mr->IsEnabled() || !mr->Mat || !mr->Mesh) continue;
 
-		auto shader = mr->Mat->GetShader();
-		shader->BeginDraw(cmdList);
+		if (m_IsFrustumCullingEnabled && IsObjectInFrustum(invView, mr))
+		{
+			visibleMeshRendered++;
 
-		shader->Draw(cmdList, mr);
+			auto shader = mr->Mat->GetShader();
+			shader->BeginDraw(cmdList);
 
-		shader->EndDraw(cmdList);
+			shader->Draw(cmdList, mr);
+
+			shader->EndDraw(cmdList);
+		}
 	}
 
 	for (ParticleRenderer* pr : *m_particleRenderers)
@@ -542,8 +545,7 @@ void D3DApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList)
 
 		shader->Draw(cmdList, pr);
 
-			mr->Mat->GetShader()->EndDraw(cmdList);
-		}
+		shader->EndDraw(cmdList);
 	}
 
 	DEBUG_LOG("Visible Mesh Rendered: " << visibleMeshRendered)

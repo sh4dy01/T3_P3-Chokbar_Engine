@@ -180,6 +180,7 @@ XMFLOAT4X4 CameraComponent::GetProj4x4f() const
 void CameraComponent::UpdateProjectionMatrix()
 {
 	XMStoreFloat4x4(&m_Proj, XMMatrixPerspectiveFovLH(XMConvertToRadians(m_FovY), m_Aspect, m_NearZ, m_FarZ));
+	UpdateFrustum();
 }
 
 void CameraComponent::UpdateViewMatrix()
@@ -196,35 +197,44 @@ void CameraComponent::UpdateViewMatrix()
 
 		XMStoreFloat4x4(&m_View, XMMatrixLookAtLH(pos, target, XMLoadFloat3(&transform->GetUp())));
 		m_ViewDirty = false;
-
-		
 	}
 }
 
-/*
+
 void CameraComponent::UpdateFrustum() 
 {
 	const float halfVSide = m_FarZ * tanf(m_FovY * .5f);
 	const float halfHSide = halfVSide * m_Aspect;
+
 	XMFLOAT3 frontMultFar;
 	DirectX::XMStoreFloat3(&frontMultFar, DirectX::XMVectorScale(DirectX::XMLoadFloat3(&m_Look), m_FarZ));
-	
-	XMFLOAT3 scaledRight;
-	XMFLOAT3 scaledUp;
-
 
 	XMFLOAT3 camPos = transform->GetPosition();
 
 	XMFLOAT3 scaledLookWithFar;
 	DirectX::XMStoreFloat3(&scaledLookWithFar, DirectX::XMVectorScale(DirectX::XMLoadFloat3(&m_Look), m_NearZ));
+	m_Frustum.nearFace = Plane(scaledLookWithFar, m_Look);
 
-	m_Frustum.nearFace = Plane(scaledLookWithFar, m_NearZ);
+	XMFLOAT3 camAndFront;
+	DirectX::XMStoreFloat3(&camAndFront, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&camPos), DirectX::XMLoadFloat3(&frontMultFar)));
 
+	XMFLOAT3 farFace;
+	XMStoreFloat3(&farFace, XMVectorNegate(XMLoadFloat3(&m_Look)));
+	m_Frustum.farFace = Plane(camAndFront, farFace);
 
-	m_Frustum.farFace = { camPos + frontMultFar, -m_Look };
-	m_Frustum.rightFace = { camPos, DirectX::XMVector2Cross(frontMultFar - m_Right * halfHSide, m_Up) };
-	m_Frustum.leftFace = { camPos, DirectX::XMVector2Cross(cam.Up,frontMultFar + cam.Right * halfHSide) };
-	m_Frustum.topFace = { camPos, DirectX::XMVector2Cross(cam.Right, frontMultFar - cam.Up * halfVSide) };
-	m_Frustum.bottomFace = { camPos, DirectX::XMVector2Cross(frontMultFar + m_Up * halfVSide, DirectX::XMLoadFloat3(cam.Right)) };
+	XMFLOAT3 rightFace;
+	DirectX::XMStoreFloat3(&rightFace, DirectX::XMVector2Cross(DirectX::XMVectorScale(DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&frontMultFar), XMVectorNegate(DirectX::XMLoadFloat3(&m_Right))), halfHSide), XMLoadFloat3(&m_Up)));
+	m_Frustum.rightFace = Plane(camPos, rightFace);
+	
+	XMFLOAT3 leftFace;
+	DirectX::XMStoreFloat3(&leftFace, DirectX::XMVector2Cross(XMLoadFloat3(&m_Up), DirectX::XMVectorAdd(DirectX::XMVectorScale(XMLoadFloat3(&m_Right), halfHSide), DirectX::XMLoadFloat3(&frontMultFar))));
+	m_Frustum.leftFace = Plane(camPos, leftFace);
+
+	XMFLOAT3 topFace;
+	DirectX::XMStoreFloat3(&topFace, DirectX::XMVector2Cross(XMLoadFloat3(&m_Right), DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&frontMultFar), DirectX::XMVectorScale(XMLoadFloat3(&m_Up), halfVSide))));
+	m_Frustum.topFace = Plane(camPos, topFace);
+
+	XMFLOAT3 bottomFace;
+	DirectX::XMStoreFloat3(&bottomFace, DirectX::XMVector2Cross(XMVectorScale(DirectX::XMLoadFloat3(&m_Up), halfVSide), XMLoadFloat3(&m_Right)));
+	m_Frustum.bottomFace = Plane(camPos, bottomFace);
 }
-*/

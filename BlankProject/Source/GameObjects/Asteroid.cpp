@@ -10,7 +10,7 @@ Asteroid::Asteroid()
 	AddComponent<Rigidbody>();
 	MeshRenderer* meshRenderer = new MeshRenderer();
 	meshRenderer->Init(MeshType::SPHERE, MaterialType::SIMPLE);
-	AddComponent<MeshRenderer>(new MeshRenderer());
+	AddComponent<MeshRenderer>(meshRenderer);
 	AddComponent<SphereCollider>();
 }
 
