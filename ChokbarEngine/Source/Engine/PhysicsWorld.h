@@ -39,18 +39,18 @@ public:
     PhysicsWorld();
     ~PhysicsWorld();
 
-    void RegisterRigidBody(Rigidbody* rigidbody);
-    void RemoveRigidBody(Rigidbody* rigidbody);
+    void RegisterCollider(Collider* collider);
+    void RemoveCollider(Collider* collider);
 
     void Update(float dt);
    
 private:
 
     void CheckCollision();
-    bool CheckCollisionShapes(Rigidbody* rbA, Rigidbody* rbB);
+    bool AreShapesColliding(Collider* shapeA, Collider* shapeB);
     void HandleCollision(Collider* sphereA, Collider* sphereB);
 
-    bool AreSpheresColliding(SphereCollider* sphere1, SphereCollider* sphere2) const;
+    bool AreSpheresColliding(SphereCollider* sphereA, SphereCollider* sphereB) const;
 
     void CreateNewCollisionInfo(Collider* sphereA, Collider* sphereB);
     CollisionInfo* GetCollisionInfo(const Collider* sphereA, const Collider* sphereB) const;
@@ -62,7 +62,7 @@ private:
 //    std::list<CollisionShape*> objects;
 //};
 
-    std::vector<Rigidbody*> m_rigidbodies;
+    std::vector<Collider*> m_RegisteredCollider;
     std::vector<CollisionInfo*> m_RegisteredCollisionInfos;
 
     CollisionInfo* m_CurrentCollisionInfo;
@@ -70,7 +70,6 @@ private:
     int m_gridSize;
     float m_cellSize;
     float m_timer;
-
 
 
     //SpatialGridCell*** m_grid;

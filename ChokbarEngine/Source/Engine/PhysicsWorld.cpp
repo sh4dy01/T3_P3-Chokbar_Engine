@@ -27,7 +27,7 @@ PhysicsWorld::PhysicsWorld()
 
 PhysicsWorld::~PhysicsWorld()
 {
-	for (auto& rigidbody : m_rigidbodies)
+	for (auto& rigidbody : m_RegisteredCollider)
 	{
 		rigidbody = nullptr;
 	}
@@ -37,7 +37,7 @@ PhysicsWorld::~PhysicsWorld()
 		DELPTR(collisionInfo);
 	}
 
-	m_rigidbodies.clear();
+	m_RegisteredCollider.clear();
 }
 
 void PhysicsWorld::Update(float dt)
@@ -54,40 +54,41 @@ void PhysicsWorld::Update(float dt)
 	}
 }
 
-void PhysicsWorld::RegisterRigidBody(Rigidbody* rigidbody)
+void PhysicsWorld::RegisterCollider(Collider* collider)
 {
-	m_rigidbodies.push_back(rigidbody);
+	m_RegisteredCollider.push_back(collider);
 }
 
-void PhysicsWorld::RemoveRigidBody(Rigidbody* rigidbody)
+void PhysicsWorld::RemoveCollider(Collider* collider)
 {
-	if (m_rigidbodies.empty()) return;
+	if (m_RegisteredCollider.empty()) return;
 
-	std::erase(m_rigidbodies, rigidbody);
+	std::erase(m_RegisteredCollider, collider);
 }
 
 void PhysicsWorld::CheckCollision()
 {
-	if (m_rigidbodies.size() < 2) return;
+	if (m_RegisteredCollider.size() < 2) return;
 
-	for (size_t i = 0; i < m_rigidbodies.size(); i++)
+	for (size_t i = 0; i < m_RegisteredCollider.size(); i++)
 	{
-		for (size_t j = 0; j < m_rigidbodies.size(); j++)
+		for (size_t j = i + 1; j < m_RegisteredCollider.size(); j++)
 		{
 			if (i == j) continue;
 
-			if (CheckCollisionShapes(m_rigidbodies[i], m_rigidbodies[j]))
+			if (AreShapesColliding(m_RegisteredCollider[i], m_RegisteredCollider[j]))
 			{
 				switch (m_CurrentCollisionInfo->GetState())
 				{
+
 				case Enter:
 
 					m_CurrentCollisionInfo->GetColliderA()->CallOnTriggerEnter(m_CurrentCollisionInfo->GetColliderB());
 					m_CurrentCollisionInfo->GetColliderB()->CallOnTriggerEnter(m_CurrentCollisionInfo->GetColliderA());
 
-					DEBUG_LOG(m_rigidbodies[i]->gameObject->GetName() << " entered in collision with " << m_rigidbodies[j]->gameObject->GetName())
+					DEBUG_LOG(m_CurrentCollisionInfo->GetColliderA()->gameObject->GetName() << " entered in collision with " << m_CurrentCollisionInfo->GetColliderB()->gameObject->GetName())
 
-					break;
+						break;
 				case Stay:
 
 					//m_rigidbodies[i]->CallOnCollisionStay(m_CurrentCollisionInfo.ColliderB);
@@ -101,75 +102,66 @@ void PhysicsWorld::CheckCollision()
 					//m_rigidbodies[i]->CallOnCollisionExit(m_CurrentCollisionInfo.ColliderB);
 					//m_rigidbodies[j]->CallOnCollisionExit(m_CurrentCollisionInfo.ColliderA);
 
-					DEBUG_LOG(m_rigidbodies[i]->gameObject->GetName() << " exited collision with " << m_rigidbodies[j]->gameObject->GetName())
-					std::erase(m_RegisteredCollisionInfos, m_CurrentCollisionInfo);
+					DEBUG_LOG(m_CurrentCollisionInfo->GetColliderA()->gameObject->GetName() << " exited collision with " << m_CurrentCollisionInfo->GetColliderB()->gameObject->GetName())
+						std::erase(m_RegisteredCollisionInfos, m_CurrentCollisionInfo);
 
 					break;
-				}
-					
-				//m_rigidbodies[i]->SetVelocity(XMFLOAT3(0, 0, 0));
 
-				//DEBUG_LOG(m_rigidbodies[i]->gameObject->GetName() << " collided with " << m_rigidbodies[j]->gameObject->GetName());
+				}
 			}
 		}
 	}
 }
 
-bool PhysicsWorld::CheckCollisionShapes(Rigidbody* rbA, Rigidbody* rbB)
+bool PhysicsWorld::AreShapesColliding(Collider* shapeA, Collider* shapeB)
 {
-	for (const auto& shapeA : rbA->GetAllCollisionShape())
+	if (shapeA->GetType() == Collider::ShapeType::Sphere && shapeB->GetType() == Collider::ShapeType::Sphere)
 	{
-		for (const auto& shapeB : rbB->GetAllCollisionShape())
+		const auto sphereA = dynamic_cast<SphereCollider*>(shapeA);
+		const auto sphereB = dynamic_cast<SphereCollider*>(shapeB);
+
+		if (AreSpheresColliding(sphereA, sphereB))
 		{
-			if (shapeA->GetType() == Collider::ShapeType::Sphere && shapeB->GetType() == Collider::ShapeType::Sphere)
-			{
-				const auto sphereA = dynamic_cast<SphereCollider*>(shapeA);
-				const auto sphereB = dynamic_cast<SphereCollider*>(shapeB);
+			HandleCollision(sphereA, sphereB);
 
-				if (AreSpheresColliding(sphereA, sphereB))
-				{
-					HandleCollision(sphereA, sphereB);
-
-					return true;
-				}
-				// If there is a collision already registered
-				else if (!m_RegisteredCollisionInfos.empty())
-				{
-					// We check if the collision is still occuring and set it to exit
-					if (const auto collisionInfo = GetCollisionInfo(sphereA, sphereB))
-					{
-						collisionInfo->UpdateState(Exit);
-						m_CurrentCollisionInfo = collisionInfo;
-
-						// return true to handle the exit trigger
-						return true;
-					}
-				}	
-
-				return false;
-			}
-
-			//          else if (shapeA->GetType() == CollisionShape::ShapeType::Sphere && shapeB->GetType() == CollisionShape::ShapeType::Box)
-			//          {
-				  //		// sphere-box collision
-				  //		// TODO
-				  //	}
-			//          else if (shapeA->GetType() == CollisionShape::ShapeType::Box && shapeB->GetType() == CollisionShape::ShapeType::Sphere)
-			//          {
-				  //		// box-sphere collision
-				  //		// TODO
-				  //	}
-			//          else if (shapeA->GetType() == CollisionShape::ShapeType::Box && shapeB->GetType() == CollisionShape::ShapeType::Box)
-			//        {
-				  //		// box-box collision
-				  //		// TODO
-				  //	}
-				  //}
-
+			return true;
 		}
+
+		/*
+		// If there is a collision already registered
+		else if (!m_RegisteredCollisionInfos.empty())
+		{
+			// We check if the collision is still occuring and set it to exit
+			if (const auto collisionInfo = GetCollisionInfo(sphereA, sphereB))
+			{
+				collisionInfo->UpdateState(Exit);
+				m_CurrentCollisionInfo = collisionInfo;
+
+				// return true to handle the exit trigger
+			}
+		}	*/
+
 	}
 
 	return false;
+
+	//          else if (shapeA->GetType() == CollisionShape::ShapeType::Sphere && shapeB->GetType() == CollisionShape::ShapeType::Box)
+	//          {
+		  //		// sphere-box collision
+		  //		// TODO
+		  //	}
+	//          else if (shapeA->GetType() == CollisionShape::ShapeType::Box && shapeB->GetType() == CollisionShape::ShapeType::Sphere)
+	//          {
+		  //		// box-sphere collision
+		  //		// TODO
+		  //	}
+	//          else if (shapeA->GetType() == CollisionShape::ShapeType::Box && shapeB->GetType() == CollisionShape::ShapeType::Box)
+	//        {
+		  //		// box-box collision
+		  //		// TODO
+		  //	}
+		  //}
+
 }
 
 void PhysicsWorld::HandleCollision(Collider* const sphereA, Collider* const sphereB)

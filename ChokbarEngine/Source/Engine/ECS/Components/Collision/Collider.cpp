@@ -42,7 +42,17 @@ void Collider::CallOnTriggerExit(Collider* other) const
 void Collider::OnAddedComponent()
 {
 	const auto rigidbody = gameObject->GetComponent<Rigidbody>();
-	rigidbody->RegisterCollisionShape(this);
+	m_AttachedRigidbody = rigidbody;
+
+	if (rigidbody != nullptr)
+		Engine::GetPhysicsWorld()->RegisterCollider(this);
+	else 
+		DEBUG_LOG("Collider component added to a game object without a rigidbody component")
+}
+
+void Collider::OnRemovedComponent()
+{
+	Engine::GetPhysicsWorld()->RemoveCollider(this);
 }
 
 void Collider::RegisterTriggerCollisionEvent(TriggerCollisionEvent* triggerCollisionEvent)
