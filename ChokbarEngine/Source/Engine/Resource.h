@@ -4,6 +4,7 @@
 
 class ShaderBase;
 class Material;
+class IResourceObject;
 struct ID3D12Device;
 struct ID3D12DescriptorHeap;
 
@@ -20,7 +21,7 @@ public:
 		T* resource = new T(name);
 		resource->Load(filepath);
 		m_resources[name] = resource;
-		return m_resources[name];
+		return resource;
 	}
 
 	static Material* LoadMaterial(MaterialType matType);

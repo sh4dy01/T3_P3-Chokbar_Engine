@@ -2,11 +2,13 @@
 
 #include "D3D/Shaders/ShaderBase.h"
 #include "D3D/Shaders/Material.h"
+#include "IResourceObject.h"
 
 #include "Resource.h"
 
 std::unordered_map<MaterialType, ShaderBase*> Resource::m_shaders;
 std::unordered_map<MaterialType, Material*> Resource::m_materials;
+std::unordered_map<std::string, IResourceObject*> Resource::m_resources;
 
 Resource::~Resource()
 {
