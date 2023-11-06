@@ -50,27 +50,67 @@ void Application::PreInitialize()
 void Application::Initialize()
 {
 	GameObject::Instantiate<Player>()->transform->SetPosition(0, 0, -5);
+	auto origin = GameObject::Instantiate()->AddComponent<MeshRenderer>(new MeshRenderer(PYRAMID, SIMPLE));
 
 	DirectX::XMFLOAT3 pos = { 0, 0, 0 };
 	float scale = 1;
 
-	int range = 300;
-	int scaleRange = 10;
-	for (int i = 0; i < 300; i++)
+	auto go = GameObject::Instantiate<Asteroid>();
+	go->transform->SetPosition(pos);
+	go->transform->SetScale(scale);
+	go->GetComponent<MeshRenderer>()->Bounds.Center = pos;
+	go->GetComponent<MeshRenderer>()->Bounds.Radius = scale;
+
+
+	scale = 2;
+	pos.x = 3;
+	go = GameObject::Instantiate<Asteroid>();
+	go->transform->SetPosition(pos);
+	go->transform->SetScale(scale);
+	go->GetComponent<MeshRenderer>()->Bounds.Center = pos;
+	go->GetComponent<MeshRenderer>()->Bounds.Radius = scale;
+
+
+
+	scale = 3;
+	pos.x = 8;
+
+	go = GameObject::Instantiate<Asteroid>();
+	go->transform->SetPosition(pos);
+	go->transform->SetScale(scale);
+	go->GetComponent<MeshRenderer>()->Bounds.Center = pos;
+	go->GetComponent<MeshRenderer>()->Bounds.Radius = scale;
+
+
+
+	/*
+	int range = 100;
+	int scaleRange = 5;
+	for (int i = 0; i < 200; i++)
 	{
 		// create a vector3 with random values of range -10 to 10
 		pos = {
 			static_cast<float>(rand() % range - range/2),
 			static_cast<float>(rand() % range - range / 2),
-			static_cast<float>(rand() % range - range / 2)
+			0
 		};
 
 		scale  = static_cast<float>(rand() % scaleRange + 1);
 
-		const auto go = GameObject::Instantiate<Asteroid>();
+		auto go = GameObject::Instantiate<Asteroid>();
 		go->transform->SetPosition(pos);
 		go->transform->SetScale(scale);
+
+		go->GetComponent<MeshRenderer>()->Bounds.Center = pos;
+		go->GetComponent<MeshRenderer>()->Bounds.Radius = scale;
+
+		//auto debug = GameObject::Instantiate();
+		//debug->AddComponent<MeshRenderer>(new MeshRenderer(PYRAMID, SIMPLE));
+
+		//debug->transform->SetPosition(go->GetComponent<MeshRenderer>()->Bounds.Center);
+		//debug->transform->SetScale(go->GetComponent<MeshRenderer>()->Bounds.Radius * 1.5f);
 	}
+	*/
 }
 
 void Application::Run()

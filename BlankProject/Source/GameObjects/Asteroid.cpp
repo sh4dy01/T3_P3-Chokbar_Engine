@@ -10,8 +10,8 @@ Asteroid::Asteroid()
 	//AddComponent<Rigidbody>();
 	std::string path = "Resources/Textures/mars.dds";
 
-	auto mr = AddComponent<MeshRenderer>(new MeshRenderer(SPHERE, SIMPLE));
-	//mr->RegisterTexture(Resource::Load<Texture>(path));
+	auto mr = AddComponent<MeshRenderer>(new MeshRenderer(SPHERE, TEXTURE));
+	mr->RegisterTexture(Resource::Load<Texture>(path));
 
 	//AddComponent<SphereCollider>();
 

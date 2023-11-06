@@ -3,8 +3,34 @@
 
 #include "Core/D3D/D3DUtils.h"
 #include "Engine/ECS/Components/Component.h"
+/*
+struct Plane
+{
+	Plane() = default;
+	Plane(const DirectX::XMFLOAT3& normal, float distance)
+		: normal(normal), distance(distance)
+	{
+	}
 
+	// unit vector
+	XMFLOAT3 normal = { 0.f, 1.f, 0.f };
 
+	// distance from origin to the nearest point in the plane
+	float     distance = 0.f;
+};
+
+struct Frustum
+{
+	Plane topFace;
+	Plane bottomFace;
+
+	Plane rightFace;
+	Plane leftFace;
+
+	Plane farFace;
+	Plane nearFace;
+};
+*/
 class CameraComponent : public Component
 {
 public:
@@ -58,6 +84,7 @@ private:
 
 	void UpdateWindowWithNewRange();
 	void UpdateProjectionMatrix();
+	void UpdateFrustum();
 
 private:
 
@@ -86,7 +113,7 @@ private:
 
 	bool m_ViewDirty;
 
-	DirectX::BoundingFrustum m_Frustum;
+	//Frustum m_Frustum;
 
 	// Cache View/Proj matrices.
 	DirectX::XMFLOAT4X4 m_View = Identity4x4();

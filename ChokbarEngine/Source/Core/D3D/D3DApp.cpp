@@ -467,18 +467,25 @@ int D3DApp::UpdateTextureHeap(Texture* tex)
 
 void D3DApp::UpdateRenderItems(const float dt, const float totalTime)
 {
+	BoundingFrustum::CreateFromMatrix(m_Frustum, Engine::GetMainCamera()->GetProj());
+	m_Frustum.Origin = Engine::GetMainCamera()->transform->GetPosition();
+	m_Frustum.Orientation = Engine::GetMainCamera()->transform->GetQuaternion();
+	//m_Frustum.Origin = Engine::GetMainCamera()->transform->GetPosition();
+	//m_Frustum.Orientation = Engine::GetMainCamera()->transform->GetQuaternion();
+
+
 	const XMMATRIX view = CameraManager::GetMainCamera()->GetView();
 	const XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(view), view);
 
 	int visibleMeshRendered = 0;
 	for (const auto mr : *m_meshRenderers)
 	{
-		if (!mr || !mr->IsEnabled() || !mr->transform->IsDirty()) continue;
+		if (!mr || !mr->IsEnabled()) continue;
 
 		mr->transform->UpdateWorldMatrix();
 
-		mr->Bounds.Center = mr->transform->GetPosition();
-		mr->Bounds.Radius = mr->transform->GetMaxScale();
+		//mr->Bounds.Center = mr->transform->GetPosition();
+		//mr->Bounds.Radius = mr->transform->GetMaxScale();
 
 		if (m_IsFrustumCullingEnabled && IsObjectInFrustum(invView, mr))
 		{
@@ -500,6 +507,9 @@ void D3DApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList)
 	for (const auto mr : *m_meshRenderers)
 	{
 		if (!mr || !mr->IsEnabled()) continue;
+
+		//mr->Bounds.Center = mr->transform->GetPosition();
+		//mr->Bounds.Radius = mr->transform->GetMaxScale();
 
 		if (m_IsFrustumCullingEnabled && IsObjectInFrustum(invView, mr))
 		{
@@ -544,7 +554,7 @@ bool D3DApp::IsObjectInFrustum(const XMMATRIX& invView, const MeshRenderer* cons
 	m_Frustum.Transform(localSpaceFrustum, viewToLocal);
 
 	// Perform the sphere/frustum intersection test in local space.
-	return localSpaceFrustum.Contains(mr->Bounds) != DirectX::DISJOINT; //|| (mFrustumCullingEnabled == false)
+	return localSpaceFrustum.Contains(mr->Bounds) != DirectX::DISJOINT;
 }
 
 #pragma endregion

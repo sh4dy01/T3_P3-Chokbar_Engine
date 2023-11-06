@@ -186,6 +186,7 @@ void CameraComponent::UpdateViewMatrix()
 {
 	if (transform->IsDirty() || m_ViewDirty)
 	{
+
 		XMFLOAT3 Position = transform->GetPosition();
 		XMVECTOR pos = XMVectorSet(Position.x, Position.y, Position.z, 1.0F);
 		//XMVECTOR target = XMVectorSet(0.0F, 0.5F, 0.0F, 0.0F);
@@ -196,48 +197,34 @@ void CameraComponent::UpdateViewMatrix()
 		XMStoreFloat4x4(&m_View, XMMatrixLookAtLH(pos, target, XMLoadFloat3(&transform->GetUp())));
 		m_ViewDirty = false;
 
-		/*
-		XMVECTOR R = XMLoadFloat3(&m_Right);
-		XMVECTOR U = XMLoadFloat3(&m_Up);
-		XMVECTOR L = XMLoadFloat3(&m_Look);
-		XMVECTOR P = XMLoadFloat3(&transform->GetPosition());
-
-		// Keep camera’s axes orthogonal to each other and of unit length.
-		L = XMVector3Normalize(L);
-		U = XMVector3Normalize(XMVector3Cross(L, R));
-
-		// U, L already ortho-normal, so no need to normalize cross product.
-		R = XMVector3Cross(U, L);
-
-		// Fill in the view matrix entries.
-		float x = -XMVectorGetX(XMVector3Dot(P, R));
-		float y = -XMVectorGetX(XMVector3Dot(P, U));
-		float z = -XMVectorGetX(XMVector3Dot(P, L));
-
-		XMStoreFloat3(&m_Right, R);
-		XMStoreFloat3(&m_Up, U);
-		XMStoreFloat3(&m_Look, L);
-
-		m_View(0, 0) = m_Right.x;
-		m_View(1, 0) = m_Right.y;
-		m_View(2, 0) = m_Right.z;
-		m_View(3, 0) = x;
-
-		m_View(0, 1) = m_Up.x;
-		m_View(1, 1) = m_Up.y;
-		m_View(2, 1) = m_Up.z;
-		m_View(3, 1) = y;
-
-		m_View(0, 2) = m_Look.x;
-		m_View(1, 2) = m_Look.y;
-		m_View(2, 2) = m_Look.z;
-		m_View(3, 2) = z;
-
-		m_View(0, 3) = 0.0f;
-		m_View(1, 3) = 0.0f;
-		m_View(2, 3) = 0.0f;
-		m_View(3, 3) = 1.0f;
-				*/
-
+		
 	}
 }
+
+/*
+void CameraComponent::UpdateFrustum() 
+{
+	const float halfVSide = m_FarZ * tanf(m_FovY * .5f);
+	const float halfHSide = halfVSide * m_Aspect;
+	XMFLOAT3 frontMultFar;
+	DirectX::XMStoreFloat3(&frontMultFar, DirectX::XMVectorScale(DirectX::XMLoadFloat3(&m_Look), m_FarZ));
+	
+	XMFLOAT3 scaledRight;
+	XMFLOAT3 scaledUp;
+
+
+	XMFLOAT3 camPos = transform->GetPosition();
+
+	XMFLOAT3 scaledLookWithFar;
+	DirectX::XMStoreFloat3(&scaledLookWithFar, DirectX::XMVectorScale(DirectX::XMLoadFloat3(&m_Look), m_NearZ));
+
+	m_Frustum.nearFace = Plane(scaledLookWithFar, m_NearZ);
+
+
+	m_Frustum.farFace = { camPos + frontMultFar, -m_Look };
+	m_Frustum.rightFace = { camPos, DirectX::XMVector2Cross(frontMultFar - m_Right * halfHSide, m_Up) };
+	m_Frustum.leftFace = { camPos, DirectX::XMVector2Cross(cam.Up,frontMultFar + cam.Right * halfHSide) };
+	m_Frustum.topFace = { camPos, DirectX::XMVector2Cross(cam.Right, frontMultFar - cam.Up * halfVSide) };
+	m_Frustum.bottomFace = { camPos, DirectX::XMVector2Cross(frontMultFar + m_Up * halfVSide, DirectX::XMLoadFloat3(cam.Right)) };
+}
+*/
