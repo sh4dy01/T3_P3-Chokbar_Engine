@@ -24,32 +24,32 @@ void CameraComponent::OnAddedComponent()
 
 XMVECTOR CameraComponent::GetRight() const
 {
-	return XMLoadFloat3(&m_Right);
+	return XMLoadFloat3(&transform->GetRight());
 }
 
 XMFLOAT3 CameraComponent::GetRight3f() const
 {
-	return m_Right;
+	return transform->GetRight();
 }
 
 XMVECTOR CameraComponent::GetUp() const
 {
-	return XMLoadFloat3(&m_Up);
+	return XMLoadFloat3(&transform->GetUp());
 }
 
 XMFLOAT3 CameraComponent::GetUp3f() const
 {
-	return m_Up;
+	return transform->GetUp();
 }
 
 XMVECTOR CameraComponent::GetLook() const
 {
-	return XMLoadFloat3(&m_Look);
+	return XMLoadFloat3(&transform->GetForward());
 }
 
 XMFLOAT3 CameraComponent::GetLook3f() const
 {
-	return m_Look;
+	return transform->GetForward();
 }
 
 float CameraComponent::GetNearZ() const
@@ -140,9 +140,10 @@ void CameraComponent::UpdateWindowWithNewRange()
 	m_FarWindowHeight = 2.0f * m_FarZ * tanf(0.5f * m_FovY);
 }
 
+
 void CameraComponent::LookAt(XMFLOAT3 targetPos)
 {
-	m_LookAt = targetPos;
+	
 
 	m_ViewDirty = true;
 }
@@ -188,49 +189,5 @@ void CameraComponent::UpdateViewMatrix()
 
 		XMStoreFloat4x4(&m_View, XMMatrixLookAtLH(pos, target, XMLoadFloat3(&transform->GetUp())));
 		m_ViewDirty = false;
-
-		/*
-		XMVECTOR R = XMLoadFloat3(&m_Right);
-		XMVECTOR U = XMLoadFloat3(&m_Up);
-		XMVECTOR L = XMLoadFloat3(&m_Look);
-		XMVECTOR P = XMLoadFloat3(&transform->GetPosition());
-
-		// Keep camera’s axes orthogonal to each other and of unit length.
-		L = XMVector3Normalize(L);
-		U = XMVector3Normalize(XMVector3Cross(L, R));
-
-		// U, L already ortho-normal, so no need to normalize cross product.
-		R = XMVector3Cross(U, L);
-
-		// Fill in the view matrix entries.
-		float x = -XMVectorGetX(XMVector3Dot(P, R));
-		float y = -XMVectorGetX(XMVector3Dot(P, U));
-		float z = -XMVectorGetX(XMVector3Dot(P, L));
-
-		XMStoreFloat3(&m_Right, R);
-		XMStoreFloat3(&m_Up, U);
-		XMStoreFloat3(&m_Look, L);
-
-		m_View(0, 0) = m_Right.x;
-		m_View(1, 0) = m_Right.y;
-		m_View(2, 0) = m_Right.z;
-		m_View(3, 0) = x;
-
-		m_View(0, 1) = m_Up.x;
-		m_View(1, 1) = m_Up.y;
-		m_View(2, 1) = m_Up.z;
-		m_View(3, 1) = y;
-
-		m_View(0, 2) = m_Look.x;
-		m_View(1, 2) = m_Look.y;
-		m_View(2, 2) = m_Look.z;
-		m_View(3, 2) = z;
-
-		m_View(0, 3) = 0.0f;
-		m_View(1, 3) = 0.0f;
-		m_View(2, 3) = 0.0f;
-		m_View(3, 3) = 1.0f;
-				*/
-
 	}
 }
