@@ -13,6 +13,7 @@ void GeometryHandler::CreateAllMeshes()
 	m_Meshes[0] = CreateCube();
 	m_Meshes[1] = CreateUVSphere();
 	m_Meshes[2] = CreatePyramid();
+	m_Meshes[3] = CreateSquare();
 }
 
 void GeometryHandler::DestroyAllMeshes()
@@ -430,6 +431,31 @@ D3DMesh* GeometryHandler::CreatePyramid()
 
 		12, 13, 14,
 		15, 16, 17
+	};
+
+	D3DMesh* mesh = new D3DMesh();
+	mesh->Create(vList, sizeof(Vertex), _countof(vList), iList, sizeof(UINT), _countof(iList));
+
+	return mesh;
+}
+
+D3DMesh* GeometryHandler::CreateSquare()
+{
+	Vertex vList[4];
+
+	float width = 0.5f;
+	float height = 0.5f;
+	float depth = 0.5f;
+
+	vList[0] = Vertex(-width, -height, -depth, 0.0f, 0.0f, 0.0f, 1.0F, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
+	vList[1] = Vertex(-width, +height, -depth, 0.0f, 0.0f, 0.0f, 1.0F, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+	vList[2] = Vertex(+width, +height, -depth, 0.0f, 0.0f, 0.0f, 1.0F, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+	vList[3] = Vertex(+width, -height, -depth, 0.0f, 0.0f, 0.0f, 1.0F, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f);
+
+	UINT iList[] =
+	{
+		0, 1, 2,
+		0, 2, 3
 	};
 
 	D3DMesh* mesh = new D3DMesh();

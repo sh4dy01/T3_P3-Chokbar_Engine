@@ -128,6 +128,7 @@ void ShaderBase::UpdatePassCB(const float dt, const float totalTime)
 	// mainPassCB.FarZ = m_camera.FarZ;
 	mainPassCB.TotalTime = totalTime;
 	mainPassCB.DeltaTime = dt;
+	mainPassCB.UVOffsetY = 0.0f;
 
 	m_passCB->CopyData(0, &mainPassCB);
 }

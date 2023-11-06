@@ -1,9 +1,10 @@
 #pragma once
 
 enum MeshType { 
-	CUBE, 
+	CUBE,
 	SPHERE, 
-	PYRAMID, 
+	PYRAMID,
+	SQUARE,
 	CYLINDER, 
 	CONE, 
 	TORUS, 

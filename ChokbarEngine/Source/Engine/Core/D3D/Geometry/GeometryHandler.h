@@ -22,6 +22,8 @@ private:
 
 	static D3DMesh* CreatePyramid();
 
+	static D3DMesh* CreateSquare();
+
 private:
 
 	static D3DMesh* m_Meshes[4];
