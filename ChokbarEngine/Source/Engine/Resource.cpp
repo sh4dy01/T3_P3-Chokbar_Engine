@@ -61,6 +61,10 @@ void Resource::CreateShaders(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap
 	m_shaders[MaterialType::SKYBOX] = new ShaderSkybox(device, cbvHeap, cbvSrvDescriptorSize, shaderPathSkybox);
 	m_shaders[MaterialType::SKYBOX]->Init();
 
+	std::wstring shaderPathTexTrans = L"Shader/Texture_Transparent.hlsl";
+	m_shaders[MaterialType::TEXTURE_TRANSPARENT] = new ShaderTexture(device, cbvHeap, cbvSrvDescriptorSize, shaderPathTexTrans);
+	m_shaders[MaterialType::TEXTURE_TRANSPARENT]->Init();
+
 	CreateMaterials();
 }
 
@@ -77,4 +81,7 @@ void Resource::CreateMaterials()
 
 	m_materials[MaterialType::SKYBOX] = new Material();
 	m_materials[MaterialType::SKYBOX]->SetShader(m_shaders[MaterialType::SKYBOX]);
+
+	m_materials[MaterialType::TEXTURE_TRANSPARENT] = new Material();
+	m_materials[MaterialType::TEXTURE_TRANSPARENT]->SetShader(m_shaders[MaterialType::TEXTURE_TRANSPARENT]);
 }

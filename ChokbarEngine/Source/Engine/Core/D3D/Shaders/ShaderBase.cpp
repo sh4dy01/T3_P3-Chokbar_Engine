@@ -536,3 +536,128 @@ void ShaderSkybox::CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT&
 }
 
 #pragma endregion
+
+#pragma region SHADER TEXTURE TRANSPARENT
+
+ShaderTextureTransparent::ShaderTextureTransparent(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, UINT cbvDescriptorSize, std::wstring& filepath)
+	: ShaderBase(device, cbvHeap, cbvDescriptorSize, filepath)
+{
+}
+
+ShaderTextureTransparent::~ShaderTextureTransparent()
+{
+}
+
+void ShaderTextureTransparent::Init()
+{
+	ShaderBase::Init();
+	CompileShader(nullptr, "vs_main", "vs_5_0", &m_vsByteCode);
+	CompileShader(nullptr, "ps_main", "ps_5_0", &m_psByteCode);
+
+}
+
+void ShaderTextureTransparent::CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT& rtvFormat, DXGI_FORMAT& dsvFormat)
+{
+	SetInputLayout(vertexType);
+
+	CD3DX12_DESCRIPTOR_RANGE texTable;
+	texTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
+
+	CD3DX12_ROOT_PARAMETER slotRootParameter[4];
+	slotRootParameter[0].InitAsDescriptorTable(1, &texTable, D3D12_SHADER_VISIBILITY_PIXEL);
+	slotRootParameter[1].InitAsConstantBufferView(0);
+	slotRootParameter[2].InitAsConstantBufferView(1);
+	slotRootParameter[3].InitAsConstantBufferView(2);
+
+	auto samplers = GetStaticSamplers();
+
+	CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc(_countof(slotRootParameter), slotRootParameter, 1, samplers.data(), D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
+
+	ID3DBlob* serializedRootSignature = nullptr;
+	ID3DBlob* errorBlob = nullptr;
+
+	HRESULT hr = D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &serializedRootSignature, &errorBlob);
+	ThrowIfFailed(hr);
+	hr = m_generalDevice->CreateRootSignature(0, serializedRootSignature->GetBufferPointer(), serializedRootSignature->GetBufferSize(), IID_PPV_ARGS(&m_rootSignature));
+	ThrowIfFailed(hr);
+
+	D3D12_RENDER_TARGET_BLEND_DESC blendDesc = {};
+	blendDesc.BlendEnable = TRUE;
+	blendDesc.LogicOpEnable = FALSE;
+	blendDesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;
+	blendDesc.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+	blendDesc.BlendOp = D3D12_BLEND_OP_ADD;
+	blendDesc.SrcBlendAlpha = D3D12_BLEND_ONE;
+	blendDesc.DestBlendAlpha = D3D12_BLEND_ZERO;
+	blendDesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;
+	blendDesc.LogicOp = D3D12_LOGIC_OP_NOOP;
+	blendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+
+	D3D12_BLEND_DESC blendStateDesc = {};
+	blendStateDesc.AlphaToCoverageEnable = FALSE;
+	blendStateDesc.IndependentBlendEnable = FALSE;
+	blendStateDesc.RenderTarget[0] = blendDesc;
+
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc = {};
+	ZeroMemory(&psoDesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
+	psoDesc.InputLayout = { m_inputLayout.data(), (UINT)m_inputLayout.size() };
+	psoDesc.pRootSignature = m_rootSignature;
+	psoDesc.VS = { reinterpret_cast<BYTE*>(m_vsByteCode->GetBufferPointer()), m_vsByteCode->GetBufferSize() };
+	psoDesc.PS = { reinterpret_cast<BYTE*>(m_psByteCode->GetBufferPointer()), m_psByteCode->GetBufferSize() };
+	psoDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
+	psoDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
+	psoDesc.BlendState = blendStateDesc;
+	psoDesc.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
+	psoDesc.SampleMask = UINT_MAX;
+	psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+	psoDesc.NumRenderTargets = 1;
+	psoDesc.RTVFormats[0] = rtvFormat;
+	psoDesc.SampleDesc.Count = 1;
+	psoDesc.SampleDesc.Quality = 0;
+	psoDesc.DSVFormat = dsvFormat;
+
+	hr = m_generalDevice->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&m_pipelineState));
+	ThrowIfFailed(hr);
+
+	RELPTR(serializedRootSignature);
+	RELPTR(errorBlob);
+}
+
+void ShaderTextureTransparent::BeginDraw(ID3D12GraphicsCommandList* cmdList)
+{
+	cmdList->SetGraphicsRootSignature(m_rootSignature);
+
+	cmdList->SetGraphicsRootConstantBufferView(3, m_passCB->GetResource()->GetGPUVirtualAddress());
+
+	cmdList->SetPipelineState(m_pipelineState);
+
+	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+}
+
+void ShaderTextureTransparent::Draw(ID3D12GraphicsCommandList* cmdList, IRenderer* drawnMeshR)
+{
+	assert(drawnMeshR->GetTexture(0)->HeapIndex >= 0);
+
+	if (drawnMeshR->ObjectCBIndex >= m_objectCBs.size())
+		AddObjectCB();
+
+	assert(drawnMeshR->ObjectCBIndex <= m_objectCBs.size());
+
+	cmdList->IASetVertexBuffers(0, 1, &drawnMeshR->Mesh->VertexBufferView());
+	cmdList->IASetIndexBuffer(&drawnMeshR->Mesh->IndexBufferView());
+
+	auto cbvHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(I(D3DRenderer)->GetCbvHeap()->GetGPUDescriptorHandleForHeapStart());
+	cbvHandle.Offset(drawnMeshR->GetTexture(0)->HeapIndex, m_cbvDescriptorSize);
+
+	cmdList->SetGraphicsRootDescriptorTable(0, cbvHandle);
+	cmdList->SetGraphicsRootConstantBufferView(1, m_objectCBs[drawnMeshR->ObjectCBIndex]->GetResource()->GetGPUVirtualAddress());
+
+
+	cmdList->DrawIndexedInstanced(drawnMeshR->Mesh->GetIndexCount(), 1, 0, 0, 0);
+}
+
+void ShaderTextureTransparent::EndDraw(ID3D12GraphicsCommandList* cmdList)
+{
+}
+
+#pragma endregion

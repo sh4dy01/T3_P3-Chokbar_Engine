@@ -167,3 +167,16 @@ public:
 
 	void CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT& rtvFormat, DXGI_FORMAT& dsvFormat) override;
 };
+
+class ShaderTextureTransparent : public ShaderBase
+{
+	ShaderTextureTransparent(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, UINT cbvDescriptorSize, std::wstring& filepath);
+	~ShaderTextureTransparent();
+
+	void Init() override;
+	void CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT& rtvFormat, DXGI_FORMAT& dsvFormat) override;
+	
+	void BeginDraw(ID3D12GraphicsCommandList* cmdList) override;
+	void Draw(ID3D12GraphicsCommandList* cmdList, IRenderer* drawnMeshR) override;
+	void EndDraw(ID3D12GraphicsCommandList* cmdList) override;
+};
