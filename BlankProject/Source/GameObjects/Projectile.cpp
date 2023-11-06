@@ -10,4 +10,6 @@ Projectile::Projectile()
 	AddComponent<SphereCollider>();
 
 	AddComponent<ProjectileBehavior>();
+
+	transform->SetScale(0.2f, 0.2f, 0.2f);
 }

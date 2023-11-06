@@ -8,6 +8,7 @@
 void PlayerShoot::Awake()
 {
 	m_pCamera = gameObject->GetComponent<CameraComponent>();
+	m_pRigidbody = gameObject->GetComponent<Rigidbody>();
 }
 
 void PlayerShoot::Start()
@@ -19,14 +20,12 @@ void PlayerShoot::Update()
 {
 	if (InputHandler::IsKeyDown(VK_LBUTTON))
 	{
-		auto proj = GameObject::Instantiate<Projectile>()->GetComponent<ProjectileBehavior>();
+		const auto proj = GameObject::Instantiate<Projectile>()->GetComponent<ProjectileBehavior>();
 
-		XMFLOAT3 spawn;
-		spawn.x = transform->GetPosition().x;
-		spawn.y = transform->GetPosition().y;
-		spawn.z = transform->GetPosition().z + 5;
-		proj->transform->SetPosition(spawn);
-		proj->Initialize(transform->GetForward(), 3, 2);
+		XMFLOAT3 projPos = transform->GetPosition();
+		XMStoreFloat3(&projPos, XMVectorAdd(XMLoadFloat3(&projPos), m_pCamera->GetLook()));
+		proj->transform->SetPosition(projPos);
+		proj->Initialize(m_pCamera->GetLook3f(), 3, 2);
 	}
 
 	HandleZoomAndSlowMotion();
@@ -35,14 +34,22 @@ void PlayerShoot::Update()
 
 void PlayerShoot::HandleZoomAndSlowMotion()
 {
-	if (InputHandler::IsKeyDown(VK_RBUTTON))
+	if (InputHandler::IsKeyHeld(VK_RBUTTON))
 	{
 		//m_pCamera->SetFOV(m_BasicFOV / m_Zoom);
-		TimeManager::SetTimeScale(m_SlowMotion);
+		float currentTimeScale = TimeManager::GetTimeScale();
+
+		if (currentTimeScale > m_SlowMotion)
+		{
+			currentTimeScale -= m_SlowMotionSpeed * TimeManager::GetUnscaledDeltaTime();
+			TimeManager::SetTimeScale(std::clamp(currentTimeScale, 0.1f, 1.f));
+		}
 	}
-	else if (InputHandler::IsKeyUp(VK_RBUTTON))
+	else if (TimeManager::GetTimeScale() < 1)
 	{
 		//m_pCamera->SetFOV(m_BasicFOV);
-		TimeManager::SetTimeScale(1.f);
+		TimeManager::SetTimeScale(std::clamp(TimeManager::GetTimeScale() + m_SlowMotionRecoverSpeed * TimeManager::GetUnscaledDeltaTime(), 0.1f, 1.f));
 	}
+
+	DEBUG_LOG("TimeScale: " + std::to_string(TimeManager::GetTimeScale()));
 }
