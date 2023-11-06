@@ -164,7 +164,7 @@ D3DRenderer* D3DRenderer::GetInstance()
 {
 	if (m_pApp == nullptr)
 	{
-		m_pApp = new D3DRenderer();
+		m_pApp = NEW D3DRenderer();
 	}
 
 	return m_pApp;

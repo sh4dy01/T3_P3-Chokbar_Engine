@@ -21,8 +21,6 @@ SkyBox::SkyBox()
 	mr->Init(MeshType::SPHERE, MaterialType::SKYBOX);
 	mr->RegisterTexture(Resource::Load<Cubemap>("Resources/Textures/cubemap.dds"));
 
-	AddComponent<MeshRenderer>(mr);
-
 	transform->SetScale(500.f, 500.0f, 500.0f);
 	transform->SetPosition(0.0f, 0.0f, 0.0f);
 }
