@@ -1,7 +1,6 @@
-#include "BlankProject.h"
 #include "PlayerShoot.h"
 
-#include "ProjectileBehavior.h"
+#include "Scripts/ProjectileBehavior.h"
 #include "GameObjects/Projectile.h"
 
 

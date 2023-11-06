@@ -1,9 +1,8 @@
 #pragma once
 
-#include "Engine/ECS/Components/Component.h"
-
 // Transform is a component and is meant to be attached to 3D objects to give them a position, rotation and scale and to be able to move and rotate them around.
 
+#include <DirectXMath.h>
 
 class Transform : public Component
 {

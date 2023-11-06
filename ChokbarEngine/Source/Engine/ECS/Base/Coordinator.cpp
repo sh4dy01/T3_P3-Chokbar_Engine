@@ -113,7 +113,7 @@ void Coordinator::UnregisterCustomComponent(CustomComponent* customComponent)
 	m_ComponentManager->UnregisterCustomComponent(customComponent);
 }
 
-void Coordinator::RegisterDestroyedEntity(InstanceID entity)
+void Coordinator::SetEntityToBeDestroyed(InstanceID entity)
 {
 	m_EntitiesToDestroy.push_back(entity);
 }

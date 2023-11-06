@@ -64,8 +64,7 @@
       <PrecompiledHeaderFile>Chokbar.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(ProjectDir)Source/Engine/Core;$(ProjectDir)Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <ForcedIncludeFiles>
-      </ForcedIncludeFiles>
+      <ForcedIncludeFiles>Chokbar.h</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <SubSystem>NotSet</SubSystem>

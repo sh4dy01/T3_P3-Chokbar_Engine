@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core/Core.h"
+#include "Engine/Managers/PhysicsWorld.h"
 #include "Platform/Windows/Window.h"
 
 class Engine

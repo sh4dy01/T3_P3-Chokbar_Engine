@@ -1,5 +1,6 @@
 #pragma once
-#include "Engine/ECS/Components/CameraComponent.h"
+
+class CameraComponent;
 
 class CameraManager
 {

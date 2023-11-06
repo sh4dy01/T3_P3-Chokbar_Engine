@@ -1,8 +1,6 @@
 #include "Chokbar.h"
 #include "TransformComponent.h"
 
-#include <numbers>
-
 Transform::Transform()
 {
 	// Initialize orientation vectors (right, up, forward)

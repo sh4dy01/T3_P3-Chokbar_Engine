@@ -3,7 +3,6 @@
 #include "Object.h"
 #include "Engine/ECS/Base/Coordinator.h"
 #include "Engine/Core/DebugUtils.h"
-#include "Engine/ECS/Components/TransformComponent.h"
 
 
 class GameObject : public Object

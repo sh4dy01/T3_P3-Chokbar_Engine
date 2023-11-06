@@ -1,8 +1,8 @@
-#include "BlankProject.h"
 #include "Player.h"
 
-#include "Scripts/PlayerMovement.h"
-#include "Scripts/PlayerShoot.h"
+#include "Engine/ECS/Components/CameraComponent.h"
+#include "Scripts/Player/PlayerMovement.h"
+#include "Scripts/Player/PlayerShoot.h"
 
 
 Player::Player()

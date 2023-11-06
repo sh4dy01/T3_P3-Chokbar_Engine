@@ -1,6 +1,5 @@
 #pragma once
 
-#include "TypeDef.h"
 #include "Object.h"
 #include <array>
 #include <queue>

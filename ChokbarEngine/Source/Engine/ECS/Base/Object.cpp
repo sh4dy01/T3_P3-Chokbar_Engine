@@ -21,5 +21,5 @@ Object::~Object()
 
 void Object::Destroy() const
 {
-	Engine::GetCoordinator()->RegisterDestroyedEntity(m_InstanceID);
+	Coordinator::GetInstance()->SetEntityToBeDestroyed(m_InstanceID);
 }

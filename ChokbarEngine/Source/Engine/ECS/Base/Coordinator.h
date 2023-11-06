@@ -32,12 +32,8 @@ public:
 	void UnregisterCustomComponent(CustomComponent* customComponent);
 
 	
-	void DestroyEntity(InstanceID entity);
-	void RegisterDestroyedEntity(InstanceID entity);
+	void SetEntityToBeDestroyed(InstanceID entity);
 
-	void DestroyRegisteredEntites();
-
-	void UpdateSystems(float dt);
 
 
 private:
@@ -51,6 +47,8 @@ private:
 	void FixedUpdateComponents();
 	void LateUpdateComponents();
 	void UpdateSystems(float dt);
+
+	void DestroyRegisteredEntites();
 
 	void RegisterComponents();
 	void RegisterSystems();

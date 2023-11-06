@@ -87,7 +87,7 @@ void Engine::Run()
 
 		Update(m_TimeManager.GetDeltaTime());
 
-		m_Coordinator.DestroyRegisteredEntites();
+		m_Coordinator->DestroyRegisteredEntites();
 
 		Render();
 	}

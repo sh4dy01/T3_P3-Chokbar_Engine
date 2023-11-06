@@ -1,7 +1,5 @@
 #include "Chokbar.h"
 #include "CameraComponent.h"
-#include "Engine/ECS/Components/Component.h"
-#include <numbers>
 
 using namespace DirectX;
 
