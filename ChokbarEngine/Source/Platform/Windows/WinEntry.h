@@ -1,5 +1,5 @@
 #pragma once
-
+#include "Engine/Core/CoreDefinitions.h"
 #include "IApplication.h"
 #include "Engine/Core/DebugUtils.h"
 
@@ -20,7 +20,7 @@ int CALLBACK WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
 		PerGameSettings GameSettings;
 
 		const auto engine = Engine::GetInstance();
-		const auto game = EntryApplication();
+		auto game = EntryApplication();
 
 		game->SetupPerGameSettings();
 
@@ -32,6 +32,8 @@ int CALLBACK WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
 
 		game->Shutdown();
 		engine->Shutdown();
+
+		DELPTR(game);
 
 	}
 	catch (DxException& e)

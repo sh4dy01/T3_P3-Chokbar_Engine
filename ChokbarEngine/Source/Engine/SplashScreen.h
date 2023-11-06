@@ -2,6 +2,7 @@
 
 #include "../Platform/Windows/Window.h"
 
+/*
 namespace SplashScreen {
 
 	void Open();
@@ -23,3 +24,4 @@ private:
 	WCHAR m_OutputMessage[MAX_NAME_STRING];
 
 };
+*/

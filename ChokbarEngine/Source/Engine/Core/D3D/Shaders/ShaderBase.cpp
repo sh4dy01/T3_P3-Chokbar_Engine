@@ -34,8 +34,11 @@ ShaderBase::~ShaderBase()
 	RELPTR(m_vsByteCode);
 	RELPTR(m_psByteCode);
 
+	for (auto& cb : m_objectCBs)
+		DELPTR(cb);
+
 	m_objectCBs.clear();
-	NULLPTR(m_passCB);
+	DELPTR(m_passCB);
 }
 
 void ShaderBase::Init()
@@ -77,7 +80,8 @@ std::array<const CD3DX12_STATIC_SAMPLER_DESC, 2> ShaderBase::GetStaticSamplers()
 
 void ShaderBase::UnBind(UINT index)
 {
-	m_objectCBs.erase(m_objectCBs.begin() + index);
+	DELPTR(m_objectCBs[index])
+
 	m_freeIndices.push(index);
 }
 
@@ -87,7 +91,12 @@ ShaderBase* ShaderBase::Bind()
 	return this;
 }
 
-void ShaderBase::AddObjectCB() { m_objectCBs.emplace_back(new UploadBuffer<ObjConstants>(m_generalDevice, 1, true)); }
+void ShaderBase::AddObjectCB() 
+{ 
+	auto ub = NEW UploadBuffer<ObjConstants>(m_generalDevice, 1, true);
+	m_objectCBs.push_back(ub);
+	NULLPTR(ub);
+}
 
 void ShaderBase::UpdateObjectCB(DirectX::XMFLOAT4X4* itemWorldMatrix, UINT cbIndex)
 {
@@ -99,7 +108,7 @@ void ShaderBase::UpdateObjectCB(DirectX::XMFLOAT4X4* itemWorldMatrix, UINT cbInd
 	m_objectCBs[cbIndex]->CopyData(0, &objConstants);
 }
 
-void ShaderBase::CreatePassCB() { m_passCB = new UploadBuffer<PassConstants>(m_generalDevice, 1, true); }
+void ShaderBase::CreatePassCB() { m_passCB = NEW UploadBuffer<PassConstants>(m_generalDevice, 1, true); }
 
 void ShaderBase::UpdatePassCB(const float dt, const float totalTime)
 {
@@ -359,14 +368,14 @@ ShaderParticle::ShaderParticle(ID3D12Device* device, ID3D12DescriptorHeap* cbvHe
 
 ShaderParticle::~ShaderParticle()
 {
-	NULLPTR(m_particleInstanceDataBuffer);
+	DELPTR(m_particleInstanceDataBuffer);
 }
 
 void ShaderParticle::Init()
 {
 	ShaderBase::Init();
 
-	m_particleInstanceDataBuffer = new UploadBuffer<InstanceData>(m_generalDevice, MAX_PARTICLE_COUNT, false);
+	m_particleInstanceDataBuffer = NEW UploadBuffer<InstanceData>(m_generalDevice, MAX_PARTICLE_COUNT, false);
 }
 
 void ShaderParticle::CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT& rtvFormat, DXGI_FORMAT& dsvFormat)

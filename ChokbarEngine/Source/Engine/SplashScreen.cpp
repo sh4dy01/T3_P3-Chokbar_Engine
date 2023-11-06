@@ -3,7 +3,7 @@
 
 #include "Platform/Windows/Win32Utils.h"
 
-
+/*
 namespace SplashScreen
 {
 	#define WM_OUTPUTMESSAGE (WM_USER + 1)
@@ -15,7 +15,7 @@ namespace SplashScreen
 		if (m_SplashWindow != nullptr)
 			return;
 
-		m_SplashWindow = new SplashWindow();
+		m_SplashWindow = NEW SplashWindow();
 	}
 
 	void Close()
@@ -40,3 +40,4 @@ SplashWindow::SplashWindow()
 
 SplashWindow::~SplashWindow()
 = default;
+*/
