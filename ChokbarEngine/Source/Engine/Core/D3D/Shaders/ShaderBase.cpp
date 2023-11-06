@@ -96,6 +96,7 @@ void ShaderBase::UpdateObjectCB(DirectX::XMFLOAT4X4* itemWorldMatrix, UINT cbInd
 
 	ObjConstants objConstants;
 	objConstants.World = *itemWorldMatrix;
+	objConstants.UVOffsetY = 0.0f;
 	m_objectCBs[cbIndex]->CopyData(0, &objConstants);
 }
 
@@ -128,8 +129,6 @@ void ShaderBase::UpdatePassCB(const float dt, const float totalTime)
 	// mainPassCB.FarZ = m_camera.FarZ;
 	mainPassCB.TotalTime = totalTime;
 	mainPassCB.DeltaTime = dt;
-	mainPassCB.UVOffsetY = 0.0f;
-
 	m_passCB->CopyData(0, &mainPassCB);
 }
 
@@ -568,7 +567,6 @@ void ShaderTextureTransparent::CreatePsoAndRootSignature(VertexType vertexType, 
 	slotRootParameter[0].InitAsDescriptorTable(1, &texTable, D3D12_SHADER_VISIBILITY_PIXEL);
 	slotRootParameter[1].InitAsConstantBufferView(0);
 	slotRootParameter[2].InitAsConstantBufferView(1);
-	slotRootParameter[3].InitAsConstantBufferView(2);
 
 	auto samplers = GetStaticSamplers();
 
@@ -628,7 +626,7 @@ void ShaderTextureTransparent::BeginDraw(ID3D12GraphicsCommandList* cmdList)
 {
 	cmdList->SetGraphicsRootSignature(m_rootSignature);
 
-	cmdList->SetGraphicsRootConstantBufferView(3, m_passCB->GetResource()->GetGPUVirtualAddress());
+	cmdList->SetGraphicsRootConstantBufferView(2, m_passCB->GetResource()->GetGPUVirtualAddress());
 
 	cmdList->SetPipelineState(m_pipelineState);
 

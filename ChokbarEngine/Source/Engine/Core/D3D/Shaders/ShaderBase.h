@@ -20,6 +20,7 @@ protected:
 	struct ObjConstants
 	{
 		DirectX::XMFLOAT4X4 World;
+		float UVOffsetY;
 	};
 
 	struct PassConstants
@@ -36,7 +37,8 @@ protected:
 		DirectX::XMFLOAT3 LightDirection = { -1.0f, -1.0f, 0.0f };
 		float DeltaTime = 0.0f;
 
-		float UVOffsetY = 0.0f;
+		DirectX::XMFLOAT3 Padding = { 0.0f, 0.0f, 0.0f };
+		float UVOffsetY = 0.1f;
 	};
 
 	struct MaterialConstants

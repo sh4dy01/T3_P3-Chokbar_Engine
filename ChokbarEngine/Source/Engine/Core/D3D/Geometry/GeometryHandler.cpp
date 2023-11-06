@@ -447,15 +447,42 @@ D3DMesh* GeometryHandler::CreateSquare()
 	float height = 0.5f;
 	float depth = 0.5f;
 
-	vList[0] = Vertex(-width, -height, -depth, 0.0f, 0.0f, 0.0f, 1.0F, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
-	vList[1] = Vertex(-width, +height, -depth, 0.0f, 0.0f, 0.0f, 1.0F, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-	vList[2] = Vertex(+width, +height, -depth, 0.0f, 0.0f, 0.0f, 1.0F, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
-	vList[3] = Vertex(+width, -height, -depth, 0.0f, 0.0f, 0.0f, 1.0F, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f);
+	vList[0] = Vertex(
+		XMFLOAT3(-width, height, depth),
+		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
+		XMFLOAT3(0.0f, 0.0f, 1.0f),
+		XMFLOAT3(1.0f, 0.0f, 0.0f),
+		XMFLOAT2(0.0f, 0.0f)
+	);
+
+	vList[1] = Vertex(
+		XMFLOAT3(-width, -height, depth),
+		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
+		XMFLOAT3(0.0f, 0.0f, 1.0f),
+		XMFLOAT3(1.0f, 0.0f, 0.0f),
+		XMFLOAT2(0.0f, 0.1f)
+	);
+
+	vList[2] = Vertex(
+		XMFLOAT3(width, height, depth),
+		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
+		XMFLOAT3(0.0f, 0.0f, 1.0f),
+		XMFLOAT3(1.0f, 0.0f, 0.0f),
+		XMFLOAT2(1.0f, 0.0f)
+	);
+
+	vList[3] = Vertex(
+		XMFLOAT3(width, -height, depth),
+		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
+		XMFLOAT3(0.0f, 0.0f, 1.0f),
+		XMFLOAT3(1.0f, 0.0f, 0.0f),
+		XMFLOAT2(1.0f, 0.1f)
+	);
 
 	UINT iList[] =
 	{
-		0, 1, 2,
-		0, 2, 3
+		0, 2, 1,
+		2, 3, 1
 	};
 
 	D3DMesh* mesh = new D3DMesh();
@@ -463,5 +490,3 @@ D3DMesh* GeometryHandler::CreateSquare()
 
 	return mesh;
 }
-
-

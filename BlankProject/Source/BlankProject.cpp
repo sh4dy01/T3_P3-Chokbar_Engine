@@ -32,6 +32,9 @@ public:
 
 	void Shutdown() override;
 
+	std::array<GameObject*, 3> scoreDigits; 
+	unsigned int score = 0;
+
 };
 
 ENTRYAPP(Application);
@@ -76,29 +79,15 @@ void Application::Initialize()
 	mr2->RegisterTexture(Resource::Load<Texture>(path2));
 	test2->AddComponent<MeshRenderer>(mr2);
 
-	auto* text1 = new GameObject("text1");
-	auto* mrt1 = new MeshRenderer();
-	text1->AddComponent<MeshRenderer>(mrt1);
-	mrt1->Init(MeshType::SQUARE, MaterialType::TEXTURE_TRANSPARENT);
-	std::string path3 = "Resources/Textures/number.dds";
-	mrt1->RegisterTexture(Resource::Load<Texture>(path3));
-	text1->transform->SetPosition(0, 0, 0);
-
-	auto* text2 = new GameObject("text2");
-	auto* mrt2 = new MeshRenderer();
-	text2->AddComponent<MeshRenderer>(mrt2);
-	mrt2->Init(MeshType::SQUARE, MaterialType::TEXTURE_TRANSPARENT);
-	std::string path4 = "Resources/Textures/number.dds";
-	mrt2->RegisterTexture(Resource::Load<Texture>(path4));
-	text2->transform->SetPosition(1, 0, 0);
-
-	auto* text3 = new GameObject("text3");
-	auto* mrt3 = new MeshRenderer();
-	text3->AddComponent<MeshRenderer>(mrt3);
-	mrt3->Init(MeshType::SQUARE, MaterialType::TEXTURE_TRANSPARENT);
-	std::string path5 = "Resources/Textures/number.dds";
-	mrt3->RegisterTexture(Resource::Load<Texture>(path5));
-	text3->transform->SetPosition(2, 0, 0);
+	for (int i = 0; i < scoreDigits.size(); ++i) {
+		scoreDigits[i] = new GameObject("Digit" + std::to_string(i));
+		auto* mrt = new MeshRenderer();
+		scoreDigits[i]->AddComponent<MeshRenderer>(mrt);
+		mrt->Init(MeshType::SQUARE, MaterialType::TEXTURE_TRANSPARENT);
+		std::string path = "Resources/Textures/number.dds";
+		mrt->RegisterTexture(Resource::Load<Texture>(path));
+		scoreDigits[i]->transform->SetPosition(1.0f * i, 0, 0);
+	}
 
 	auto player = GameObject::Instantiate<Player>();
 	player->transform->SetPosition(0, 0, -5);

@@ -3,6 +3,7 @@ Texture2D gDiffuseMap : register(t0);
 cbuffer cbPerObject : register(b0)
 {
     float4x4 gWorld;
+    float gUVOffsetY;
 };
 
 cbuffer cbPass : register(b1)
@@ -10,10 +11,11 @@ cbuffer cbPass : register(b1)
     float4x4 gView;
     float4x4 gProj;
     float4x4 gViewProj;
+    float4 gLightColor;
     float3 gEyePosW;
     float gTotalTime;
+    float3 gLightDirection;
     float gDeltaTime;
-    float gUVOffsetY;
 }
 
 SamplerState gsamPointWrap : register(s0);
@@ -49,15 +51,16 @@ PS_INPUT vs_main(VS_INPUT input)
     output.PosH = mul(posW, gViewProj);
     
     output.NormalW = mul(input.Normal, (float3x3) gWorld);
-    
-    output.uv = input.uv + float2(0.0f, gUVOffsetY);
 
-        
+    output.uv = input.uv;
+
     return output;
 }
 
 float4 ps_main(PS_INPUT input) : SV_TARGET
 {
+    input.uv = input.uv + float2(0.0f, gUVOffsetY);
+    
     float4 diffuse = gDiffuseMap.Sample(gsamPointWrap, input.uv);
     
     float blackThreshold = 0.01f;

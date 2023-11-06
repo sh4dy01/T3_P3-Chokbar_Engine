@@ -9,7 +9,12 @@ public:
 	MeshRenderer();
 	~MeshRenderer() override;
 
+private:
+	float uvOffsetY = 0.0f;
+
 public:
 	void Render(ID3D12GraphicsCommandList* cmdList) override;
 	void Update(float dt) override;
+	void SetUVOffsetY(float offset);
+
 };

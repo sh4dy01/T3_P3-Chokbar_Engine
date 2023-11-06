@@ -53,6 +53,10 @@ void Resource::CreateShaders(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap
 	m_shaders[MaterialType::TEXTURE] = new ShaderTexture(device, cbvHeap, cbvSrvDescriptorSize, shaderPathTex);
 	m_shaders[MaterialType::TEXTURE]->Init();
 
+	std::wstring shaderPathTexTrans = L"Shader/Texture_Transparent.hlsl";
+	m_shaders[MaterialType::TEXTURE_TRANSPARENT] = new ShaderTexture(device, cbvHeap, cbvSrvDescriptorSize, shaderPathTexTrans);
+	m_shaders[MaterialType::TEXTURE_TRANSPARENT]->Init();
+
 	std::wstring shaderPathParticle = L"Shader/Particle.hlsl";
 	m_shaders[MaterialType::PARTICLE] = new ShaderParticle(device, cbvHeap, cbvSrvDescriptorSize, shaderPathParticle);
 	m_shaders[MaterialType::PARTICLE]->Init();
@@ -60,10 +64,6 @@ void Resource::CreateShaders(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap
 	std::wstring shaderPathSkybox = L"Shader/Sky.hlsl";
 	m_shaders[MaterialType::SKYBOX] = new ShaderSkybox(device, cbvHeap, cbvSrvDescriptorSize, shaderPathSkybox);
 	m_shaders[MaterialType::SKYBOX]->Init();
-
-	std::wstring shaderPathTexTrans = L"Shader/Texture_Transparent.hlsl";
-	m_shaders[MaterialType::TEXTURE_TRANSPARENT] = new ShaderTexture(device, cbvHeap, cbvSrvDescriptorSize, shaderPathTexTrans);
-	m_shaders[MaterialType::TEXTURE_TRANSPARENT]->Init();
 
 	CreateMaterials();
 }
@@ -76,12 +76,13 @@ void Resource::CreateMaterials()
 	m_materials[MaterialType::TEXTURE] = new Material();
 	m_materials[MaterialType::TEXTURE]->SetShader(m_shaders[MaterialType::TEXTURE]);
 
+	m_materials[MaterialType::TEXTURE_TRANSPARENT] = new Material();
+	m_materials[MaterialType::TEXTURE_TRANSPARENT]->SetShader(m_shaders[MaterialType::TEXTURE_TRANSPARENT]);
+
 	m_materials[MaterialType::PARTICLE] = new Material();
 	m_materials[MaterialType::PARTICLE]->SetShader(m_shaders[MaterialType::PARTICLE]);
 
 	m_materials[MaterialType::SKYBOX] = new Material();
 	m_materials[MaterialType::SKYBOX]->SetShader(m_shaders[MaterialType::SKYBOX]);
 
-	m_materials[MaterialType::TEXTURE_TRANSPARENT] = new Material();
-	m_materials[MaterialType::TEXTURE_TRANSPARENT]->SetShader(m_shaders[MaterialType::TEXTURE_TRANSPARENT]);
 }
