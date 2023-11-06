@@ -137,8 +137,7 @@
     <ClCompile Include="Source\Engine\ECS\Components\TransformComponent.cpp" />
     <ClCompile Include="Source\Engine\Engine.cpp" />
     <ClCompile Include="Source\Engine\Managers\TimeManager.cpp" />
-    <ClCompile Include="Source\Engine\PhysicsManager.cpp" />
-    <ClCompile Include="Source\Engine\PhysicsWorld.cpp" />
+    <ClCompile Include="Source\Engine\Managers\PhysicsWorld.cpp" />
     <ClCompile Include="Source\Engine\SplashScreen.cpp" />
     <ClCompile Include="Source\Engine\IResourceObject.cpp" />
     <ClCompile Include="Source\Engine\Managers\CameraManager.cpp" />
@@ -181,8 +180,7 @@
     <ClInclude Include="Source\Engine\ECS\Components\Collision\TriggerCollisionEvent.h" />
     <ClInclude Include="Source\Engine\ECS\Components\CustomComponent.h" />
     <ClInclude Include="Source\Engine\Managers\TimeManager.h" />
-    <ClInclude Include="Source\Engine\PhysicsManager.h" />
-    <ClInclude Include="Source\Engine\PhysicsWorld.h" />
+    <ClInclude Include="Source\Engine\Managers\PhysicsWorld.h" />
     <ClInclude Include="Source\Engine\ECS\Components\CameraComponent.h" />
     <ClInclude Include="Source\Engine\Managers\CameraManager.h" />
     <ClInclude Include="Source\Engine\Managers\InputHandler.h" />

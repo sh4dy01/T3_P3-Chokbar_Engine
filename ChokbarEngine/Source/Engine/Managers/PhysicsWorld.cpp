@@ -1,6 +1,8 @@
 #include "Chokbar.h"
 #include "PhysicsWorld.h"
 
+#include "Engine/Engine.h"
+
 using namespace DirectX;
 
 CollisionInfo::CollisionInfo(Collider* colliderA, Collider* colliderB)
@@ -46,7 +48,7 @@ void PhysicsWorld::Update(float dt)
 
 	if (m_timer >= TimeManager::GetFixedTime())
 	{
-		Engine::GetCoordinator()->FixedUpdateComponents();
+		Coordinator::GetInstance()->FixedUpdateComponents();
 
 		CheckCollision();
 

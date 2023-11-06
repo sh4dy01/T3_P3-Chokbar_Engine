@@ -5,38 +5,46 @@
 #include "EntityManager.h"
 
 
+
 class Coordinator
 {
+	friend class Engine;
+	friend class PhysicsWorld;
 public:
-	Coordinator();
 	~Coordinator();
 
 public:
 	// Initialize the coordinator and all its managers
-	void Init();
 
+	static Coordinator* GetInstance();
 
 	// Create a new game object ID
-	InstanceID GetNewInstanceID() const;
-	void RegisterGameObject(GameObject* go) const;
+	InstanceID GetNewInstanceID();
+	void RegisterGameObject(GameObject* go);
 
 
 	// Create a new game object ID
 	//GameObject* CreateNewObject(Transform* transform);
 
-	void AwakeComponents();
-	void StartComponents();
-	void UpdateComponents();
-	void LateUpdateComponents();
-	void FixedUpdateComponents();
+	
 
 	void RegisterCustomComponent(CustomComponent* customComponent);
 	void UnregisterCustomComponent(CustomComponent* customComponent);
 
-	void UpdateSystems(float dt);
+	
 	void DestroyEntity(InstanceID entity);
 
 private:
+
+	Coordinator();
+
+	void Init();
+	void AwakeComponents();
+	void StartComponents();
+	void UpdateComponents();
+	void FixedUpdateComponents();
+	void LateUpdateComponents();
+	void UpdateSystems(float dt);
 
 	void RegisterComponents();
 	void RegisterSystems();
@@ -64,7 +72,7 @@ public:
 	}
 
 	template <typename T>
-	void RemoveComponent(InstanceID entity, T* component) const
+	void RemoveComponent(InstanceID entity, T* component)
 	{
 		m_ComponentManager->RemoveComponent<T>(entity);
 
@@ -82,13 +90,13 @@ public:
 	}
 
 	template <typename T>
-	bool HasComponent(InstanceID entity) const
+	bool HasComponent(InstanceID entity)
 	{
 		return m_ComponentManager->HasComponent<T>(entity);
 	}
 
 	template <typename T>
-	ComponentType GetComponentType() const
+	ComponentType GetComponentType()
 	{
 		return m_ComponentManager->GetComponentType<T>();
 	}
@@ -104,7 +112,7 @@ public:
 
 #pragma region Entity methods
 
-	GameObject* GetEntityByName(const std::string& name) const;
+	GameObject* GetEntityByName(const std::string& name);
 
 
 #pragma endregion
@@ -126,7 +134,13 @@ public:
 #pragma endregion
 
 private:
+
+	static Coordinator* m_Instance;
+
 	std::unique_ptr<ComponentManager> m_ComponentManager;
 	std::unique_ptr<EntityManager> m_EntityManager;
 	std::unique_ptr<SystemManager> m_SystemManager;
+
 };
+
+
