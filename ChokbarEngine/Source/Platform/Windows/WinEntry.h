@@ -20,7 +20,7 @@ int CALLBACK WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
 		PerGameSettings GameSettings;
 
 		const auto engine = Engine::GetInstance();
-		const auto game = EntryApplication();
+		auto game = EntryApplication();
 
 		game->SetupPerGameSettings();
 
@@ -33,7 +33,7 @@ int CALLBACK WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
 		game->Shutdown();
 		engine->Shutdown();
 
-		DELPTR(EntryApp)
+		DELPTR(game);
 
 	}
 	catch (DxException& e)
