@@ -1,26 +1,87 @@
 #include "Chokbar.h"
 #include "ComponentManager.h"
 
-namespace Chokbar {
-	ComponentManager::ComponentManager()
-		: m_NextComponentType(0)
+
+ComponentManager::ComponentManager()
+	: m_NextComponentType(0)
+{
+	m_ComponentArrays = {};
+	m_ComponentTypes = {};
+}
+
+ComponentManager::~ComponentManager()
+{
+	for (auto customComponent : m_CustomComponents)
 	{
-		m_ComponentArrays = {};
-		m_ComponentTypes = {};
+		customComponent = nullptr;
 	}
+}
 
-	ComponentManager::~ComponentManager()
+void ComponentManager::AwakeAllComponents()
+{
+	for (auto const customComponent : m_CustomComponents)
 	{
+		customComponent->Awake();
 	}
+}
 
-	void ComponentManager::EntityDestroyed(InstanceID entity)
+void ComponentManager::StartAllComponents()
+{
+	for (auto const customComponent : m_CustomComponents)
 	{
-		for (auto const& pair : m_ComponentArrays)
-		{
-			auto const& component = pair.second;
+		if (!customComponent->gameObject->IsActive() || !customComponent->IsEnabled()) continue;
 
-			component->EntityDestroyed(entity);
-		}
+		customComponent->Start();
+	}
+}
+
+void ComponentManager::UpdateAllComponents()
+{
+	for (const auto customComponent  : m_CustomComponents)
+	{
+		if (!customComponent->gameObject->IsActive() || !customComponent->IsEnabled()) continue;
+
+		customComponent->Update();
+	}
+}
+
+void ComponentManager::FixedUpdateAllComponents()
+{
+	for (auto const customComponent : m_CustomComponents)
+	{
+		if (!customComponent->gameObject->IsActive() || !customComponent->IsEnabled()) continue;
+
+		customComponent->FixedUpdate();
+	}
+}
+
+void ComponentManager::LateUpdateAllComponents()
+{
+	for (auto const customComponent : m_CustomComponents)
+	{
+		if (!customComponent->gameObject->IsActive() || !customComponent->IsEnabled()) continue;
+
+		customComponent->LateUpdate();
+	}
+}
+
+void ComponentManager::RegisterCustomComponent(CustomComponent* customComponent)
+{
+	m_CustomComponents.push_back(customComponent);
+}
+
+void ComponentManager::UnregisterCustomComponent(CustomComponent* customComponent)
+{
+	std::erase(m_CustomComponents, customComponent);
+}
+
+void ComponentManager::EntityDestroyed(InstanceID entity)
+{
+	for (auto const& pair : m_ComponentArrays)
+	{
+		auto const& component = pair.second;
+
+		component->EntityDestroyed(entity);
 	}
 }
 

@@ -1,60 +1,112 @@
 #pragma once
 
 #include "Object.h"
-#include "Core/DebugUtils.h"
+#include "Engine/Core/DebugUtils.h"
+#include "Engine/ECS/Components/TransformComponent.h"
 
-namespace Chokbar {
+class Engine;
 
-	class Engine;
+class GameObject : public Object
+{
+public:
+	GameObject();
+	GameObject(const std::string &name);
 
-	class GameObject : public Object
+	template <typename... Component>
+	GameObject(const std::string &name, Component... components)
 	{
+		m_Name = name;
+		transform = Engine::GetCoordinator()->GetComponent<Transform>(GetInstanceID());
 
-	public:
+		(AddComponent<Component>(), ...);
+	}
 
-		GameObject();
-		GameObject(const std::string& name);
+	virtual ~GameObject() override;
 
-		template<typename... Component>
-		GameObject(const std::string& name, Component... components)
-		{
-			m_Name = name;
-			transform = Engine::GetCoordinator()->GetComponent<Transform>(m_InstanceID);
+	template <class GameObject>
+	static GameObject* Instantiate() 
+	{
+		return  new GameObject();
+	}
 
+	template <class GameObject>
+	static GameObject* Instantiate(const std::string& name)
+	{
+		auto go = new GameObject();
+		go->SetName(name);
 
-			(AddComponent<Component>(), ...);
-		}
+		return go;
+	}
+	//static Object Instantiate(GameObject original, Transform parent);
+	//static Object Instantiate(Object original, Transform parent, bool instantiateInWorldSpace);
 
-		~GameObject();
+	/*
+	template <class GameObject>
+	static GameObject* Instantiate(DirectX::XMFLOAT3 position, DirectX::XMFLOAT3 rotation, Transform parent)
+	{
+		auto go = new GameObject(original);
+		go->transform->SetPosition(position);
+		go->transform->Rotate(rotation);
 
-		template<class Component>
-		void AddComponent()
-		{
-			Component component;
-			component.gameObject = this;
-			component.transform = this->transform;
-			component.SetEnabled(true);
+		//TODO: Set parent
 
-			DEBUG_LOG("Adding component: " + std::string(typeid(Component).name()) + " to " + m_Name + " entity");
+		return go;
+	}*/
 
-			Engine::GetCoordinator()->AddComponent<Component>(m_InstanceID, component);
-		}
+	template<class T>
+	T* AddComponent()
+	{
+		auto component = new T();
+		component->gameObject = this;
+		component->transform = transform;
+		component->SetEnabled(true);
+		component->OnAddedComponent();
 
-		template<class T>
-		T* GetComponent()
-		{
-			return Engine::GetCoordinator()->GetComponent<T>(m_InstanceID);
-		}
+		DEBUG_LOG("Adding component: " + std::string(typeid(T).name()) + " to " + m_Name + " entity");
 
-		template<class T>
-		bool HasComponent()
-		{
-			return Engine::GetCoordinator()->HasComponent<T>(m_InstanceID);
-		}
+		Engine::GetCoordinator()->AddComponent<T>(GetInstanceID(), component);
 
+		return component;
+	}
 
-	public:
+	template <class Component>
+	Component* AddComponent(Component *component)
+	{
+		component->gameObject = this;
+		component->transform = transform;
+		component->SetEnabled(true);
+		component->OnAddedComponent();
 
-		Transform* transform;
-	};
-}
+		DEBUG_LOG("Adding component: " + std::string(typeid(Component).name()) + " to " + m_Name + " entity");
+
+		Engine::GetCoordinator()->AddComponent<Component>(GetInstanceID(), component);
+
+		return component;
+	}
+
+	template <class T>
+	T *GetComponent()
+	{
+		return Engine::GetCoordinator()->GetComponent<T>(GetInstanceID());
+	}
+
+	template <class T>
+	bool HasComponent()
+	{
+		return Engine::GetCoordinator()->HasComponent<T>(GetInstanceID());
+	}
+
+	static GameObject* Find(const std::string& name);
+
+	bool IsActive() const { return m_IsActive; }
+	void SetActive(bool value) { m_IsActive = value; }
+
+public:
+
+	Transform *transform;
+
+private:
+
+	bool m_IsActive;
+
+};

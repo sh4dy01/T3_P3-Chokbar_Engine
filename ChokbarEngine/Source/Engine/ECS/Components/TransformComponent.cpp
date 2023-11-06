@@ -1,6 +1,8 @@
 #include "Chokbar.h"
 #include "TransformComponent.h"
 
+#include <numbers>
+
 Transform::Transform()
 {
 	// Initialize orientation vectors (right, up, forward)
@@ -20,18 +22,44 @@ Transform::Transform()
 	DirectX::XMStoreFloat4x4(&m_WorldMatrix, DirectX::XMMatrixIdentity());
 }
 
-void Transform::Translate(float x, float y, float z)
+Transform::~Transform()
 {
-	// Update the position vector
-	m_Position.x += x;
-	m_Position.y += y;
-	m_Position.z += z;
-	UpdatePositionMatrix();
 }
 
-void Transform::Translate(DirectX::XMFLOAT3 translation)
+void Transform::Translate(float x, float y, float z, Space space)
 {
-	Translate(translation.x, translation.y, translation.z);
+	switch (space)
+	{
+	case Transform::Local:
+		// Create a translation vector in local space
+		DirectX::XMFLOAT3 translation;
+		translation.x = x;
+		translation.y = y;
+		translation.z = z;
+
+		// Transform the translation vector into world space
+		DirectX::XMVECTOR translationVector = DirectX::XMVector3Transform(DirectX::XMLoadFloat3(&translation), DirectX::XMLoadFloat4x4(&m_RotationMatrix));
+
+		// Update the position in world space
+		m_Position.x += DirectX::XMVectorGetX(translationVector);
+		m_Position.y += DirectX::XMVectorGetY(translationVector);
+		m_Position.z += DirectX::XMVectorGetZ(translationVector);
+		break;
+
+	case Transform::World:
+		// Update the position vector
+		m_Position.x += x;
+		m_Position.y += y;
+		m_Position.z += z;
+		break;
+	}
+
+	// Update the position matrix
+	UpdatePositionMatrix();
+}
+void Transform::Translate(DirectX::XMFLOAT3 translation, Space space)
+{
+	Translate(translation.x, translation.y, translation.z, space);
 }
 
 void Transform::SetPosition(float x, float y, float z)
@@ -42,7 +70,6 @@ void Transform::SetPosition(float x, float y, float z)
 	m_Position.z = z;
 	UpdatePositionMatrix();
 }
-
 void Transform::SetPosition(DirectX::XMFLOAT3 newPosition)
 {
 	SetPosition(newPosition.x, newPosition.y, newPosition.z);
@@ -58,7 +85,7 @@ void Transform::RotateFromAxisAngle(DirectX::XMFLOAT3 axis, float angle)
 	DirectX::XMStoreFloat4(&m_RotationQuaternion, currentRotation);
 	// Store the result back in rotationQuaternion as XMFLOAT4
 	UpdateRotationMatrix();
-	// Recalculate the world matrix
+
 	m_Right.x = m_RotationMatrix._11;
 	m_Right.y = m_RotationMatrix._12;
 	m_Right.z = m_RotationMatrix._13;
@@ -69,32 +96,30 @@ void Transform::RotateFromAxisAngle(DirectX::XMFLOAT3 axis, float angle)
 	m_Forward.y = m_RotationMatrix._32;
 	m_Forward.z = m_RotationMatrix._33;
 }
-
-void Transform::RotateYaw(float angle)
+void Transform::RotateYaw(float angle, Space space)
 {
-	RotateFromAxisAngle(m_Up, angle);
+	DirectX::XMFLOAT3 axis = space == Space::Local ? m_Up : DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f);
+	RotateFromAxisAngle(axis, angle);
 }
-
-void Transform::RotatePitch(float angle)
+void Transform::RotatePitch(float angle, Space space)
 {
-	RotateFromAxisAngle(m_Right, angle);
+	DirectX::XMFLOAT3 axis = space == Space::Local ? m_Right : DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f);
+	RotateFromAxisAngle(axis, angle);
 }
-
-void Transform::RotateRoll(float angle)
+void Transform::RotateRoll(float angle, Space space)
 {
-	RotateFromAxisAngle(m_Forward, angle);
+	DirectX::XMFLOAT3 axis = space == Space::Local ? m_Forward : DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f);
+	RotateFromAxisAngle(axis, angle);
 }
-
-void Transform::Rotate(float pitch = 0.f, float yaw = 0.f, float roll = 0.f)
+void Transform::Rotate(float pitch = 0.f, float yaw = 0.f, float roll = 0.f, Space space)
 {
-	RotatePitch(pitch);
-	RotateYaw(yaw);
-	RotateRoll(roll);
+	RotatePitch(pitch, space);
+	RotateYaw(yaw, space);
+	RotateRoll(roll, space);
 }
-
-void Transform::Rotate(DirectX::XMFLOAT3 rotation)
+void Transform::Rotate(DirectX::XMFLOAT3 rotation, Space space)
 {
-	Rotate(rotation.x, rotation.y, rotation.z);
+	Rotate(rotation.x, rotation.y, rotation.z, space);
 }
 
 void Transform::Scale(float x, float y, float z)
@@ -105,7 +130,6 @@ void Transform::Scale(float x, float y, float z)
 	m_Scale.z *= z;
 	UpdateScaleMatrix();
 }
-
 void Transform::Scale(DirectX::XMFLOAT3 scaleFactors)
 {
 	Scale(scaleFactors.x, scaleFactors.y, scaleFactors.z);
@@ -117,13 +141,28 @@ void Transform::SetScale(float x, float y, float z)
 	m_Scale.x = x;
 	m_Scale.y = y;
 	m_Scale.z = z;
-		
+
 	UpdateScaleMatrix();
 }
-
 void Transform::SetScale(DirectX::XMFLOAT3 scaleFactors)
 {
 	SetScale(scaleFactors.x, scaleFactors.y, scaleFactors.z);
+}
+
+DirectX::XMFLOAT3 Transform::GetEulerAngles()
+{
+	// Extract the Euler angles from the rotation matrix
+	float pitch = asin(-m_Forward.y);
+	float yaw = atan2(m_Forward.x, m_Forward.z);
+	float roll = atan2(m_Up.x, m_Right.x);
+
+	// Convert the angles to degrees if desired
+	float pitch_deg = DirectX::XMConvertToDegrees(pitch);
+	float yaw_deg = DirectX::XMConvertToDegrees(yaw);
+	float roll_deg = DirectX::XMConvertToDegrees(roll);
+
+	// Return the Euler angles
+	return DirectX::XMFLOAT3(pitch_deg, yaw_deg, roll_deg);
 }
 
 void Transform::UpdatePositionMatrix()
@@ -142,7 +181,6 @@ void Transform::UpdateRotationMatrix()
 	// Convert the quaternion to a rotation matrix
 	DirectX::XMStoreFloat4x4(&m_RotationMatrix, DirectX::XMMatrixRotationQuaternion(quaternion));
 }
-
 void Transform::UpdateScaleMatrix()
 {
 	m_Dirty = true;
@@ -162,11 +200,12 @@ void Transform::UpdateScaleMatrix()
 
 void Transform::UpdateWorldMatrix()
 {
-	m_Dirty = false;
 	// Create the position matrix
 	// Combine rotation and scale and position
 	DirectX::XMMATRIX newWorldMatrix = DirectX::XMLoadFloat4x4(&m_RotationMatrix) * DirectX::XMLoadFloat4x4(&m_ScaleMatrix) * DirectX::XMLoadFloat4x4(&m_PositionMatrix);
 	// Combine rotation and scale with position
 	// Convert the final world matrix to XMFLOAT4X4
 	DirectX::XMStoreFloat4x4(&m_WorldMatrix, DirectX::XMMatrixTranspose(newWorldMatrix));
+
+	m_Dirty = false;
 }

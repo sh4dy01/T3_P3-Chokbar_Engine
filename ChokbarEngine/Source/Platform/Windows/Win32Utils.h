@@ -1,7 +1,7 @@
 #pragma once
 
-#define DEFAULT_WIDTH 800
-#define DEFAULT_HEIGHT 600
+#define DEFAULT_WIDTH 1920
+#define DEFAULT_HEIGHT 1080
 
 #include <string>
 

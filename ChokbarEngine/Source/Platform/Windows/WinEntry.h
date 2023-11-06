@@ -1,28 +1,19 @@
 #pragma once
 
-#include "Engine/Engine.h"
-
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
-
-#ifdef _DEBUG
-#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
-// Replace _NORMAL_BLOCK with _CLIENT_BLOCK if you want the
-// allocations to be of _CLIENT_BLOCK type
-#else
-#define DBG_NEW new
-#endif
-
 #include "IApplication.h"
+#include "Engine/Core/DebugUtils.h"
 
-#include "Core/DebugUtils.h"
-#include "Core/CoreMinimal.h"
 
 extern Win32::IApplication* EntryApplication();
 
 int CALLBACK WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
 {
+
+#if defined(DEBUG) | defined(_DEBUG)
+	// Enable run-time memory check for debug builds.
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+#endif
+
 	try
 	{
 		PerGameSettings GameSettings;
@@ -48,7 +39,9 @@ int CALLBACK WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
 		return 0;
 	}
 
+#ifdef _DEBUG
 	_CrtDumpMemoryLeaks();
+#endif // DEBUG
 
 	return 0;
 }

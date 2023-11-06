@@ -7,12 +7,12 @@ POINT InputHandler::m_lastPos = { 0, 0 };
 float InputHandler::m_deltaPosX = 0.0f;
 float InputHandler::m_deltaPosY = 0.0f;
 
-std::vector<char> InputHandler::m_KeyboardInput = { 'Z', 'Q', 'S', 'D', VK_LBUTTON, VK_RBUTTON };
+std::vector<char> InputHandler::m_KeyboardInput = { 'Z', 'Q', 'S', 'D', VK_SHIFT, VK_SPACE ,VK_LBUTTON, VK_RBUTTON, VK_ESCAPE };
 std::vector<InputHandler::KeyState> InputHandler::m_KeyStates = {};
 
 
 InputHandler::InputHandler()
-	: m_WindowHandle(nullptr), m_timer(0.0f), m_mouseRefresh(0.1f)
+	: MOUSE_REFRESH_RATE(0.1f), m_IsCaptured(false), m_Timer(0.0f), m_WindowHandle(nullptr)
 {
 	m_KeyStates.reserve(m_KeyboardInput.size());
 
@@ -24,10 +24,14 @@ InputHandler::InputHandler()
 	GetCursorPos(&m_lastPos);
 }
 
+InputHandler::~InputHandler()
+= default;
+
 
 void InputHandler::Init(HWND windowHandle)
 {
 	m_WindowHandle = windowHandle;
+	m_IsCaptured = false;
 }
 
 /// <summary>
@@ -38,12 +42,28 @@ void InputHandler::Update(float dt)
 {
 	CheckInput();
 
-	m_timer += dt;
-	if (m_timer > m_mouseRefresh)
+	m_Timer += dt;
+	if (m_Timer > MOUSE_REFRESH_RATE)
 	{
 		GetNormalizedMovement();
-		m_timer = 0.0f;
+
+		if (m_IsCaptured)
+		{
+			SetCursorToWindowCenter();
+		}
+
+		m_Timer = 0.0f;
 	}
+}
+
+void InputHandler::SetCursorToWindowCenter()
+{
+	RECT rect;
+	GetClientRect(m_WindowHandle, &rect);
+	POINT windowCenter = { rect.right / 2, rect.bottom / 2 };
+
+	ClientToScreen(m_WindowHandle, &windowCenter);
+	SetCursorPos(windowCenter.x, windowCenter.y);
 }
 
 /// <summary>
@@ -61,12 +81,10 @@ void InputHandler::CheckInput()
 			if (m_KeyStates[i] == KeyState::None || m_KeyStates[i] == KeyState::Up)
 			{
 				m_KeyStates[i] = KeyState::Down;
-				OutputDebugStringW(L"Key Pressed Down \n");
 			}
 			else
 			{
 				m_KeyStates[i] = KeyState::Held;
-				OutputDebugStringW(L"Key Pressed Held \n");
 			}
 		}
 		else
@@ -74,7 +92,6 @@ void InputHandler::CheckInput()
 			if (m_KeyStates[i] == KeyState::Held || m_KeyStates[i] == KeyState::Down)
 			{
 				m_KeyStates[i] = KeyState::Up;
-				OutputDebugStringW(L"Key Pressed Up \n");
 			}
 			else
 			{
@@ -82,6 +99,33 @@ void InputHandler::CheckInput()
 			}
 		}
 	}
+}
+
+void InputHandler::CaptureCursor()
+{
+	m_IsCaptured = true;
+
+	RECT rect;
+	GetClientRect(m_WindowHandle, &rect);
+	POINT windowCenter = { rect.right / 2, rect.bottom / 2 };
+
+	ClientToScreen(m_WindowHandle, &windowCenter);
+
+	RECT clipRect = { windowCenter.x - rect.right / 2, windowCenter.y - rect.bottom / 2, windowCenter.x + rect.right / 2, windowCenter.y + rect.bottom / 2 };
+	ClipCursor(&clipRect);
+
+	m_lastPos = windowCenter;
+
+	while (ShowCursor(FALSE) >= 0); // Use a loop to ensure the cursor is hidden
+}
+
+void InputHandler::ReleaseCursor()
+{
+	m_IsCaptured = false;
+
+	ClipCursor(nullptr);
+	while (ShowCursor(TRUE) < 0); // Use a loop to ensure the cursor is shown
+
 }
 
 /// <summary>
@@ -141,19 +185,28 @@ bool InputHandler::IsKeyHeld(char key)
 /// </summary>
 void InputHandler::GetNormalizedMovement()
 {
+
 	POINT currentPos;
 	GetCursorPos(&currentPos);
-
 	ScreenToClient(m_WindowHandle, &currentPos);
 
-	float x = std::clamp((int)((currentPos.x - m_lastPos.x)), -SENSIBILITY, SENSIBILITY);
-	float y = std::clamp((int)((currentPos.y - m_lastPos.y)), -SENSIBILITY, SENSIBILITY);
+	RECT rect;
+	GetClientRect(m_WindowHandle, &rect);
+	POINT windowCenter = { rect.right / 2, rect.bottom / 2 };
 
-	m_deltaPosX = x / SENSIBILITY;
-	m_deltaPosY = y / SENSIBILITY;
+	DirectX::XMFLOAT2 delta;
 
-	m_lastPos = currentPos;
+	delta.x = std::clamp((int)std::abs(windowCenter.x - currentPos.x), -SENSIBILITY, SENSIBILITY);
+	if (currentPos.x < windowCenter.x)
+		delta.x *= -1;
+	delta.y = std::clamp((int)std::abs(windowCenter.y - currentPos.y), -SENSIBILITY, SENSIBILITY);
+	if (currentPos.y < windowCenter.y)
+		delta.y *= -1;
+
+	m_deltaPosX = delta.x / SENSIBILITY;
+	m_deltaPosY = delta.y / SENSIBILITY;
 }
+
 
 /// <summary>
 /// Retrieves the normalized x-coordinate of the mouse movement.

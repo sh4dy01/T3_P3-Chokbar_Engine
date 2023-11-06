@@ -3,52 +3,56 @@
 #include "Core/Core.h"
 
 
-namespace Chokbar {
+class Engine
+{
+public:
 
-	class Engine {
+	Engine();
+	~Engine();
 
-		Engine();
-		~Engine();
+	static Engine* GetInstance();
+	static Coordinator *GetCoordinator();
+	static InputHandler *GetInput();
+	static PhysicsWorld *GetPhysicsWorld();
+	static CameraComponent *GetMainCamera();
 
-	public:
+	void Initialize();
+	void Run();
+	void Shutdown();
 
-		static Engine* GetInstance();
-		static Coordinator* GetCoordinator();
-		static InputHandler* GetInput();
-		static Camera* GetMainCamera();
+	void OnApplicationFocus();
+	void OnApplicationLostFocus();
 
-		void Initialize();
-		void Run();
-		void Shutdown();
+private:
 
-	protected:
+	void PreInitialize();
+	void InitComponents();
+	
+	void TogglePause();
 
-		void PreInitialize();
+	void Update(float dt);
 
+	virtual void OnResize();
 
-		void Update(float dt);
+private:
 
+	void Render();
+	void CalculateFrameStats();
+	bool NeedsToClose();
 
-		virtual void OnResize();
+	float GetAspectRatio() const { return m_Window.GetWidth() / static_cast<float>(m_Window.GetHeight()); }
 
-	private:
+private:
+	static Engine *m_Instance;
 
-		void Render();
-		void CalculateFrameStats();
-		bool NeedsToClose();
+	TimeManager m_TimeManager;
+	Coordinator m_Coordinator;
+	CameraManager m_CameraManager;
+	InputHandler m_InputHandler;
+	PhysicsWorld m_PhysicsWorld;
 
-	private:
+	Win32::Window m_Window;
 
-		static Engine* m_Instance;
+	bool m_IsPaused = false;
 
-		GameTimer m_GameTimer;
-		Coordinator m_Coordinator;
-		CameraManager m_CameraManager;
-
-		//physic
-		Win32::Window m_Window;
-
-		InputHandler m_InputHandler;
-
-	};
-}
+};

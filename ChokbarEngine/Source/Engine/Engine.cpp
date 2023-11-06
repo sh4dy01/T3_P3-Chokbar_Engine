@@ -1,164 +1,214 @@
 #include "Chokbar.h"
-
 #include "Resource.h"
-
 #include "Engine.h"
 
-#include "GameObjects/Camera.h"
+#include "D3D/Base/D3DRenderer.h"
+
+#include <numbers>
 
 
-namespace Chokbar
+
+Engine *Engine::m_Instance = nullptr;
+
+Engine::Engine() = default;
+
+Engine::~Engine()
+= default;
+
+Engine *Engine::GetInstance()
 {
-	Engine* Engine::m_Instance = nullptr;
-
-
-	Engine::Engine() = default;
-
-	Engine::~Engine()
+	if (m_Instance == nullptr)
 	{
-		m_Instance = nullptr;
-		delete m_Instance;
-	};
-
-	Engine* Engine::GetInstance()
-	{
-		if (m_Instance == nullptr) {
-			m_Instance = new Engine();
-		}
-
-		return m_Instance;
+		m_Instance = new Engine();
 	}
 
-	Coordinator* Engine::GetCoordinator()
-	{
-		return &GetInstance()->m_Coordinator;
-	}
+	return m_Instance;
+}
 
-	InputHandler* Engine::GetInput()
-	{
-		return &GetInstance()->m_InputHandler;
-	}
+Coordinator *Engine::GetCoordinator()
+{
+	return &GetInstance()->m_Coordinator;
+}
 
-	Camera* Engine::GetMainCamera()
-	{
-		return GetInstance()->m_CameraManager.GetMainCamera();
-	}
+InputHandler *Engine::GetInput()
+{
+	return &GetInstance()->m_InputHandler;
+}
+
+CameraComponent *Engine::GetMainCamera()
+{
+	return GetInstance()->m_CameraManager.GetMainCamera();
+}
+
+PhysicsWorld* Engine::GetPhysicsWorld()
+{
+	return &GetInstance()->m_PhysicsWorld;
+}
 
 #pragma region INIT
 
-	void Engine::PreInitialize()
-	{
-		/*
-		Logger::PrintDebugSeperator();
-		Logger::PrintLog(L"Application Starting...\n");
-		Logger::PrintLog(L"Game Name: %s\n", PerGameSettings::GameName());
-		Logger::PrintLog(L"Boot Time: %s\n", Time::GetDateTimeString().c_str());
+void Engine::PreInitialize()
+{
+	/*
+	Logger::PrintDebugSeperator();
+	Logger::PrintLog(L"Application Starting...\n");
+	Logger::PrintLog(L"Game Name: %s\n", PerGameSettings::GameName());
+	Logger::PrintLog(L"Boot Time: %s\n", Time::GetDateTimeString().c_str());
 
-		Logger::PrintDebugSeperator();
-		*/
+	Logger::PrintDebugSeperator();
+	*/
 
-		// SplashScreen::Open();
-	}
-
-	void Engine::Initialize()
-	{
-		PreInitialize();
-
-		m_Coordinator.Init();
-		m_CameraManager.SetMainCamera(new Camera());
-
-		m_Window.CreateNewWindow(DEFAULT_WIDTH, DEFAULT_HEIGHT, PerGameSettings::GameName(), PerGameSettings::MainIcon(), Win32::RESIZABLE);
-		m_InputHandler.Init(m_Window.GetHandle());
-		OnResize();
+	// SplashScreen::Open();
+}
 
 
-		D3DApp::GetInstance()->InitializeD3D12(&m_Window);
-	}
+void Engine::Initialize()
+{
+	PreInitialize();
+
+	m_Coordinator.Init();
+
+	m_Window.CreateNewWindow(DEFAULT_WIDTH, DEFAULT_HEIGHT, PerGameSettings::GameName(), PerGameSettings::MainIcon(), Win32::RESIZABLE);
+	m_InputHandler.Init(m_Window.GetHandle());
+	OnApplicationFocus();
+
+	D3DRenderer::GetInstance()->InitializeD3D12(&m_Window);
+}
 
 #pragma endregion
 
 #pragma region MAIN
 
-	void Engine::Run()
+void Engine::Run()
+{
+	m_TimeManager.Reset();
+
+	InitComponents();
+
+	OnResize();
+
+	while (!NeedsToClose())
 	{
-		m_GameTimer.Reset();
+		m_Window.PollEvent();
 
-		while (!NeedsToClose())
-		{
-			m_Window.PollEvent();
+		Sleep(1);
+		m_TimeManager.Tick();
 
-			m_GameTimer.Tick();
+		if (m_IsPaused) continue;
 
-			Update(m_GameTimer.GetDeltaTime());
-			Render();
-		}
+		Update(m_TimeManager.GetDeltaTime());
+		//DEBUG_LOG(m_TimeManager.GetDeltaTime());
+		Render();
 	}
+}
 
-	bool Engine::NeedsToClose()
-	{
-		return m_Window.NeedsToClose();
-	}
+void Engine::InitComponents()
+{
+	m_Coordinator.AwakeComponents();
+	m_Coordinator.StartComponents();
+}
 
-	void Engine::Update(float dt)
-	{
-		m_Coordinator.UpdateSystems(dt);
-		m_InputHandler.Update(dt);
+bool Engine::NeedsToClose()
+{
+	return m_Window.NeedsToClose();
+}
 
-		D3DApp::GetInstance()->Update(dt, m_GameTimer.GetTotalTime());
-		CalculateFrameStats();
-	}
+void Engine::Update(float dt)
+{
+	m_PhysicsWorld.Update(dt);
 
-	void Engine::Render()
-	{
-		D3DApp::GetInstance()->Render();
-	}
+	m_InputHandler.Update(TimeManager::GetUnscaledDeltaTime());
+
+	m_Coordinator.UpdateSystems(dt);
+	m_Coordinator.UpdateComponents();
+	m_Coordinator.LateUpdateComponents();
+
+	D3DRenderer::GetInstance()->Update(dt, m_TimeManager.GetTotalTime());
+	CalculateFrameStats();
+}
+
+void Engine::Render()
+{
+	D3DRenderer::GetInstance()->Render();
+}
 
 #pragma endregion
 
-	void Engine::CalculateFrameStats()
+void Engine::CalculateFrameStats()
+{
+		
+
+	// Code computes the average frames per second, and also the
+	// average time it takes to render one frame.  These stats
+	// are appended to the window caption bar.
+
+	static int frameCnt = 0;
+	static float timeElapsed = 0.0f;
+
+	frameCnt++;
+
+	// Compute averages over one second period.
+	if ((m_TimeManager.GetTotalTime() - timeElapsed) >= 1.0f)
 	{
 		std::wstring windowText;
+		float fps = (float)frameCnt; // fps = frameCnt / 1
+		float mspf = 1000.0f / fps;
 
-		// Code computes the average frames per second, and also the
-		// average time it takes to render one frame.  These stats
-		// are appended to the window caption bar.
+		std::wstring fpsStr = std::to_wstring(fps);
+		std::wstring mspfStr = std::to_wstring(mspf);
 
-		static int frameCnt = 0;
-		static float timeElapsed = 0.0f;
+		windowText = L"    fps: " + fpsStr + L"   mspf: " + mspfStr;
 
-		frameCnt++;
-
-		// Compute averages over one second period.
-		if ((m_GameTimer.GetTotalTime() - timeElapsed) >= 1.0f)
-		{
-			float fps = (float)frameCnt; // fps = frameCnt / 1
-			float mspf = 1000.0f / fps;
-
-			std::wstring fpsStr = std::to_wstring(fps);
-			std::wstring mspfStr = std::to_wstring(mspf);
-
-			windowText = L"    fps: " + fpsStr + L"   mspf: " + mspfStr;
-
-			// Reset for next average.
-			frameCnt = 0;
-			timeElapsed += 1.0f;
-		}
-
-		std::wstring x = std::to_wstring(m_InputHandler.GetMouseX());
-		std::wstring y = std::to_wstring(m_InputHandler.GetMouseY());
-
-		windowText += L"    MouseX: " + x + L"   MouseY: " + y;
-
+		// Reset for next average.
+		frameCnt = 0;
+		timeElapsed += 1.0f;
 		SetWindowText(m_Window.GetHandle(), windowText.c_str());
 	}
 
-	void Engine::OnResize()
-	{
-		D3DApp::GetInstance()->OnResize(m_Window.GetWidth(), m_Window.GetHeight());
+}
+
+void Engine::OnResize()
+{
+	D3DRenderer::GetInstance()->OnResize(m_Window.GetWidth(), m_Window.GetHeight());
+	m_CameraManager.GetMainCamera()->SetAspect(GetAspectRatio());
+}
+
+void Engine::Shutdown()
+{
+	DELPTR(m_Instance);
+}
+
+
+void Engine::OnApplicationFocus() 
+{
+	if (m_IsPaused) {
+		TogglePause();
+		m_IsPaused = false;
 	}
 
-	void Engine::Shutdown()
-	{
-	}
+	m_InputHandler.CaptureCursor();
+}
 
+void Engine::OnApplicationLostFocus() 
+{
+	if (!m_IsPaused) {
+		TogglePause();
+		m_IsPaused = true;
+	}
+	m_InputHandler.ReleaseCursor();
+}
+
+
+void Engine::TogglePause()
+{
+	m_IsPaused = !m_IsPaused;
+
+	if (m_IsPaused)
+	{
+		m_InputHandler.ReleaseCursor(); 
+	}
+	else
+	{
+		m_InputHandler.CaptureCursor(); 
+	}
 }

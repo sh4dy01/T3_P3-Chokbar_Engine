@@ -1,15 +1,25 @@
 #include "Chokbar.h"
 #include "CameraComponent.h"
 #include "Engine/ECS/Components/Component.h"
+#include <numbers>
 
 using namespace DirectX;
 
 CameraComponent::CameraComponent()
+	: m_ViewDirty(true)
 {
+	SetLens(70.0F, 1.0f, 1.0f, 1000.0f);
 }
 
 CameraComponent::~CameraComponent()
 {
+}
+
+void CameraComponent::OnAddedComponent()
+{
+	if (CameraManager::GetMainCamera() != nullptr) return;
+
+	CameraManager::SetMainCamera(this);
 }
 
 XMVECTOR CameraComponent::GetRight() const
@@ -88,6 +98,30 @@ float CameraComponent::GetFarWindowHeight() const
 	return m_FarWindowHeight;
 }
 
+void CameraComponent::SetFOV(float fovY)
+{
+	m_FovY = fovY;
+
+	UpdateWindowWithNewRange();
+	UpdateProjectionMatrix();
+}
+
+void CameraComponent::SetAspect(float aspect)
+{
+	m_Aspect = aspect;
+
+	UpdateProjectionMatrix();
+}
+
+void CameraComponent::SetZRange(float zn, float zf)
+{
+	m_NearZ = zn;
+	m_FarZ = zf;
+
+	UpdateWindowWithNewRange();
+	UpdateProjectionMatrix();
+}
+
 void CameraComponent::SetLens(float fovY, float aspect, float zn, float zf)
 {
 	// cache properties
@@ -96,37 +130,28 @@ void CameraComponent::SetLens(float fovY, float aspect, float zn, float zf)
 	m_NearZ = zn;
 	m_FarZ = zf;
 
+	UpdateWindowWithNewRange();
+	UpdateProjectionMatrix();
+}
+
+void CameraComponent::UpdateWindowWithNewRange()
+{
 	m_NearWindowHeight = 2.0f * m_NearZ * tanf(0.5f * m_FovY);
 	m_FarWindowHeight = 2.0f * m_FarZ * tanf(0.5f * m_FovY);
-
-	XMMATRIX P = XMMatrixPerspectiveFovLH(m_FovY, m_Aspect, m_NearZ, m_FarZ);
-	XMStoreFloat4x4(&m_Proj, P);
 }
 
-void CameraComponent::LookAt(FXMVECTOR pos, FXMVECTOR target, FXMVECTOR worldUp)
+void CameraComponent::LookAt(XMFLOAT3 targetPos)
 {
-	XMVECTOR L = XMVector3Normalize(XMVectorSubtract(target, pos));
-	XMVECTOR R = XMVector3Normalize(XMVector3Cross(worldUp, L));
-	XMVECTOR U = XMVector3Cross(L, R);
+	m_LookAt = targetPos;
 
-	XMStoreFloat3(&transform->GetPosition(), pos);
-	XMStoreFloat3(&m_Look, L);
-	XMStoreFloat3(&m_Right, R);
-	XMStoreFloat3(&m_Up, U);
-}
-
-void CameraComponent::LookAt(const XMFLOAT3& pos, const XMFLOAT3& target, const XMFLOAT3& up)
-{
-	XMVECTOR P = XMLoadFloat3(&pos);
-	XMVECTOR T = XMLoadFloat3(&target);
-	XMVECTOR U = XMLoadFloat3(&up);
-
-	LookAt(P, T, U);
+	m_ViewDirty = true;
 }
 
 
 XMMATRIX CameraComponent::GetView() const
 {
+	assert(!m_ViewDirty);
+
 	return XMLoadFloat4x4(&m_View);
 }
 
@@ -145,67 +170,67 @@ XMFLOAT4X4 CameraComponent::GetProj4x4f() const
 	return m_Proj;
 }
 
-void CameraComponent::UpdateViewMatrix()
+void CameraComponent::UpdateProjectionMatrix()
 {
-	XMFLOAT3 Position = transform->GetPosition();
-
-	XMVECTOR pos = XMVectorSet(Position.x, Position.y, Position.z, 1.0F);
-	XMVECTOR target = XMVectorSet(0.0F, 0.5F, 0.0F, 0.0F);
-	XMVECTOR up = XMVectorSet(0.0F, 1.0F, 0.0F, 0.0F);
-
-	XMStoreFloat4x4(&m_View, XMMatrixLookAtLH(pos, target, up));
+	XMStoreFloat4x4(&m_Proj, XMMatrixPerspectiveFovLH(XMConvertToRadians(m_FovY), m_Aspect, m_NearZ, m_FarZ));
 }
 
-void CameraComponent::UpdateProjMatrix(const float winWidth, const float winHeight)
-{
-	XMFLOAT3 Position = transform->GetPosition();
-
-	XMVECTOR pos = XMVectorSet(Position.x, Position.y, Position.z, 1.0F);
-	XMVECTOR target = XMVectorSet(0.0F, 0.5F, 0.0F, 0.0F);
-	XMVECTOR up = XMVectorSet(0.0F, 1.0F, 0.0F, 0.0F);
-
-	XMStoreFloat4x4(&m_Proj, XMMatrixPerspectiveFovLH(XMConvertToRadians(70.0F), winWidth / winHeight, 0.05F, 1000.0F));
-}
-
-/*
 void CameraComponent::UpdateViewMatrix()
 {
-	if (m_ViewDirty)
+	if (transform->IsDirty() || m_ViewDirty)
 	{
+		XMFLOAT3 Position = transform->GetPosition();
+		XMVECTOR pos = XMVectorSet(Position.x, Position.y, Position.z, 1.0F);
+		//XMVECTOR target = XMVectorSet(0.0F, 0.5F, 0.0F, 0.0F);
+		//XMVECTOR target = XMVectorMultiply(XMLoadFloat3(&Position), XMLoadFloat3(&m_Look));
+		XMFLOAT3 forward = transform->GetForward();
+		XMVECTOR target = XMVectorAdd(XMLoadFloat3(&Position), XMLoadFloat3(&forward));
+
+		XMStoreFloat4x4(&m_View, XMMatrixLookAtLH(pos, target, XMLoadFloat3(&transform->GetUp())));
+		m_ViewDirty = false;
+
+		/*
 		XMVECTOR R = XMLoadFloat3(&m_Right);
 		XMVECTOR U = XMLoadFloat3(&m_Up);
 		XMVECTOR L = XMLoadFloat3(&m_Look);
 		XMVECTOR P = XMLoadFloat3(&transform->GetPosition());
-		// Keep camera’s axes orthogonal to each other and of unit length.
+
+		// Keep cameraâ€™s axes orthogonal to each other and of unit length.
 		L = XMVector3Normalize(L);
 		U = XMVector3Normalize(XMVector3Cross(L, R));
+
 		// U, L already ortho-normal, so no need to normalize cross product.
-			R = XMVector3Cross(U, L);
+		R = XMVector3Cross(U, L);
+
 		// Fill in the view matrix entries.
 		float x = -XMVectorGetX(XMVector3Dot(P, R));
 		float y = -XMVectorGetX(XMVector3Dot(P, U));
 		float z = -XMVectorGetX(XMVector3Dot(P, L));
+
 		XMStoreFloat3(&m_Right, R);
 		XMStoreFloat3(&m_Up, U);
 		XMStoreFloat3(&m_Look, L);
+
 		m_View(0, 0) = m_Right.x;
 		m_View(1, 0) = m_Right.y;
 		m_View(2, 0) = m_Right.z;
 		m_View(3, 0) = x;
+
 		m_View(0, 1) = m_Up.x;
 		m_View(1, 1) = m_Up.y;
 		m_View(2, 1) = m_Up.z;
 		m_View(3, 1) = y;
+
 		m_View(0, 2) = m_Look.x;
 		m_View(1, 2) = m_Look.y;
 		m_View(2, 2) = m_Look.z;
 		m_View(3, 2) = z;
+
 		m_View(0, 3) = 0.0f;
 		m_View(1, 3) = 0.0f;
 		m_View(2, 3) = 0.0f;
 		m_View(3, 3) = 1.0f;
-		m_ViewDirty = false;
+				*/
+
 	}
 }
-
-*/

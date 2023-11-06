@@ -5,109 +5,128 @@
 #include "EntityManager.h"
 
 
-namespace Chokbar {
+class Coordinator
+{
+public:
+	Coordinator();
+	~Coordinator();
 
-	class Coordinator {
-	public:
-
-		Coordinator();
-		~Coordinator();
-
-	public:
-		// Initialize the coordinator and all its managers
-		void Init();
+public:
+	// Initialize the coordinator and all its managers
+	void Init();
 
 
-		// Create a new game object ID and add a default transform component
-		InstanceID CreateNewGameObjectWithTransform();
-		// Create a new game object ID and add a copied transform component
-		InstanceID CreateNewGameObjectWithTransform(const Transform& transform);
-		void UpdateSystems(float dt);
-		void DestroyEntity(InstanceID entity);
-
-	private:
-
-		void RegisterComponents();
-		void RegisterSystems();
-
-	public:
-
-		// Component methods
-		template<typename T>
-		void RegisterComponent() const
-		{
-			m_ComponentManager->RegisterComponent<T>();
-		}
-
-		template<typename T>
-		void AddComponent(InstanceID entity, T component)
-		{
-			m_ComponentManager->AddComponent<T>(entity, component);
-
-			auto signature = m_EntityManager->GetSignature(entity);
-			signature.set(m_ComponentManager->GetComponentType<T>(), true);
-			m_EntityManager->SetSignature(entity, signature);
-
-			m_SystemManager->EntitySignatureChanged(entity, signature);
-		}
-
-		template<typename T>
-		void RemoveComponent(InstanceID entity) const
-		{
-			m_ComponentManager->RemoveComponent<T>(entity);
-
-			auto signature = m_EntityManager->GetSignature(entity);
-			signature.set(m_ComponentManager->GetComponentType<T>(), false);
-			m_EntityManager->SetSignature(entity, signature);
-
-			m_SystemManager->EntitySignatureChanged(entity, signature);
-		}
-
-		template<typename T>
-		T* GetComponent(InstanceID entity)
-		{
-			return m_ComponentManager->GetComponent<T>(entity);
-		}
-
-		template<typename T>
-		bool HasComponent(InstanceID entity) const
-		{
-			return m_ComponentManager->HasComponent<T>(entity);
-		}
-
-		template<typename T>
-		ComponentType GetComponentType() const
-		{
-			return m_ComponentManager->GetComponentType<T>();
-		}
-
-		template<class T>
-		std::shared_ptr<ComponentArray<T>> GetAllComponentsOfType()
-		{
-			// Get a pointer to a list of all components of type
-			return m_ComponentManager->GetComponentArray<T>();
-		}
+	// Create a new game object ID
+	InstanceID GetNewInstanceID() const;
+	void RegisterGameObject(GameObject* go) const;
 
 
-		// System methods
-		template<typename T>
-		std::shared_ptr<T> RegisterSystem()
-		{
-			return m_SystemManager->RegisterSystem<T>();
-		}
+	// Create a new game object ID
+	//GameObject* CreateNewObject(Transform* transform);
 
-		template<typename T>
-		void SetSystemSignature(Signature signature) const
-		{
-			m_SystemManager->SetSignature<T>(signature);
-		}
+	void AwakeComponents();
+	void StartComponents();
+	void UpdateComponents();
+	void LateUpdateComponents();
+	void FixedUpdateComponents();
 
-	private:
+	void RegisterCustomComponent(CustomComponent* customComponent);
+	void UnregisterCustomComponent(CustomComponent* customComponent);
 
-		std::unique_ptr<ComponentManager> m_ComponentManager;
-		std::unique_ptr<EntityManager> m_EntityManager;
-		std::unique_ptr<SystemManager> m_SystemManager;
+	void UpdateSystems(float dt);
+	void DestroyEntity(InstanceID entity);
 
-	};
+private:
 
-}
+	void RegisterComponents();
+	void RegisterSystems();
+
+public:
+
+#pragma region Component methods
+
+	template <typename T>
+	void RegisterComponent() const
+	{
+		m_ComponentManager->RegisterComponent<T>();
+	}
+
+	template <typename T>
+	void AddComponent(InstanceID entity, T *component)
+	{
+		m_ComponentManager->AddComponent<T>(entity, component);
+
+		auto signature = m_EntityManager->GetSignature(entity);
+		signature.set(m_ComponentManager->GetComponentType<T>(), true);
+		m_EntityManager->SetSignature(entity, signature);
+
+		m_SystemManager->EntitySignatureChanged(entity, signature);
+	}
+
+	template <typename T>
+	void RemoveComponent(InstanceID entity, T* component) const
+	{
+		m_ComponentManager->RemoveComponent<T>(entity);
+
+		auto signature = m_EntityManager->GetSignature(entity);
+		signature.set(m_ComponentManager->GetComponentType<T>(), false);
+		m_EntityManager->SetSignature(entity, signature);
+
+		m_SystemManager->EntitySignatureChanged(entity, signature);
+	}
+
+	template <typename T>
+	T *GetComponent(InstanceID entity)
+	{
+		return m_ComponentManager->GetComponent<T>(entity);
+	}
+
+	template <typename T>
+	bool HasComponent(InstanceID entity) const
+	{
+		return m_ComponentManager->HasComponent<T>(entity);
+	}
+
+	template <typename T>
+	ComponentType GetComponentType() const
+	{
+		return m_ComponentManager->GetComponentType<T>();
+	}
+
+	template <class T>
+	std::shared_ptr<ComponentArray<T>> GetAllComponentsOfType()
+	{
+		// Get a pointer to a list of all components of type
+		return m_ComponentManager->GetComponentArray<T>();
+	}
+
+#pragma endregion
+
+#pragma region Entity methods
+
+	GameObject* GetEntityByName(const std::string& name) const;
+
+
+#pragma endregion
+
+#pragma region System methods
+
+	template <typename T>
+	std::shared_ptr<T> RegisterSystem()
+	{
+		return m_SystemManager->RegisterSystem<T>();
+	}
+
+	template <typename T>
+	void SetSystemSignature(Signature signature) const
+	{
+		m_SystemManager->SetSignature<T>(signature);
+	}
+
+#pragma endregion
+
+private:
+	std::unique_ptr<ComponentManager> m_ComponentManager;
+	std::unique_ptr<EntityManager> m_EntityManager;
+	std::unique_ptr<SystemManager> m_SystemManager;
+};

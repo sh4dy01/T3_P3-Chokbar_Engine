@@ -1,6 +1,7 @@
 ﻿#include "Chokbar.h"
 #include "Window.h"
 
+
 namespace Win32
 {
 	Window::Window()
@@ -81,21 +82,39 @@ namespace Win32
 		{
 		case WM_QUIT:
 			break;
+
+		case WM_SETFOCUS:
+			Engine::GetInstance()->OnApplicationFocus();
+			DEBUG_LOG("Focus gained");
+			break;
+
+		case WM_KILLFOCUS:
+			Engine::GetInstance()->OnApplicationLostFocus();
+			DEBUG_LOG("Focus lost");
+
+			break;
+
+		case WM_KEYDOWN:
+			if (wParam == VK_ESCAPE) {
+				Engine::GetInstance()->OnApplicationLostFocus();
+				DEBUG_LOG("Focus lost after escape");
+			}
+			break;
+
+		case WM_LBUTTONDOWN:
+		case WM_RBUTTONDOWN:
+			SetFocus(hwnd);
+			Engine::GetInstance()->OnApplicationFocus();
+			DEBUG_LOG("Focus set to window after mouse click.");
+			break;
+
+
 		case WM_CLOSE:
 			window->needsToClose = true;
 			PostQuitMessage(0);
 			break;
 		case WM_DESTROY:
 			break;
-			switch (message)
-			{
-			case WM_QUIT:
-				break;
-			case WM_CLOSE:
-			case WM_DESTROY:
-				PostQuitMessage(0);
-				break;
-			}
 		}
 
 		return DefWindowProcW(hwnd, message, wParam, lParam);

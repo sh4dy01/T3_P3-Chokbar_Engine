@@ -2,18 +2,26 @@
 #include "GameObject.h"
 
 
-Chokbar::GameObject::GameObject()
+GameObject::GameObject()
+	: transform(AddComponent<Transform>()), m_IsActive(true)
 {
-	transform = Engine::GetCoordinator()->GetComponent<Transform>(m_InstanceID);
+	Engine::GetCoordinator()->RegisterGameObject(this);
 }
 
-Chokbar::GameObject::GameObject(const std::string& name)
-	: Object(name)
+GameObject::GameObject(const std::string& name)
+	: Object(name), transform(AddComponent<Transform>()), m_IsActive(true)
 {
-	transform = Engine::GetCoordinator()->GetComponent<Transform>(m_InstanceID);
+	Engine::GetCoordinator()->RegisterGameObject(this);
 }
 
 
-Chokbar::GameObject::~GameObject()
-= default;
+GameObject::~GameObject()
+{
+	transform = nullptr;
+}
+
+GameObject* GameObject::Find(const std::string& name)
+{
+	return Engine::GetCoordinator()->GetEntityByName(name);
+}
 

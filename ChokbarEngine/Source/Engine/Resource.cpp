@@ -1,17 +1,23 @@
 #include "Chokbar.h"
 
-#include "Core/D3D/Internal/ShaderBase.h"
-#include "Core/D3D/Internal/Material.h"
+#include "D3D/Shaders/ShaderBase.h"
+#include "D3D/Shaders/Material.h"
+#include "IResourceObject.h"
 
 #include "Resource.h"
 
-std::unordered_map<std::string, ShaderBase*> Resource::m_shaders;
-std::unordered_map<std::string, Material*> Resource::m_materials;
+std::unordered_map<MaterialType, ShaderBase*> Resource::m_shaders;
+std::unordered_map<MaterialType, Material*> Resource::m_materials;
+std::unordered_map<std::string, IResourceObject*> Resource::m_resources;
 
 Resource::~Resource()
 {
-	m_shaders.clear();
-	m_materials.clear();
+
+}
+
+Material* Resource::LoadMaterial(MaterialType matType)
+{
+	return m_materials[matType];
 }
 
 void Resource::CreateResources(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, UINT cbvSrvDescriptorSize)
@@ -20,9 +26,15 @@ void Resource::CreateResources(ID3D12Device* device, ID3D12DescriptorHeap* cbvHe
 	CreateMaterials();
 }
 
-ShaderBase* Resource::FindShader(std::string& shaderName)
+void Resource::ReleaseResources()
 {
-	auto iter = m_shaders.find(shaderName);
+	m_shaders.clear();
+	m_materials.clear();
+}
+
+ShaderBase* Resource::FindShader(MaterialType& id)
+{
+	auto iter = m_shaders.find(id);
 	if (iter != m_shaders.end())
 	{
 		return iter->second;
@@ -36,21 +48,35 @@ ShaderBase* Resource::FindShader(std::string& shaderName)
 void Resource::CreateShaders(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, UINT cbvSrvDescriptorSize)
 {
 	std::wstring shaderPathSimple = L"Shader/Simple.hlsl";
-	m_shaders[SHADER_SIMPLE] = new ShaderSimple(device, cbvHeap, cbvSrvDescriptorSize, shaderPathSimple);
-	m_shaders[SHADER_SIMPLE]->Init();
-	
+	m_shaders[MaterialType::SIMPLE] = new ShaderSimple(device, cbvHeap, cbvSrvDescriptorSize, shaderPathSimple);
+	m_shaders[MaterialType::SIMPLE]->Init();
+
 	std::wstring shaderPathTex = L"Shader/Texture.hlsl";
-	m_shaders[SHADER_TEXTURE] = new ShaderTexture(device, cbvHeap, cbvSrvDescriptorSize, shaderPathTex);
-	m_shaders[SHADER_TEXTURE]->Init();
+	m_shaders[MaterialType::TEXTURE] = new ShaderTexture(device, cbvHeap, cbvSrvDescriptorSize, shaderPathTex);
+	m_shaders[MaterialType::TEXTURE]->Init();
+
+	std::wstring shaderPathParticle = L"Shader/Particle.hlsl";
+	m_shaders[MaterialType::PARTICLE] = new ShaderParticle(device, cbvHeap, cbvSrvDescriptorSize, shaderPathParticle);
+	m_shaders[MaterialType::PARTICLE]->Init();
+
+	std::wstring shaderPathSkybox = L"Shader/Sky.hlsl";
+	m_shaders[MaterialType::SKYBOX] = new ShaderSkybox(device, cbvHeap, cbvSrvDescriptorSize, shaderPathSkybox);
+	m_shaders[MaterialType::SKYBOX]->Init();
 
 	CreateMaterials();
 }
 
 void Resource::CreateMaterials()
 {
-	m_materials[SHADER_SIMPLE] = new Material();
-	m_materials[SHADER_SIMPLE]->SetShader(m_shaders[SHADER_SIMPLE]);
+	m_materials[MaterialType::SIMPLE] = new Material();
+	m_materials[MaterialType::SIMPLE]->SetShader(m_shaders[MaterialType::SIMPLE]);
 
-	m_materials[SHADER_TEXTURE] = new Material();
-	m_materials[SHADER_TEXTURE]->SetShader(m_shaders[SHADER_TEXTURE]);
+	m_materials[MaterialType::TEXTURE] = new Material();
+	m_materials[MaterialType::TEXTURE]->SetShader(m_shaders[MaterialType::TEXTURE]);
+
+	m_materials[MaterialType::PARTICLE] = new Material();
+	m_materials[MaterialType::PARTICLE]->SetShader(m_shaders[MaterialType::PARTICLE]);
+
+	m_materials[MaterialType::SKYBOX] = new Material();
+	m_materials[MaterialType::SKYBOX]->SetShader(m_shaders[MaterialType::SKYBOX]);
 }
