@@ -34,6 +34,9 @@ ShaderBase::~ShaderBase()
 	RELPTR(m_vsByteCode);
 	RELPTR(m_psByteCode);
 
+	for (auto& cb : m_objectCBs)
+		DELPTR(cb);
+
 	m_objectCBs.clear();
 	DELPTR(m_passCB);
 }
