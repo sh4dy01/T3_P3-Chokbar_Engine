@@ -1,22 +1,15 @@
 #pragma once
 
-#include "Engine/Managers/InputHandler.h"
-#include "Engine/ECS/Base/Coordinator.h"
+#include "Core/Core.h"
 #include "Platform/Windows/Window.h"
-#include "PhysicsWorld.h"
-#include "Engine/Managers/CameraManager.h"
-#include "Managers/TimeManager.h"
-
 
 class Engine
 {
 public:
 
-	Engine();
 	~Engine();
 
 	static Engine* GetInstance();
-	static Coordinator *GetCoordinator();
 	static InputHandler *GetInput();
 	static PhysicsWorld *GetPhysicsWorld();
 	static CameraComponent *GetMainCamera();
@@ -29,6 +22,8 @@ public:
 	void OnApplicationLostFocus();
 
 private:
+
+	Engine();
 
 	void PreInitialize();
 	void InitComponents();
@@ -49,9 +44,9 @@ private:
 
 private:
 	static Engine *m_Instance;
+	Coordinator* m_Coordinator;
 
 	TimeManager m_TimeManager;
-	Coordinator m_Coordinator;
 	CameraManager m_CameraManager;
 	InputHandler m_InputHandler;
 	PhysicsWorld m_PhysicsWorld;

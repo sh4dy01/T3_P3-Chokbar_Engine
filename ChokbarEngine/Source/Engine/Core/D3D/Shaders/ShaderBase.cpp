@@ -126,7 +126,7 @@ void ShaderBase::UpdatePassCB(const float dt, const float totalTime)
 	// XMStoreFloat4x4(&mainPassCB.InvViewProj, XMMatrixTranspose(invViewProj));
 
 	mainPassCB.LightColor = XMFLOAT4(0.9f, 0.7f, 0.7f, 1.0f);
-	mainPassCB.LightDirection = XMFLOAT3(-1.0f, -1.0f, 0.0f);
+	mainPassCB.LightDirection = XMFLOAT3(0.0f, 0.0f, 1.0f);
 	mainPassCB.EyePosW = CameraManager::GetMainCamera()->transform->GetPosition();
 	// mainPassCB.RenderTargetSize = XMFLOAT2(m_bufferWidth, m_bufferHeight);
 	// mainPassCB.InvRenderTargetSize = XMFLOAT2(1.0f / m_bufferWidth, 1.0f / m_bufferHeight);

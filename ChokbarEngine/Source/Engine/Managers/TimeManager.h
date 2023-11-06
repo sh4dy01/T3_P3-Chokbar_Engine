@@ -2,10 +2,9 @@
 
 
 class TimeManager {
-
+	friend class Engine;
 public:
 
-	TimeManager();
 	~TimeManager();
 
 
@@ -30,6 +29,8 @@ public:
 	static float GetTimeScale() { return m_TimeScale; }
 
 private:
+
+	TimeManager();
 
 	__int64 m_performtime;
 	float m_freq;

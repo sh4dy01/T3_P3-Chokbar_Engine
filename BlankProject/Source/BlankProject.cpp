@@ -1,8 +1,6 @@
 #include "BlankProject.h"
 #include "Platform/Windows/WinEntry.h"
 
-#include "Engine/Engine.h"
-
 #include "GameObjects/Camera.h"
 #include "GameObjects/Player.h"
 #include "GameObjects/Asteroid.h"
@@ -23,12 +21,8 @@ public:
 	/* Initialize the application */
 	void Initialize() override;
 
-	void PreInitialize() override;
-
 	/* Game Loop */
 	void Update(const float dt) override;
-
-	void Run() override;
 
 	void Shutdown() override;
 
@@ -43,10 +37,6 @@ void Application::SetupPerGameSettings()
 	PerGameSettings::SetMainIcon(IDI_MAINICON);
 }
 
-void Application::PreInitialize()
-{
-	Engine::GetInstance()->Initialize();
-}
 
 void Application::Initialize()
 {
@@ -61,17 +51,16 @@ void Application::Initialize()
 	mr->Init(MeshType::PYRAMID, MaterialType::TEXTURE);
 	pr->Init(MeshType::CUBE, MaterialType::PARTICLE);
 	pr->SetParticleCount(100);
+	pr->Play();
 
-	std::string path = "Resources/Textures/mars.dds";
-	test->GetComponent<MeshRenderer>()->RegisterTexture(Resource::Load<Texture>(path));
+	test->GetComponent<MeshRenderer>()->RegisterTexture(Resource::Load<Texture>("Resources/Textures/mars.dds"));
 
 	auto * test3 = NEW GameObject("asteroid");
 	test3->transform->SetPosition(3, 0, 7);
 
-	auto* mr3 = NEW MeshRenderer();
-	mr3->Init(MeshType::CUBE, MaterialType::TEXTURE);
-	std::string path3 = "Resources/Textures/angry_winnie.dds";
-	mr3->RegisterTexture(Resource::Load<Texture>(path3));
+	auto* mr3 = new MeshRenderer();
+	mr3->Init(MeshType::SPHERE, MaterialType::TEXTURE);
+	mr3->RegisterTexture(Resource::Load<Texture>("Resources/Textures/4k.dds"));
 	test3->AddComponent<MeshRenderer>(mr3);
 
 
@@ -88,11 +77,6 @@ void Application::Initialize()
 	player = nullptr;
 }
 
-void Application::Run()
-{
-	Engine::GetInstance()->Run();
-}
-
 void Application::Update(const float dt)
 
 {
@@ -100,5 +84,5 @@ void Application::Update(const float dt)
 
 void Application::Shutdown()
 {
-	Engine::GetInstance()->Shutdown();
+
 }

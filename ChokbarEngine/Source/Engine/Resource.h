@@ -15,12 +15,23 @@ public:
 	~Resource();
 
 	template <class T = IResourceObject>
-	static T* Load(std::string& filepath)
+	static T* Load(const char* filepath)
 	{
-		std::string name = filepath.substr(filepath.find_last_of("/") + 1).substr(0, filepath.find_last_of("."));
-		T* resource = NEW T(name);
-		resource->Load(filepath);
+		std::string path = filepath;
+
+		std::string name = path.substr(path.find_last_of("/") + 1, path.find_last_of("."));
+
+		if (auto iter = m_resources.find(name) != m_resources.end())
+		{
+			IResourceObject* resource = m_resources[name];
+			T* cRes = reinterpret_cast<T*>(resource);
+			return cRes;
+		}
+
+		T* resource = new T(name);
+		resource->Load(path);
 		m_resources[name] = resource;
+
 		return resource;
 	}
 

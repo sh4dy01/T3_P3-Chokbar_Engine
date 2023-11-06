@@ -1,9 +1,6 @@
 #include "Chokbar.h"
 
 #include "Engine/Resource.h"
-#include "Engine/Engine.h"
-
-#include "Engine/ECS/Components/TransformComponent.h"
 
 #include "D3D/Shaders/Texture.h"
 #include "D3D/Shaders/ShaderBase.h"
@@ -12,6 +9,8 @@
 #include "D3D/Renderers/ParticleRenderer.h"
 #include "D3D/Renderers/SkyRenderer.h"
 #include "D3D/Geometry/GeometryHandler.h"
+
+#include "Engine/Engine.h"
 
 #include "D3DRenderer.h"
 
@@ -458,14 +457,16 @@ void D3DRenderer::CreateResources()
 
 void D3DRenderer::GetRenderComponentsRef()
 {
-	m_meshRenderers = Engine::GetCoordinator()->GetAllComponentsOfType<MeshRenderer>()->GetAllData();
-	m_particleRenderers = Engine::GetCoordinator()->GetAllComponentsOfType<ParticleRenderer>()->GetAllData();
-	m_skyRenderers = Engine::GetCoordinator()->GetAllComponentsOfType<SkyRenderer>()->GetAllData();
+	Coordinator* coordinator = Coordinator::GetInstance();
+
+	m_meshRenderers = coordinator->GetAllComponentsOfType<MeshRenderer>()->GetAllData();
+	m_particleRenderers = coordinator->GetAllComponentsOfType<ParticleRenderer>()->GetAllData();
+	m_skyRenderers = coordinator->GetAllComponentsOfType<SkyRenderer>()->GetAllData();
 }
 #pragma endregion
 
 #pragma region UPDATE 
-int D3DRenderer::UpdateTextureHeap(Texture* tex, D3D12_SRV_DIMENSION textType)
+int D3DRenderer::UpdateTextureHeap(Texture* tex, int textType)
 {
 	if (!tex) return -1;
 
@@ -474,7 +475,7 @@ int D3DRenderer::UpdateTextureHeap(Texture* tex, D3D12_SRV_DIMENSION textType)
 
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	srvDesc.ViewDimension = textType;
+	srvDesc.ViewDimension = (D3D12_SRV_DIMENSION)textType;
 	srvDesc.Format = tex->Resource->GetDesc().Format;
 	srvDesc.Texture2D.MostDetailedMip = 0;
 	srvDesc.Texture2D.MipLevels = tex->Resource->GetDesc().MipLevels;

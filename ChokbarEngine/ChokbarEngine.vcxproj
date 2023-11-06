@@ -101,6 +101,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Engine\Core\D3D\Shaders\Cubemap.cpp" />
     <ClCompile Include="Source\Chokbar.cpp" />
     <ClCompile Include="Source\Common\Logger.cpp" />
     <ClCompile Include="Source\Common\Time.cpp" />
@@ -137,8 +138,7 @@
     <ClCompile Include="Source\Engine\ECS\Components\TransformComponent.cpp" />
     <ClCompile Include="Source\Engine\Engine.cpp" />
     <ClCompile Include="Source\Engine\Managers\TimeManager.cpp" />
-    <ClCompile Include="Source\Engine\PhysicsManager.cpp" />
-    <ClCompile Include="Source\Engine\PhysicsWorld.cpp" />
+    <ClCompile Include="Source\Engine\Managers\PhysicsWorld.cpp" />
     <ClCompile Include="Source\Engine\SplashScreen.cpp" />
     <ClCompile Include="Source\Engine\IResourceObject.cpp" />
     <ClCompile Include="Source\Engine\Managers\CameraManager.cpp" />
@@ -149,6 +149,7 @@
     <ClCompile Include="Source\Platform\Windows\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Engine\Core\D3D\Shaders\Cubemap.h" />
     <ClInclude Include="Source\Chokbar.h" />
     <ClInclude Include="Source\Common\Logger.h" />
     <ClInclude Include="Source\Common\Time.h" />
@@ -181,8 +182,7 @@
     <ClInclude Include="Source\Engine\ECS\Components\Collision\TriggerCollisionEvent.h" />
     <ClInclude Include="Source\Engine\ECS\Components\CustomComponent.h" />
     <ClInclude Include="Source\Engine\Managers\TimeManager.h" />
-    <ClInclude Include="Source\Engine\PhysicsManager.h" />
-    <ClInclude Include="Source\Engine\PhysicsWorld.h" />
+    <ClInclude Include="Source\Engine\Managers\PhysicsWorld.h" />
     <ClInclude Include="Source\Engine\ECS\Components\CameraComponent.h" />
     <ClInclude Include="Source\Engine\Managers\CameraManager.h" />
     <ClInclude Include="Source\Engine\Managers\InputHandler.h" />

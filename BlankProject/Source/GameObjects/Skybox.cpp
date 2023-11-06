@@ -16,8 +16,10 @@ SkyBox::SkyBox()
 	transform->SetScale(500.f, 500.0f, 500.0f);
 	transform->SetPosition(0.0f, 0.0f, 0.0f);
 	*/
-
-	std::string path = "Resources/Textures/cubemap.dds";
+		
+	MeshRenderer* mr = new MeshRenderer();
+	mr->Init(MeshType::SPHERE, MaterialType::SKYBOX);
+	mr->RegisterTexture(Resource::Load<Cubemap>("Resources/Textures/cubemap.dds"));
 
 	auto mesh = AddComponent<MeshRenderer>();
 	mesh->Init(SPHERE, SKYBOX);

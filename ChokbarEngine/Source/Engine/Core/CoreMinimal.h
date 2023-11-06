@@ -10,7 +10,6 @@
 #include "D3D/Base/MeshType.h"
 #include "D3D/Base/MaterialType.h"
 
-#include "Engine/Engine.h"
 #include "Engine/Managers/TimeManager.h"
 #include "Engine/Managers/CameraManager.h"
 
@@ -30,6 +29,7 @@
 #include "D3D/Renderers/ParticleRenderer.h"
 #include "D3D/Renderers/SkyRenderer.h"
 #include "D3D/Shaders/Texture.h"
+#include "D3D/Shaders/Cubemap.h"
 
 #include "Engine/Managers/InputHandler.h"
 

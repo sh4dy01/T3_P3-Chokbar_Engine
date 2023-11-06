@@ -18,12 +18,8 @@ namespace Win32
 		/* Called to set up our per game settings */
 		virtual void SetupPerGameSettings() = 0;
 
-		virtual void PreInitialize() = 0;
-
 		/* Initialize the application */
 		virtual void Initialize() = 0;
-
-		virtual void Run() = 0;
 
 		virtual void Shutdown() = 0;
 
