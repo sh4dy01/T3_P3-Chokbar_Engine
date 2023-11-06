@@ -2,11 +2,12 @@
 #include <stack>
 
 #include "UploadBuffer.h"
-#include "Core/D3D/Internal/D3DMesh.h"
 
 struct Texture;
+class ParticleRenderer;
+struct InstanceData;
 
-enum VertexType { POS, POS_COLOR, POS_TEX, POS_NORM_TEX, POS_NORM_TAN_TEX };
+enum VertexType { VERTEX };
 
 struct ShaderDrawArguments
 {
@@ -14,7 +15,6 @@ struct ShaderDrawArguments
 	{
 		CmdList = nullptr;
 		ItemGeometry = nullptr;
-		Text = nullptr;
 	}
 
 	ID3D12GraphicsCommandList* CmdList;
@@ -25,7 +25,6 @@ struct ShaderDrawArguments
 	UINT StartIndexLocation;
 	UINT BaseVertexLocation;
 
-	Texture* Text;
 	UINT TextSrvIndex;
 };
 
@@ -71,7 +70,7 @@ protected:
 	m_objectCBs stores every constant buffer. Each constant buffer is associated to an unique MeshRenderer
 	NOTE : The object constant buffer is associated to the b0 cbuffer in the shader (only true in our project) */
 	std::vector<UploadBuffer<ObjConstants>*> m_objectCBs;
-	std::stack<UINT> m_freeIndices; 
+	std::stack<UINT> m_freeIndices;
 	/* m_passCB stores every information the shader might need about our camera
 	NOTE : The main pass constant buffer is associated to the b1 cbuffer in the shader (only true in our project) */
 	UploadBuffer<PassConstants>* m_passCB;
@@ -93,17 +92,14 @@ protected:
 	ID3D12PipelineState* m_pipelineState;
 
 	ID3D12Device* m_generalDevice;
-	ID3D12DescriptorHeap* m_generalCBVHeap;
 	UINT m_cbvDescriptorSize;
-
-	CameraComponent* m_MainCamera;
 
 public:
 	virtual void Init() = 0;
 	virtual void CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT& rtvFormat, DXGI_FORMAT& dsvFormat) = 0;
 
 	virtual void BeginDraw(ID3D12GraphicsCommandList* cmdList) = 0;
-	virtual void Draw(ShaderDrawArguments& args) = 0;
+	virtual void Draw(ID3D12GraphicsCommandList* cmdList, MeshRenderer* drawnMeshR) = 0;
 	virtual void EndDraw(ID3D12GraphicsCommandList* cmdList) = 0;
 
 	UINT GetCreatedIndex() { return (UINT)m_objectCBs.size() - 1; }
@@ -134,7 +130,7 @@ public:
 	void CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT& rtvFormat, DXGI_FORMAT& dsvFormat) override;
 
 	void BeginDraw(ID3D12GraphicsCommandList* cmdList) override;
-	void Draw(ShaderDrawArguments& args) override;
+	void Draw(ID3D12GraphicsCommandList* cmdList, MeshRenderer* drawnMeshR) override;
 	void EndDraw(ID3D12GraphicsCommandList* cmdList) override;
 };
 
@@ -148,7 +144,7 @@ public:
 	void CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT& rtvFormat, DXGI_FORMAT& dsvFormat) override;
 
 	void BeginDraw(ID3D12GraphicsCommandList* cmdList) override;
-	void Draw(ShaderDrawArguments& args) override;
+	void Draw(ID3D12GraphicsCommandList* cmdList, MeshRenderer* drawnMeshR) override;
 	void EndDraw(ID3D12GraphicsCommandList* cmdList) override;
 
 private:
@@ -156,4 +152,24 @@ private:
 	Creating multiple Samplers allows us to have access to different parse mode in our shader later on. This is useful on big engines.
 	Note that will certainly do not need that much samplers, but it was juste to learn how to use them. */
 	std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> GetStaticSamplers();
+};
+
+class ShaderParticle : public ShaderBase
+{
+public:
+	ShaderParticle(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, UINT cbvDescriptorSize, std::wstring& filepath);
+	~ShaderParticle();
+
+	void Init() override;
+	void CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT& rtvFormat, DXGI_FORMAT& dsvFormat) override;
+
+	void BeginDraw(ID3D12GraphicsCommandList* cmdList) override;
+	void Draw(ID3D12GraphicsCommandList* cmdList, MeshRenderer* drawnMeshR) override;
+	void EndDraw(ID3D12GraphicsCommandList* cmdList) override;
+
+	void UpdateParticleInstanceDataBuffer(int startIndex, const void* data);
+private:
+	void DrawAsParticle(ID3D12GraphicsCommandList* cmdList, ParticleRenderer* drawnMeshR);
+
+	UploadBuffer<InstanceData>* m_particleInstanceDataBuffer;
 };

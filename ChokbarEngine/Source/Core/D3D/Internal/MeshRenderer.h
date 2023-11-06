@@ -1,37 +1,34 @@
 #pragma once 
+#include "Engine/ECS/Components/Component.h"
 
 class Material;
 class D3DMesh;
 class Texture;
-
-#include "Core/D3D/MeshType.h"
-#include "Core/D3D/MaterialType.h"
 
 class MeshRenderer : public Component
 {
 public:
 
 	MeshRenderer();
-	MeshRenderer(MeshType, MaterialType);
-	~MeshRenderer();
+	~MeshRenderer() override;
 
-	void OnDelete();
-
-	void BindMaterial(Material* mat);
+	void Init(MeshType meshType, MaterialType matType);
 
 	Texture* GetTexture(UINT index) const { return m_textures[index]; }
 	std::vector<Texture*> GetTextures() const { return m_textures; }
 	void RegisterTexture(Texture* tex);
 
+protected:
+	void OnDelete();
+
+	void BindMaterial(Material* mat);
 
 public:
 	D3DMesh* Mesh;
 	UINT ObjectCBIndex = -1;
 
 	Material* Mat;
-	UINT TextSrvIndex = -1;
 
 private:
 	std::vector<Texture*> m_textures{};
-
 };

@@ -16,5 +16,4 @@ inline DirectX::XMFLOAT4X4 Identity4x4()
 
 	return Id;
 }
-
 #pragma endregion

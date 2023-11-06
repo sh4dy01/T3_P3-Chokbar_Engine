@@ -1,6 +1,7 @@
 #include "Chokbar.h"
 #include "PhysicsWorld.h"
 
+using namespace DirectX;
 
 CollisionInfo::CollisionInfo(Collider* colliderA, Collider* colliderB)
 	: m_ColliderA(colliderA), m_ColliderB(colliderB), m_State(Enter)
@@ -9,10 +10,7 @@ CollisionInfo::CollisionInfo(Collider* colliderA, Collider* colliderB)
 
 CollisionInfo::~CollisionInfo()
 {
-	delete m_ColliderA;
 	m_ColliderA = nullptr;
-
-	delete m_ColliderB;
 	m_ColliderB = nullptr;
 }
 
@@ -22,13 +20,7 @@ void CollisionInfo::UpdateState(CollisionState newState)
 }
 
 PhysicsWorld::PhysicsWorld()
-	: m_gridSize(0), m_cellSize(0.0f), UPDATE_RATE(0.02f), m_timer(0.0f), m_CurrentCollisionInfo(nullptr)
-{
-
-}
-
-PhysicsWorld::PhysicsWorld(int gridSize, float cellSize)
-	: m_gridSize(gridSize), m_cellSize(cellSize)
+	: m_CurrentCollisionInfo(nullptr), m_gridSize(0), m_cellSize(0.0f), m_timer(0.0f)
 {
 
 }
@@ -37,23 +29,25 @@ PhysicsWorld::~PhysicsWorld()
 {
 	for (auto& rigidbody : m_rigidbodies)
 	{
-		delete rigidbody;
 		rigidbody = nullptr;
 	}
 
 	for (auto& collisionInfo : m_RegisteredCollisionInfos)
 	{
-		delete collisionInfo;
-		collisionInfo = nullptr;
+		DELPTR(collisionInfo);
 	}
+
+	m_rigidbodies.clear();
 }
 
 void PhysicsWorld::Update(float dt)
 {
 	m_timer += dt;
 
-	if (m_timer >= UPDATE_RATE)
+	if (m_timer >= TimeManager::GetFixedTime())
 	{
+		Engine::GetCoordinator()->FixedUpdateComponents();
+
 		CheckCollision();
 
 		for (auto& rigidbody : m_rigidbodies)
@@ -78,6 +72,8 @@ void PhysicsWorld::RegisterRigidBody(Rigidbody* rigidbody)
 
 void PhysicsWorld::RemoveRigidBody(Rigidbody* rigidbody)
 {
+	if (m_rigidbodies.empty()) return;
+
 	std::erase(m_rigidbodies, rigidbody);
 }
 
@@ -108,7 +104,7 @@ void PhysicsWorld::CheckCollision()
 					//m_rigidbodies[i]->CallOnCollisionStay(m_CurrentCollisionInfo.ColliderB);
 					//m_rigidbodies[j]->CallOnCollisionStay(m_CurrentCollisionInfo.ColliderA);
 
-					DEBUG_LOG(m_rigidbodies[i]->gameObject->GetName() << " continue colliding with " << m_rigidbodies[j]->gameObject->GetName())
+					//DEBUG_LOG(m_rigidbodies[i]->gameObject->GetName() << " continue colliding with " << m_rigidbodies[j]->gameObject->GetName())
 
 						break;
 				case Exit:
@@ -117,7 +113,7 @@ void PhysicsWorld::CheckCollision()
 					//m_rigidbodies[j]->CallOnCollisionExit(m_CurrentCollisionInfo.ColliderA);
 
 					DEBUG_LOG(m_rigidbodies[i]->gameObject->GetName() << " exited collision with " << m_rigidbodies[j]->gameObject->GetName())
-						m_RegisteredCollisionInfos.erase(std::remove(m_RegisteredCollisionInfos.begin(), m_RegisteredCollisionInfos.end(), m_CurrentCollisionInfo), m_RegisteredCollisionInfos.end());
+					std::erase(m_RegisteredCollisionInfos, m_CurrentCollisionInfo);
 
 					break;
 				}

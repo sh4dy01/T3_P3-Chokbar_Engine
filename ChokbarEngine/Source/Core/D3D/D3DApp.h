@@ -1,15 +1,5 @@
 #pragma once
 
-#if defined(DEBUG) || defined(_DEBUG)
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
-#endif
-
-#include <Core/D3D/External/d3dx12.h>
-#include <dxgi1_6.h>
-#include <d3dcompiler.h>
-#include <WinUser.h>
-
 #include "D3DUtils.h"
 
 #pragma region GLOBAL VARIABLES
@@ -19,6 +9,7 @@ static const int SWAP_CHAIN_BUFFER_COUNT = 2;
 #pragma endregion
 
 class MeshRenderer;
+class ParticleRenderer;
 class Texture;
 
 class D3DApp
@@ -37,6 +28,7 @@ public:
 
 	ID3D12Device* GetDevice() const { return m_pD3dDevice; }
 	ID3D12GraphicsCommandList* GetCommandList() const { return m_pCommandList; }
+	ID3D12DescriptorHeap* GetCbvHeap() const { return m_pCbvHeap; }
 	void BeginList();
 	void EndList();
 
@@ -131,6 +123,7 @@ private:
 	DXGI_FORMAT m_DepthStencilFormat;
 
 	std::array<MeshRenderer*, MAX_ENTITIES>* m_meshRenderers;
+	std::array<ParticleRenderer*, MAX_ENTITIES>* m_particleRenderers;
 
 	UINT m_texIndex;
 

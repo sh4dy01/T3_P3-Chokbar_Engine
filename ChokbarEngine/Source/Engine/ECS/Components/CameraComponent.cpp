@@ -15,6 +15,13 @@ CameraComponent::~CameraComponent()
 {
 }
 
+void CameraComponent::OnAddedComponent()
+{
+	if (CameraManager::GetMainCamera() != nullptr) return;
+
+	CameraManager::SetMainCamera(this);
+}
+
 XMVECTOR CameraComponent::GetRight() const
 {
 	return XMLoadFloat3(&m_Right);

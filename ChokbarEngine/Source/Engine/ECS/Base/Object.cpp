@@ -5,14 +5,13 @@
 Object::Object()
 	: m_Name("DefaultName")
 {
-	m_InstanceID = Chokbar::Engine::GetCoordinator()->CreateNewObject(this);
-
+	m_InstanceID = Engine::GetCoordinator()->GetNewInstanceID();
 }
 
 Object::Object(const std::string& name)
 	: m_Name(name)
 {
-	m_InstanceID = Chokbar::Engine::GetCoordinator()->CreateNewObject(this);
+	m_InstanceID = Engine::GetCoordinator()->GetNewInstanceID();
 }
 
 Object::~Object()
@@ -22,5 +21,5 @@ Object::~Object()
 
 void Object::Destroy() const
 {
-	Chokbar::Engine::GetCoordinator()->DestroyEntity(m_InstanceID);
+	Engine::GetCoordinator()->DestroyEntity(m_InstanceID);
 }

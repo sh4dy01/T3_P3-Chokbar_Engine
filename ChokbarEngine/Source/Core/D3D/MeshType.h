@@ -7,5 +7,6 @@ enum MeshType {
 	CYLINDER, 
 	CONE, 
 	TORUS, 
-	CUSTOM 
+	CUSTOM,
+	EMPTY,
 };

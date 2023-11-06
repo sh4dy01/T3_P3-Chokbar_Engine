@@ -1,7 +1,5 @@
 #pragma once
 
-#include <DirectXMath.h>
-
 #include "TypeDef.h"
 
 class Transform;
@@ -12,7 +10,7 @@ public:
 
 	Object();
 	Object(const std::string& name);
-	~Object();
+	virtual ~Object();
 
 	void Destroy() const;
 
@@ -26,6 +24,10 @@ public:
 protected:
 
 	std::string m_Name;
+
+private:
+
 	InstanceID m_InstanceID;
+
 };
 

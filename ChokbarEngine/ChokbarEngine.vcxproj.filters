@@ -104,9 +104,6 @@
     <Filter Include="Source\Engine\Core\D3D\Public">
       <UniqueIdentifier>{c0b569af-5362-4c9a-a974-a60d015d9153}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\GameObjects">
-      <UniqueIdentifier>{3dcfad3d-fd39-41f5-ac58-24f054d9912c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source\Engine\Managers">
       <UniqueIdentifier>{f4b4f6c0-cbf4-45b9-b82a-f4b5416e22b3}</UniqueIdentifier>
     </Filter>
@@ -115,6 +112,15 @@
     </Filter>
     <Filter Include="Source\Engine\Managers\Private">
       <UniqueIdentifier>{b7ac141b-745e-449c-8bfb-11f026716638}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\Particles">
+      <UniqueIdentifier>{34ca8197-f943-4ab0-995b-f412c399a07e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\Particles\Public">
+      <UniqueIdentifier>{9e7f4177-c3f3-48a0-9e6c-1efb25d77980}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\Particles\Private">
+      <UniqueIdentifier>{a325436d-d806-481c-bc52-dfa5b8a59218}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -129,9 +135,6 @@
     </ClCompile>
     <ClCompile Include="Source\Common\Time.cpp">
       <Filter>Source\Common\Private</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Engine\GameTimer.cpp">
-      <Filter>Source\Engine\Private</Filter>
     </ClCompile>
     <ClCompile Include="Source\Platform\Windows\Window.cpp">
       <Filter>Source\Platform\Windows\Private</Filter>
@@ -158,9 +161,6 @@
       <Filter>Source\Engine\ECS\Private</Filter>
     </ClCompile>
     <ClCompile Include="Source\Engine\ECS\Components\TransformComponent.cpp">
-      <Filter>Source\Engine\ECS\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Engine\ECS\Components\PlayerComponent.cpp">
       <Filter>Source\Engine\ECS\Components</Filter>
     </ClCompile>
     <ClCompile Include="Source\Engine\ECS\Base\Object.cpp">
@@ -229,20 +229,26 @@
     <ClCompile Include="Source\Engine\Managers\CameraManager.cpp">
       <Filter>Source\Engine\Managers\Private</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameObjects\Camera.cpp">
-      <Filter>Source\GameObjects</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Engine\Managers\InputHandler.cpp">
       <Filter>Source\Engine\Managers\Private</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\ECS\Systems\PlayerSystem.cpp">
-      <Filter>Source\Engine\ECS\Systems\Private</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Engine\SplashScreen.cpp">
-      <Filter>Source\Engine\Core\D3D\Internal\Private</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Engine\ECS\Components\Collision\TriggerCollisionEvent.cpp">
       <Filter>Source\Engine\ECS\Components\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Chokbar.cpp">
+      <Filter>Source\pch</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\ECS\Components\CustomComponent.cpp">
+      <Filter>Source\Engine\ECS\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Managers\TimeManager.cpp">
+      <Filter>Source\Engine\Managers\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Core\D3D\Internal\ParticleRenderer.cpp">
+      <Filter>Source\Engine\Core\D3D\Internal\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Core\D3D\Internal\Particle.cpp">
+      <Filter>Source\Engine\Core\D3D\Internal\Private</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -263,9 +269,6 @@
     </ClInclude>
     <ClInclude Include="Source\Common\Time.h">
       <Filter>Source\Common\Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Engine\GameTimer.h">
-      <Filter>Source\Engine\Public</Filter>
     </ClInclude>
     <ClInclude Include="Source\Platform\Windows\Window.h">
       <Filter>Source\Platform\Windows\Public</Filter>
@@ -309,17 +312,11 @@
     <ClInclude Include="Source\Engine\Engine.h">
       <Filter>Source\Engine\Public</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\ECS\Components\PlayerComponent.h">
-      <Filter>Source\Engine\ECS\Components</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Engine\ECS\Base\GameObject.h">
       <Filter>Source\Engine\ECS\Public</Filter>
     </ClInclude>
     <ClInclude Include="Source\Engine\ECS\Base\Object.h">
       <Filter>Source\Engine\ECS\Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Engine\ECS\Components\Component.h">
-      <Filter>Source\Engine\ECS\Components</Filter>
     </ClInclude>
     <ClInclude Include="Source\Engine\ECS\Components\Collision\Collider.h">
       <Filter>Source\Engine\ECS\Components\Collision</Filter>
@@ -378,33 +375,39 @@
     <ClInclude Include="Source\Engine\ECS\Components\CameraComponent.h">
       <Filter>Source\Engine\ECS\Components</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Managers\CameraManager.h">
-      <Filter>Source\Engine\Managers\Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\GameObjects\Camera.h">
-      <Filter>Source\GameObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Engine\Managers\InputHandler.h">
-      <Filter>Source\Engine\Managers\Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Engine\ECS\Systems\PlayerSystem.h">
-      <Filter>Source\Engine\ECS\Systems\Public</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Core\D3D\MeshType.h">
       <Filter>Source\Engine\Core\D3D</Filter>
     </ClInclude>
     <ClInclude Include="Source\Core\D3D\MaterialType.h">
       <Filter>Source\Engine\Core\D3D</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\SplashScreen.h">
+    <ClInclude Include="Source\Core\D3D\Internal\ParticleRenderer.h">
       <Filter>Source\Engine\Core\D3D\Internal\Public</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Core\D3D\Internal\ShaderBase.h" />
+    <ClInclude Include="Source\Core\D3D\Internal\Particle.h">
+      <Filter>Source\Engine\Core\D3D\Internal\Public</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Core\D3D\Internal\ShaderBase.h">
       <Filter>Source\Engine\Core\D3D\Internal\Public</Filter>
     </ClInclude>
     <ClInclude Include="Source\Engine\ECS\Components\Collision\TriggerCollisionEvent.h">
       <Filter>Source\Engine\ECS\Components\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\ECS\Components\Component.h">
+      <Filter>Source\Engine\ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\ECS\Components\CustomComponent.h">
+      <Filter>Source\Engine\ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GameObjects\Camera.h" />
+    <ClInclude Include="Source\Engine\Managers\CameraManager.h">
+      <Filter>Source\Engine\Managers\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Managers\InputHandler.h">
+      <Filter>Source\Engine\Managers\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Managers\TimeManager.h">
+      <Filter>Source\Engine\Managers\Public</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

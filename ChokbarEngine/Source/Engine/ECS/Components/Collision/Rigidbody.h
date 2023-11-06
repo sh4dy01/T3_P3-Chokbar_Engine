@@ -8,14 +8,14 @@ class Rigidbody : public Component
 {
 public:
 
-    Rigidbody(bool isStatic);
+    Rigidbody();
     ~Rigidbody() override;
 
     void RegisterCollisionShape(Collider* shape);
     void RemoveCollisionShape(Collider* shape);
 
-    XMFLOAT3 GetVelocity() const;
-    void SetVelocity(const XMFLOAT3& velocity);
+    DirectX::XMFLOAT3 GetVelocity() const;
+    void SetVelocity(const DirectX::XMFLOAT3& velocity);
 
     float GetMass() const;
     void SetMass(float mass);

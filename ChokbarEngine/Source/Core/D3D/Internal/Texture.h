@@ -1,6 +1,7 @@
 #pragma once 
 
 #include "Engine/IResourceObject.h"
+#include <d3d12.h>
 
 class Texture : public IResourceObject
 {
@@ -10,6 +11,8 @@ public:
 	std::string Name = "";
 	ID3D12Resource* Resource = nullptr;
 	ID3D12Resource* UploadHeap = nullptr;
+
+	UINT HeapIndex;
 
 	void Load(const std::string& filepath) override;
 

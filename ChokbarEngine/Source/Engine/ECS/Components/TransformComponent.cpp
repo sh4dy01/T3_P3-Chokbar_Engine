@@ -22,6 +22,10 @@ Transform::Transform()
 	DirectX::XMStoreFloat4x4(&m_WorldMatrix, DirectX::XMMatrixIdentity());
 }
 
+Transform::~Transform()
+{
+}
+
 void Transform::Translate(float x, float y, float z, Space space)
 {
 	switch (space)

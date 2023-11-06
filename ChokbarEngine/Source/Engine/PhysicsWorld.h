@@ -2,12 +2,7 @@
 #include "ECS/Components/Collision/Rigidbody.h"
 #include "ECS/Components/Collision/SphereCollider.h"
 
-#include <DirectXMath.h>
-#include <DirectXCollision.h>
-
-#include <list>
 #include <vector>
-#include <algorithm>
 
 
 enum CollisionState {
@@ -42,7 +37,6 @@ class PhysicsWorld
 public:
 
     PhysicsWorld();
-    PhysicsWorld(int gridSize, float cellSize);
     ~PhysicsWorld();
 
     void RegisterRigidBody(Rigidbody* rigidbody);
@@ -63,8 +57,6 @@ private:
 
 
 private:
-
-    const float UPDATE_RATE = 0.02f;
 
     //struct SpatialGridCell {
 //    std::list<CollisionShape*> objects;

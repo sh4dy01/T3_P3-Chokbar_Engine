@@ -1,15 +1,15 @@
 #include "BlankProject.h"
+#include "Platform/Windows/WinEntry.h"
 
 #include "Engine/Resource.h"
+#include "Core/D3D/Internal/ParticleRenderer.h"
+#include "Engine/Engine.h"
 
-#include "Platform/Windows/WinEntry.h"
-#include "Engine/ECS/Base/GameObject.h"
-#include "Core/D3D/Internal/MeshRenderer.h"
-#include "Engine/ECS/Components/PlayerComponent.h"
-#include "Engine/ECS/Components/Collision/Rigidbody.h"
-#include "Engine/ECS/Components/Collision/SphereCollider.h"
+#include "GameObjects/Camera.h"
+#include "GameObjects/Player.h"
+#include "GameObjects/Asteroid.h"
 
-using namespace Chokbar;
+
 
 class Application : public Win32::IApplication
 {
@@ -32,6 +32,7 @@ public:
 	void Run() override;
 
 	void Shutdown() override;
+
 };
 
 ENTRYAPP(Application);
@@ -49,32 +50,28 @@ void Application::PreInitialize()
 }
 
 void Application::Initialize()
-{
+{		
+	auto* test = new GameObject("ball");
 
-	auto* test = new GameObject("f");
-	auto* mr = new MeshRenderer(MeshType::SPHERE, MaterialType::TEXTURE);
+	auto* mr = new MeshRenderer();
+	mr->Init(MeshType::SPHERE, MaterialType::TEXTURE);
+
+	auto* pr = new ParticleRenderer();
+	pr->Init(MeshType::CUBE, MaterialType::PARTICLE);
+	pr->SetParticleCount(1000);
+
 	test->AddComponent<MeshRenderer>(mr);
+	test->AddComponent<ParticleRenderer>(pr);
+
 	std::string path = "Resources/Textures/mars.dds";
 	test->GetComponent<MeshRenderer>()->RegisterTexture(Resource::Load<Texture>(path));
+
 	test->transform->SetPosition(0, 0, 2);
+	
+	auto player = GameObject::Instantiate<Player>();
+	player->transform->SetPosition(0, 0, -5);
 
-	/*auto* test2 = new GameObject("f");
-	auto* mr2 = new MeshRenderer(MeshType::PYRAMID, MaterialType::SIMPLE);
-	test2->AddComponent<MeshRenderer>(mr2);
-	test2->transform->SetPosition(0, 0, -2);*/
-	//test2->transform->SetPosition(-2, 1, -2);
-
-	auto *test3 = new GameObject("Pyr3");
-	auto *mr3 = new MeshRenderer(MeshType::PYRAMID, MaterialType::SIMPLE);
-	auto *rb3 = new Rigidbody(false);
-	auto *sphere3 = new SphereCollider(XMFLOAT3(0, 0, 0), 0);
-	test3->AddComponent<MeshRenderer>(mr3);
-	test3->AddComponent<Rigidbody>(rb3);
-	test3->AddComponent<SphereCollider>(sphere3);
-	test3->transform->SetScale(6, 6, 6);
-
-	//GameObject player = GameObject("player");
-	//player.AddComponent<PlayerComponent>();
+	player = nullptr;
 }
 
 void Application::Run()

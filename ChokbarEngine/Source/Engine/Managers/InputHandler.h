@@ -1,8 +1,6 @@
 #pragma once
-#include <vector>
 #include <Windows.h>
-#include <algorithm>
-
+#include <vector>
 
 class InputHandler
 {
@@ -18,8 +16,12 @@ public:
 public:
 
 	InputHandler();
+	~InputHandler();
+
 	void Init(HWND windowHandle);
 	void Update(float dt);
+
+	void SetCursorToWindowCenter();
 
 	static bool IsKeyDown(char key);
 	static bool IsKeyUp(char key);
@@ -34,21 +36,18 @@ public:
 	void CaptureCursor();
 	void ReleaseCursor();
 
-	void EnableCursor();
-	void DisableCursor();
 
 private:
 
 	void CheckInput();
 	void GetNormalizedMovement();
 
-	void HideCursor();
-	void ShowCursor();
-
-
 private:
 
-	bool m_IsFocus;
+	const float MOUSE_REFRESH_RATE;
+	const int SENSIBILITY = 10;
+
+	bool m_IsCaptured;
 
 	static std::vector<char> m_KeyboardInput;
 	static std::vector<KeyState> m_KeyStates;
@@ -57,13 +56,7 @@ private:
 	static float m_deltaPosX;
 	static float m_deltaPosY;
 
-	const int SENSIBILITY = 10;
-
-	float m_timer;
-	const float m_mouseRefresh = 0.1f;
+	float m_Timer;
 
 	HWND m_WindowHandle;
-
-	bool m_IsEnabled = false;
-
 };
