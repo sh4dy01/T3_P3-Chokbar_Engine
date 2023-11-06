@@ -63,6 +63,7 @@
       <PrecompiledHeaderFile>BlankProject.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(ProjectDir)Source;$(SolutionDir)ChokbarEngine\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ForcedIncludeFiles>BlankProject.h</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -104,6 +105,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AsteroidSpawner.cpp" />
     <ClCompile Include="Source\BlankProject.cpp" />
     <ClCompile Include="Source\GameObjects\Asteroid.cpp" />
     <ClCompile Include="Source\GameObjects\Camera.cpp" />
@@ -114,6 +116,7 @@
     <ClCompile Include="Source\Scripts\ProjectileBehavior.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AsteroidSpawner.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Source\BlankProject.h" />
     <ClInclude Include="Source\GameObjects\Asteroid.h" />
