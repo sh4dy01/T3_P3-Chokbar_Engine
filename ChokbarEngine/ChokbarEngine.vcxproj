@@ -201,7 +201,6 @@
     <ClInclude Include="Source\Engine\IResourceObject.h" />
     <ClInclude Include="Source\Engine\Resource.h" />
     <ClInclude Include="Source\Engine\SplashScreen.h" />
-    <ClInclude Include="Source\GameObjects\Camera.h" />
     <ClInclude Include="Source\Platform\Windows\IApplication.h" />
     <ClInclude Include="Source\Platform\Windows\Win32Utils.h" />
     <ClInclude Include="Source\Platform\Windows\Window.h" />

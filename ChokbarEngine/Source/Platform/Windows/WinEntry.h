@@ -1,5 +1,5 @@
 #pragma once
-
+#include "Engine/Core/CoreDefinitions.h"
 #include "IApplication.h"
 #include "Engine/Core/DebugUtils.h"
 

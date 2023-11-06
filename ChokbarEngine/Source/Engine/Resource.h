@@ -18,7 +18,7 @@ public:
 	static T* Load(std::string& filepath)
 	{
 		std::string name = filepath.substr(filepath.find_last_of("/") + 1).substr(0, filepath.find_last_of("."));
-		T* resource = new T(name);
+		T* resource = NEW T(name);
 		resource->Load(filepath);
 		m_resources[name] = resource;
 		return resource;

@@ -69,7 +69,7 @@ void ParticleRenderer::Regenerate()
 
 	for (auto& p : m_particles)
 	{
-		p = new Particle();
+		p = NEW Particle();
 
 		float rLiftTime = rand() % 30 + 1.0f;
 

@@ -26,13 +26,13 @@ public:
 	template <class GameObject>
 	static GameObject* Instantiate() 
 	{
-		return  new GameObject();
+		return NEW GameObject();
 	}
 
 	template <class GameObject>
 	static GameObject* Instantiate(const std::string& name)
 	{
-		auto go = new GameObject();
+		auto go = NEW GameObject();
 		go->SetName(name);
 
 		return go;
@@ -56,7 +56,7 @@ public:
 	template<class T>
 	T* AddComponent()
 	{
-		auto component = new T();
+		auto component = NEW T();
 		component->gameObject = this;
 		component->transform = transform;
 		component->SetEnabled(true);
@@ -85,13 +85,13 @@ public:
 	}
 
 	template <class T>
-	T *GetComponent()
+	T* GetComponent()
 	{
 		return Engine::GetCoordinator()->GetComponent<T>(GetInstanceID());
 	}
 
 	template <class T>
-	bool HasComponent()
+	bool HasComponent() const
 	{
 		return Engine::GetCoordinator()->HasComponent<T>(GetInstanceID());
 	}

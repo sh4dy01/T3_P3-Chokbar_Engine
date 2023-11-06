@@ -325,7 +325,6 @@
     <ClInclude Include="Source\Engine\ECS\Components\CustomComponent.h">
       <Filter>Source\Engine\ECS\Components</Filter>
     </ClInclude>
-    <ClInclude Include="Source\GameObjects\Camera.h" />
     <ClInclude Include="Source\Engine\Managers\CameraManager.h">
       <Filter>Source\Engine\Managers\Public</Filter>
     </ClInclude>

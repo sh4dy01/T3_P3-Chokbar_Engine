@@ -50,26 +50,26 @@ void Application::PreInitialize()
 
 void Application::Initialize()
 {
-	auto* test = new GameObject("ball");
+	auto* test = NEW GameObject("ball");
 	test->transform->SetPosition(-3, 0, 10);
 
-	auto* mr = new MeshRenderer();
-	auto* pr = new ParticleRenderer();
+	auto* mr = NEW MeshRenderer();
+	auto* pr = NEW ParticleRenderer();
 
 	test->AddComponent<MeshRenderer>(mr);
 	test->AddComponent<ParticleRenderer>(pr);
-	mr->Init(MeshType::SPHERE, MaterialType::TEXTURE);
+	mr->Init(MeshType::PYRAMID, MaterialType::TEXTURE);
 	pr->Init(MeshType::CUBE, MaterialType::PARTICLE);
 	pr->SetParticleCount(100);
 
 	std::string path = "Resources/Textures/mars.dds";
 	test->GetComponent<MeshRenderer>()->RegisterTexture(Resource::Load<Texture>(path));
 
-	auto * test3 = new GameObject("asteroid");
+	auto * test3 = NEW GameObject("asteroid");
 	test3->transform->SetPosition(3, 0, 7);
 
-	auto* mr3 = new MeshRenderer();
-	mr3->Init(MeshType::SPHERE, MaterialType::TEXTURE);
+	auto* mr3 = NEW MeshRenderer();
+	mr3->Init(MeshType::CUBE, MaterialType::TEXTURE);
 	std::string path3 = "Resources/Textures/angry_winnie.dds";
 	mr3->RegisterTexture(Resource::Load<Texture>(path3));
 	test3->AddComponent<MeshRenderer>(mr3);
@@ -80,6 +80,11 @@ void Application::Initialize()
 
 	GameObject::Instantiate<SkyBox>();
 
+	test = nullptr;
+	mr = nullptr;
+	pr = nullptr;
+	test3 = nullptr;
+	mr3 = nullptr;
 	player = nullptr;
 }
 

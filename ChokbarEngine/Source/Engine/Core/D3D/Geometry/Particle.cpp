@@ -188,7 +188,7 @@ Particle::Particle()
 	m_Color1 = DirectX::XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
 	m_Color2 = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 
-	m_Transform = new ParticleTransform();
+	m_Transform = NEW ParticleTransform();
 }
 
 Particle::~Particle()

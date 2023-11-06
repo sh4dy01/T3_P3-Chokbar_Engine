@@ -14,14 +14,13 @@ Engine::Engine() = default;
 
 Engine::~Engine()
 {
-	delete D3DApp::GetInstance();
 }
 
 Engine *Engine::GetInstance()
 {
 	if (m_Instance == nullptr)
 	{
-		m_Instance = new Engine();
+		m_Instance = NEW Engine();
 	}
 
 	return m_Instance;
@@ -178,6 +177,8 @@ void Engine::OnResize()
 void Engine::Shutdown()
 {
 	DELPTR(m_Instance);
+
+	delete D3DRenderer::GetInstance();
 }
 
 
