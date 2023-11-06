@@ -29,6 +29,7 @@
 #include "D3D/Renderers/ParticleRenderer.h"
 #include "D3D/Renderers/SkyRenderer.h"
 #include "D3D/Shaders/Texture.h"
+#include "D3D/Shaders/Cubemap.h"
 
 #include "Engine/Managers/InputHandler.h"
 

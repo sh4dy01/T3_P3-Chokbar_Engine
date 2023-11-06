@@ -101,6 +101,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Engine\Core\D3D\Shaders\Cubemap.cpp" />
     <ClCompile Include="Source\Chokbar.cpp" />
     <ClCompile Include="Source\Common\Logger.cpp" />
     <ClCompile Include="Source\Common\Time.cpp" />
@@ -148,6 +149,7 @@
     <ClCompile Include="Source\Platform\Windows\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Engine\Core\D3D\Shaders\Cubemap.h" />
     <ClInclude Include="Source\Chokbar.h" />
     <ClInclude Include="Source\Common\Logger.h" />
     <ClInclude Include="Source\Common\Time.h" />

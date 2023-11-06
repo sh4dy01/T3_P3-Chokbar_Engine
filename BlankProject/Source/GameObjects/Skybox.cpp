@@ -19,8 +19,7 @@ SkyBox::SkyBox()
 		
 	MeshRenderer* mr = new MeshRenderer();
 	mr->Init(MeshType::SPHERE, MaterialType::SKYBOX);
-	std::string path = "Resources/Textures/cubemap.dds";
-	mr->RegisterTexture(Resource::Load<Texture>(path));
+	mr->RegisterTexture(Resource::Load<Cubemap>("Resources/Textures/cubemap.dds"));
 
 	AddComponent<MeshRenderer>(mr);
 
