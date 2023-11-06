@@ -5,17 +5,14 @@ class Material;
 class D3DMesh;
 class Texture;
 
-#include "Core/D3D/MeshType.h"
-#include "Core/D3D/MaterialType.h"
-
 class MeshRenderer : public Component
 {
 public:
 
 	MeshRenderer();
-	MeshRenderer(MeshType, MaterialType);
 	~MeshRenderer() override;
 
+	void Init(MeshType meshType, MaterialType matType);
 	void OnAddedComponent() override;
 	void OnDelete();
 
@@ -25,6 +22,10 @@ public:
 	std::vector<Texture*> GetTextures() const { return m_textures; }
 	void RegisterTexture(Texture* tex);
 
+protected:
+	void OnDelete();
+
+	void BindMaterial(Material* mat);
 
 public:
 	D3DMesh* Mesh;
@@ -33,9 +34,7 @@ public:
 	DirectX::BoundingSphere Bounds;
 
 	Material* Mat;
-	UINT TextSrvIndex = -1;
 
 private:
 	std::vector<Texture*> m_textures{};
-
 };

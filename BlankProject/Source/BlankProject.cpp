@@ -2,6 +2,7 @@
 #include "Platform/Windows/WinEntry.h"
 
 #include "Engine/Resource.h"
+#include "Core/D3D/Internal/ParticleRenderer.h"
 #include "Engine/Engine.h"
 
 #include "GameObjects/Camera.h"
@@ -31,6 +32,7 @@ public:
 	void Run() override;
 
 	void Shutdown() override;
+
 };
 
 ENTRYAPP(Application);
@@ -104,13 +106,7 @@ void Application::Initialize()
 		go->GetComponent<MeshRenderer>()->Bounds.Center = pos;
 		go->GetComponent<MeshRenderer>()->Bounds.Radius = scale;
 
-		//auto debug = GameObject::Instantiate();
-		//debug->AddComponent<MeshRenderer>(new MeshRenderer(PYRAMID, SIMPLE));
-
-		//debug->transform->SetPosition(go->GetComponent<MeshRenderer>()->Bounds.Center);
-		//debug->transform->SetScale(go->GetComponent<MeshRenderer>()->Bounds.Radius * 1.5f);
-	}
-	*/
+	player = nullptr;
 }
 
 void Application::Run()

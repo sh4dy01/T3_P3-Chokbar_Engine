@@ -111,6 +111,8 @@
     <ClCompile Include="Source\Core\D3D\Internal\D3DMesh.cpp" />
     <ClCompile Include="Source\Core\D3D\Internal\Material.cpp" />
     <ClCompile Include="Source\Core\D3D\Internal\MeshRenderer.cpp" />
+    <ClCompile Include="Source\Core\D3D\Internal\Particle.cpp" />
+    <ClCompile Include="Source\Core\D3D\Internal\ParticleRenderer.cpp" />
     <ClCompile Include="Source\Core\D3D\Internal\ShaderBase.cpp" />
     <ClCompile Include="Source\Core\D3D\Internal\Texture.cpp" />
     <ClCompile Include="Source\Core\D3D\Internal\UpdloadBuffer.cpp" />
@@ -131,7 +133,7 @@
     <ClCompile Include="Source\Engine\ECS\Components\CustomComponent.cpp" />
     <ClCompile Include="Source\Engine\ECS\Components\TransformComponent.cpp" />
     <ClCompile Include="Source\Engine\Engine.cpp" />
-    <ClCompile Include="Source\Engine\GameTimer.cpp" />
+    <ClCompile Include="Source\Engine\Managers\TimeManager.cpp" />
     <ClCompile Include="Source\Engine\PhysicsManager.cpp" />
     <ClCompile Include="Source\Engine\PhysicsWorld.cpp" />
     <ClCompile Include="Source\Engine\SplashScreen.cpp" />
@@ -158,6 +160,8 @@
     <ClInclude Include="Source\Core\D3D\Internal\D3DMesh.h" />
     <ClInclude Include="Source\Core\D3D\Internal\Material.h" />
     <ClInclude Include="Source\Core\D3D\Internal\MeshRenderer.h" />
+    <ClInclude Include="Source\Core\D3D\Internal\Particle.h" />
+    <ClInclude Include="Source\Core\D3D\Internal\ParticleRenderer.h" />
     <ClInclude Include="Source\Core\D3D\Internal\ShaderBase.h" />
     <ClInclude Include="Source\Core\D3D\Internal\Texture.h" />
     <ClInclude Include="Source\Core\D3D\Internal\UploadBuffer.h" />
@@ -170,6 +174,7 @@
     <ClInclude Include="Source\Engine\ECS\Components\Collision\SphereCollider.h" />
     <ClInclude Include="Source\Engine\ECS\Components\Collision\TriggerCollisionEvent.h" />
     <ClInclude Include="Source\Engine\ECS\Components\CustomComponent.h" />
+    <ClInclude Include="Source\Engine\Managers\TimeManager.h" />
     <ClInclude Include="Source\Engine\PhysicsManager.h" />
     <ClInclude Include="Source\Engine\PhysicsWorld.h" />
     <ClInclude Include="Source\Engine\ECS\Components\CameraComponent.h" />
@@ -187,7 +192,6 @@
     <ClInclude Include="Source\Engine\ECS\Components\Component.h" />
     <ClInclude Include="Source\Engine\ECS\Components\TransformComponent.h" />
     <ClInclude Include="Source\Engine\Engine.h" />
-    <ClInclude Include="Source\Engine\GameTimer.h" />
     <ClInclude Include="Source\Engine\IResourceObject.h" />
     <ClInclude Include="Source\Engine\Resource.h" />
     <ClInclude Include="Source\Engine\SplashScreen.h" />

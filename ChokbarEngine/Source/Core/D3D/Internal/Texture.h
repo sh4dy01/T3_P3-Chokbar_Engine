@@ -12,6 +12,8 @@ public:
 	ID3D12Resource* Resource = nullptr;
 	ID3D12Resource* UploadHeap = nullptr;
 
+	UINT HeapIndex;
+
 	void Load(const std::string& filepath) override;
 
 private:

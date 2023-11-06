@@ -7,15 +7,11 @@ Asteroid::Asteroid()
 {
 	m_Name = "Asteroid";
 
-	//AddComponent<Rigidbody>();
-	std::string path = "Resources/Textures/mars.dds";
-
-	auto mr = AddComponent<MeshRenderer>(new MeshRenderer(SPHERE, TEXTURE));
-	mr->RegisterTexture(Resource::Load<Texture>(path));
-
-	//AddComponent<SphereCollider>();
-
-	mr = nullptr;
+	AddComponent<Rigidbody>();
+	MeshRenderer* meshRenderer = new MeshRenderer();
+	meshRenderer->Init(MeshType::SPHERE, MaterialType::SIMPLE);
+	AddComponent<MeshRenderer>(new MeshRenderer());
+	AddComponent<SphereCollider>();
 }
 
 Asteroid::~Asteroid()

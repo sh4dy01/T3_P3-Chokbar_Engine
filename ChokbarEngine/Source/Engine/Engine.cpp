@@ -79,7 +79,7 @@ void Engine::Initialize()
 
 void Engine::Run()
 {
-	m_GameTimer.Reset();
+	m_TimeManager.Reset();
 
 	InitComponents();
 
@@ -89,11 +89,11 @@ void Engine::Run()
 	{
 		m_Window.PollEvent();
 
-		m_GameTimer.Tick();
+		m_TimeManager.Tick();
 
 		if (m_IsPaused) continue;
 
-		Update(m_GameTimer.GetDeltaTime());
+		Update(m_TimeManager.GetDeltaTime());
 		Render();
 	}
 }
@@ -113,13 +113,13 @@ void Engine::Update(float dt)
 {
 	m_PhysicsWorld.Update(dt);
 
-	m_InputHandler.Update(dt);
+	m_InputHandler.Update(TimeManager::GetUnscaledDeltaTime());
 
 	m_Coordinator.UpdateSystems(dt);
 	m_Coordinator.UpdateComponents();
 	m_Coordinator.LateUpdateComponents();
 
-	D3DApp::GetInstance()->Update(dt, m_GameTimer.GetTotalTime());
+	D3DApp::GetInstance()->Update(dt, m_TimeManager.GetTotalTime());
 	CalculateFrameStats();
 }
 
@@ -144,7 +144,7 @@ void Engine::CalculateFrameStats()
 	frameCnt++;
 
 	// Compute averages over one second period.
-	if ((m_GameTimer.GetTotalTime() - timeElapsed) >= 1.0f)
+	if ((m_TimeManager.GetTotalTime() - timeElapsed) >= 1.0f)
 	{
 		std::wstring windowText;
 		float fps = (float)frameCnt; // fps = frameCnt / 1
