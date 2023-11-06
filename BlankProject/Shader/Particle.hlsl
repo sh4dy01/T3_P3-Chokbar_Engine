@@ -1,6 +1,8 @@
 struct InstanceData
 {
     float4x4 World;
+    float4 Color1;
+    float4 Color2;
     float AgeRatio;
 };
 
@@ -41,7 +43,8 @@ PS_INPUT vs_main(VS_INPUT input, uint instanceID : SV_InstanceID)
     float4 posW = mul(float4(input.pos, 1.0f), gWorld);
     output.pos = mul(posW, gViewProj);
     
-    float4 color = float4(input.color.x, input.color.y, input.color.z, instance.AgeRatio);
+    float4 lerpColor = lerp(instance.Color1, instance.Color2, instance.AgeRatio);
+    float4 color = float4(lerpColor.x, lerpColor.y, lerpColor.z, instance.AgeRatio);
     output.color = color;
     
     return output;

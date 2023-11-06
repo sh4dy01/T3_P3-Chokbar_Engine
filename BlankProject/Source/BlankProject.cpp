@@ -61,6 +61,7 @@ void Application::Initialize()
 	mr->Init(MeshType::SPHERE, MaterialType::TEXTURE);
 	pr->Init(MeshType::CUBE, MaterialType::PARTICLE);
 	pr->SetParticleCount(100);
+	pr->Play();
 
 	test->GetComponent<MeshRenderer>()->RegisterTexture(Resource::Load<Texture>("Resources/Textures/mars.dds"));
 
