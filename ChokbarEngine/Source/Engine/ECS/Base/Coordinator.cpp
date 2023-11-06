@@ -1,13 +1,17 @@
 #include "Chokbar.h"
 #include "Coordinator.h"
 
-#include "Core/D3D/Internal/MeshRenderer.h"
-#include "Core/D3D/Internal/ParticleRenderer.h"
+#include "D3D/Renderers/MeshRenderer.h"
+#include "D3D/Renderers/ParticleRenderer.h"
+#include "D3D/Renderers/SkyRenderer.h"
 #include "Engine/ECS/Components/Collision/Collider.h"
 #include "Engine/ECS/Components/Collision/RigidBody.h"
 
+
+
+Coordinator* Coordinator::m_Instance = nullptr;
+
 Coordinator::Coordinator()
-	: m_ComponentManager(nullptr), m_EntityManager(nullptr), m_SystemManager(nullptr)
 {
 }
 
@@ -39,6 +43,7 @@ void Coordinator::RegisterComponents()
 	RegisterComponent<SphereCollider>();
 	RegisterComponent<CameraComponent>();
 	RegisterComponent<ParticleRenderer>();
+	RegisterComponent<SkyRenderer>();
 }
 
 void Coordinator::RegisterSystems()
@@ -47,18 +52,28 @@ void Coordinator::RegisterSystems()
 
 }
 
-GameObject* Coordinator::GetEntityByName(const std::string& name) const
+GameObject* Coordinator::GetEntityByName(const std::string& name)
 {
 	return m_EntityManager->GetEntityByName(name);
 }
 
 
-InstanceID Coordinator::GetNewInstanceID() const
+Coordinator* Coordinator::GetInstance()
+{
+	if (!m_Instance)
+	{
+		m_Instance = new Coordinator();
+	}
+
+	return m_Instance;
+}
+
+InstanceID Coordinator::GetNewInstanceID()
 {
 	return m_EntityManager->GetNewInstanceID();
 }
 
-void Coordinator::RegisterGameObject(GameObject* go) const
+void Coordinator::RegisterGameObject(GameObject* go)
 {
 	return m_EntityManager->RegisterGameObject(go);
 }

@@ -2,16 +2,21 @@
 #include "Resource.h"
 #include "Engine.h"
 
-#include <numbers>
+#include "D3D/Base/D3DRenderer.h"
 
+#include <numbers>
 
 
 Engine *Engine::m_Instance = nullptr;
 
-Engine::Engine() = default;
+Engine::Engine()
+{
+};
 
 Engine::~Engine()
-= default;
+{
+	DELPTR(m_Coordinator);
+}
 
 Engine *Engine::GetInstance()
 {
@@ -21,11 +26,6 @@ Engine *Engine::GetInstance()
 	}
 
 	return m_Instance;
-}
-
-Coordinator *Engine::GetCoordinator()
-{
-	return &GetInstance()->m_Coordinator;
 }
 
 InputHandler *Engine::GetInput()
@@ -47,16 +47,7 @@ PhysicsWorld* Engine::GetPhysicsWorld()
 
 void Engine::PreInitialize()
 {
-	/*
-	Logger::PrintDebugSeperator();
-	Logger::PrintLog(L"Application Starting...\n");
-	Logger::PrintLog(L"Game Name: %s\n", PerGameSettings::GameName());
-	Logger::PrintLog(L"Boot Time: %s\n", Time::GetDateTimeString().c_str());
-
-	Logger::PrintDebugSeperator();
-	*/
-
-	// SplashScreen::Open();
+	m_Coordinator = Coordinator::GetInstance();
 }
 
 
@@ -64,13 +55,13 @@ void Engine::Initialize()
 {
 	PreInitialize();
 
-	m_Coordinator.Init();
+	m_Coordinator->Init();
 
 	m_Window.CreateNewWindow(DEFAULT_WIDTH, DEFAULT_HEIGHT, PerGameSettings::GameName(), PerGameSettings::MainIcon(), Win32::RESIZABLE);
 	m_InputHandler.Init(m_Window.GetHandle());
 	OnApplicationFocus();
 
-	D3DApp::GetInstance()->InitializeD3D12(&m_Window);
+	D3DRenderer::GetInstance()->InitializeD3D12(&m_Window);
 }
 
 #pragma endregion
@@ -89,6 +80,7 @@ void Engine::Run()
 	{
 		m_Window.PollEvent();
 
+		Sleep(1);
 		m_TimeManager.Tick();
 
 		if (m_IsPaused) continue;
@@ -103,8 +95,8 @@ void Engine::Run()
 
 void Engine::InitComponents()
 {
-	m_Coordinator.AwakeComponents();
-	m_Coordinator.StartComponents();
+	m_Coordinator->AwakeComponents();
+	m_Coordinator->StartComponents();
 }
 
 bool Engine::NeedsToClose()
@@ -118,18 +110,17 @@ void Engine::Update(float dt)
 
 	m_InputHandler.Update(TimeManager::GetUnscaledDeltaTime());
 
-	m_Coordinator.UpdateSystems(dt);
-	m_Coordinator.UpdateComponents();
-	m_Coordinator.LateUpdateComponents();
+	m_Coordinator->UpdateSystems(dt);
+	m_Coordinator->UpdateComponents();
+	m_Coordinator->LateUpdateComponents();
 
-	D3DApp::GetInstance()->Update(dt, m_TimeManager.GetTotalTime());
-
+	D3DRenderer::GetInstance()->Update(dt, m_TimeManager.GetTotalTime());
 	CalculateFrameStats();
 }
 
 void Engine::Render()
 {
-	D3DApp::GetInstance()->Render();
+	D3DRenderer::GetInstance()->Render();
 }
 
 #pragma endregion
@@ -169,7 +160,7 @@ void Engine::CalculateFrameStats()
 
 void Engine::OnResize()
 {
-	D3DApp::GetInstance()->OnResize(m_Window.GetWidth(), m_Window.GetHeight());
+	D3DRenderer::GetInstance()->OnResize(m_Window.GetWidth(), m_Window.GetHeight());
 	m_CameraManager.GetMainCamera()->SetAspect(GetAspectRatio());
 }
 

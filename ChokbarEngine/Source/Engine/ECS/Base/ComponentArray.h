@@ -2,7 +2,7 @@
 
 #include "TypeDef.h"
 
-
+#include "Engine/Core/CoreDefinitions.h"
 
 class IComponentArray {
 

@@ -9,12 +9,16 @@ float TimeManager::m_FixedTime = 0.02f;
 
 
 TimeManager::TimeManager()
-	: m_SecondsPerCount(0.0), m_BaseTime(0), m_PausedTime(0), m_StopTime(0), m_PrevTime(0), isStopped(false)
+	: m_BaseTime(0), m_PausedTime(0), m_StopTime(0), m_PrevTime(0), isStopped(false)
 {
-	__int64 countsPerSec = 0;
-	QueryPerformanceFrequency(reinterpret_cast<LARGE_INTEGER*>(&countsPerSec));
+	LARGE_INTEGER perfCountFreq;
+	memset(&perfCountFreq, 0, sizeof(perfCountFreq));
+	QueryPerformanceFrequency(&perfCountFreq);
+	m_freq = perfCountFreq.QuadPart;
 
-	m_SecondsPerCount = 1.0 / static_cast<double>(countsPerSec);
+	LARGE_INTEGER currTime;
+	QueryPerformanceCounter(&currTime);
+	m_performtime = currTime.QuadPart;
 }
 
 TimeManager::~TimeManager()
@@ -78,19 +82,20 @@ void TimeManager::Tick()
 	}
 
 	// Get the time this frame
-	__int64 currTime = 0;
-	QueryPerformanceCounter(reinterpret_cast<LARGE_INTEGER*>(&currTime));
-	m_CurrTime = currTime;
+	LARGE_INTEGER currTime;
+	QueryPerformanceCounter(&currTime);
+	m_CurrTime = (currTime.QuadPart-m_performtime)/m_freq;
 
 	// Time difference between this frame and the previous.
-	m_DeltaTime = (m_CurrTime - m_PrevTime) * m_SecondsPerCount;
+	m_DeltaTime = (m_CurrTime - m_PrevTime);
+	DEBUG_LOG(m_DeltaTime);
 
 	// Prepare for next frame.
 	m_PrevTime = m_CurrTime;
 
-	if (m_DeltaTime < 0.0)
+	if (m_DeltaTime < 0.0f)
 	{
-		m_DeltaTime = 0.0;
+		m_DeltaTime = 0.0f;
 	}
 }
 
@@ -104,36 +109,17 @@ __int64 TimeManager::GetCurrentFrameTime()
 
 float TimeManager::GetTotalTime()
 {
-	// If we are stopped, do not count the time that has passed
-	// since we stopped. Moreover, if we previously already had
-	// a pause, the distance mStopTime - mBaseTime includes paused
-	// time,which we do not want to count. To correct this, we can
-	// subtract the paused time from mStopTime:
-	//
-	// previous paused time
-	// |<----------->|
-	// ---*------------*-------------*-------*-----------*------> time
-	// mBaseTime mStopTime mCurrTime
 	if (isStopped)
 	{
-		return static_cast<float>(((m_StopTime - m_PausedTime) - m_BaseTime) * m_SecondsPerCount);
+		return static_cast<float>(((m_StopTime - m_PausedTime) - m_BaseTime) / m_freq);
 	}
-	// The distance mCurrTime - mBaseTime includes paused time,
-	// which we do not want to count. To correct this, we can subtract
-	// the paused time from mCurrTime:
-	//
-	// (mCurrTime - mPausedTime) - mBaseTime
-	//
-	// |<--paused time-->|
-	// ----*---------------*-----------------*------------*------> time
-	// mBaseTime mStopTime startTime mCurrTime
 	else
 	{
-		//OutputDebugString(L"Total time: ");
-		//OutputDebugStringA(std::to_string(((m_CurrTime - m_PausedTime) - m_BaseTime) * m_SecondsPerCount).c_str());
-		//OutputDebugString(L"\n");
+		OutputDebugString(L"Total time: ");
+		OutputDebugStringA(std::to_string(((m_CurrTime - m_PausedTime) - m_BaseTime) / m_freq).c_str());
+		OutputDebugString(L"\n");
 
-		return static_cast<float>(((m_CurrTime - m_PausedTime) - m_BaseTime) * m_SecondsPerCount);
+		return static_cast<float>(((m_CurrTime - m_PausedTime) - m_BaseTime) / m_freq);
 	}
 }
 

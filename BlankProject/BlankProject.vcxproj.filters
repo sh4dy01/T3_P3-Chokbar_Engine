@@ -44,6 +44,9 @@
     <ClCompile Include="Source\GameObjects\Player.cpp">
       <Filter>Source\Source\GameObjects</Filter>
     </ClCompile>
+    <ClCompile Include="Source\GameObjects\Skybox.cpp">
+      <Filter>Source\Source\GameObjects</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Scripts\Player\PlayerShoot.cpp">
       <Filter>Source\Source\Scripts</Filter>
     </ClCompile>
@@ -85,6 +88,9 @@
     </ClInclude>
     <ClInclude Include="Source\Scripts\Asteroids\AsteroidSpawner.h">
       <Filter>Source\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GameObjects\SkyBox.h">
+      <Filter>Source\Source\GameObjects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

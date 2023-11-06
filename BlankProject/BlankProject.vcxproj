@@ -114,6 +114,7 @@
     <ClCompile Include="Source\Scripts\Player\PlayerMovement.cpp" />
     <ClCompile Include="Source\Scripts\Player\PlayerShoot.cpp" />
     <ClCompile Include="Source\Scripts\ProjectileBehavior.cpp" />
+    <ClCompile Include="Source\GameObjects\Skybox.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Scripts\Asteroids\AsteroidSpawner.h" />
@@ -126,6 +127,7 @@
     <ClInclude Include="Source\Scripts\Player\PlayerMovement.h" />
     <ClInclude Include="Source\Scripts\Player\PlayerShoot.h" />
     <ClInclude Include="Source\Scripts\ProjectileBehavior.h" />
+    <ClInclude Include="Source\GameObjects\SkyBox.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="BlankProject.rc" />

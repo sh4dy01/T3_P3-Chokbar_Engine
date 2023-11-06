@@ -13,6 +13,7 @@ public :
 
 private:
 
+
 	static CameraComponent* m_MainCamera;
 
 };

@@ -2,10 +2,9 @@
 
 
 class TimeManager {
-
+	friend class Engine;
 public:
 
-	TimeManager();
 	~TimeManager();
 
 
@@ -31,7 +30,10 @@ public:
 
 private:
 
-	double m_SecondsPerCount;
+	TimeManager();
+
+	__int64 m_performtime;
+	float m_freq;
 
 	float m_BaseTime;
 	float m_PausedTime;
@@ -42,6 +44,8 @@ private:
 	static float m_CurrTime;
 	static float m_DeltaTime;
 	static float m_TimeScale;
+
+	static LARGE_INTEGER m_PerfCountFreq;
 
 	bool isStopped;
 
