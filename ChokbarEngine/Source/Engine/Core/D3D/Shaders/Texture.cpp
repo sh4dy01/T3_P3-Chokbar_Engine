@@ -30,12 +30,16 @@ void Texture::Load(const std::string& filepath)
 	auto app = I(D3DRenderer);
 	app->BeginList();
 
-	LoadTexture(app->GetDevice(), app->GetCommandList());
+	D3D12_SRV_DIMENSION textType = D3D12_SRV_DIMENSION_TEXTURE2D;
+	if (filepath == "Resources/Textures/cubemap.dds") 
+		textType = D3D12_SRV_DIMENSION_TEXTURECUBE;
+
+	LoadTexture(app->GetDevice(), app->GetCommandList(), textType);
 
 	app->EndList();
 }
 
-void Texture::LoadTexture(ID3D12Device* device, ID3D12GraphicsCommandList* cmdList)
+void Texture::LoadTexture(ID3D12Device* device, ID3D12GraphicsCommandList* cmdList, D3D12_SRV_DIMENSION textType)
 {
 	// This is a bit ugly, but CreateDDSTextureFromFile12 needs ComPtr, which we do not use in the rest of the engine.
 	ComPtr<ID3D12Resource> textureUploadHeap = UploadHeap;
@@ -48,5 +52,20 @@ void Texture::LoadTexture(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLi
 	Resource = textureResource.Detach();
 	UploadHeap = textureUploadHeap.Detach();
 
-	HeapIndex = I(D3DRenderer)->UpdateTextureHeap(this);
+	HeapIndex = I(D3DRenderer)->UpdateTextureHeap(this, textType);
+}
+
+D3D12_SRV_DIMENSION Texture::GetTextureType(TextureType texType)
+{
+	switch (texType)
+	{
+	case TEXTURE2D:
+		return D3D12_SRV_DIMENSION_TEXTURE2D;
+		break;
+	case TEXTURECUBE:
+		return D3D12_SRV_DIMENSION_TEXTURECUBE;
+		break;
+	default:
+		break;
+	}
 }
