@@ -11,9 +11,6 @@ public:
     Rigidbody();
     ~Rigidbody() override;
 
-    void RegisterCollisionShape(Collider* shape);
-    void RemoveCollisionShape(Collider* shape);
-
     DirectX::XMFLOAT3 GetVelocity() const;
     void SetVelocity(const DirectX::XMFLOAT3& velocity);
 
@@ -28,11 +25,7 @@ public:
 
 
 
-    std::vector<Collider*> GetAllCollisionShape();
-
 private:
-
-    std::vector<Collider*> m_collisionShapes;
 
     DirectX::XMFLOAT3 m_velocity;
     DirectX::XMFLOAT3 m_force;

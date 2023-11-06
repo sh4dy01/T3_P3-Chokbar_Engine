@@ -6,28 +6,12 @@ using namespace DirectX;
 Rigidbody::Rigidbody()
 	: m_mass(1.0f), m_isStatic(false), m_velocity(XMFLOAT3(0, 0, 0)), m_force(XMFLOAT3(0, 0, 0))
 {
-	Engine::GetPhysicsWorld()->RegisterRigidBody(this);
 }
 
 Rigidbody::~Rigidbody()
 {
-	Engine::GetPhysicsWorld()->RemoveRigidBody(this);
-
-	for (auto& shape : m_collisionShapes)
-	{
-		shape = nullptr;
-	}
 }
 
-void Rigidbody::RegisterCollisionShape(Collider* shape)
-{
-	m_collisionShapes.push_back(shape);
-}
-
-void Rigidbody::RemoveCollisionShape(Collider* shape)
-{
-	std::erase(m_collisionShapes, shape);
-}
 
 void Rigidbody::SetMass(float mass)
 {
@@ -69,9 +53,4 @@ void Rigidbody::AddForce(const XMFLOAT3& force)
 XMFLOAT3 Rigidbody::GetForce() const
 {
 	return m_force;
-}
-
-std::vector<Collider*> Rigidbody::GetAllCollisionShape()
-{
-	return m_collisionShapes;
 }
