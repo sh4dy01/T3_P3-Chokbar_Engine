@@ -47,12 +47,6 @@
     <Filter Include="Source\Engine\Core">
       <UniqueIdentifier>{1ce36a97-6b74-4b35-856f-9c6c0a5549b1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\Engine\Core\Private">
-      <UniqueIdentifier>{e3d8a183-e744-4770-bbab-dd0bc6bd8376}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Engine\Core\Public">
-      <UniqueIdentifier>{bd8f5847-f1a6-497f-9b49-debe0ccdf6bf}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source\Engine\ECS">
       <UniqueIdentifier>{88daf8bd-1eed-4f52-a000-8bc1c48319d0}</UniqueIdentifier>
     </Filter>
@@ -80,29 +74,8 @@
     <Filter Include="Source\Engine\Core\D3D">
       <UniqueIdentifier>{de68f07e-e4d8-4e34-80aa-6c40e734c8c3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\Engine\Core\D3D\Internal">
-      <UniqueIdentifier>{bb0ceb55-94dc-4d4c-b8c9-ab283d148f8d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source\Engine\Core\D3D\External">
       <UniqueIdentifier>{3d36a131-ae5e-4d4e-a8d9-1712dd6e69c3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Engine\Core\D3D\Internal\Public">
-      <UniqueIdentifier>{e3174d9c-6021-4e38-b931-63cafc66116c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Engine\Core\D3D\Internal\Private">
-      <UniqueIdentifier>{dc995c8b-4db9-43a8-b7df-046077d3a6a4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Engine\Core\D3D\External\Public">
-      <UniqueIdentifier>{31b96c63-298c-4e96-9461-c53f1410046e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Engine\Core\D3D\External\Private">
-      <UniqueIdentifier>{773a69c6-7313-4ee7-81d4-c4702b6b2169}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Engine\Core\D3D\Private">
-      <UniqueIdentifier>{5971592f-ad3c-4a49-825d-e405e6f61804}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Engine\Core\D3D\Public">
-      <UniqueIdentifier>{c0b569af-5362-4c9a-a974-a60d015d9153}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source\Engine\Managers">
       <UniqueIdentifier>{f4b4f6c0-cbf4-45b9-b82a-f4b5416e22b3}</UniqueIdentifier>
@@ -113,20 +86,20 @@
     <Filter Include="Source\Engine\Managers\Private">
       <UniqueIdentifier>{b7ac141b-745e-449c-8bfb-11f026716638}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\Engine\Particles">
-      <UniqueIdentifier>{34ca8197-f943-4ab0-995b-f412c399a07e}</UniqueIdentifier>
+    <Filter Include="Source\Engine\Core\D3D\Base">
+      <UniqueIdentifier>{66bc8eb7-fbde-4c93-9b26-6acf30acdadf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\Engine\Particles\Public">
-      <UniqueIdentifier>{9e7f4177-c3f3-48a0-9e6c-1efb25d77980}</UniqueIdentifier>
+    <Filter Include="Source\Engine\Core\D3D\Geometry">
+      <UniqueIdentifier>{1c303f91-8caa-478a-aed2-502d2a81a28a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\Engine\Particles\Private">
-      <UniqueIdentifier>{a325436d-d806-481c-bc52-dfa5b8a59218}</UniqueIdentifier>
+    <Filter Include="Source\Engine\Core\D3D\Renderers">
+      <UniqueIdentifier>{9f2f1ae5-fa68-4f4d-85ec-7aa9e2cd732d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\Core\D3D\Shaders">
+      <UniqueIdentifier>{ae49d2cb-f448-44db-adb8-1bf1b23a2f2e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Core\PerGameSettings.cpp">
-      <Filter>Source\Engine\Core\Private</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Engine\Engine.cpp">
       <Filter>Source\Engine\Private</Filter>
     </ClCompile>
@@ -144,9 +117,6 @@
     </ClCompile>
     <ClCompile Include="Source\Platform\Windows\IApplication.cpp">
       <Filter>Source\Platform\Windows\Private</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Core\DebugUtils.cpp">
-      <Filter>Source\Engine\Core\Private</Filter>
     </ClCompile>
     <ClCompile Include="Source\Engine\ECS\Base\ComponentManager.cpp">
       <Filter>Source\Engine\ECS\Private</Filter>
@@ -193,36 +163,6 @@
     <ClCompile Include="Source\Engine\IResourceObject.cpp">
       <Filter>Source\Engine\Private</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Core\D3D\Internal\D3DMesh.cpp">
-      <Filter>Source\Engine\Core\D3D\Internal\Private</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Core\D3D\Internal\ShaderBase.cpp">
-      <Filter>Source\Engine\Core\D3D\Internal\Private</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Core\D3D\Internal\Texture.cpp">
-      <Filter>Source\Engine\Core\D3D\Internal\Private</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Core\D3D\Internal\UpdloadBuffer.cpp">
-      <Filter>Source\Engine\Core\D3D\Internal\Private</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Core\D3D\External\DDSTextureLoader.cpp">
-      <Filter>Source\Engine\Core\D3D\External\Private</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Core\D3D\D3DApp.cpp">
-      <Filter>Source\Engine\Core\D3D\Private</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Core\D3D\D3DMath.cpp">
-      <Filter>Source\Engine\Core\D3D\Private</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Core\D3D\D3DUtils.cpp">
-      <Filter>Source\Engine\Core\D3D\Private</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Core\D3D\Internal\MeshRenderer.cpp">
-      <Filter>Source\Engine\Core\D3D\Internal\Private</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Core\D3D\Internal\Material.cpp">
-      <Filter>Source\Engine\Core\D3D\Internal\Private</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Engine\ECS\Components\CameraComponent.cpp">
       <Filter>Source\Engine\ECS\Components</Filter>
     </ClCompile>
@@ -244,25 +184,62 @@
     <ClCompile Include="Source\Engine\Managers\TimeManager.cpp">
       <Filter>Source\Engine\Managers\Private</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Core\D3D\Internal\ParticleRenderer.cpp">
-      <Filter>Source\Engine\Core\D3D\Internal\Private</Filter>
+    <ClCompile Include="Source\Engine\SplashScreen.cpp" />
+    <ClCompile Include="Source\Engine\Core\D3D\External\DDSTextureLoader.cpp">
+      <Filter>Source\Engine\Core\D3D\External</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Core\D3D\Internal\Particle.cpp">
-      <Filter>Source\Engine\Core\D3D\Internal\Private</Filter>
+    <ClCompile Include="Source\Engine\Core\D3D\Base\D3DRenderer.cpp">
+      <Filter>Source\Engine\Core\D3D\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Core\D3D\Base\D3DMath.cpp">
+      <Filter>Source\Engine\Core\D3D\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Core\D3D\Base\D3DUtils.cpp">
+      <Filter>Source\Engine\Core\D3D\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Core\D3D\Geometry\D3DMesh.cpp">
+      <Filter>Source\Engine\Core\D3D\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Core\D3D\Geometry\GeometryHandler.cpp">
+      <Filter>Source\Engine\Core\D3D\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Core\D3D\Geometry\Particle.cpp">
+      <Filter>Source\Engine\Core\D3D\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Core\D3D\Shaders\Material.cpp">
+      <Filter>Source\Engine\Core\D3D\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Core\D3D\Shaders\ShaderBase.cpp">
+      <Filter>Source\Engine\Core\D3D\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Core\D3D\Shaders\Texture.cpp">
+      <Filter>Source\Engine\Core\D3D\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Core\D3D\Shaders\UpdloadBuffer.cpp">
+      <Filter>Source\Engine\Core\D3D\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Core\D3D\Renderers\IRenderer.cpp">
+      <Filter>Source\Engine\Core\D3D\Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Core\D3D\Renderers\MeshRenderer.cpp">
+      <Filter>Source\Engine\Core\D3D\Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Core\D3D\Renderers\ParticleRenderer.cpp">
+      <Filter>Source\Engine\Core\D3D\Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Core\DebugUtils.cpp">
+      <Filter>Source\Engine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Core\PerGameSettings.cpp">
+      <Filter>Source\Engine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Core\D3D\Renderers\SkyRenderer.cpp">
+      <Filter>Source\Engine\Core\D3D\Renderers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Chokbar.h">
       <Filter>Source\pch</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Core\Core.h">
-      <Filter>Source\Engine\Core\Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Core\CoreMinimal.h">
-      <Filter>Source\Engine\Core\Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Core\CoreDefinitions.h">
-      <Filter>Source\Engine\Core\Public</Filter>
     </ClInclude>
     <ClInclude Include="Source\Common\Logger.h">
       <Filter>Source\Common\Public</Filter>
@@ -281,9 +258,6 @@
     </ClInclude>
     <ClInclude Include="Source\Platform\Windows\IApplication.h">
       <Filter>Source\Platform\Windows\Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Core\DebugUtils.h">
-      <Filter>Source\Engine\Core\Public</Filter>
     </ClInclude>
     <ClInclude Include="Source\Engine\ECS\Base\ComponentArray.h">
       <Filter>Source\Engine\ECS\Public</Filter>
@@ -339,56 +313,8 @@
     <ClInclude Include="Source\Engine\Resource.h">
       <Filter>Source\Engine\Public</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Core\D3D\Internal\D3DMesh.h">
-      <Filter>Source\Engine\Core\D3D\Internal\Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Core\D3D\Internal\Texture.h">
-      <Filter>Source\Engine\Core\D3D\Internal\Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Core\D3D\Internal\UploadBuffer.h">
-      <Filter>Source\Engine\Core\D3D\Internal\Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Core\D3D\External\d3dx12.h">
-      <Filter>Source\Engine\Core\D3D\External\Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Core\D3D\External\DDSTextureLoader.h">
-      <Filter>Source\Engine\Core\D3D\External\Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Core\PerGameSettings.h">
-      <Filter>Source\Engine\Core\Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Core\D3D\D3DApp.h">
-      <Filter>Source\Engine\Core\D3D\Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Core\D3D\D3DMath.h">
-      <Filter>Source\Engine\Core\D3D\Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Core\D3D\D3DUtils.h">
-      <Filter>Source\Engine\Core\D3D\Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Core\D3D\Internal\MeshRenderer.h">
-      <Filter>Source\Engine\Core\D3D\Internal\Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Core\D3D\Internal\Material.h">
-      <Filter>Source\Engine\Core\D3D\Internal\Public</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Engine\ECS\Components\CameraComponent.h">
       <Filter>Source\Engine\ECS\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Core\D3D\MeshType.h">
-      <Filter>Source\Engine\Core\D3D</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Core\D3D\MaterialType.h">
-      <Filter>Source\Engine\Core\D3D</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Core\D3D\Internal\ParticleRenderer.h">
-      <Filter>Source\Engine\Core\D3D\Internal\Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Core\D3D\Internal\Particle.h">
-      <Filter>Source\Engine\Core\D3D\Internal\Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Core\D3D\Internal\ShaderBase.h">
-      <Filter>Source\Engine\Core\D3D\Internal\Public</Filter>
     </ClInclude>
     <ClInclude Include="Source\Engine\ECS\Components\Collision\TriggerCollisionEvent.h">
       <Filter>Source\Engine\ECS\Components\Collision</Filter>
@@ -408,6 +334,76 @@
     </ClInclude>
     <ClInclude Include="Source\Engine\Managers\TimeManager.h">
       <Filter>Source\Engine\Managers\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\SplashScreen.h" />
+    <ClInclude Include="Source\Engine\Core\D3D\External\d3dx12.h">
+      <Filter>Source\Engine\Core\D3D\External</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Core\D3D\External\DDSTextureLoader.h">
+      <Filter>Source\Engine\Core\D3D\External</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Core\D3D\Base\D3DRenderer.h">
+      <Filter>Source\Engine\Core\D3D\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Core\D3D\Base\D3DMath.h">
+      <Filter>Source\Engine\Core\D3D\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Core\D3D\Base\D3DUtils.h">
+      <Filter>Source\Engine\Core\D3D\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Core\D3D\Base\MaterialType.h">
+      <Filter>Source\Engine\Core\D3D\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Core\D3D\Base\MeshType.h">
+      <Filter>Source\Engine\Core\D3D\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Core\D3D\Geometry\D3DMesh.h">
+      <Filter>Source\Engine\Core\D3D\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Core\D3D\Geometry\GeometryHandler.h">
+      <Filter>Source\Engine\Core\D3D\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Core\D3D\Geometry\Particle.h">
+      <Filter>Source\Engine\Core\D3D\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Core\D3D\Shaders\Material.h">
+      <Filter>Source\Engine\Core\D3D\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Core\D3D\Shaders\ShaderBase.h">
+      <Filter>Source\Engine\Core\D3D\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Core\D3D\Shaders\Texture.h">
+      <Filter>Source\Engine\Core\D3D\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Core\D3D\Shaders\UploadBuffer.h">
+      <Filter>Source\Engine\Core\D3D\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Core\D3D\Renderers\IRenderer.h">
+      <Filter>Source\Engine\Core\D3D\Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Core\D3D\Renderers\MeshRenderer.h">
+      <Filter>Source\Engine\Core\D3D\Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Core\D3D\Renderers\ParticleRenderer.h">
+      <Filter>Source\Engine\Core\D3D\Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Core\Core.h">
+      <Filter>Source\Engine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Core\CoreDefinitions.h">
+      <Filter>Source\Engine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Core\CoreMinimal.h">
+      <Filter>Source\Engine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Core\DebugUtils.h">
+      <Filter>Source\Engine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Core\PerGameSettings.h">
+      <Filter>Source\Engine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Core\D3D\Renderers\SkyRenderer.h">
+      <Filter>Source\Engine\Core\D3D\Renderers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
