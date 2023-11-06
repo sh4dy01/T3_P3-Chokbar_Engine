@@ -96,6 +96,8 @@ public:
 		return Engine::GetCoordinator()->HasComponent<T>(GetInstanceID());
 	}
 
+	static GameObject* Find(const std::string& name);
+
 	bool IsActive() const { return m_IsActive; }
 	void SetActive(bool value) { m_IsActive = value; }
 

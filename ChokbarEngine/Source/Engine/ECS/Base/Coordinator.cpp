@@ -49,10 +49,20 @@ void Coordinator::RegisterSystems()
 
 }
 
-
-InstanceID Coordinator::CreateNewObject(Object* go) const
+GameObject* Coordinator::GetEntityByName(const std::string& name) const
 {
-	return m_EntityManager->RegisterEntity(go);
+	return m_EntityManager->GetEntityByName(name);
+}
+
+
+InstanceID Coordinator::GetNewInstanceID() const
+{
+	return m_EntityManager->GetNewInstanceID();
+}
+
+void Coordinator::RegisterGameObject(GameObject* go) const
+{
+	return m_EntityManager->RegisterGameObject(go);
 }
 
 void Coordinator::AwakeComponents()

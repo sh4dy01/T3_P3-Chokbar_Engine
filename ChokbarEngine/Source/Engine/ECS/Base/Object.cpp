@@ -5,14 +5,13 @@
 Object::Object()
 	: m_Name("DefaultName")
 {
-	m_InstanceID = Engine::GetCoordinator()->CreateNewObject(this);
-
+	m_InstanceID = Engine::GetCoordinator()->GetNewInstanceID();
 }
 
 Object::Object(const std::string& name)
 	: m_Name(name)
 {
-	m_InstanceID = Engine::GetCoordinator()->CreateNewObject(this);
+	m_InstanceID = Engine::GetCoordinator()->GetNewInstanceID();
 }
 
 Object::~Object()
