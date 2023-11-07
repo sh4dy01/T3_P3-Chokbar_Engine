@@ -20,7 +20,6 @@ protected:
 	struct ObjConstants
 	{
 		DirectX::XMFLOAT4X4 World;
-		float UVOffsetY;
 	};
 
 	struct PassConstants
@@ -36,9 +35,6 @@ protected:
 
 		DirectX::XMFLOAT3 LightDirection = { -1.0f, -1.0f, 0.0f };
 		float DeltaTime = 0.0f;
-
-		DirectX::XMFLOAT3 Padding = { 0.0f, 0.0f, 0.0f };
-		float UVOffsetY = 0.1f;
 	};
 
 	struct MaterialConstants
@@ -174,8 +170,18 @@ public:
 
 class ShaderTextureTransparent : public ShaderBase
 {
+public:
+	struct OffSetConstants
+	{
+		DirectX::XMFLOAT4X4 World;
+		float UVOffsetY = 0.0f;
+	};
+
+public:
 	ShaderTextureTransparent(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, UINT cbvDescriptorSize, std::wstring& filepath);
 	~ShaderTextureTransparent();
+
+	void UpdateObjectCB(DirectX::XMFLOAT4X4* itemWorldMatrix, UINT cbIndex);
 
 	void Init() override;
 	void CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT& rtvFormat, DXGI_FORMAT& dsvFormat) override;
@@ -183,4 +189,9 @@ class ShaderTextureTransparent : public ShaderBase
 	void BeginDraw(ID3D12GraphicsCommandList* cmdList) override;
 	void Draw(ID3D12GraphicsCommandList* cmdList, IRenderer* drawnMeshR) override;
 	void EndDraw(ID3D12GraphicsCommandList* cmdList) override;
+
+	float uvOffsetY;
+protected:
+	std::vector<UploadBuffer<OffSetConstants>*> m_offSetCb;
+
 };

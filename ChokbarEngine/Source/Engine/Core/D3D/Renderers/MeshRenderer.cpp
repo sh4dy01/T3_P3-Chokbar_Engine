@@ -38,8 +38,3 @@ void MeshRenderer::Update(float dt)
 
 	Mat->GetShader()->UpdateObjectCB(transform->GetWorldMatrix(), ObjectCBIndex);
 }
-
-void MeshRenderer::SetUVOffsetY(float offset)
-{
-	uvOffsetY = offset;
-}

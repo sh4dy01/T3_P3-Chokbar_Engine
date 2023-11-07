@@ -96,7 +96,6 @@ void ShaderBase::UpdateObjectCB(DirectX::XMFLOAT4X4* itemWorldMatrix, UINT cbInd
 
 	ObjConstants objConstants;
 	objConstants.World = *itemWorldMatrix;
-	objConstants.UVOffsetY = 0.0f;
 	m_objectCBs[cbIndex]->CopyData(0, &objConstants);
 }
 
@@ -548,6 +547,17 @@ ShaderTextureTransparent::~ShaderTextureTransparent()
 {
 }
 
+void ShaderTextureTransparent::UpdateObjectCB(DirectX::XMFLOAT4X4* itemWorldMatrix, UINT cbIndex)
+{
+	if (cbIndex >= m_offSetCb.size())
+		AddObjectCB();
+
+	OffSetConstants offSetConstants;
+	offSetConstants.World = *itemWorldMatrix;
+	offSetConstants.UVOffsetY = uvOffsetY;
+	m_offSetCb[cbIndex]->CopyData(0, &offSetConstants);
+}	
+
 void ShaderTextureTransparent::Init()
 {
 	ShaderBase::Init();
@@ -563,7 +573,7 @@ void ShaderTextureTransparent::CreatePsoAndRootSignature(VertexType vertexType, 
 	CD3DX12_DESCRIPTOR_RANGE texTable;
 	texTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
 
-	CD3DX12_ROOT_PARAMETER slotRootParameter[4];
+	CD3DX12_ROOT_PARAMETER slotRootParameter[3];
 	slotRootParameter[0].InitAsDescriptorTable(1, &texTable, D3D12_SHADER_VISIBILITY_PIXEL);
 	slotRootParameter[1].InitAsConstantBufferView(0);
 	slotRootParameter[2].InitAsConstantBufferView(1);

@@ -15,6 +15,4 @@ private:
 public:
 	void Render(ID3D12GraphicsCommandList* cmdList) override;
 	void Update(float dt) override;
-	void SetUVOffsetY(float offset);
-
 };

@@ -41,7 +41,7 @@ void Score::AddDigit(int digitValue, const DirectX::XMFLOAT3& position) {
     digit->transform->SetPosition(position.x, position.y, position.z);
 
     float uvOffsetY = CalculateUVOffsetForDigit(digitValue);
-    meshRenderer->SetUVOffsetY(uvOffsetY);
+    ???->UpdateObjectCB(uvOffsetY);
 
     digitsObjects.push_back(digit);
 }
