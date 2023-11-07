@@ -116,4 +116,13 @@ void PlayerMovement::HandleRotation()
 {
 	transform->RotateYaw(InputHandler::GetAxisX() * m_YawTorque * m_Sensitivity * TimeManager::GetDeltaTime());
 	transform->RotatePitch(InputHandler::GetAxisY() * m_PitchTorque * m_Sensitivity * TimeManager::GetDeltaTime());
+
+	if (InputHandler::IsKeyHeld('a'))
+	{
+		transform->RotateRoll(m_RollTorque * m_Sensitivity * TimeManager::GetDeltaTime());
+	}
+	else if (InputHandler::IsKeyHeld('e'))
+	{
+		transform->RotateRoll(-m_RollTorque * m_Sensitivity * TimeManager::GetDeltaTime());
+	}
 }

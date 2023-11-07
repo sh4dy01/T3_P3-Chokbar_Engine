@@ -41,6 +41,7 @@ private:
 
 	const float m_PitchTorque = 400;
 	const float m_YawTorque = 400;
+	const float m_RollTorque = 20;
 
 	float m_CurrentForwardThrust = 0.0f;
 	float m_CurrentLateralThrust = 0.0f;
