@@ -45,10 +45,11 @@ public:
 	DirectX::XMFLOAT4 GetQuaternion() const { return m_RotationQuaternion; }
 
 	DirectX::XMFLOAT4X4* GetWorldMatrix() { return &m_WorldMatrix; }
+	DirectX::XMFLOAT4X4* GetParentedWorldMatrix() { return &m_ParentedWorldMatrix; }
 
 	bool IsDirty() const { return m_Dirty; }
 
-	void UpdateWorldMatrix();
+	void UpdateParentedWorldMatrix();
 
 private:
 
@@ -58,7 +59,12 @@ private:
 	void UpdateRotationMatrix();
 	void UpdateScaleMatrix();
 
+	void UpdateWorldMatrix();
+
 	bool m_Dirty;
+
+	Transform* m_pParent;
+	std::vector<Transform*> m_pChildren;
 
 	DirectX::XMFLOAT3 m_Right;
 	DirectX::XMFLOAT3 m_Up;
@@ -74,4 +80,5 @@ private:
 	DirectX::XMFLOAT4 m_RotationQuaternion;
 
 	DirectX::XMFLOAT4X4 m_WorldMatrix;
+	DirectX::XMFLOAT4X4 m_ParentedWorldMatrix;
 };

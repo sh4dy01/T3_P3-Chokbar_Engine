@@ -208,3 +208,21 @@ void Transform::UpdateWorldMatrix()
 
 	m_Dirty = false;
 }
+
+void Transform::UpdateParentedWorldMatrix()
+{
+	DirectX::XMFLOAT4X4 parentWorldMatrix;
+
+	if (m_pParent)
+	{
+		m_pParent->UpdateParentedWorldMatrix();
+		parentWorldMatrix = *m_pParent->GetParentedWorldMatrix();
+	}
+	else
+	{
+		DirectX::XMStoreFloat4x4(&parentWorldMatrix, DirectX::XMMatrixIdentity());
+	}
+
+	UpdateWorldMatrix();
+	DirectX::XMStoreFloat4x4(&m_ParentedWorldMatrix, DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&m_WorldMatrix), DirectX::XMLoadFloat4x4(&parentWorldMatrix)));
+}
