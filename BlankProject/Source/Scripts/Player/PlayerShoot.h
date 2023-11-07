@@ -8,12 +8,14 @@ public:
 
 	void Awake() override;
 	void Start() override;
-	void ShootProjectileFromWings();
 	void Update() override;
 
 private:
 
+	void HandleShoot();
+	void ShootProjectileFromWings();
 	void ShootProjectile(XMFLOAT3 position, XMFLOAT3 direction);
+
 	void HandleZoomAndSlowMotion();
 
 private:
@@ -30,7 +32,7 @@ private:
 
 	const float m_BasicFOV = 70;
 
-	const float m_SlowMotionRecoverSpeed = 0.7f;
+	const float m_SlowMotionRecoverSpeed = 1.f;
 	const float m_SlowMotionSpeed = 0.5f;
 	const float m_SlowMotion = 0.1f;
 

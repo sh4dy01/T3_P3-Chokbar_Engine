@@ -16,24 +16,28 @@ void PlayerShoot::Start()
 	m_ShootTimer = m_ShootDelay;
 }
 
+
 void PlayerShoot::Update()
+{
+	HandleShoot();
+	HandleZoomAndSlowMotion();
+}
+
+void PlayerShoot::HandleShoot()
 {
 	if (InputHandler::IsKeyHeld(VK_LBUTTON) || InputHandler::IsKeyDown(VK_LBUTTON))
 	{
-		if (m_ShootTimer < m_ShootDelay)
+		if (m_ShootTimer >= m_ShootDelay)
 		{
-			m_ShootTimer += TimeManager::GetDeltaTime();
-			return;
+			ShootProjectileFromWings();
+			m_ShootTimer = 0;
 		}
-
-		ShootProjectileFromWings();
-		m_ShootTimer = 0.0f;
 	}
 
 	if (m_ShootTimer < m_ShootDelay)
+	{
 		m_ShootTimer += TimeManager::GetDeltaTime();
-
-	HandleZoomAndSlowMotion();
+	}
 }
 
 void PlayerShoot::ShootProjectileFromWings()
