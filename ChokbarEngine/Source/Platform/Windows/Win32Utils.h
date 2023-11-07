@@ -1,7 +1,7 @@
 #pragma once
 
-#define DEFAULT_WIDTH 1920
-#define DEFAULT_HEIGHT 1080
+#define DEFAULT_WIDTH 960
+#define DEFAULT_HEIGHT 590
 
 
 namespace Win32 {

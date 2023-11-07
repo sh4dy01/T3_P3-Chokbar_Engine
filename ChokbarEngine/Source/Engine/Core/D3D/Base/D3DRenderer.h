@@ -61,6 +61,8 @@ private:
 	void RenderObjects();
 	void UpdateRenderedObjects(const float dt, const float totalTime);
 
+	void CreateFustrum();
+
 	D3D12_CPU_DESCRIPTOR_HANDLE CurrentBackBufferView() const;
 	D3D12_CPU_DESCRIPTOR_HANDLE DepthStencilView() const;
 
@@ -128,4 +130,5 @@ private:
 
 	UINT m_texIndex;
 
+	DirectX::BoundingFrustum m_Frustum;
 };

@@ -88,7 +88,7 @@ void TimeManager::Tick()
 
 	// Time difference between this frame and the previous.
 	m_DeltaTime = (m_CurrTime - m_PrevTime);
-	DEBUG_LOG(m_DeltaTime);
+	//DEBUG_LOG(m_DeltaTime);
 
 	// Prepare for next frame.
 	m_PrevTime = m_CurrTime;

@@ -1,11 +1,13 @@
 #pragma once
 
 // Transform is a component and is meant to be attached to 3D objects to give them a position, rotation and scale and to be able to move and rotate them around.
+#include <DirectXCollision.h>
 
 #include <DirectXMath.h>
 
 class Transform : public Component
 {
+	friend class CameraComponent;
 public:
 	enum Space
 	{
@@ -44,7 +46,13 @@ public:
 	DirectX::XMFLOAT3 GetScale() const { return m_Scale; }
 	DirectX::XMFLOAT4 GetQuaternion() const { return m_RotationQuaternion; }
 
-	DirectX::XMFLOAT4X4* GetWorldMatrix() { return &m_WorldMatrix; }
+	DirectX::XMFLOAT4X4* GetPositionMatrix() { return &m_PositionMatrix; }
+	DirectX::XMFLOAT4X4* GetRotationMatrix() { return &m_RotationMatrix; }
+	DirectX::XMFLOAT4X4* GetScaleMatrix() { return &m_ScaleMatrix; }
+
+	DirectX::XMFLOAT4X4* GetWorldMatrix() { UpdateWorldMatrix(); return &m_WorldMatrix; }
+
+	DirectX::BoundingSphere GetBoundingSphere() const { return m_BoundingSphere; }
 
 	bool IsDirty() const { return m_Dirty; }
 
@@ -57,6 +65,8 @@ private:
 	void UpdatePositionMatrix();
 	void UpdateRotationMatrix();
 	void UpdateScaleMatrix();
+
+	void UpdateBoundingSphere();
 
 	bool m_Dirty;
 
@@ -74,4 +84,6 @@ private:
 	DirectX::XMFLOAT4 m_RotationQuaternion;
 
 	DirectX::XMFLOAT4X4 m_WorldMatrix;
+
+	DirectX::BoundingSphere m_BoundingSphere;
 };

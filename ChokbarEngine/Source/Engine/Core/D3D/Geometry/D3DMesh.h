@@ -36,6 +36,9 @@ public:
 
 	UINT GetIndexCount() const { return IndexCount; }
 
+	DirectX::BoundingBox GetBounds() const { return Bounds; }
+	void SetBounds(const DirectX::BoundingBox& bounds) { Bounds = bounds; }
+
 private:
 	ID3D12Resource* VertexBufferGPU;
 	ID3D12Resource* IndexBufferGPU;
@@ -51,6 +54,8 @@ private:
 	UINT IndexCount = 0;
 	UINT StartIndexLocation = 0;
 	INT BaseVertexLocation = 0;
+
+	DirectX::BoundingBox Bounds;
 
 private:
 	ID3D12Resource* CreateDefaultBuffer(ID3D12Device* device, ID3D12GraphicsCommandList* cmdList, const void* initData, UINT64 byteSize, ID3D12Resource*& uploadBuffer);

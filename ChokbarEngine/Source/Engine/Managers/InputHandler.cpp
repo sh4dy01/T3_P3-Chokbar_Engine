@@ -206,7 +206,7 @@ void InputHandler::GetNormalizedMovement()
 	m_deltaPosX = delta.x / SENSIBILITY;
 	m_deltaPosY = delta.y / SENSIBILITY;
 
-	DEBUG_LOG("Delta X: " << m_deltaPosX << " Delta Y: " << m_deltaPosY);
+	//DEBUG_LOG("Delta X: " << m_deltaPosX << " Delta Y: " << m_deltaPosY);
 }
 
 
