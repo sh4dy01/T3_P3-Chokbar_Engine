@@ -24,6 +24,8 @@ public:
     Collider* GetColliderA() const { return m_ColliderA; };
     Collider* GetColliderB() const { return m_ColliderB; };
 
+
+
 private:
 
     CollisionState m_State;

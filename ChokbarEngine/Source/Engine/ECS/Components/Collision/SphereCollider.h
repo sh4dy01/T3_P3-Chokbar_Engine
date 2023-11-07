@@ -16,5 +16,4 @@ public:
 private:
 
 	float m_Radius;
-
 };

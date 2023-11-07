@@ -4,6 +4,8 @@
 void PlayerComponent::Awake()
 {
 	m_Speed = 10.f;
+
+	m_pRigidbody = gameObject->GetComponent<Rigidbody>();
 }
 
 void PlayerComponent::Start()
@@ -15,19 +17,19 @@ void PlayerComponent::Update()
 {
 	if (InputHandler::IsKeyHeld('z'))
 	{
-		transform->Translate(0, 0, m_Speed * TimeManager::GetDeltaTime());
+		m_pRigidbody->Move(0, 0, m_Speed * TimeManager::GetDeltaTime());
 	}
 	if (InputHandler::IsKeyHeld('s'))
 	{
-		transform->Translate(0, 0, -m_Speed * TimeManager::GetDeltaTime());
+		m_pRigidbody->Move(0, 0, -m_Speed * TimeManager::GetDeltaTime());
 	}
 	if (InputHandler::IsKeyHeld('q'))
 	{
-		transform->Translate(-m_Speed * TimeManager::GetDeltaTime(), 0, 0);
+		m_pRigidbody->Move(-m_Speed * TimeManager::GetDeltaTime(), 0, 0);
 	}
 	if (InputHandler::IsKeyHeld('d'))
 	{
-		transform->Translate(m_Speed * TimeManager::GetDeltaTime(), 0, 0);
+		m_pRigidbody->Move(m_Speed * TimeManager::GetDeltaTime(), 0, 0);
 	}
 	if (InputHandler::IsKeyDown(VK_RBUTTON))
 	{
@@ -41,11 +43,11 @@ void PlayerComponent::Update()
 	}
 	if (InputHandler::IsKeyHeld(VK_SHIFT))
 	{
-		transform->Translate(0, -m_Speed * TimeManager::GetDeltaTime(), 0, Transform::Space::World);
+		m_pRigidbody->Move(0, -m_Speed * TimeManager::GetDeltaTime(), 0, Transform::Space::World);
 	}
 	if (InputHandler::IsKeyHeld(VK_SPACE))
 	{
-		transform->Translate(0, m_Speed * TimeManager::GetDeltaTime(), 0, Transform::Space::World);
+		m_pRigidbody->Move(0, m_Speed * TimeManager::GetDeltaTime(), 0, Transform::Space::World);
 	}
 
 	transform->RotateYaw(InputHandler::GetAxisX() * 50.f * TimeManager::GetDeltaTime(), Transform::Space::World);

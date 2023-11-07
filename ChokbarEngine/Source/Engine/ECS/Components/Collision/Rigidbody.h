@@ -1,6 +1,11 @@
 #pragma once 
 
+#define CELL_SIZE 1.0f
+
+#include <DirectXMath.h>
 using namespace DirectX;
+
+#include "Engine/ECS/Components/TransformComponent.h"
 
 class Collider;
 
@@ -8,31 +13,39 @@ class Rigidbody : public Component
 {
 public:
 
-    Rigidbody();
-    ~Rigidbody() override;
+	Rigidbody();
+	Rigidbody(bool isStatic);
+	~Rigidbody() override;
 
-    void RegisterCollisionShape(Collider* shape);
-    void RemoveCollisionShape(Collider* shape);
+	void OnAddedComponent() override;
+	void RegisterCollisionShape(Collider* shape);
+	void RemoveCollisionShape(Collider* shape);
 
-    DirectX::XMFLOAT3 GetVelocity() const;
-    void SetVelocity(const DirectX::XMFLOAT3& velocity);
+	XMFLOAT3 GetVelocity() const;
+	void SetVelocity(const XMFLOAT3& velocity);
+	void AddVelocity(const XMFLOAT3& velocity);
 
-    float GetMass() const;
-    void SetMass(float mass);
+	float GetMass() const;
+	void SetMass(float mass);
 
-    bool IsStatic() const;
-    void SetStatic(bool isStatic);
+	bool IsStatic() const;
+	void SetStatic(bool isStatic);
 
-    void Move(const XMFLOAT3& displacement);
+	void Move(float x, float y, float z, Transform::Space space = Transform::Space::Local);
+	void Move(const XMFLOAT3& displacement, Transform::Space space = Transform::Space::Local);
 
-    std::vector<Collider*> GetAllCollisionShape();
+	std::vector<Collider*> GetAllCollisionShape();
+
+	const XMFLOAT3 GetGridPosition() const { return m_gridPosition; }
 
 private:
-    std::vector<Collider*> m_collisionShapes;
+	std::vector<Collider*> m_collisionShapes;
 
-    XMFLOAT3 m_velocity;
+	XMFLOAT3 m_velocity;
 
-    float m_mass;   
+	float m_mass;
 
-    bool m_isStatic;
+	bool m_isStatic;
+
+	XMFLOAT3 m_gridPosition;
 };

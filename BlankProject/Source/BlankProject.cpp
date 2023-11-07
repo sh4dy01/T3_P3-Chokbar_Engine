@@ -50,28 +50,69 @@ void Application::PreInitialize()
 }
 
 void Application::Initialize()
-{		
-	auto* test = new GameObject("ball");
+{
+	auto* player = GameObject::Instantiate<Player>("Player");
+	player->transform->Translate(XMFLOAT3(0, 0, -5));
 
-	auto* mr = new MeshRenderer();
-	mr->Init(MeshType::SPHERE, MaterialType::TEXTURE);
+	auto* ship = new GameObject("SHIP");
 
-	auto* pr = new ParticleRenderer();
-	pr->Init(MeshType::CUBE, MaterialType::PARTICLE);
-	pr->SetParticleCount(1000);
+	auto* meshRenderer = new MeshRenderer();
+	meshRenderer->Init(MeshType::SPHERE, MaterialType::TEXTURE);
 
-	test->AddComponent<MeshRenderer>(mr);
-	test->AddComponent<ParticleRenderer>(pr);
+	auto* collider = new SphereCollider();
 
+	auto* rigidbody = new Rigidbody();
+
+	ship->AddComponent<MeshRenderer>(meshRenderer);
+	ship->AddComponent<Rigidbody>(rigidbody);
+	ship->AddComponent<SphereCollider>(collider);
 	std::string path = "Resources/Textures/mars.dds";
-	test->GetComponent<MeshRenderer>()->RegisterTexture(Resource::Load<Texture>(path));
+	ship->GetComponent<MeshRenderer>()->RegisterTexture(Resource::Load<Texture>(path));
+	ship->GetComponent<Rigidbody>()->Move(XMFLOAT3(0, 0, 2));
 
-	test->transform->SetPosition(0, 0, 2);
-	
-	auto player = GameObject::Instantiate<Player>();
-	player->transform->SetPosition(0, 0, -5);
+	auto* asteroid = GameObject::Instantiate<Asteroid>("Asteroid");
+	asteroid->GetComponent<Rigidbody>()->Move(1, 0, 2);
 
-	player = nullptr;
+	//for (int i = 0; i < 10; i++)
+	//{
+	//	auto* asteroid = GameObject::Instantiate<Asteroid>("Asteroid");
+	//	asteroid->GetComponent<Rigidbody>()->Move(XMFLOAT3(rand() % 3 - 3/2, rand() % 3 - 3/2, rand() % 3 - 3 / 2));
+	//	//asteroid->GetComponent<Rigidbody>()->Move(10 * i, 0, 0);
+
+	//	/*auto* asteroid = new GameObject("ASTEROID");
+
+	//	auto* meshRendererAsteroid = new MeshRenderer();
+	//	meshRendererAsteroid->Init(MeshType::SPHERE, MaterialType::TEXTURE);
+
+	//	auto* colliderAsteroid = new SphereCollider();
+
+	//	auto* rigidbodyAsteroid = new Rigidbody();
+
+	//	std::string pathAsteroid = "Resources/Textures/4k.dds";
+	//	asteroid->AddComponent<MeshRenderer>(meshRendererAsteroid);
+	//	asteroid->AddComponent<Rigidbody>(rigidbodyAsteroid);
+	//	asteroid->AddComponent<SphereCollider>(colliderAsteroid);
+	//	asteroid->GetComponent<MeshRenderer>()->RegisterTexture(Resource::Load<Texture>(path));
+	//	asteroid->GetComponent<Rigidbody>()->Move(XMFLOAT3(rand() % 3 - 3 / 2, rand() % 3 - 3 / 2, 2));*/
+	//}
+
+
+	/*auto* asteroid = new GameObject("ASTEROID");
+
+	auto* meshRendererAsteroid = new MeshRenderer();
+	meshRendererAsteroid->Init(MeshType::SPHERE, MaterialType::TEXTURE);
+
+	auto* colliderAsteroid = new SphereCollider();
+
+	auto* rigidbodyAsteroid = new Rigidbody();
+
+	std::string pathAsteroid = "Resources/Textures/4k.dds";
+	asteroid->AddComponent<MeshRenderer>(meshRendererAsteroid);
+	asteroid->AddComponent<Rigidbody>(rigidbodyAsteroid);
+	asteroid->AddComponent<SphereCollider>(colliderAsteroid);
+	asteroid->GetComponent<MeshRenderer>()->RegisterTexture(Resource::Load<Texture>(path));
+	asteroid->GetComponent<Rigidbody>()->Move(XMFLOAT3(0, 2, 2));*/
+
 }
 
 void Application::Run()
