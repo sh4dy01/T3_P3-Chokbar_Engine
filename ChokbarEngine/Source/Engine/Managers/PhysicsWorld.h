@@ -43,12 +43,16 @@ public:
 
     void RegisterCollider(Collider* collider);
     void RemoveCollider(Collider* collider);
+    void ReduceVelocity(XMFLOAT3& velocity, XMFLOAT3& outVal);
+    bool IsSameGridPos(XMFLOAT3 iGridPos, int iGridSize, XMFLOAT3 jGridPos, int jGridSize);
 
     void Update(float dt);
    
 private:
 
     PhysicsWorld();
+
+    bool IsVelocityNull(const XMFLOAT3 velocity);
 
     void CheckCollision();
     bool AreShapesColliding(Collider* shapeA, Collider* shapeB);

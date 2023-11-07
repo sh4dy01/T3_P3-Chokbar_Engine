@@ -43,35 +43,6 @@ PhysicsWorld::~PhysicsWorld()
 	m_RegisteredCollisionInfos.clear();
 }
 
-void PhysicsWorld::Update(float dt)
-{
-	m_timer += dt;
-
-	if (m_timer >= TimeManager::GetFixedTime())
-	{
-		Coordinator::GetInstance()->FixedUpdateComponents();
-
-		CheckCollision();
-
-		m_timer = 0.0f;
-	}
-
-	for (auto& collider : m_RegisteredCollider)
-	{
-		Rigidbody* rb = collider->GetAttachedRigidbody();
-
-		if (rb->GetVelocity().x == 0 &&
-			rb->GetVelocity().y == 0 &&
-			rb->GetVelocity().z == 0) continue;
-
-		rb->Move(rb->GetVelocity());
-
-		XMFLOAT3 newVel;
-		XMStoreFloat3(&newVel, XMLoadFloat3(&rb->GetVelocity()) * 0.9f);
-		rb->SetVelocity(newVel);
-	}
-}
-
 void PhysicsWorld::RegisterCollider(Collider* collider)
 {
 	m_RegisteredCollider.push_back(collider);
@@ -84,6 +55,60 @@ void PhysicsWorld::RemoveCollider(Collider* collider)
 	std::erase(m_RegisteredCollider, collider);
 }
 
+void PhysicsWorld::ReduceVelocity(XMFLOAT3& velocity, XMFLOAT3& outVal)
+{
+	velocity.x *= 0.7f;
+	velocity.y *= 0.7f;
+	velocity.z *= 0.7f;
+	outVal = velocity;
+}
+
+void PhysicsWorld::Update(float dt)
+{
+	for (const auto& collider : m_RegisteredCollider)
+	{
+		Rigidbody* rb = collider->GetAttachedRigidbody();
+
+		if (rb->IsStatic()) continue;
+
+		XMFLOAT3 velocity = rb->GetVelocity();
+
+		if (IsVelocityNull(velocity)) continue;
+
+		rb->Move(velocity);
+
+		XMFLOAT3 reducedVelocity;
+		ReduceVelocity(velocity, reducedVelocity);
+
+		rb->SetVelocity(reducedVelocity);
+	}
+
+	m_timer += dt;
+
+	if (m_timer >= TimeManager::GetFixedTime())
+	{
+		Coordinator::GetInstance()->FixedUpdateComponents();
+
+		CheckCollision();
+
+		m_timer = 0.0f;
+	}
+}
+
+bool PhysicsWorld::IsVelocityNull(const XMFLOAT3 velocity)
+{
+	return	std::abs(velocity.x) <= FLT_EPSILON &&
+		std::abs(velocity.y) <= FLT_EPSILON &&
+		std::abs(velocity.z) <= FLT_EPSILON;
+}
+
+bool PhysicsWorld::IsSameGridPos(const XMFLOAT3 iGridPos, const int iGridSize, XMFLOAT3 jGridPos, int jGridSize)
+{
+	return	std::abs(iGridPos.x - jGridPos.x) < iGridSize + jGridSize &&
+			std::abs(iGridPos.y - jGridPos.y) < iGridSize + jGridSize &&
+			std::abs(iGridPos.z - jGridPos.z) < iGridSize + jGridSize;
+}
+
 void PhysicsWorld::CheckCollision()
 {
 	if (m_RegisteredCollider.size() < 2) return;
@@ -92,83 +117,73 @@ void PhysicsWorld::CheckCollision()
 	{
 		int temp = 0;
 
-		XMFLOAT3 iGridPos = m_RegisteredCollider[i]->GetAttachedRigidbody()->GetGridPosition();
-		int iGridSize = m_RegisteredCollider[i]->GetGridSize();
-
-		Transform& iTransform = *m_RegisteredCollider[i]->transform;
+		Collider* colliderA = m_RegisteredCollider[i];
+		Rigidbody* rbA = colliderA->GetAttachedRigidbody();
+		Transform& aTransform = *colliderA->transform;
 
 		for (size_t j = i + 1; j < m_RegisteredCollider.size(); j++)
 		{
-			XMFLOAT3 jGridPos = m_RegisteredCollider[j]->GetAttachedRigidbody()->GetGridPosition();
-			int jGridSize = m_RegisteredCollider[j]->GetGridSize();
+			Collider* colliderB = m_RegisteredCollider[j];
+			Rigidbody* rbB = colliderB->GetAttachedRigidbody();
+			Transform& bTransform = *colliderB->transform;
 
-			Transform& jTransform = *m_RegisteredCollider[j]->transform;
+			if (!IsSameGridPos(rbA->GetGridPosition(), colliderA->GetGridSize(), rbB->GetGridPosition(), colliderB->GetGridSize())) continue;
 
-			if (std::abs(iGridPos.x - jGridPos.x) < iGridSize + jGridSize &&
-				std::abs(iGridPos.y - jGridPos.y) < iGridSize + jGridSize &&
-				std::abs(iGridPos.z - jGridPos.z) < iGridSize + jGridSize)
+			if (AreShapesColliding(m_RegisteredCollider[i], m_RegisteredCollider[j]))
+			{
+				temp++;
 
-				if (AreShapesColliding(m_RegisteredCollider[i], m_RegisteredCollider[j]))
+				float distance;
+
+				switch (m_CurrentCollisionInfo->GetState())
 				{
-					temp++;
+				case Enter:
 
+					m_CurrentCollisionInfo->GetColliderA()->CallOnTriggerEnter(m_CurrentCollisionInfo->GetColliderB());
+					m_CurrentCollisionInfo->GetColliderB()->CallOnTriggerEnter(m_CurrentCollisionInfo->GetColliderA());
 
-					/*XMFLOAT3 newPos;
-					DirectX::XMStoreFloat3(&newPos, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&m_rigidbodies[i]->transform->GetPosition()), DirectX::XMLoadFloat3(&m_rigidbodies[i]->GetVelocity())));
-					m_rigidbodies[i]->Move(newPos);
+					//distance = sqrt(pow(iGridPos.x - jGridPos.x, 2) + pow(iGridPos.y - jGridPos.y, 2) + pow(iGridPos.z - jGridPos.z, 2)) - ((SphereCollider*)m_RegisteredCollider[i])->GetRadius() + ((SphereCollider*)m_RegisteredCollider[j])->GetRadius();
+					
 
-					XMFLOAT3 newPos2;
-					DirectX::XMStoreFloat3(&newPos2, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&m_rigidbodies[j]->transform->GetPosition()), DirectX::XMLoadFloat3(&m_rigidbodies[j]->GetVelocity())));
-					m_rigidbodies[j]->Move(newPos2);*/
+					DEBUG_LOG(m_RegisteredCollider[i]->gameObject->GetName() << " entered in collision with " << m_RegisteredCollider[j]->gameObject->GetName());
 
+					break;
+				case Stay:
 
-					float distance;
+					//m_rigidbodies[i]->CallOnCollisionStay(m_CurrentCollisionInfo.ColliderB);
+					//m_rigidbodies[j]->CallOnCollisionStay(m_CurrentCollisionInfo.ColliderA);
 
-					switch (m_CurrentCollisionInfo->GetState())
-					{
-					case Enter:
+					//DEBUG_LOG(m_rigidbodies[i]->gameObject->GetName() << " continue colliding with " << m_rigidbodies[j]->gameObject->GetName())
 
-						m_CurrentCollisionInfo->GetColliderA()->CallOnTriggerEnter(m_CurrentCollisionInfo->GetColliderB());
-						m_CurrentCollisionInfo->GetColliderB()->CallOnTriggerEnter(m_CurrentCollisionInfo->GetColliderA());
+					distance = sqrt(	
+								pow(aTransform.GetPosition().x - bTransform.GetPosition().x, 2) + 
+									pow(aTransform.GetPosition().y - bTransform.GetPosition().y, 2) + 
+									pow(aTransform.GetPosition().z - bTransform.GetPosition().z, 2)
+								) - dynamic_cast<SphereCollider*>(colliderA)->GetRadius() + dynamic_cast<SphereCollider*>(colliderB)->GetRadius();
 
-						//distance = sqrt(pow(iGridPos.x - jGridPos.x, 2) + pow(iGridPos.y - jGridPos.y, 2) + pow(iGridPos.z - jGridPos.z, 2)) - ((SphereCollider*)m_RegisteredCollider[i])->GetRadius() + ((SphereCollider*)m_RegisteredCollider[j])->GetRadius();
-						
+					XMFLOAT3 direction = XMFLOAT3(aTransform.GetPosition().x - bTransform.GetPosition().x, aTransform.GetPosition().y - bTransform.GetPosition().y, aTransform.GetPosition().z - bTransform.GetPosition().z);
+					const XMVECTOR vDirection = XMVector3Normalize(XMLoadFloat3(&direction));
+					XMStoreFloat3(&direction, vDirection);
 
-						DEBUG_LOG(m_RegisteredCollider[i]->gameObject->GetName() << " entered in collision with " << m_RegisteredCollider[j]->gameObject->GetName());
+					std::abs(direction.x) <= FLT_EPSILON ? direction.x /= distance / 2 : 0;
+					std::abs(direction.y) <= FLT_EPSILON ? direction.y /= distance / 2 : 0;
+					std::abs(direction.z) <= FLT_EPSILON ? direction.z /= distance / 2 : 0;
 
-						break;
-					case Stay:
+					rbA->AddVelocity(direction);
+					rbB->AddVelocity(XMFLOAT3(-direction.x, -direction.y, -direction.z));
 
-						//m_rigidbodies[i]->CallOnCollisionStay(m_CurrentCollisionInfo.ColliderB);
-						//m_rigidbodies[j]->CallOnCollisionStay(m_CurrentCollisionInfo.ColliderA);
+					break;
+				case Exit:
 
-						//DEBUG_LOG(m_rigidbodies[i]->gameObject->GetName() << " continue colliding with " << m_rigidbodies[j]->gameObject->GetName())
+					//m_rigidbodies[i]->CallOnCollisionExit(m_CurrentCollisionInfo.ColliderB);
+					//m_rigidbodies[j]->CallOnCollisionExit(m_CurrentCollisionInfo.ColliderA);
 
-						distance = sqrt(pow(iTransform.GetPosition().x - jTransform.GetPosition().x, 2) + pow(iTransform.GetPosition().y - jTransform.GetPosition().y, 2) + pow(iTransform.GetPosition().z - jTransform.GetPosition().z, 2)) - ((SphereCollider*)m_RegisteredCollider[i])->GetRadius() + ((SphereCollider*)m_RegisteredCollider[j])->GetRadius();
+					DEBUG_LOG(m_RegisteredCollider[i]->gameObject->GetName() << " exited collision with " << m_RegisteredCollider[j]->gameObject->GetName())
+					std::erase(m_RegisteredCollisionInfos, m_CurrentCollisionInfo);
 
-						XMFLOAT3 direction = XMFLOAT3(iTransform.GetPosition().x - jTransform.GetPosition().x, iTransform.GetPosition().y - jTransform.GetPosition().y, iTransform.GetPosition().z - jTransform.GetPosition().z);
-						XMVECTOR vDirection = XMVector3Normalize(XMLoadFloat3(&direction));
-						XMStoreFloat3(&direction, vDirection);
-
-						direction.x != 0 ? direction.x /= distance / 2 : 0;
-						direction.y != 0 ? direction.y /= distance / 2 : 0;
-						direction.z != 0 ? direction.z /= distance / 2 : 0;
-
-						m_RegisteredCollider[i]->GetAttachedRigidbody()->AddVelocity(direction);
-						m_RegisteredCollider[j]->GetAttachedRigidbody()->AddVelocity(XMFLOAT3(-direction.x, -direction.y, -direction.z));
-
-						break;
-					case Exit:
-
-						//m_rigidbodies[i]->CallOnCollisionExit(m_CurrentCollisionInfo.ColliderB);
-						//m_rigidbodies[j]->CallOnCollisionExit(m_CurrentCollisionInfo.ColliderA);
-
-						DEBUG_LOG(m_RegisteredCollider[i]->gameObject->GetName() << " exited collision with " << m_RegisteredCollider[j]->gameObject->GetName());
-						std::erase(m_RegisteredCollisionInfos, m_CurrentCollisionInfo);
-
-						break;
-					}
+					break;
 				}
+			}
 		}
 
 		//DEBUG_LOG(std::to_string(temp));
