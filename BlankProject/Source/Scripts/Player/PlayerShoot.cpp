@@ -13,21 +13,50 @@ void PlayerShoot::Awake()
 void PlayerShoot::Start()
 {
 	m_pCamera->SetFOV(m_BasicFOV);
+	m_ShootTimer = m_ShootDelay;
 }
 
 void PlayerShoot::Update()
 {
-	if (InputHandler::IsKeyDown(VK_LBUTTON))
+	if (InputHandler::IsKeyHeld(VK_LBUTTON) || InputHandler::IsKeyDown(VK_LBUTTON))
 	{
-		const auto proj = GameObject::Instantiate<Projectile>()->GetComponent<ProjectileBehavior>();
+		if (m_ShootTimer < m_ShootDelay)
+		{
+			m_ShootTimer += TimeManager::GetDeltaTime();
+			return;
+		}
 
-		XMFLOAT3 projPos = transform->GetPosition();
-		XMStoreFloat3(&projPos, XMVectorAdd(XMLoadFloat3(&projPos), m_pCamera->GetLook()));
-		proj->transform->SetPosition(projPos);
-		proj->Initialize(m_pCamera->GetLook3f(), 3, 2);
+		ShootProjectileFromWings();
+		m_ShootTimer = 0.0f;
 	}
 
+	if (m_ShootTimer < m_ShootDelay)
+		m_ShootTimer += TimeManager::GetDeltaTime();
+
 	HandleZoomAndSlowMotion();
+}
+
+void PlayerShoot::ShootProjectileFromWings()
+{
+	XMFLOAT3 projLeftPos = transform->GetPosition();
+	XMStoreFloat3(&projLeftPos, XMVectorAdd(XMLoadFloat3(&projLeftPos), m_pCamera->GetLook()));
+	projLeftPos.x -= m_ShootOffset;
+
+	ShootProjectile(projLeftPos, m_pCamera->GetLook3f());
+
+
+	XMFLOAT3 projRightPos = transform->GetPosition();
+	XMStoreFloat3(&projRightPos, XMVectorAdd(XMLoadFloat3(&projRightPos), m_pCamera->GetLook()));
+	projRightPos.x += m_ShootOffset;
+
+	ShootProjectile(projRightPos, m_pCamera->GetLook3f());
+}
+
+void PlayerShoot::ShootProjectile(XMFLOAT3 position, XMFLOAT3 direction)
+{
+	const auto projectile = GameObject::Instantiate<Projectile>()->GetComponent<ProjectileBehavior>();
+	projectile->transform->SetPosition(position);
+	projectile->Initialize(direction, m_ProjectileSpeed, m_ProjectileLifeTime);
 }
 
 
