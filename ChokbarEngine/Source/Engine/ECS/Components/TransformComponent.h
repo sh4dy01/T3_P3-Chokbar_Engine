@@ -16,6 +16,8 @@ public:
 	Transform();
 	~Transform() override;
 
+	void OnRemovedComponent() override;
+
 	void Translate(float x, float y, float z, Space space = Space::Local);
 	void Translate(DirectX::XMFLOAT3 translation, Space space = Space::Local);
 	void Translate(DirectX::XMVECTOR translation, Space space = Space::Local);
@@ -33,6 +35,8 @@ public:
 	void SetScale(float scale);
 	void SetScale(float x, float y, float z);
 	void SetScale(DirectX::XMFLOAT3 scale);
+	void SetParent(Transform* pParent);
+	void SetChild(Transform* pChild);
 
 	DirectX::XMFLOAT3 GetEulerAngles();
 

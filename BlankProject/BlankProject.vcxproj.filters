@@ -57,6 +57,7 @@
       <Filter>Source\Source\Scripts</Filter>
     </ClCompile>
     <ClCompile Include="Source\Scripts\Asteroids\AsteroidSpawner.cpp" />
+    <ClCompile Include="Source\GameObjects\Wing.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -91,6 +92,9 @@
     </ClInclude>
     <ClInclude Include="Source\GameObjects\SkyBox.h">
       <Filter>Source\Source\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GameObjects\Wing.h">
+      <Filter>Source\Source</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

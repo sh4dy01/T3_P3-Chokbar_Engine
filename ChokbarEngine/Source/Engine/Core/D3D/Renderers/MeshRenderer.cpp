@@ -34,8 +34,8 @@ void MeshRenderer::Update(float dt)
 	if (!IsEnabled() || !Mat || !Mesh) return;
 
 	if (transform->IsDirty())
-		transform->UpdateWorldMatrix();
+		transform->UpdateParentedWorldMatrix();
 
-	Mat->GetShader()->UpdateObjectCB(transform->GetWorldMatrix(), ObjectCBIndex);
+	Mat->GetShader()->UpdateObjectCB(transform->GetParentedWorldMatrix(), ObjectCBIndex);
 }
 

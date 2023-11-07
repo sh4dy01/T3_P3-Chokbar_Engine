@@ -21,6 +21,8 @@ void PlayerMovement::Update()
 
 	ApplyMovement();
 
+	DEBUG_LOG("POS x : " << transform->GetPosition().x << "POS Y : " << transform->GetPosition().y << "POS Z : " << transform->GetPosition().z);
+
 	HandleRotation();
 }
 

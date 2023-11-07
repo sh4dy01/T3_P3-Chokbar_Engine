@@ -8,6 +8,9 @@ Transform::Transform()
 	m_Up = DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f);
 	m_Forward = DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f);
 
+	m_pParent = nullptr;
+	m_pChildren = std::vector<Transform*>();
+
 	// Initialize position, scale, and rotation
 	m_Position = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
 	DirectX::XMStoreFloat4x4(&m_PositionMatrix, DirectX::XMMatrixIdentity());
@@ -22,6 +25,14 @@ Transform::Transform()
 
 Transform::~Transform()
 {
+}
+
+void Transform::OnRemovedComponent()
+{
+	for (auto child : m_pChildren)
+	{
+		child->SetParent(nullptr);
+	}
 }
 
 void Transform::Translate(float x, float y, float z, Space space)
@@ -148,6 +159,18 @@ void Transform::SetScale(DirectX::XMFLOAT3 scaleFactors)
 	SetScale(scaleFactors.x, scaleFactors.y, scaleFactors.z);
 }
 
+void Transform::SetParent(Transform* pParent)
+{
+	m_pParent = pParent;
+	//SetChild(pParent);
+}
+
+void Transform::SetChild(Transform* pChild)
+{
+	//pChild->m_pParent = this;
+	//m_pChildren.push_back(pChild);
+}
+
 DirectX::XMFLOAT3 Transform::GetEulerAngles()
 {
 	// Extract the Euler angles from the rotation matrix
@@ -211,6 +234,8 @@ void Transform::UpdateWorldMatrix()
 
 void Transform::UpdateParentedWorldMatrix()
 {
+	m_Dirty = true;
+
 	DirectX::XMFLOAT4X4 parentWorldMatrix;
 
 	if (m_pParent)
