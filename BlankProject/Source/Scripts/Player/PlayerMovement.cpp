@@ -114,7 +114,7 @@ void PlayerMovement::ApplyMovement()
 
 void PlayerMovement::HandleRotation()
 {
-	transform->RotateYaw(InputHandler::GetAxisX() * m_YawTorque * m_Sensitivity * TimeManager::GetDeltaTime());
+	transform->RotateYaw(InputHandler::GetAxisX() * m_YawTorque * m_Sensitivity * TimeManager::GetDeltaTime(), Transform::World);
 	transform->RotatePitch(InputHandler::GetAxisY() * m_PitchTorque * m_Sensitivity * TimeManager::GetDeltaTime());
 
 	if (InputHandler::IsKeyHeld('a'))

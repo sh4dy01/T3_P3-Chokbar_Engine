@@ -25,6 +25,9 @@ public:
 	void SetVelocity(const XMFLOAT3& velocity);
 	void AddVelocity(const XMFLOAT3& velocity);
 
+	void AddForce(const XMFLOAT3& force);
+	XMFLOAT3 GetForce() const;
+
 	float GetMass() const;
 	void SetMass(float mass);
 

@@ -40,6 +40,7 @@ PhysicsWorld::~PhysicsWorld()
 	}
 
 	m_RegisteredCollider.clear();
+	m_RegisteredCollisionInfos.clear();
 }
 
 void PhysicsWorld::Update(float dt)
@@ -52,20 +53,22 @@ void PhysicsWorld::Update(float dt)
 
 		CheckCollision();
 
-		for (auto& rigidbody : m_rigidbodies)
-		{
-			if (rigidbody->GetVelocity().x == 0 &&
-				rigidbody->GetVelocity().y == 0 &&
-				rigidbody->GetVelocity().z == 0) continue;
-
-			rigidbody->Move(rigidbody->GetVelocity());
-
-			XMFLOAT3 newVel;
-			XMStoreFloat3(&newVel, XMLoadFloat3(&rigidbody->GetVelocity()) * 0.4f);
-			rigidbody->SetVelocity(newVel);
-		}
-
 		m_timer = 0.0f;
+	}
+
+	for (auto& collider : m_RegisteredCollider)
+	{
+		Rigidbody* rb = collider->GetAttachedRigidbody();
+
+		if (rb->GetVelocity().x == 0 &&
+			rb->GetVelocity().y == 0 &&
+			rb->GetVelocity().z == 0) continue;
+
+		rb->Move(rb->GetVelocity());
+
+		XMFLOAT3 newVel;
+		XMStoreFloat3(&newVel, XMLoadFloat3(&rb->GetVelocity()) * 0.9f);
+		rb->SetVelocity(newVel);
 	}
 }
 
@@ -89,35 +92,37 @@ void PhysicsWorld::CheckCollision()
 	{
 		int temp = 0;
 
-		XMFLOAT3 iGridPos = m_RegisteredCollider[i]->GetGridPosition();
-		int iGridSize = m_RegisteredCollider[i]->GetAllCollisionShape()[0]->GetGridSize();
+		XMFLOAT3 iGridPos = m_RegisteredCollider[i]->GetAttachedRigidbody()->GetGridPosition();
+		int iGridSize = m_RegisteredCollider[i]->GetGridSize();
+
+		Transform& iTransform = *m_RegisteredCollider[i]->transform;
 
 		for (size_t j = i + 1; j < m_RegisteredCollider.size(); j++)
 		{
-			XMFLOAT3 jGridPos = m_rigidbodies[j]->GetGridPosition();
-			int jGridSize = m_rigidbodies[j]->GetAllCollisionShape()[0]->GetGridSize();
+			XMFLOAT3 jGridPos = m_RegisteredCollider[j]->GetAttachedRigidbody()->GetGridPosition();
+			int jGridSize = m_RegisteredCollider[j]->GetGridSize();
+
+			Transform& jTransform = *m_RegisteredCollider[j]->transform;
 
 			if (std::abs(iGridPos.x - jGridPos.x) < iGridSize + jGridSize &&
 				std::abs(iGridPos.y - jGridPos.y) < iGridSize + jGridSize &&
 				std::abs(iGridPos.z - jGridPos.z) < iGridSize + jGridSize)
-			if (AreShapesColliding(m_RegisteredCollider[i], m_RegisteredCollider[j]))
-			{
-				temp++;
 
-
-				/*XMFLOAT3 newPos;
-				DirectX::XMStoreFloat3(&newPos, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&m_rigidbodies[i]->transform->GetPosition()), DirectX::XMLoadFloat3(&m_rigidbodies[i]->GetVelocity())));
-				m_rigidbodies[i]->Move(newPos);
-
-				XMFLOAT3 newPos2;
-				DirectX::XMStoreFloat3(&newPos2, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&m_rigidbodies[j]->transform->GetPosition()), DirectX::XMLoadFloat3(&m_rigidbodies[j]->GetVelocity())));
-				m_rigidbodies[j]->Move(newPos2);*/
-
-				if (CheckCollisionShapes(m_rigidbodies[i], m_rigidbodies[j]))
+				if (AreShapesColliding(m_RegisteredCollider[i], m_RegisteredCollider[j]))
 				{
-					float distance;
+					temp++;
 
-				case Enter:
+
+					/*XMFLOAT3 newPos;
+					DirectX::XMStoreFloat3(&newPos, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&m_rigidbodies[i]->transform->GetPosition()), DirectX::XMLoadFloat3(&m_rigidbodies[i]->GetVelocity())));
+					m_rigidbodies[i]->Move(newPos);
+
+					XMFLOAT3 newPos2;
+					DirectX::XMStoreFloat3(&newPos2, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&m_rigidbodies[j]->transform->GetPosition()), DirectX::XMLoadFloat3(&m_rigidbodies[j]->GetVelocity())));
+					m_rigidbodies[j]->Move(newPos2);*/
+
+
+					float distance;
 
 					switch (m_CurrentCollisionInfo->GetState())
 					{
@@ -126,24 +131,10 @@ void PhysicsWorld::CheckCollision()
 						m_CurrentCollisionInfo->GetColliderA()->CallOnTriggerEnter(m_CurrentCollisionInfo->GetColliderB());
 						m_CurrentCollisionInfo->GetColliderB()->CallOnTriggerEnter(m_CurrentCollisionInfo->GetColliderA());
 
-						distance = sqrt(pow(iGridPos.x - jGridPos.x, 2) + pow(iGridPos.y - jGridPos.y, 2) + pow(iGridPos.z - jGridPos.z, 2)) - ((SphereCollider*)m_rigidbodies[i]->GetAllCollisionShape()[0])->GetRadius() + ((SphereCollider*)m_rigidbodies[j]->GetAllCollisionShape()[0])->GetRadius();
-					DEBUG_LOG(m_CurrentCollisionInfo->GetColliderA()->gameObject->GetName() << " entered in collision with " << m_CurrentCollisionInfo->GetColliderB()->gameObject->GetName())
+						//distance = sqrt(pow(iGridPos.x - jGridPos.x, 2) + pow(iGridPos.y - jGridPos.y, 2) + pow(iGridPos.z - jGridPos.z, 2)) - ((SphereCollider*)m_RegisteredCollider[i])->GetRadius() + ((SphereCollider*)m_RegisteredCollider[j])->GetRadius();
+						
 
-						break;
-				case Stay:
-
-						XMFLOAT3 direction = XMFLOAT3(iGridPos.x - jGridPos.x, iGridPos.y - jGridPos.y, iGridPos.z - jGridPos.z);
-						XMVECTOR vDirection = XMVector3Normalize(XMLoadFloat3(&direction));
-						XMStoreFloat3(&direction, vDirection);
-
-						direction.x /= distance / 2;
-						direction.y /= distance / 2;
-						direction.z /= distance / 2;
-
-						m_rigidbodies[i]->AddVelocity(direction);
-						m_rigidbodies[j]->AddVelocity(XMFLOAT3(-direction.x, -direction.y, -direction.z));
-
-						//DEBUG_LOG(m_rigidbodies[i]->gameObject->GetName() << " entered in collision with " << m_rigidbodies[j]->gameObject->GetName())
+						DEBUG_LOG(m_RegisteredCollider[i]->gameObject->GetName() << " entered in collision with " << m_RegisteredCollider[j]->gameObject->GetName());
 
 						break;
 					case Stay:
@@ -153,31 +144,34 @@ void PhysicsWorld::CheckCollision()
 
 						//DEBUG_LOG(m_rigidbodies[i]->gameObject->GetName() << " continue colliding with " << m_rigidbodies[j]->gameObject->GetName())
 
+						distance = sqrt(pow(iTransform.GetPosition().x - jTransform.GetPosition().x, 2) + pow(iTransform.GetPosition().y - jTransform.GetPosition().y, 2) + pow(iTransform.GetPosition().z - jTransform.GetPosition().z, 2)) - ((SphereCollider*)m_RegisteredCollider[i])->GetRadius() + ((SphereCollider*)m_RegisteredCollider[j])->GetRadius();
+
+						XMFLOAT3 direction = XMFLOAT3(iTransform.GetPosition().x - jTransform.GetPosition().x, iTransform.GetPosition().y - jTransform.GetPosition().y, iTransform.GetPosition().z - jTransform.GetPosition().z);
+						XMVECTOR vDirection = XMVector3Normalize(XMLoadFloat3(&direction));
+						XMStoreFloat3(&direction, vDirection);
+
+						direction.x != 0 ? direction.x /= distance / 2 : 0;
+						direction.y != 0 ? direction.y /= distance / 2 : 0;
+						direction.z != 0 ? direction.z /= distance / 2 : 0;
+
+						m_RegisteredCollider[i]->GetAttachedRigidbody()->AddVelocity(direction);
+						m_RegisteredCollider[j]->GetAttachedRigidbody()->AddVelocity(XMFLOAT3(-direction.x, -direction.y, -direction.z));
+
 						break;
 					case Exit:
 
 						//m_rigidbodies[i]->CallOnCollisionExit(m_CurrentCollisionInfo.ColliderB);
 						//m_rigidbodies[j]->CallOnCollisionExit(m_CurrentCollisionInfo.ColliderA);
 
-						/*DEBUG_LOG(m_rigidbodies[i]->gameObject->GetName() << " exited collision with " << m_rigidbodies[j]->gameObject->GetName())
-							std::erase(m_RegisteredCollisionInfos, m_CurrentCollisionInfo);*/
+						DEBUG_LOG(m_RegisteredCollider[i]->gameObject->GetName() << " exited collision with " << m_RegisteredCollider[j]->gameObject->GetName());
+						std::erase(m_RegisteredCollisionInfos, m_CurrentCollisionInfo);
 
 						break;
 					}
-
-					//m_rigidbodies[i]->SetVelocity(XMFLOAT3(0, 0, 0));
-
-					//DEBUG_LOG(m_rigidbodies[i]->gameObject->GetName() << " collided with " << m_rigidbodies[j]->gameObject->GetName());
-					DEBUG_LOG(m_CurrentCollisionInfo->GetColliderA()->gameObject->GetName() << " exited collision with " << m_CurrentCollisionInfo->GetColliderB()->gameObject->GetName())
-						std::erase(m_RegisteredCollisionInfos, m_CurrentCollisionInfo);
-
-					break;
-
 				}
-			}
 		}
 
-		DEBUG_LOG(std::to_string(temp));
+		//DEBUG_LOG(std::to_string(temp));
 	}
 }
 
@@ -190,55 +184,10 @@ bool PhysicsWorld::AreShapesColliding(Collider* shapeA, Collider* shapeB)
 
 		if (AreSpheresColliding(sphereA, sphereB))
 		{
-			if (shapeA->GetType() == Collider::ShapeType::Sphere && shapeB->GetType() == Collider::ShapeType::Sphere)
-			{
-				const auto sphereA = dynamic_cast<SphereCollider*>(shapeA);
-				const auto sphereB = dynamic_cast<SphereCollider*>(shapeB);
-
-				if (AreSpheresColliding(sphereA, sphereB))
-				{
-					HandleCollision(sphereA, sphereB);
-
-					return true;
-				}
-				// If there is a collision already registered
-				else if (!m_RegisteredCollisionInfos.empty())
-				{
-					// We check if the collision is still occuring and set it to exit
-					if (const auto collisionInfo = GetCollisionInfo(sphereA, sphereB))
-					{
-						collisionInfo->UpdateState(Exit);
-						m_CurrentCollisionInfo = collisionInfo;
-
-						// return true to handle the exit trigger
-						return true;
-					}
-				}
-
-				return false;
-			}
-
-			//          else if (shapeA->GetType() == CollisionShape::ShapeType::Sphere && shapeB->GetType() == CollisionShape::ShapeType::Box)
-			//          {
-				  //		// sphere-box collision
-				  //		// TODO
-				  //	}
-			//          else if (shapeA->GetType() == CollisionShape::ShapeType::Box && shapeB->GetType() == CollisionShape::ShapeType::Sphere)
-			//          {
-				  //		// box-sphere collision
-				  //		// TODO
-				  //	}
-			//          else if (shapeA->GetType() == CollisionShape::ShapeType::Box && shapeB->GetType() == CollisionShape::ShapeType::Box)
-			//        {
-				  //		// box-box collision
-				  //		// TODO
-				  //	}
-				  //}
+			HandleCollision(sphereA, sphereB);
 
 			return true;
 		}
-
-		/*
 		// If there is a collision already registered
 		else if (!m_RegisteredCollisionInfos.empty())
 		{
@@ -249,29 +198,12 @@ bool PhysicsWorld::AreShapesColliding(Collider* shapeA, Collider* shapeB)
 				m_CurrentCollisionInfo = collisionInfo;
 
 				// return true to handle the exit trigger
+				return true;
 			}
-		}	*/
-
+		}
 	}
 
 	return false;
-
-	//          else if (shapeA->GetType() == CollisionShape::ShapeType::Sphere && shapeB->GetType() == CollisionShape::ShapeType::Box)
-	//          {
-		  //		// sphere-box collision
-		  //		// TODO
-		  //	}
-	//          else if (shapeA->GetType() == CollisionShape::ShapeType::Box && shapeB->GetType() == CollisionShape::ShapeType::Sphere)
-	//          {
-		  //		// box-sphere collision
-		  //		// TODO
-		  //	}
-	//          else if (shapeA->GetType() == CollisionShape::ShapeType::Box && shapeB->GetType() == CollisionShape::ShapeType::Box)
-	//        {
-		  //		// box-box collision
-		  //		// TODO
-		  //	}
-		  //}
 
 }
 
@@ -292,10 +224,12 @@ void PhysicsWorld::HandleCollision(Collider* const sphereA, Collider* const sphe
 
 void PhysicsWorld::CreateNewCollisionInfo(Collider* const sphereA, Collider* const sphereB)
 {
-	const auto newCollisionInfo = NEW CollisionInfo(sphereA, sphereB);
+	auto newCollisionInfo = NEW CollisionInfo(sphereA, sphereB);
 
 	m_RegisteredCollisionInfos.push_back(newCollisionInfo);
 	m_CurrentCollisionInfo = newCollisionInfo;
+
+	newCollisionInfo = nullptr;
 }
 
 CollisionInfo* PhysicsWorld::GetCollisionInfo(const Collider* sphereA, const Collider* sphereB) const

@@ -2,14 +2,13 @@
 #include "Rigidbody.h"
 
 Rigidbody::Rigidbody()
-	: m_isStatic(false), m_velocity(XMFLOAT3(0, 0, 0)), m_mass(1.f), m_gridPosition(0, 0, 0)
+	: m_isStatic(false), m_velocity(XMFLOAT3(0, 0, 0)), m_gridPosition(0, 0, 0)
 {
 }
 
 Rigidbody::Rigidbody(bool isStatic)
-	: m_isStatic(isStatic), m_velocity(XMFLOAT3(0, 0, 0)), m_mass(1.f), m_gridPosition(0, 0, 0)
+	: m_isStatic(isStatic), m_velocity(XMFLOAT3(0, 0, 0)), m_gridPosition(0, 0, 0)
 {
-	Engine::GetPhysicsWorld()->RegisterRigidBody(this);
 }
 
 void Rigidbody::OnAddedComponent()
@@ -23,17 +22,6 @@ void Rigidbody::OnAddedComponent()
 
 Rigidbody::~Rigidbody()
 {
-}
-
-
-void Rigidbody::SetMass(float mass)
-{
-	m_mass = mass;
-}
-
-float Rigidbody::GetMass() const
-{
-	return m_mass;
 }
 
 void Rigidbody::SetStatic(bool isStatic)

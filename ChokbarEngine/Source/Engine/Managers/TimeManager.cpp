@@ -88,7 +88,6 @@ void TimeManager::Tick()
 
 	// Time difference between this frame and the previous.
 	m_DeltaTime = (m_CurrTime - m_PrevTime);
-	DEBUG_LOG(m_DeltaTime);
 
 	// Prepare for next frame.
 	m_PrevTime = m_CurrTime;
@@ -115,10 +114,6 @@ float TimeManager::GetTotalTime()
 	}
 	else
 	{
-		OutputDebugString(L"Total time: ");
-		OutputDebugStringA(std::to_string(((m_CurrTime - m_PausedTime) - m_BaseTime) / m_freq).c_str());
-		OutputDebugString(L"\n");
-
 		return static_cast<float>(((m_CurrTime - m_PausedTime) - m_BaseTime) / m_freq);
 	}
 }
