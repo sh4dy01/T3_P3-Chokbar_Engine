@@ -1,8 +1,6 @@
 #include "Chokbar.h"
 #include "TransformComponent.h"
 
-#include <numbers>
-
 Transform::Transform()
 {
 	// Initialize orientation vectors (right, up, forward)
@@ -57,9 +55,18 @@ void Transform::Translate(float x, float y, float z, Space space)
 	// Update the position matrix
 	UpdatePositionMatrix();
 }
+
 void Transform::Translate(DirectX::XMFLOAT3 translation, Space space)
 {
 	Translate(translation.x, translation.y, translation.z, space);
+}
+
+void Transform::Translate(DirectX::XMVECTOR translation, Space space)
+{
+	DirectX::XMFLOAT3 translationFloat3;
+	DirectX::XMStoreFloat3(&translationFloat3, translation);
+
+	Translate(translationFloat3, space);
 }
 
 void Transform::SetPosition(float x, float y, float z)
@@ -122,17 +129,9 @@ void Transform::Rotate(DirectX::XMFLOAT3 rotation, Space space)
 	Rotate(rotation.x, rotation.y, rotation.z, space);
 }
 
-void Transform::Scale(float x, float y, float z)
+void Transform::SetScale(float scale)
 {
-	// Update the scale factors
-	m_Scale.x *= x;
-	m_Scale.y *= y;
-	m_Scale.z *= z;
-	UpdateScaleMatrix();
-}
-void Transform::Scale(DirectX::XMFLOAT3 scaleFactors)
-{
-	Scale(scaleFactors.x, scaleFactors.y, scaleFactors.z);
+	SetScale(scale, scale, scale);
 }
 
 void Transform::SetScale(float x, float y, float z)

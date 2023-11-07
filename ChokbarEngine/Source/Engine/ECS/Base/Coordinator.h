@@ -32,7 +32,9 @@ public:
 	void UnregisterCustomComponent(CustomComponent* customComponent);
 
 	
-	void DestroyEntity(InstanceID entity);
+	void SetEntityToBeDestroyed(InstanceID entity);
+
+
 
 private:
 
@@ -46,8 +48,12 @@ private:
 	void LateUpdateComponents();
 	void UpdateSystems(float dt);
 
+	void DestroyRegisteredEntites();
+
 	void RegisterComponents();
 	void RegisterSystems();
+
+	void DestroyEntity(InstanceID entity);
 
 public:
 
@@ -136,6 +142,10 @@ public:
 private:
 
 	static Coordinator* m_Instance;
+
+
+	std::vector<InstanceID> m_EntitesToUpdate;
+	std::vector<InstanceID> m_EntitiesToDestroy;
 
 	std::unique_ptr<ComponentManager> m_ComponentManager;
 	std::unique_ptr<EntityManager> m_EntityManager;

@@ -13,7 +13,7 @@ public:
 
 };
 
-template<class T>
+template<class Component>
 class ComponentArray : public IComponentArray {
 
 public:
@@ -26,7 +26,7 @@ public:
 		}
 	}
 
-	void InsertData(InstanceID entity, T* component) {
+	void InsertData(InstanceID entity, Component* component) {
 		size_t newIndex = m_Size;
 		m_EntityToIndexMap[entity] = newIndex;
 		m_IndexToEntityMap[newIndex] = entity;
@@ -39,9 +39,13 @@ public:
 		const size_t indexOfRemovedEntity = m_EntityToIndexMap[entity];
 		const size_t indexOfLastElement = m_Size - 1;
 
+		m_ComponentArray[indexOfRemovedEntity]->OnRemovedComponent();
+
 		delete m_ComponentArray[indexOfRemovedEntity];
+		m_ComponentArray[indexOfRemovedEntity] = nullptr;
 
 		m_ComponentArray[indexOfRemovedEntity] = m_ComponentArray[indexOfLastElement];
+		m_ComponentArray[indexOfLastElement] = nullptr;
 
 		// Update map to point to moved spot
 		const InstanceID entityOfLastElement = m_IndexToEntityMap[indexOfLastElement];
@@ -52,12 +56,11 @@ public:
 		m_IndexToEntityMap.erase(indexOfLastElement);
 
 		m_Size--;
-			
 	}
 
 
 
-	T* GetData(InstanceID entity)
+	Component* GetData(InstanceID entity)
 	{
 		if (HasData(entity))
 			return m_ComponentArray[m_EntityToIndexMap[entity]];
@@ -79,7 +82,7 @@ public:
 		}
 	}
 
-	std::array<T*, MAX_ENTITIES>* GetAllData()
+	std::array<Component*, MAX_ENTITIES>* GetAllData()
 	{
 	// Get a pointer to a list of all components of type
 		return &m_ComponentArray;
@@ -92,7 +95,7 @@ private:
 	// set to a specified maximum amount, matching the maximum number
 	// of entities allowed to exist simultaneously, so that each entity
 	// has a unique spot.
-	std::array<T*, MAX_ENTITIES> m_ComponentArray = {};
+	std::array<Component*, MAX_ENTITIES> m_ComponentArray = {};
 
 	// Map from an entity ID to an array index.
 	std::unordered_map<InstanceID, size_t> m_EntityToIndexMap = {};

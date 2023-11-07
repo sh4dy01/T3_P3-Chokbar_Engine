@@ -1,5 +1,3 @@
-#include "Chokbar.h"
-#include "Engine/Managers/CameraManager.h"
 
 CameraComponent* CameraManager::m_MainCamera = nullptr;
 

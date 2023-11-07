@@ -73,13 +73,6 @@ private:
 
 	const DirectX::XMVECTOR m_WorldUp = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
-	DirectX::XMFLOAT3 m_LookAt = { 0.0f, 0.0f, 1.0f };
-
-
-	// CameraComponent coordinate system with coordinates relative to world space
-	DirectX::XMFLOAT3 m_Right = { 1.0f, 0.0f, 0.0f };
-	DirectX::XMFLOAT3 m_Up = { 0.0f, 1.0f, 0.0f };
-	DirectX::XMFLOAT3 m_Look = { 0.0f, 0.0f, 1.0f };
 
 	// Cache frustum properties.
 	float m_NearZ = 0.5f;

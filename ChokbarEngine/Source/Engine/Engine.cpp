@@ -86,7 +86,9 @@ void Engine::Run()
 		if (m_IsPaused) continue;
 
 		Update(m_TimeManager.GetDeltaTime());
-		//DEBUG_LOG(m_TimeManager.GetDeltaTime());
+
+		m_Coordinator->DestroyRegisteredEntites();
+
 		Render();
 	}
 }

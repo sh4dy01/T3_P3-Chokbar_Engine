@@ -22,4 +22,3 @@
 #include <d3dcompiler.h>
 
 #include "Core.h"
-

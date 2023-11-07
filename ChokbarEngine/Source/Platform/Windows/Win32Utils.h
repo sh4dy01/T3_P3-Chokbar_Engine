@@ -3,7 +3,6 @@
 #define DEFAULT_WIDTH 1920
 #define DEFAULT_HEIGHT 1080
 
-#include <string>
 
 namespace Win32 {
 

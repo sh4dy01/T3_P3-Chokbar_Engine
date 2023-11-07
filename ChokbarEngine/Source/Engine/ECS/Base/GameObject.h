@@ -3,7 +3,6 @@
 #include "Object.h"
 #include "Engine/ECS/Base/Coordinator.h"
 #include "Engine/Core/DebugUtils.h"
-#include "Engine/ECS/Components/TransformComponent.h"
 
 
 class GameObject : public Object
@@ -52,11 +51,12 @@ public:
 		component->gameObject = this;
 		component->transform = transform;
 		component->SetEnabled(true);
-		component->OnAddedComponent();
 
 		DEBUG_LOG("Adding component: " + std::string(typeid(T).name()) + " to " + m_Name + " entity");
 
 		Coordinator::GetInstance()->AddComponent<T>(GetInstanceID(), component);
+
+		component->OnAddedComponent();
 
 		return component;
 	}
@@ -67,11 +67,12 @@ public:
 		component->gameObject = this;
 		component->transform = transform;
 		component->SetEnabled(true);
-		component->OnAddedComponent();
 
 		DEBUG_LOG("Adding component: " + std::string(typeid(Component).name()) + " to " + m_Name + " entity");
 
 		Coordinator::GetInstance()->AddComponent<Component>(GetInstanceID(), component);
+
+		component->OnAddedComponent();
 
 		return component;
 	}
