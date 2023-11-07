@@ -97,7 +97,15 @@ public:
 public:
 
 	Transform *transform;
+	//Add bitset for collision bitmask
 
+	// Set bit for the category of the object
+	std::bitset<16> m_CategoryBitmask;
+
+	// Decides which categories this object collides with
+	std::bitset<16> m_CollisionBitmask;
+
+		 
 private:
 
 	bool m_IsActive;
