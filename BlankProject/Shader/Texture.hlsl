@@ -1,3 +1,9 @@
+struct LightData
+{
+    float3 Color;
+    float3 Dir;
+};
+
 Texture2D gDiffuseMap : register(t0);
 
 cbuffer cbPerObject : register(b0)
@@ -10,8 +16,12 @@ cbuffer cbPass : register(b1)
     float4x4 gView;
     float4x4 gProj;
     float4x4 gViewProj;
+    
+    float4 gColLight;
+    
     float3 gEyePosW;
     float gTotalTime;
+    float3 gDirLight;
     float gDeltaTime;
 }
 
@@ -51,8 +61,14 @@ PS_INPUT vs_main(VS_INPUT input)
 
 float4 ps_main(PS_INPUT input) : SV_TARGET
 {
-    //return float4(1, 0, 0, 1);
     float4 diffuse = gDiffuseMap.Sample(gsamPointWrap, input.uv);
-    return diffuse;
-
+    
+    float3 N = normalize(input.NormalW);
+    float3 L = normalize(gDirLight);
+    
+    // Use max() to prevent total darnkess
+    float3 incomingLight = max(saturate(dot(N, L)), 0.05f) * gColLight.rgb;
+    float3 finalColor = diffuse.rgb * incomingLight;
+    
+    return float4(finalColor, 1.0f);
 }

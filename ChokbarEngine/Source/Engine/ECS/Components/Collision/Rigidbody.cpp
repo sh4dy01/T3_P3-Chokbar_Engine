@@ -4,7 +4,6 @@
 Rigidbody::Rigidbody()
 	: m_isStatic(false), m_velocity(XMFLOAT3(0, 0, 0)), m_mass(1.f), m_gridPosition(0, 0, 0)
 {
-	Engine::GetPhysicsWorld()->RegisterRigidBody(this);
 }
 
 Rigidbody::Rigidbody(bool isStatic)
@@ -24,23 +23,8 @@ void Rigidbody::OnAddedComponent()
 
 Rigidbody::~Rigidbody()
 {
-	Engine::GetPhysicsWorld()->RemoveRigidBody(this);
-
-	for (auto& shape : m_collisionShapes)
-	{
-		shape = nullptr;
-	}
 }
 
-void Rigidbody::RegisterCollisionShape(Collider* shape)
-{
-	m_collisionShapes.push_back(shape);
-}
-
-void Rigidbody::RemoveCollisionShape(Collider* shape)
-{
-	std::erase(m_collisionShapes, shape);
-}
 
 void Rigidbody::SetMass(float mass)
 {
@@ -95,7 +79,14 @@ XMFLOAT3 Rigidbody::GetVelocity() const
 	return m_velocity;
 }
 
-std::vector<Collider*> Rigidbody::GetAllCollisionShape()
+void Rigidbody::AddForce(const XMFLOAT3& force)
 {
-	return m_collisionShapes;
+	m_force.x += force.x;
+	m_force.y += force.y;
+	m_force.z += force.z;
+}
+
+XMFLOAT3 Rigidbody::GetForce() const
+{
+	return m_force;
 }

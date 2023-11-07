@@ -1,6 +1,7 @@
 ﻿#include "Chokbar.h"
 #include "Window.h"
 
+#include "Engine/Engine.h"
 
 namespace Win32
 {
@@ -103,11 +104,9 @@ namespace Win32
 
 		case WM_LBUTTONDOWN:
 		case WM_RBUTTONDOWN:
-			if (GetFocus() != hwnd) {
-				SetFocus(hwnd);
-				Engine::GetInstance()->OnApplicationFocus();
-				DEBUG_LOG("Focus set to window after mouse click.");
-			}
+			SetFocus(hwnd);
+			Engine::GetInstance()->OnApplicationFocus();
+			DEBUG_LOG("Focus set to window after mouse click.");
 			break;
 
 

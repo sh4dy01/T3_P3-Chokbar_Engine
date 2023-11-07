@@ -1,6 +1,5 @@
 #pragma once
 
-#include "TypeDef.h"
 #include "Object.h"
 #include <array>
 #include <queue>
@@ -21,6 +20,7 @@ public:
 	void SetSignature(InstanceID entity, Signature signature);
 	Signature GetSignature(InstanceID entity);
 	GameObject* GetEntityByName(const std::string& name) const;
+
 
 private:
 

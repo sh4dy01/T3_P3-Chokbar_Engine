@@ -21,17 +21,17 @@ public:
 	void CallOnTriggerExit(Collider* other) const;
 
 	void OnAddedComponent() override;
+	void OnRemovedComponent() override;
+
 	void RegisterTriggerCollisionEvent(TriggerCollisionEvent* triggerCollisionEvent);
 
 
-	void SetCenter(const DirectX::XMFLOAT3& center) { m_Center = center; };
-	DirectX::XMFLOAT3 GetCenter() const { return m_Center; };
+	void SetCenter(const DirectX::XMFLOAT3& center) { m_Center = center; }
+    DirectX::XMFLOAT3 GetCenter() const { return m_Center; }
 
-	ShapeType GetType() const { return m_type; };
-
-	int GetGridSize() { return m_GridSize; };
-
-
+	Rigidbody* GetAttachedRigidbody() const { return m_AttachedRigidbody; }
+	ShapeType GetType() const { return m_type; }
+	
 protected:
 
 	Collider();
@@ -47,6 +47,8 @@ protected:
 
 private:
 
+	Rigidbody* m_AttachedRigidbody;
 	std::vector<TriggerCollisionEvent*> m_triggerCollisionEvents;
+
 
 };

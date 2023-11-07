@@ -1,5 +1,5 @@
 #pragma once
-#include "Engine/ECS/Components/Component.h"
+#include "Component.h"
 
 class CustomComponent : public Component
 {

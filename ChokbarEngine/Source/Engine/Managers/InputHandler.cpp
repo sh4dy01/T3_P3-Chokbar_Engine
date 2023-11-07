@@ -7,12 +7,12 @@ POINT InputHandler::m_lastPos = { 0, 0 };
 float InputHandler::m_deltaPosX = 0.0f;
 float InputHandler::m_deltaPosY = 0.0f;
 
-std::vector<char> InputHandler::m_KeyboardInput = { 'Z', 'Q', 'S', 'D', VK_SHIFT, VK_SPACE ,VK_LBUTTON, VK_RBUTTON, VK_ESCAPE };
+std::vector<char> InputHandler::m_KeyboardInput = { 'Z', 'Q', 'S', 'D', 'A', 'E', VK_SHIFT, VK_SPACE ,VK_LBUTTON, VK_RBUTTON, VK_ESCAPE };
 std::vector<InputHandler::KeyState> InputHandler::m_KeyStates = {};
 
 
 InputHandler::InputHandler()
-	: MOUSE_REFRESH_RATE(0.1f), m_IsCaptured(false), m_Timer(0.0f), m_WindowHandle(nullptr)
+	: MOUSE_REFRESH_RATE(0.01f), SENSIBILITY(100), m_IsCaptured(false), m_Timer(0.0f), m_WindowHandle(nullptr)
 {
 	m_KeyStates.reserve(m_KeyboardInput.size());
 
@@ -32,6 +32,7 @@ void InputHandler::Init(HWND windowHandle)
 {
 	m_WindowHandle = windowHandle;
 	m_IsCaptured = false;
+	SetCursorToWindowCenter();
 }
 
 /// <summary>
@@ -185,7 +186,6 @@ bool InputHandler::IsKeyHeld(char key)
 /// </summary>
 void InputHandler::GetNormalizedMovement()
 {
-
 	POINT currentPos;
 	GetCursorPos(&currentPos);
 	ScreenToClient(m_WindowHandle, &currentPos);
@@ -196,15 +196,17 @@ void InputHandler::GetNormalizedMovement()
 
 	DirectX::XMFLOAT2 delta;
 
-	delta.x = std::clamp((int)std::abs(windowCenter.x - currentPos.x), -SENSIBILITY, SENSIBILITY);
+	delta.x = std::clamp(static_cast<int>(std::abs(windowCenter.x - currentPos.x)), -SENSIBILITY, SENSIBILITY);
 	if (currentPos.x < windowCenter.x)
 		delta.x *= -1;
-	delta.y = std::clamp((int)std::abs(windowCenter.y - currentPos.y), -SENSIBILITY, SENSIBILITY);
+	delta.y = std::clamp(static_cast<int>(std::abs(windowCenter.y - currentPos.y)), -SENSIBILITY, SENSIBILITY);
 	if (currentPos.y < windowCenter.y)
 		delta.y *= -1;
 
 	m_deltaPosX = delta.x / SENSIBILITY;
 	m_deltaPosY = delta.y / SENSIBILITY;
+
+	DEBUG_LOG("Delta X: " << m_deltaPosX << " Delta Y: " << m_deltaPosY);
 }
 
 

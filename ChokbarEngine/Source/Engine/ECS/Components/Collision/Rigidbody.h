@@ -41,9 +41,8 @@ public:
 private:
 	std::vector<Collider*> m_collisionShapes;
 
-	XMFLOAT3 m_velocity;
-
-	float m_mass;
+    DirectX::XMFLOAT3 m_velocity;
+    DirectX::XMFLOAT3 m_force;
 
 	bool m_isStatic;
 

@@ -1,8 +1,9 @@
 #pragma once
-
+#include "Engine/Core/CoreDefinitions.h"
 #include "IApplication.h"
-#include "Core/DebugUtils.h"
+#include "Engine/Core/DebugUtils.h"
 
+#include "Engine/Engine.h"
 
 extern Win32::IApplication* EntryApplication();
 
@@ -18,18 +19,21 @@ int CALLBACK WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
 	{
 		PerGameSettings GameSettings;
 
-		auto EntryApp = EntryApplication();
+		const auto engine = Engine::GetInstance();
+		auto game = EntryApplication();
 
-		EntryApp->SetupPerGameSettings();
+		game->SetupPerGameSettings();
 
-		//Logger logger;
+		engine->Initialize();
 
-		EntryApp->PreInitialize();
-		EntryApp->Initialize();
+		game->Initialize();
 
-		EntryApp->Run();
+		engine->Run();
 
-		EntryApp->Shutdown();
+		game->Shutdown();
+		engine->Shutdown();
+
+		DELPTR(game);
 
 	}
 	catch (DxException& e)
