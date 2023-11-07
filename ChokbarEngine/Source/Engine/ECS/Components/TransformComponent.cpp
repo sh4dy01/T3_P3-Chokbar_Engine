@@ -129,17 +129,9 @@ void Transform::Rotate(DirectX::XMFLOAT3 rotation, Space space)
 	Rotate(rotation.x, rotation.y, rotation.z, space);
 }
 
-void Transform::Scale(float x, float y, float z)
+void Transform::SetScale(float scale)
 {
-	// Update the scale factors
-	m_Scale.x *= x;
-	m_Scale.y *= y;
-	m_Scale.z *= z;
-	UpdateScaleMatrix();
-}
-void Transform::Scale(DirectX::XMFLOAT3 scaleFactors)
-{
-	Scale(scaleFactors.x, scaleFactors.y, scaleFactors.z);
+	SetScale(scale, scale, scale);
 }
 
 void Transform::SetScale(float x, float y, float z)
