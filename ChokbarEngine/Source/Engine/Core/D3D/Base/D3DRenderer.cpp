@@ -512,34 +512,33 @@ void D3DRenderer::UpdateRenderedObjects(const float dt, const float totalTime)
 
 void D3DRenderer::RenderObjects()
 {
+	// Create the bounding frustum from the camera's projection matrix
+	// For more Frustrum information, please see the chapter 16 of the book
+	// This method is really advanced and is not mandatory for an exam
 	CreateFustrum();
 
 	XMMATRIX view = Engine::GetMainCamera()->GetView();
-	XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(view), view);
-
-	XMMATRIX world, invWorld, viewToLocal;
+	XMMATRIX invView = XMMatrixInverse(nullptr, view);
 
 	for (MeshRenderer* mr : *m_meshRenderers)
 	{
 		if (!mr) continue;
 
-		world = XMLoadFloat4x4(mr->transform->GetWorldMatrix());
-		invWorld = XMMatrixInverse(&XMMatrixDeterminant(world), world);
+		// Create a bounding sphere from the mesh renderer's transform
+		// Note that we get the highest scale of the transform to make sure the bounding sphere is big enough
+		// This could be improved by using the bounding box instead
+		BoundingSphere bs;
+		bs.Center = mr->transform->GetPosition();
+		bs.Radius = mr->transform->GetHighestScale();
 
-		viewToLocal = XMMatrixMultiply(invView, invWorld);
+		// Create a bounding frustum from the camera's view matrix
+		BoundingFrustum frustrant;
+		m_Frustum.Transform(frustrant, invView);
 
-		BoundingFrustum localSpaceFrustum;
-		m_Frustum.Transform(localSpaceFrustum, viewToLocal);
-
-		if (localSpaceFrustum.Contains(mr->Mesh->GetBounds()) != DirectX::DISJOINT)
-		{
-			DEBUG_LOG("Rendering mesh");
-			mr->Render(m_pCommandList);
-		}
-		else
-		{
-			DEBUG_LOG("Not rendering mesh");
-		}
+		// If the bounding sphere is not in the camera's view, don't render the mesh
+		if (frustrant.Contains(bs) == DirectX::DISJOINT) continue;
+		
+		mr->Render(m_pCommandList);
 	}
 
 	for (ParticleRenderer* pr : *m_particleRenderers)

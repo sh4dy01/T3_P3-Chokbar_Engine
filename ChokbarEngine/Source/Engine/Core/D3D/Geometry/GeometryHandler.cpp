@@ -84,9 +84,6 @@ D3DMesh* GeometryHandler::CreateCube()
 
 	D3DMesh* mesh = NEW D3DMesh();
 	mesh->Create(v, sizeof(Vertex), _countof(v), i, sizeof(UINT), _countof(i));
-	BoundingBox bounds;
-	BoundingBox::CreateFromPoints(bounds, _countof(v), &v[0].Position, sizeof(Vertex));
-	mesh->SetBounds(bounds);
 
 	return mesh;
 }
@@ -208,9 +205,6 @@ D3DMesh* GeometryHandler::CreateUVSphere()
 
 	D3DMesh* mesh = NEW D3DMesh();
 	mesh->Create(vertices.data(), sizeof(Vertex), (UINT)vertices.size(), indices.data(), sizeof(UINT), (UINT)indices.size());
-	BoundingBox bounds;
-	BoundingBox::CreateFromPoints(bounds, (UINT)vertices.size(), &vertices[0].Position, sizeof(Vertex));
-	mesh->SetBounds(bounds);
 
 	return mesh;
 }
@@ -291,9 +285,6 @@ D3DMesh* GeometryHandler::CreateGeoSphere()
 
 	D3DMesh* mesh = NEW D3DMesh();
 	mesh->Create(vertices.data(), sizeof(Vertex), (UINT)vertices.size(), indices.data(), sizeof(UINT), (UINT)indices.size());
-	BoundingBox bounds;
-	BoundingBox::CreateFromPoints(bounds, (UINT)vertices.size(), &vertices[0].Position, sizeof(Vertex));
-	mesh->SetBounds(bounds);
 
 	return mesh;
 }
@@ -443,9 +434,6 @@ D3DMesh* GeometryHandler::CreatePyramid()
 
 	D3DMesh* mesh = NEW D3DMesh();
 	mesh->Create(vList, sizeof(Vertex), _countof(vList), iList, sizeof(UINT), _countof(iList));
-	BoundingBox bounds;
-	BoundingBox::CreateFromPoints(bounds, _countof(vList), &vList[0].Position, sizeof(Vertex));
-	mesh->SetBounds(bounds);
 
 	return mesh;
 }

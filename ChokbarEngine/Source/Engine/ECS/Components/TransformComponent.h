@@ -44,6 +44,7 @@ public:
 
 	DirectX::XMFLOAT3 GetPosition() { return m_Position; }
 	DirectX::XMFLOAT3 GetScale() const { return m_Scale; }
+	float GetHighestScale() const { return max(m_Scale.x, max(m_Scale.y, m_Scale.z)); }
 	DirectX::XMFLOAT4 GetQuaternion() const { return m_RotationQuaternion; }
 
 	DirectX::XMFLOAT4X4* GetPositionMatrix() { return &m_PositionMatrix; }
