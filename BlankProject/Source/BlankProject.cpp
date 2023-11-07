@@ -41,7 +41,7 @@ void Application::SetupPerGameSettings()
 void Application::Initialize()
 {
 	auto* test = NEW GameObject("ball");
-	test->transform->SetPosition(-3, 0, 10);
+	test->transform->SetPosition(-3, 0, 25);
 	test->transform->SetScale(3.f, 3.f, 3.f);
 
 	auto* mr = NEW MeshRenderer();
@@ -67,7 +67,7 @@ void Application::Initialize()
 	*/
 
 	auto player = GameObject::Instantiate<Player>();
-	player->transform->SetPosition(0, 0, -5);
+	player->transform->SetPosition(0, -5, 0);
 
 	GameObject::Instantiate<SkyBox>();
 
