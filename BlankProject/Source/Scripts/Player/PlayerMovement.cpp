@@ -19,11 +19,12 @@ void PlayerMovement::Update()
 	HandleLateralThrust();
 	HandleVerticalThrust();
 
-	ApplyMovement();
-
-	DEBUG_LOG("POS x : " << transform->GetPosition().x << "POS Y : " << transform->GetPosition().y << "POS Z : " << transform->GetPosition().z);
-
 	HandleRotation();
+}
+
+void PlayerMovement::FixedUpdate()
+{
+	ApplyMovement();
 }
 
 
@@ -108,7 +109,7 @@ void PlayerMovement::ApplyOppositeForce(float& outForce, float incrementValue)
 
 void PlayerMovement::ApplyMovement()
 {
-	transform->Translate(
+	m_pRigidbody->AddVelocity(
 		std::clamp(m_CurrentLateralThrust, -m_MaxLateralThrust, m_MaxLateralThrust) * TimeManager::GetDeltaTime(),
 		std::clamp(m_CurrentVerticalThrust, -m_MaxVerticalThrust, m_MaxVerticalThrust) * TimeManager::GetDeltaTime(),
 		std::clamp(m_CurrentForwardThrust, -m_MaxForwardThrust, m_MaxForwardThrust) * TimeManager::GetDeltaTime());
@@ -116,8 +117,8 @@ void PlayerMovement::ApplyMovement()
 
 void PlayerMovement::HandleRotation()
 {
-	transform->RotateYaw(InputHandler::GetAxisX() * m_YawTorque * m_Sensitivity * TimeManager::GetDeltaTime());
 	transform->RotatePitch(InputHandler::GetAxisY() * m_PitchTorque * m_Sensitivity * TimeManager::GetDeltaTime());
+	transform->RotateYaw(InputHandler::GetAxisX() * m_YawTorque * m_Sensitivity * TimeManager::GetDeltaTime());
 
 	if (InputHandler::IsKeyHeld('a'))
 	{

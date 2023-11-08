@@ -8,6 +8,12 @@ class Engine
 {
 public:
 
+	enum EngineState
+	{
+		INITIALIZING,
+		RUNTIME,
+	};
+
 	~Engine();
 
 	static Engine* GetInstance();
@@ -21,6 +27,8 @@ public:
 
 	void OnApplicationFocus();
 	void OnApplicationLostFocus();
+
+	EngineState GetEngineState() const { return m_EngineState; }
 
 private:
 
@@ -55,5 +63,7 @@ private:
 	Win32::Window m_Window;
 
 	bool m_IsPaused = false;
+
+	EngineState m_EngineState;
 
 };

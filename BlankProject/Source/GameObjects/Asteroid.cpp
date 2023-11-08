@@ -1,5 +1,6 @@
 #include "BlankProject.h"
 #include "Asteroid.h"
+#include "Engine/Resource.h"
 
 Asteroid::Asteroid()
 {
@@ -19,4 +20,3 @@ Asteroid::Asteroid()
 Asteroid::~Asteroid()
 {
 }
-

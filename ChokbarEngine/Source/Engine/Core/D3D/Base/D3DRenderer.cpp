@@ -24,7 +24,7 @@ D3DRenderer::D3DRenderer() :
 	m_4xMsaaQuality(0), m_bufferWidth(DEFAULT_WIDTH), m_bufferHeight(DEFAULT_HEIGHT),
 	m_D3dDriverType(D3D_DRIVER_TYPE_HARDWARE), m_CurrentFenceValue(0), m_RtvDescriptorSize(0),
 	m_DsvDescriptorSize(0), m_CbvSrvUavDescriptorSize(0), m_currBackBuffer(0), m_BackBufferFormat(DXGI_FORMAT_R8G8B8A8_UNORM), m_DepthStencilFormat(DXGI_FORMAT_D24_UNORM_S8_UINT),
-	m_meshRenderers(nullptr), m_texIndex(0)
+	m_meshRenderers(nullptr), m_particleRenderers(nullptr), m_skyRenderers(nullptr), m_texIndex(0)
 {
 	m_pDebugController = nullptr;
 
@@ -158,6 +158,13 @@ void D3DRenderer::OnResize(int newWidth, int newHeight)
 {
 	m_bufferWidth = newWidth;
 	m_bufferHeight = newHeight;
+
+	//TODO : Resize the swap chain and recreate the render target view
+
+	auto cam = Engine::GetMainCamera();
+	//cam->SetLens(0.25f * XM_PI, m_bufferWidth / m_bufferHeight, 1.0f, 1000.0f);
+
+	BoundingFrustum::CreateFromMatrix(m_Frustum, cam->GetProj());
 }
 
 D3DRenderer* D3DRenderer::GetInstance()
@@ -193,7 +200,6 @@ void D3DRenderer::InitializeD3D12(Win32::Window* window)
 
 	CreateResources();
 	GetRenderComponentsRef();
-
 }
 #pragma endregion
 
@@ -443,7 +449,6 @@ void D3DRenderer::FlushCommandQueue()
 #pragma endregion
 
 #pragma region CREATE_INTERNAL_COMPONENTS
-
 void D3DRenderer::CreateResources()
 {
 	Resource::CreateResources(m_pD3dDevice, m_pCbvHeap, m_CbvSrvUavDescriptorSize);
@@ -462,6 +467,11 @@ void D3DRenderer::GetRenderComponentsRef()
 	m_meshRenderers = coordinator->GetAllComponentsOfType<MeshRenderer>()->GetAllData();
 	m_particleRenderers = coordinator->GetAllComponentsOfType<ParticleRenderer>()->GetAllData();
 	m_skyRenderers = coordinator->GetAllComponentsOfType<SkyRenderer>()->GetAllData();
+}
+
+void D3DRenderer::CreateFustrum()
+{
+	BoundingFrustum::CreateFromMatrix(m_Frustum, Engine::GetMainCamera()->GetProj());
 }
 #pragma endregion
 
@@ -502,9 +512,32 @@ void D3DRenderer::UpdateRenderedObjects(const float dt, const float totalTime)
 
 void D3DRenderer::RenderObjects()
 {
+	// Create the bounding frustum from the camera's projection matrix
+	// For more Frustrum information, please see the chapter 16 of the book
+	// This method is really advanced and is not mandatory for an exam
+	CreateFustrum();
+
+	XMMATRIX view = Engine::GetMainCamera()->GetView();
+	XMMATRIX invView = XMMatrixInverse(nullptr, view);
+
 	for (MeshRenderer* mr : *m_meshRenderers)
 	{
 		if (!mr) continue;
+
+		// Create a bounding sphere from the mesh renderer's transform
+		// Note that we get the highest scale of the transform to make sure the bounding sphere is big enough
+		// This could be improved by using the bounding box instead
+		BoundingSphere bs;
+		bs.Center = mr->transform->GetPosition();
+		bs.Radius = mr->transform->GetHighestScale();
+
+		// Create a bounding frustum from the camera's view matrix
+		BoundingFrustum frustrant;
+		m_Frustum.Transform(frustrant, invView);
+
+		// If the bounding sphere is not in the camera's view, don't render the mesh
+		if (frustrant.Contains(bs) == DirectX::DISJOINT) continue;
+		
 		mr->Render(m_pCommandList);
 	}
 
