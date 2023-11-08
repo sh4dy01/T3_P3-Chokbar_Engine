@@ -18,5 +18,6 @@ private:
 	bool m_isDigitDirty;
 
 	UINT m_digit;
+	float m_prevOffsetY;
 };
 

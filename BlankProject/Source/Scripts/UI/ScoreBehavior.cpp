@@ -23,12 +23,12 @@ void ScoreBehavior::Awake()
 
 void ScoreBehavior::Start()
 {
-
+	UpdateScore(5);
 }
 
 void ScoreBehavior::Update()
 {
-	//if (!m_isScoreDirty) return;
+	if (!m_isScoreDirty) return;
 
 	UpdateScoreDisplay();
 	m_isScoreDirty = false;

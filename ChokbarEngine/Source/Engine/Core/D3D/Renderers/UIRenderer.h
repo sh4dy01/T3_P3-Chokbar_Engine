@@ -14,9 +14,15 @@ public:
 	UIRenderer();
 	~UIRenderer() override;
 
-	void OffsetUV(float offsetY);
+	float GetUVOffsetY() const { return m_uvOffsetY; }
+	void SetOffsetY(float offsetY);
+	void AddOffsetY(float offsetY);
 
 private:
 	void Render(ID3D12GraphicsCommandList* cmdList) override;
 	void Update(float dt) override;
+
+	void UpdateShader();
+
+	float m_uvOffsetY;
 };

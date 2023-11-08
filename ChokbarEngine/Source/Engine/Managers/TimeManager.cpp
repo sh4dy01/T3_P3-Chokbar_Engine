@@ -115,10 +115,6 @@ float TimeManager::GetTotalTime()
 	}
 	else
 	{
-		OutputDebugString(L"Total time: ");
-		OutputDebugStringA(std::to_string(((m_CurrTime - m_PausedTime) - m_BaseTime) / m_freq).c_str());
-		OutputDebugString(L"\n");
-
 		return static_cast<float>(((m_CurrTime - m_PausedTime) - m_BaseTime) / m_freq);
 	}
 }

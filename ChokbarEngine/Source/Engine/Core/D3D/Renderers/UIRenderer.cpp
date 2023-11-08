@@ -16,6 +16,27 @@ UIRenderer::~UIRenderer()
 {
 }
 
+void UIRenderer::SetOffsetY(float offsetY)
+{
+	m_uvOffsetY = offsetY;
+	UpdateShader();
+}
+
+void UIRenderer::AddOffsetY(float offsetY)
+{
+	SetOffsetY(m_uvOffsetY + offsetY);
+}
+
+void UIRenderer::UpdateShader()
+{
+	if (!IsEnabled() || !Mat || !Mesh) return;
+
+	if (ShaderTextureOffset* offsetShader = dynamic_cast<ShaderTextureOffset*>(Mat->GetShader()))
+	{
+		offsetShader->UpdateAsOffset(transform->GetWorldMatrix(), ObjectCBIndex, m_uvOffsetY);
+	}
+}
+
 void UIRenderer::Render(ID3D12GraphicsCommandList* cmdList)
 {
 	if (!IsEnabled() || !Mat || !Mesh) return;
@@ -37,13 +58,4 @@ void UIRenderer::Update(float dt)
 		transform->UpdateWorldMatrix();
 
 	Mat->GetShader()->UpdateObjectCB(transform->GetWorldMatrix(), ObjectCBIndex);
-}
-
-void UIRenderer::OffsetUV(float offsetY)
-{
-	auto* shader = Mat->GetShader();
-	auto* shaderOffset = dynamic_cast<ShaderTextureOffset*>(shader);
-	assert(shaderOffset);
-
-	shaderOffset->SetUVOffsetY(offsetY);
 }

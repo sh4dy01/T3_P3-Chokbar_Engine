@@ -540,7 +540,7 @@ void ShaderSkybox::CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT&
 
 #pragma region SHADER TEXTURE OFFSET
 ShaderTextureOffset::ShaderTextureOffset(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, UINT cbvDescriptorSize, std::wstring& filepath)
-	: ShaderTexture(device, cbvHeap, cbvDescriptorSize, filepath), m_uvOffsetY(0.0f)
+	: ShaderTexture(device, cbvHeap, cbvDescriptorSize, filepath)
 {
 }
 
@@ -575,16 +575,18 @@ void ShaderTextureOffset::AddObjectCB()
 	auto ub = NEW UploadBuffer<OffSetConstants>(m_generalDevice, 1, true);
 	m_offSetCb.push_back(ub);
 	NULLPTR(ub);
+
+	ShaderBase::AddObjectCB();
 }
 
-void ShaderTextureOffset::UpdateObjectCB(DirectX::XMFLOAT4X4* itemWorldMatrix, UINT cbIndex)
+void ShaderTextureOffset::UpdateAsOffset(DirectX::XMFLOAT4X4* itemWorldMatrix, UINT cbIndex, float offSetY)
 {
 	if (cbIndex >= m_offSetCb.size())
 		AddObjectCB();
 
 	OffSetConstants offSetConstants;
 	offSetConstants.World = *itemWorldMatrix;
-	offSetConstants.UVOffsetY = m_uvOffsetY;
+	offSetConstants.UVOffsetY = offSetY;
 	m_offSetCb[cbIndex]->CopyData(0, &offSetConstants);
 }
 

@@ -181,18 +181,13 @@ public:
 	ShaderTextureOffset(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, UINT cbvDescriptorSize, std::wstring& filepath);
 	~ShaderTextureOffset();
 
-	void SetUVOffsetY(float uvOffsetY) { m_uvOffsetY = uvOffsetY; }
-	float GetUVOffsetY() const { return m_uvOffsetY; }
-
 	UINT GetCreatedIndex() override { return (UINT)m_offSetCb.size() - 1; }
 
 	void Draw(ID3D12GraphicsCommandList* cmdList, IRenderer* drawnMeshR) override;
+	void UpdateAsOffset(DirectX::XMFLOAT4X4* itemWorldMatrix, UINT cbIndex, float offSetY);
 
 protected:
 	void AddObjectCB() override;
-	void UpdateObjectCB(DirectX::XMFLOAT4X4* itemWorldMatrix, UINT cbIndex) override;
 
 	std::vector<UploadBuffer<OffSetConstants>*> m_offSetCb;
-
-	float m_uvOffsetY;
 };
