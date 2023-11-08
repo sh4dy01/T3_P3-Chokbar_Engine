@@ -40,12 +40,15 @@ void Application::SetupPerGameSettings()
 
 void Application::Initialize()
 {
+	auto camera = GameObject::Instantiate<Camera>();
+
 	auto * test3 = GameObject::Instantiate<Asteroid>();
 	test3->transform->SetPosition(0, 0, 0);
 
 
 	auto player = GameObject::Instantiate<Player>();
 	player->transform->SetPosition(0, 0, -5);
+	camera->transform->SetParent(player->transform);
 
 	GameObject::Instantiate<SkyBox>();
 

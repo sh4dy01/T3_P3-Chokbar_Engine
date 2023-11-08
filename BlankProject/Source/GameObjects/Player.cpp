@@ -9,17 +9,18 @@ Player::Player()
 {
 	m_Name = "Player";
 
-	AddComponent<CameraComponent>();
 	AddComponent<Rigidbody>();
 	AddComponent<SphereCollider>();
 
 	auto leftWing = GameObject::Instantiate<Wing>();
 	leftWing->SetName("LeftWing");
-	leftWing->transform->SetPosition(-2.5f, 0, 0);
+	leftWing->transform->SetPosition(-2.5f, 0, 5);
+	leftWing->transform->SetParent(transform);
 
 	auto rightWing = GameObject::Instantiate<Wing>();
 	rightWing->SetName("RightWing");
-	rightWing->transform->SetPosition(2.5f, 0, 0);
+	rightWing->transform->SetPosition(2.5f, 0, 5);
+	rightWing->transform->SetParent(transform);
 
 	MeshRenderer* mesh = AddComponent<MeshRenderer>();
 	mesh->Init(SPHERE, SIMPLE);

@@ -6,7 +6,7 @@
 
 void PlayerShoot::Awake()
 {
-	m_pCamera = gameObject->GetComponent<CameraComponent>();
+	m_pCamera = CameraManager::GetMainCamera();
 	m_pRigidbody = gameObject->GetComponent<Rigidbody>();
 }
 

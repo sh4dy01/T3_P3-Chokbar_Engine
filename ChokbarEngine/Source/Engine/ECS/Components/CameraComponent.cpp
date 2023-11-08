@@ -176,11 +176,17 @@ void CameraComponent::UpdateProjectionMatrix()
 
 void CameraComponent::UpdateViewMatrix()
 {
-	if (transform->IsDirty() || m_ViewDirty)
+	//if (transform->IsDirty() || m_ViewDirty)
 	{
+		transform->UpdateParentedWorldMatrix();
+
+		auto parentedMAtrix = transform->GetParentedWorldMatrix();
+		XMFLOAT3 Position;
+
 		//transform->UpdateParentedWorldMatrix();
-		XMFLOAT3 Position = transform->GetPosition();
-		XMVECTOR pos = XMVectorSet(Position.x, Position.y, Position.z, 1.0F);
+		XMVECTOR pos = XMVectorSet(parentedMAtrix->_41, parentedMAtrix->_42, parentedMAtrix->_43, 1.0F);
+		XMStoreFloat3(&Position, pos);
+
 		XMFLOAT3 forward = transform->GetForward();
 		XMVECTOR target = XMVectorAdd(XMLoadFloat3(&Position), XMLoadFloat3(&forward));
 
