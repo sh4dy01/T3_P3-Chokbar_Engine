@@ -67,7 +67,7 @@ float4 ps_main(PS_INPUT input) : SV_TARGET
     float3 L = normalize(gDirLight);
     
     // Use max() to prevent total darnkess
-    float3 incomingLight = max(saturate(dot(N, L)), 0.05f) * gColLight.rgb;
+    float3 incomingLight = max(saturate(dot(N, L)), 0.08f) * gColLight.rgb;
     float3 finalColor = diffuse.rgb * incomingLight;
     
     return float4(finalColor, 1.0f);

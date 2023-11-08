@@ -83,5 +83,5 @@ void PlayerShoot::HandleZoomAndSlowMotion()
 		TimeManager::SetTimeScale(std::clamp(TimeManager::GetTimeScale() + m_SlowMotionRecoverSpeed * TimeManager::GetUnscaledDeltaTime(), 0.1f, 1.f));
 	}
 
-	DEBUG_LOG("TimeScale: " + std::to_string(TimeManager::GetTimeScale()));
+	//DEBUG_LOG("TimeScale: " + std::to_string(TimeManager::GetTimeScale()));
 }
