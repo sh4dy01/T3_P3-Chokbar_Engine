@@ -61,7 +61,19 @@ void Application::Initialize()
 	}
 
 	GameObject::Instantiate<SkyBox>();
+  
+	auto* test = NEW GameObject("ball");
+	test->transform->SetPosition(-3, 0, 25);
+	test->transform->SetScale(3.f, 3.f, 3.f);
 
+	auto* mr = NEW MeshRenderer();
+	test->AddComponent<MeshRenderer>(mr);
+	auto* pr = NEW ParticleRenderer();
+	test->AddComponent<ParticleRenderer>(pr);
+	pr->Init(MeshType::CUBE, MaterialType::PARTICLE);
+	pr->SetParticleCount(100);
+	pr->Play();
+  
 	player = nullptr;
 }
 
