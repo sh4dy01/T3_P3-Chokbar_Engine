@@ -53,8 +53,6 @@ public:
 
 	DirectX::XMFLOAT4X4* GetWorldMatrix() { UpdateWorldMatrix(); return &m_WorldMatrix; }
 
-	DirectX::BoundingSphere GetBoundingSphere() const { return m_BoundingSphere; }
-
 	bool IsDirty() const { return m_Dirty; }
 
 	void UpdateWorldMatrix();
@@ -66,8 +64,6 @@ private:
 	void UpdatePositionMatrix();
 	void UpdateRotationMatrix();
 	void UpdateScaleMatrix();
-
-	void UpdateBoundingSphere();
 
 	bool m_Dirty;
 
@@ -85,6 +81,4 @@ private:
 	DirectX::XMFLOAT4 m_RotationQuaternion;
 
 	DirectX::XMFLOAT4X4 m_WorldMatrix;
-
-	DirectX::BoundingSphere m_BoundingSphere;
 };

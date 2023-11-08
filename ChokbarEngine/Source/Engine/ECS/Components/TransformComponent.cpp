@@ -20,9 +20,6 @@ Transform::Transform()
 	// Initialize rotation matrix as an identity matrix
 	// Initialize world matrix as an identity matrix
 	DirectX::XMStoreFloat4x4(&m_WorldMatrix, DirectX::XMMatrixIdentity());
-
-	// Initialize the bounding sphere
-	UpdateBoundingSphere();
 }
 
 Transform::~Transform()
@@ -175,9 +172,6 @@ void Transform::UpdatePositionMatrix()
 
 	// Create the position matrix
 	DirectX::XMStoreFloat4x4(&m_PositionMatrix, DirectX::XMMatrixTranslation(m_Position.x, m_Position.y, m_Position.z));
-
-	// Update the bounding sphere to the new position and scale
-	UpdateBoundingSphere();
 }
 void Transform::UpdateRotationMatrix()
 {
@@ -203,9 +197,6 @@ void Transform::UpdateScaleMatrix()
 		0.0f, m_Scale.y, 0.0f, 0.0f,
 		0.0f, 0.0f, m_Scale.z, 0.0f,
 		0.0f, 0.0f, 0.0f, 1.0f);
-
-	// Update the bounding sphere to the new position and scale
-	UpdateBoundingSphere();
 }
 
 void Transform::UpdateWorldMatrix()
@@ -218,15 +209,4 @@ void Transform::UpdateWorldMatrix()
 	DirectX::XMStoreFloat4x4(&m_WorldMatrix, DirectX::XMMatrixTranspose(newWorldMatrix));
 
 	m_Dirty = false;
-}
-
-void Transform::UpdateBoundingSphere()
-{
-	// Update the bounding sphere to the new position and scale
-	m_BoundingSphere.Center = m_Position;
-
-	float maxScale = m_Scale.x;
-	maxScale = max(maxScale, m_Scale.y);
-	maxScale = max(maxScale, m_Scale.z);
-	m_BoundingSphere.Radius = maxScale;
 }
