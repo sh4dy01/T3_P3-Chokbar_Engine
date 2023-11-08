@@ -52,13 +52,13 @@ void AsteroidSpawner::SpawnAsteroid(Asteroid::AsteroidType type)
 		m_AliveAsteroids.push_back(asteroid2->gameObject);
 		m_AliveAsteroidCount++;
 	}
-	else if (type == Asteroid::MEDIUM) 
-	{
-		AsteroidMediumBehaviour* asteroid1 = GameObject::Instantiate<AsteroidMedium>("Asteroid " + std::to_string(m_AliveAsteroidCount))->GetComponent<AsteroidMediumBehaviour>();
-		asteroid1->Initialize(m_PlayerTransform, 20.0f);
-		m_AliveAsteroids.push_back(asteroid1->gameObject);
-		m_AliveAsteroidCount++;
-	}
+	//else if (type == Asteroid::MEDIUM) 
+	//{
+	//	AsteroidMediumBehaviour* asteroid1 = GameObject::Instantiate<AsteroidMedium>("Asteroid " + std::to_string(m_AliveAsteroidCount))->GetComponent<AsteroidMediumBehaviour>();
+	//	asteroid1->Initialize(m_PlayerTransform, 20.0f);
+	//	m_AliveAsteroids.push_back(asteroid1->gameObject);
+	//	m_AliveAsteroidCount++;
+	//}
 	else if (type == Asteroid::LARGE) 
 	{
 		AsteroidLargeBehaviour* asteroid = GameObject::Instantiate<AsteroidLarge>("Asteroid " + std::to_string(m_AliveAsteroidCount))->GetComponent<AsteroidLargeBehaviour>();

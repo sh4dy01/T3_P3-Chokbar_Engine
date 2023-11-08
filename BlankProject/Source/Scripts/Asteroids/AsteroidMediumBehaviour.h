@@ -16,4 +16,11 @@ private:
 
 	float m_Speed;
 
+	float m_TeleportationAngle;
+	float m_TeleportationDistance;
+
+	float m_TimeSinceLastTeleport;
+	float m_TeleportInterval;
+
+
 };

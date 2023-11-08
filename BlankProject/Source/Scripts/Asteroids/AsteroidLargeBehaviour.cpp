@@ -21,5 +21,10 @@ void AsteroidLargeBehaviour::Initialize(const XMFLOAT3 direction, float speed)
 
 void AsteroidLargeBehaviour::Update()
 {
-	transform->Translate(XMVectorScale(XMLoadFloat3(&m_Direction), m_Speed * TimeManager::GetDeltaTime()));
+    transform->Translate(XMVectorScale(XMLoadFloat3(&m_Direction), m_Speed * TimeManager::GetDeltaTime()));
+
+    float deltaTime = TimeManager::GetDeltaTime();
+    float rotationSpeedX = 100.0f * deltaTime;
+
+    transform->Rotate(rotationSpeedX, 0, 0);
 }

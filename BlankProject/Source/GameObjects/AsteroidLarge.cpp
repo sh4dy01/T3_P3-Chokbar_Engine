@@ -13,6 +13,7 @@ AsteroidLarge::AsteroidLarge() {
     
     transform->SetScale(25);
     transform->SetPosition(0.0f, 0.0f, 50.0f);
+    transform->Rotate(0.0f, 0.0f, 0.0f);
 
 }
 
