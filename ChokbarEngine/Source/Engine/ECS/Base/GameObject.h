@@ -14,6 +14,11 @@ public:
 
 	~GameObject() override;
 
+	static GameObject* Instantiate()
+	{
+		return NEW GameObject();
+	}
+
 	template <class GameObject>
 	static GameObject* Instantiate() 
 	{

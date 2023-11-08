@@ -56,7 +56,27 @@
     <ClCompile Include="Source\Scripts\ProjectileBehavior.cpp">
       <Filter>Source\Source\Scripts</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Scripts\Asteroids\AsteroidSpawner.cpp" />
+    <ClCompile Include="Source\Scripts\Asteroids\AsteroidSpawner.cpp">
+      <Filter>Source\Source\Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GameObjects\AsteroidLarge.cpp">
+      <Filter>Source\Source\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GameObjects\AsteroidMedium.cpp">
+      <Filter>Source\Source\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GameObjects\AsteroidSmall.cpp">
+      <Filter>Source\Source\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scripts\Asteroids\AsteroidSmallBehaviour.cpp">
+      <Filter>Source\Source\Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scripts\Asteroids\AsteroidLargeBehaviour.cpp">
+      <Filter>Source\Source\Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scripts\Asteroids\AsteroidMediumBehaviour.cpp">
+      <Filter>Source\Source\Scripts</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -86,11 +106,29 @@
     <ClInclude Include="Source\Scripts\ProjectileBehavior.h">
       <Filter>Source\Source\Scripts</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Scripts\Asteroids\AsteroidSpawner.h">
-      <Filter>Source\Source</Filter>
-    </ClInclude>
     <ClInclude Include="Source\GameObjects\SkyBox.h">
       <Filter>Source\Source\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scripts\Asteroids\AsteroidSpawner.h">
+      <Filter>Source\Source\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GameObjects\AsteroidLarge.h">
+      <Filter>Source\Source\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GameObjects\AsteroidMedium.h">
+      <Filter>Source\Source\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GameObjects\AsteroidSmall.h">
+      <Filter>Source\Source\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scripts\Asteroids\AsteroidSmallBehaviour.h">
+      <Filter>Source\Source\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scripts\Asteroids\AsteroidLargeBehaviour.h">
+      <Filter>Source\Source\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scripts\Asteroids\AsteroidMediumBehaviour.h">
+      <Filter>Source\Source\Scripts</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,7 +1,7 @@
 #include "AsteroidSpawner.h"
 
-#include "GameObjects/Asteroid.h"
-
+#include "GameObjects/AsteroidLarge.h"
+#include "AsteroidLargeBehaviour.h"
 
 AsteroidSpawner::~AsteroidSpawner()
 {
@@ -27,7 +27,7 @@ void AsteroidSpawner::SpawnAsteroidWave(int targetCount)
 	{
 		if (m_Timer > m_SpawnTimer)
 		{
-			SpawnAsteroid();
+			SpawnAsteroid(Asteroid::LARGE);
 			m_Timer = 0.0f;
 		}
 		else
@@ -37,8 +37,18 @@ void AsteroidSpawner::SpawnAsteroidWave(int targetCount)
 	}
 }
 
-void AsteroidSpawner::SpawnAsteroid()
+void AsteroidSpawner::SpawnAsteroid(Asteroid::AsteroidType type)
 {
-	m_AliveAsteroids.push_back(GameObject::Instantiate<Asteroid>("Asteroid " + std::to_string(m_AliveAsteroidCount)));
-	m_AliveAsteroidCount++;
+	switch (type)
+	{
+		
+	case Asteroid::LARGE:
+		auto asteroid = GameObject::Instantiate<AsteroidLarge>("Asteroid " + std::to_string(m_AliveAsteroidCount))->GetComponent<AsteroidLargeBehaviour>();
+		asteroid->Initialize(XMFLOAT3(0.0f, 0.0f, 0.0f), 1.0f);
+		m_AliveAsteroids.push_back(asteroid->gameObject);
+		m_AliveAsteroidCount++;
+		break;
+	}
+
+	
 }

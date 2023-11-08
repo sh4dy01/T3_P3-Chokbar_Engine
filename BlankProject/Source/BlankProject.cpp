@@ -5,7 +5,7 @@
 #include "GameObjects/Player.h"
 #include "GameObjects/Asteroid.h"
 #include "GameObjects/Skybox.h"
-
+#include "Scripts/Asteroids/AsteroidSpawner.h"
 
 
 class Application : public Win32::IApplication
@@ -42,6 +42,9 @@ void Application::Initialize()
 {
 	auto* test = NEW GameObject("ball");
 	test->transform->SetPosition(-3, 0, 10);
+
+	auto spawner = GameObject::Instantiate();
+	spawner->AddComponent<AsteroidSpawner>();
 
 	auto* mr = NEW MeshRenderer();
 	auto* pr = NEW ParticleRenderer();

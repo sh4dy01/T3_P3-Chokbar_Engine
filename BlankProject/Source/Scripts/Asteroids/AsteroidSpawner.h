@@ -1,5 +1,7 @@
 #pragma once
 
+#include "GameObjects/Asteroid.h"
+
 class AsteroidSpawner : public CustomComponent
 {
 public:
@@ -11,7 +13,7 @@ public:
 	void Update() override;
 
 	void SpawnAsteroidWave(int targetCount);
-	void SpawnAsteroid();
+	void SpawnAsteroid(Asteroid::AsteroidType type);
 
 
 private:
