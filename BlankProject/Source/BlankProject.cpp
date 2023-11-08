@@ -40,26 +40,19 @@ void Application::SetupPerGameSettings()
 
 void Application::Initialize()
 {
+	auto camera = GameObject::Instantiate<Camera>();
+
 	auto player = GameObject::Instantiate<Player>();
-	//player->GetComponent<Rigidbody>()->Move(0.f, 0.f, -50.f);
 
 	player->GetComponent<Rigidbody>()->Move(3.f, 3.f, 9.f);
-	player->transform->RotateYaw(180);
 
 
-	/*player->transform->SetPosition(0, 0, 50);
-	player->transform->RotateYaw(180);*/
-
-	player->m_CategoryBitmask.SetLayer(LayerID::PLAYER);
-	player->m_CollisionBitmask.SetLayer(LayerID::ASTEROID);
+	player->transform->SetPosition(0, 0, -5);
+	camera->transform->SetParent(player->transform);
 
 	for (int i = 0; i < 50; i++)
 	{
 		auto asteroid = GameObject::Instantiate<Asteroid>();
-		asteroid->m_CategoryBitmask.SetLayer(LayerID::ASTEROID);
-		asteroid->m_CollisionBitmask.SetLayer(LayerID::PLAYER);
-		//asteroid->m_CollisionBitmask.AddLayer(LayerID::ASTEROID);
-		asteroid->m_CollisionBitmask.AddLayer(LayerID::PROJECTILE);
 
 
 		float x = (rand() % 50) - 5.5f;
@@ -87,7 +80,11 @@ void Application::Initialize()
 	pr->Init(MeshType::CUBE, MaterialType::PARTICLE);
 	pr->SetParticleCount(100);
 	pr->Play();
-  
+
+
+	test = nullptr;
+	mr = nullptr;
+	pr = nullptr;
 	player = nullptr;
 }
 

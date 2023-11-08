@@ -25,6 +25,11 @@ Asteroid::Asteroid()
 	AddComponent<AsteroidLife>();
 	AddComponent<AsteroidCollisionEvent>();
 
+	m_CategoryBitmask.SetLayer(LayerID::ASTEROID);
+	m_CollisionBitmask.SetLayer(LayerID::PLAYER);
+	m_CollisionBitmask.AddLayer(LayerID::ASTEROID);
+	m_CollisionBitmask.AddLayer(LayerID::PROJECTILE);
+
 	mesh = nullptr;
 }
 

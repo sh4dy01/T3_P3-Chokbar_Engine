@@ -57,6 +57,7 @@
       <Filter>Source\Source\Scripts</Filter>
     </ClCompile>
     <ClCompile Include="Source\Scripts\Asteroids\AsteroidSpawner.cpp" />
+    <ClCompile Include="Source\GameObjects\Wing.cpp" />
     <ClCompile Include="Source\Scripts\LifeComponent.cpp" />
     <ClCompile Include="Source\Scripts\Player\PlayerLife.cpp" />
     <ClCompile Include="Source\Scripts\Asteroids\AsteroidLife.cpp" />
@@ -106,6 +107,9 @@
       <Filter>Source\Source</Filter>
     </ClInclude>
     <ClInclude Include="Source\Scripts\TriggerCollisionEvent\AsteroidCollisionEvent.h">
+      <Filter>Source\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GameObjects\Wing.h">
       <Filter>Source\Source</Filter>
     </ClInclude>
   </ItemGroup>

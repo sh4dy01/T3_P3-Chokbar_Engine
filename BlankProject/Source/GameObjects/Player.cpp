@@ -4,7 +4,7 @@
 #include "Scripts/Player/PlayerLife.h"
 #include "Scripts/Player/PlayerMovement.h"
 #include "Scripts/Player/PlayerShoot.h"
-
+#include "GameObjects/Wing.h"
 
 Player::Player()
 {
@@ -23,6 +23,19 @@ Player::Player()
 	//transform->SetScale(2.f);
 
 	AddComponent<MeshRenderer>()->Init(SPHERE, SIMPLE);
+	auto leftWing = GameObject::Instantiate<Wing>();
+	leftWing->SetName("LeftWing");
+	leftWing->transform->SetPosition(-2, 0, 0);
+	leftWing->transform->SetParent(transform);
+
+	auto rightWing = GameObject::Instantiate<Wing>();
+	rightWing->SetName("RightWing");
+	rightWing->transform->SetPosition(2, 0, 0);
+	rightWing->transform->SetParent(transform);
+
+	m_CategoryBitmask.SetLayer(LayerID::PLAYER);
+	m_CollisionBitmask.SetLayer(LayerID::ASTEROID);
+
 	AddComponent<PlayerMovement>();
 	AddComponent<PlayerShoot>();
 	AddComponent<PlayerLife>();

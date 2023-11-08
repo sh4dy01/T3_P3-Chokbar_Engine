@@ -10,6 +10,9 @@ Transform::Transform()
 	m_Up = DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f);
 	m_Forward = DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f);
 
+	m_pParent = nullptr;
+	m_pChildren = std::vector<Transform*>();
+
 	// Initialize position, scale, and rotation
 	m_Position = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
 	DirectX::XMStoreFloat4x4(&m_PositionMatrix, DirectX::XMMatrixIdentity());
@@ -26,6 +29,14 @@ Transform::Transform()
 
 Transform::~Transform()
 {
+}
+
+void Transform::OnRemovedComponent()
+{
+	for (auto child : m_pChildren)
+	{
+		child->SetParent(nullptr);
+	}
 }
 
 void Transform::Translate(float x, float y, float z, Space space)
@@ -152,6 +163,18 @@ void Transform::SetScale(DirectX::XMFLOAT3 scaleFactors)
 	SetScale(scaleFactors.x, scaleFactors.y, scaleFactors.z);
 }
 
+void Transform::SetParent(Transform* pParent)
+{
+	m_pParent = pParent;
+	//SetChild(pParent);
+}
+
+void Transform::SetChild(Transform* pChild)
+{
+	//pChild->m_pParent = this;
+	//m_pChildren.push_back(pChild);
+}
+
 DirectX::XMFLOAT3 Transform::GetEulerAngles()
 {
 	// Extract the Euler angles from the rotation matrix
@@ -208,7 +231,29 @@ void Transform::UpdateWorldMatrix()
 	DirectX::XMMATRIX newWorldMatrix = DirectX::XMLoadFloat4x4(&m_RotationMatrix) * DirectX::XMLoadFloat4x4(&m_ScaleMatrix) * DirectX::XMLoadFloat4x4(&m_PositionMatrix);
 	// Combine rotation and scale with position
 	// Convert the final world matrix to XMFLOAT4X4
-	DirectX::XMStoreFloat4x4(&m_WorldMatrix, DirectX::XMMatrixTranspose(newWorldMatrix));
+	DirectX::XMStoreFloat4x4(&m_WorldMatrix, newWorldMatrix);
+}
 
-	m_Dirty = false;
+void Transform::UpdateParentedWorldMatrix()
+{
+	//if (m_Dirty || m_pParent && m_pParent->IsDirty())
+	{
+		DirectX::XMFLOAT4X4 parentWorldMatrix;
+
+		if (m_pParent)
+		{
+			m_pParent->UpdateParentedWorldMatrix();
+			parentWorldMatrix = *m_pParent->GetParentedWorldMatrix();
+		}
+		else
+		{
+			XMStoreFloat4x4(&parentWorldMatrix, DirectX::XMMatrixIdentity());
+		}
+
+		UpdateWorldMatrix();
+		XMStoreFloat4x4(&m_ParentedWorldMatrix, XMMatrixMultiply(XMLoadFloat4x4(&m_WorldMatrix), XMLoadFloat4x4(&parentWorldMatrix)));
+		XMStoreFloat4x4(&m_TransposedParentedWorldMatrix, DirectX::XMMatrixTranspose(DirectX::XMLoadFloat4x4(&m_ParentedWorldMatrix)));
+
+		m_Dirty = false;
+	}
 }
