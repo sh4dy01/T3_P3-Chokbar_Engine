@@ -245,9 +245,9 @@ void Transform::UpdateParentedWorldMatrix()
 	}
 	else
 	{
-		DirectX::XMStoreFloat4x4(&parentWorldMatrix, DirectX::XMMatrixIdentity());
+		XMStoreFloat4x4(&parentWorldMatrix, DirectX::XMMatrixIdentity());
 	}
 
 	UpdateWorldMatrix();
-	DirectX::XMStoreFloat4x4(&m_ParentedWorldMatrix, DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&m_WorldMatrix), DirectX::XMLoadFloat4x4(&parentWorldMatrix)));
+	XMStoreFloat4x4(&m_ParentedWorldMatrix, XMMatrixMultiply(DirectX::XMLoadFloat4x4(&m_WorldMatrix), (XMLoadFloat4x4(&parentWorldMatrix))));
 }

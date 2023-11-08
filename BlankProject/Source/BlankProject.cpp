@@ -47,7 +47,7 @@ void Application::Initialize()
 
 
 	auto player = GameObject::Instantiate<Player>();
-	player->transform->SetPosition(0, 0, -5);
+	player->transform->SetPosition(0, 0, -10);
 	camera->transform->SetParent(player->transform);
 
 	GameObject::Instantiate<SkyBox>();

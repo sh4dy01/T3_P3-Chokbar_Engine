@@ -42,15 +42,17 @@ void PlayerShoot::HandleShoot()
 
 void PlayerShoot::ShootProjectileFromWings()
 {
+	XMFLOAT3 forward = transform->GetForward();
+
 	XMFLOAT3 projLeftPos = transform->GetPosition();
-	XMStoreFloat3(&projLeftPos, XMVectorAdd(XMLoadFloat3(&projLeftPos), m_pCamera->GetLook()));
+	XMStoreFloat3(&projLeftPos, XMVectorAdd(XMLoadFloat3(&projLeftPos), XMLoadFloat3(&forward)));
 	projLeftPos.x -= m_ShootOffset;
 
 	ShootProjectile(projLeftPos, m_pCamera->GetLook3f());
 
 
 	XMFLOAT3 projRightPos = transform->GetPosition();
-	XMStoreFloat3(&projRightPos, XMVectorAdd(XMLoadFloat3(&projRightPos), m_pCamera->GetLook()));
+	XMStoreFloat3(&projRightPos, XMVectorAdd(XMLoadFloat3(&projRightPos), XMLoadFloat3(&forward)));
 	projRightPos.x += m_ShootOffset;
 
 	ShootProjectile(projRightPos, m_pCamera->GetLook3f());

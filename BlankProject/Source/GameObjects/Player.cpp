@@ -14,12 +14,12 @@ Player::Player()
 
 	auto leftWing = GameObject::Instantiate<Wing>();
 	leftWing->SetName("LeftWing");
-	leftWing->transform->SetPosition(-2.5f, 0, 5);
-	leftWing->transform->SetParent(transform);
+	leftWing->transform->SetPosition(-2, 0, 0);
+	//leftWing->transform->SetParent(transform);
 
 	auto rightWing = GameObject::Instantiate<Wing>();
 	rightWing->SetName("RightWing");
-	rightWing->transform->SetPosition(2.5f, 0, 5);
+	rightWing->transform->SetPosition(transform->GetPosition());
 	rightWing->transform->SetParent(transform);
 
 	MeshRenderer* mesh = AddComponent<MeshRenderer>();

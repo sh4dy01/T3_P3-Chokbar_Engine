@@ -47,6 +47,10 @@ XMVECTOR CameraComponent::GetLook() const
 
 XMFLOAT3 CameraComponent::GetLook3f() const
 {
+	if (transform->m_pParent != nullptr)
+	{
+		return transform->m_pParent->GetForward();
+	}
 	return transform->GetForward();
 }
 
@@ -180,17 +184,31 @@ void CameraComponent::UpdateViewMatrix()
 	{
 		transform->UpdateParentedWorldMatrix();
 
-		auto parentedMAtrix = transform->GetParentedWorldMatrix();
+		auto parentedMAtrix = transform->m_pParent->GetParentedWorldMatrix();
 		XMFLOAT3 Position;
 
 		//transform->UpdateParentedWorldMatrix();
-		XMVECTOR pos = XMVectorSet(parentedMAtrix->_41, parentedMAtrix->_42, parentedMAtrix->_43, 1.0F);
+		XMVECTOR pos = XMVectorSet(parentedMAtrix->_14, parentedMAtrix->_24, parentedMAtrix->_34, 1.0F);
 		XMStoreFloat3(&Position, pos);
 
-		XMFLOAT3 forward = transform->GetForward();
-		XMVECTOR target = XMVectorAdd(XMLoadFloat3(&Position), XMLoadFloat3(&forward));
+		XMFLOAT3 playerForward;
+		XMVECTOR target;
+		XMFLOAT3 up;
 
-		XMStoreFloat4x4(&m_View, XMMatrixLookAtLH(pos, target, XMLoadFloat3(&transform->GetUp())));
+		if (transform->m_pParent)
+		{
+			playerForward = transform->m_pParent->GetForward();
+			target = XMVectorAdd(XMLoadFloat3(&Position), XMLoadFloat3(&playerForward));
+			up = transform->m_pParent->GetUp();
+		}
+		else
+		{
+			playerForward = transform->GetForward();
+			target = XMVectorAdd(XMLoadFloat3(&Position), XMLoadFloat3(&playerForward));
+			up = transform->GetUp();
+		}
+
+		XMStoreFloat4x4(&m_View, XMMatrixLookAtLH(pos, target, XMLoadFloat3(&up)));
 		m_ViewDirty = false;
 	}
 }

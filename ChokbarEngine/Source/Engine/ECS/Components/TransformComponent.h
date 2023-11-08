@@ -40,11 +40,11 @@ public:
 
 	DirectX::XMFLOAT3 GetEulerAngles();
 
-	DirectX::XMFLOAT3 GetRight() { return m_Right; }
-	DirectX::XMFLOAT3 GetUp() { return m_Up; }
-	DirectX::XMFLOAT3 GetForward() { return m_Forward; }
+	DirectX::XMFLOAT3 GetRight() const { return m_Right; }
+	DirectX::XMFLOAT3 GetUp() const { return m_Up; }
+	DirectX::XMFLOAT3 GetForward() const { return m_Forward; }
 
-	DirectX::XMFLOAT3 GetPosition() { return m_Position; }
+	DirectX::XMFLOAT3 GetPosition() const { return m_Position; }
 	DirectX::XMFLOAT3 GetScale() const { return m_Scale; }
 	DirectX::XMFLOAT4 GetQuaternion() const { return m_RotationQuaternion; }
 
@@ -54,6 +54,10 @@ public:
 	bool IsDirty() const { return m_Dirty; }
 
 	void UpdateParentedWorldMatrix();
+
+public:
+
+	Transform* m_pParent;
 
 private:
 
@@ -67,7 +71,6 @@ private:
 
 	bool m_Dirty;
 
-	Transform* m_pParent;
 	std::vector<Transform*> m_pChildren;
 
 	DirectX::XMFLOAT3 m_Right;
@@ -83,6 +86,7 @@ private:
 	DirectX::XMFLOAT4X4 m_RotationMatrix;
 	DirectX::XMFLOAT4 m_RotationQuaternion;
 
+	DirectX::XMFLOAT4X4 m_LocalMatrix;
 	DirectX::XMFLOAT4X4 m_WorldMatrix;
 	DirectX::XMFLOAT4X4 m_ParentedWorldMatrix;
 };
