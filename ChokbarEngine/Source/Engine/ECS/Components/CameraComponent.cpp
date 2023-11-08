@@ -141,7 +141,7 @@ void CameraComponent::UpdateWindowWithNewRange()
 
 void CameraComponent::LookAt(XMFLOAT3 targetPos)
 {
-	
+
 
 	m_ViewDirty = true;
 }
