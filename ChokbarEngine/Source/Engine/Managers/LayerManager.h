@@ -1,20 +1,31 @@
 #pragma once
 
-
-class LayerManager
+enum LayerID
 {
-	friend class Engine;
-public:
-	~LayerManager();
+	DEFAULT = 0,
+	PLAYER = 1,
+	ASTEROID = 2,
+	PROJECTILE = 4,
+	OBSTACLE = 128,
+	ITEM = 256,
+	ENVIRONMENT = 512,
+	ALL = 1023
+};
 
-	static std::bitset<8> GetNextLayer();
+class PhysicLayer
+{
+public:
+
+	PhysicLayer();
+
+	void AddLayer(const LayerID id) { this->id |= id; }
+	void SetLayer(const LayerID id) { this->id = id; }
+
+	std::bitset<MAX_LAYERS> GetLayer() const { return id; }
+	bool IsLayerInMask(std::bitset<8> bitset) const;
 
 private:
 
-
-	LayerManager();
-
-	static std::bitset<MAX_LAYERS> m_NextLayer;
-	
+	std::bitset<MAX_LAYERS> id;
 };
 

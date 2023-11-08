@@ -1,13 +1,11 @@
 #include "LayerManager.h"
 
-LayerManager::LayerManager()
+PhysicLayer::PhysicLayer()
+	: id(DEFAULT)
 {
-	m_NextLayer = 0;
 }
 
-std::bitset<8> LayerManager::GetNextLayer()
+bool PhysicLayer::IsLayerInMask(std::bitset<8> bitset) const
 {
-	std::bitset<8> temp = m_NextLayer;
-
-	return m_NextLayer <<= 1;
+	return (id & bitset) != 0;
 }
