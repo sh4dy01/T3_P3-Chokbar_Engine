@@ -60,7 +60,7 @@ void PlayerShoot::ShootProjectile(XMFLOAT3 position, XMFLOAT3 direction)
 {
 	const auto projectile = GameObject::Instantiate<Projectile>()->GetComponent<ProjectileBehavior>();
 	projectile->transform->SetPosition(position);
-	projectile->Initialize(direction, m_ProjectileSpeed, m_ProjectileLifeTime);
+	projectile->Initialize(direction, 2, m_ProjectileLifeTime);
 }
 
 

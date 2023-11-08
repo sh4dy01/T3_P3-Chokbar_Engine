@@ -79,6 +79,7 @@ void PhysicsWorld::Update(float dt)
 		XMFLOAT3 fixedVelocity = velocity;
 
 
+
 		rb->Move(fixedVelocity);
 
 		rb->SetVelocity(ReduceVelocity(velocity));
@@ -105,7 +106,6 @@ bool PhysicsWorld::IsVelocityNull(const XMFLOAT3 velocity)
 
 bool PhysicsWorld::IsSameGridPos(const XMINT3 iGridPos, const int iGridSize, XMINT3 jGridPos, int jGridSize)
 {
-	DEBUG_LOG("Testing " << iGridPos.x << iGridPos.y << iGridPos.z << " and \n " << jGridPos.x << jGridPos.y << jGridPos.z)
 	return	std::abs(iGridPos.x - jGridPos.x) < iGridSize + jGridSize &&
 			std::abs(iGridPos.y - jGridPos.y) < iGridSize + jGridSize &&
 			std::abs(iGridPos.z - jGridPos.z) < iGridSize + jGridSize;

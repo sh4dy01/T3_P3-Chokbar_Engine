@@ -9,7 +9,8 @@ Asteroid::Asteroid()
 	AddComponent<Rigidbody>();
 
 	auto mesh = AddComponent<MeshRenderer>();
-	mesh->Init(SPHERE, SIMPLE);
+	mesh->Init(SPHERE, TEXTURE);
+	mesh->RegisterTexture(Resource::Load<Texture>("Resources/Textures/mars.dds"));
 
 	AddComponent<SphereCollider>();
 
