@@ -33,9 +33,9 @@ void MeshRenderer::Update(float dt)
 {
 	if (!IsEnabled() || !Mat || !Mesh) return;
 
-	//if (transform->IsDirty())
+	//if ((transform->m_pParent && transform->m_pParent->IsDirty()) || transform->IsDirty())
 		transform->UpdateParentedWorldMatrix();
 
-	Mat->GetShader()->UpdateObjectCB(transform->GetParentedWorldMatrix(), ObjectCBIndex);
+	Mat->GetShader()->UpdateObjectCB(transform->GetTransposedParentedWorldMatrix(), ObjectCBIndex);
 }
 

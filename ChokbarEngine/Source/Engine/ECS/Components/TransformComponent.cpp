@@ -227,27 +227,29 @@ void Transform::UpdateWorldMatrix()
 	DirectX::XMMATRIX newWorldMatrix = DirectX::XMLoadFloat4x4(&m_RotationMatrix) * DirectX::XMLoadFloat4x4(&m_ScaleMatrix) * DirectX::XMLoadFloat4x4(&m_PositionMatrix);
 	// Combine rotation and scale with position
 	// Convert the final world matrix to XMFLOAT4X4
-	DirectX::XMStoreFloat4x4(&m_WorldMatrix, DirectX::XMMatrixTranspose(newWorldMatrix));
-
-	m_Dirty = false;
+	DirectX::XMStoreFloat4x4(&m_WorldMatrix, newWorldMatrix);
 }
 
 void Transform::UpdateParentedWorldMatrix()
 {
-	m_Dirty = true;
-
-	DirectX::XMFLOAT4X4 parentWorldMatrix;
-
-	if (m_pParent)
+	//if (m_Dirty || m_pParent && m_pParent->IsDirty())
 	{
-		m_pParent->UpdateParentedWorldMatrix();
-		parentWorldMatrix = *m_pParent->GetParentedWorldMatrix();
-	}
-	else
-	{
-		XMStoreFloat4x4(&parentWorldMatrix, DirectX::XMMatrixIdentity());
-	}
+		DirectX::XMFLOAT4X4 parentWorldMatrix;
 
-	UpdateWorldMatrix();
-	XMStoreFloat4x4(&m_ParentedWorldMatrix, XMMatrixMultiply(DirectX::XMLoadFloat4x4(&m_WorldMatrix), (XMLoadFloat4x4(&parentWorldMatrix))));
+		if (m_pParent)
+		{
+			m_pParent->UpdateParentedWorldMatrix();
+			parentWorldMatrix = *m_pParent->GetParentedWorldMatrix();
+		}
+		else
+		{
+			XMStoreFloat4x4(&parentWorldMatrix, DirectX::XMMatrixIdentity());
+		}
+
+		UpdateWorldMatrix();
+		XMStoreFloat4x4(&m_ParentedWorldMatrix, XMMatrixMultiply(XMLoadFloat4x4(&m_WorldMatrix), XMLoadFloat4x4(&parentWorldMatrix)));
+		XMStoreFloat4x4(&m_TransposedParentedWorldMatrix, DirectX::XMMatrixTranspose(DirectX::XMLoadFloat4x4(&m_ParentedWorldMatrix)));
+
+		m_Dirty = false;
+	}
 }

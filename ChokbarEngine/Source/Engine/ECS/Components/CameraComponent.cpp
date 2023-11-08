@@ -180,35 +180,11 @@ void CameraComponent::UpdateProjectionMatrix()
 
 void CameraComponent::UpdateViewMatrix()
 {
-	//if (transform->IsDirty() || m_ViewDirty)
+	//if (transform->IsDirty() || (transform->m_pParent && transform->m_pParent->IsDirty()) || m_ViewDirty)
 	{
 		transform->UpdateParentedWorldMatrix();
+		XMStoreFloat4x4(&m_View, XMMatrixInverse(&XMMatrixDeterminant(XMLoadFloat4x4(transform->GetParentedWorldMatrix())), XMLoadFloat4x4(transform->GetParentedWorldMatrix())));
 
-		auto parentedMAtrix = transform->m_pParent->GetParentedWorldMatrix();
-		XMFLOAT3 Position;
-
-		//transform->UpdateParentedWorldMatrix();
-		XMVECTOR pos = XMVectorSet(parentedMAtrix->_14, parentedMAtrix->_24, parentedMAtrix->_34, 1.0F);
-		XMStoreFloat3(&Position, pos);
-
-		XMFLOAT3 playerForward;
-		XMVECTOR target;
-		XMFLOAT3 up;
-
-		if (transform->m_pParent)
-		{
-			playerForward = transform->m_pParent->GetForward();
-			target = XMVectorAdd(XMLoadFloat3(&Position), XMLoadFloat3(&playerForward));
-			up = transform->m_pParent->GetUp();
-		}
-		else
-		{
-			playerForward = transform->GetForward();
-			target = XMVectorAdd(XMLoadFloat3(&Position), XMLoadFloat3(&playerForward));
-			up = transform->GetUp();
-		}
-
-		XMStoreFloat4x4(&m_View, XMMatrixLookAtLH(pos, target, XMLoadFloat3(&up)));
 		m_ViewDirty = false;
 	}
 }
