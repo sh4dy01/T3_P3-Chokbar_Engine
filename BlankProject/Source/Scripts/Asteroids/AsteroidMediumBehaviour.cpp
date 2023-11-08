@@ -21,11 +21,12 @@ void AsteroidMediumBehaviour::Start()
 {
 }
 
-void AsteroidMediumBehaviour::Initialize(Transform* target, float speed)
+void AsteroidMediumBehaviour::Initialize(Transform* target, float speed, const XMFLOAT3& position)
 {
 	m_PlayerTransform = target;
 	m_Speed = speed;
-
+	m_Position = position;
+    transform->SetPosition(position);
 }
 
 void AsteroidMediumBehaviour::Update()

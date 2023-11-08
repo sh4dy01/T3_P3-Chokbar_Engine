@@ -14,20 +14,16 @@ AsteroidLarge::AsteroidLarge() {
     SetDirection(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
     
     transform->SetScale(25);
-    transform->SetPosition(0.0f, 0.0f, 50.0f);
     transform->Rotate(0.0f, 0.0f, 0.0f);
-
 }
 
 AsteroidLarge::~AsteroidLarge() 
 {
-  
 }
 
-void AsteroidLarge::TakeDamage(int damage) 
+void AsteroidLarge::TakeDamage(int damage)
 {
     Asteroid::TakeDamage(damage);
-
 }
 
 void AsteroidLarge::DestroyAfterATime(float m_Lifetime)

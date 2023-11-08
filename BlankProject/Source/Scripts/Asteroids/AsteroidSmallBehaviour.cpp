@@ -19,10 +19,12 @@ void AsteroidSmallBehaviour::Update()
     DestroyAfterATime();
 }
 
-void AsteroidSmallBehaviour::Initialize(const XMFLOAT3 direction, float speed)
+void AsteroidSmallBehaviour::Initialize(const XMFLOAT3 direction, float speed, const XMFLOAT3& position)
 {
 	m_Direction = direction;
 	m_Speed = speed;
+    m_Position = position;
+    transform->SetPosition(position);
 }
 
 void AsteroidSmallBehaviour::DestroyAfterATime()

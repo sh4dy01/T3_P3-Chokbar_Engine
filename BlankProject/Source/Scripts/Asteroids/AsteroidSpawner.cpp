@@ -32,6 +32,8 @@ void AsteroidSpawner::Update()
 
         m_WaveCooldown = m_WaveCooldownDuration;
     }
+    m_LastPlayerPosition = m_PlayerTransform->GetPosition();
+
 }
 
 
@@ -78,24 +80,41 @@ void AsteroidSpawner::SpawnAsteroidWave(int waveCount, int asteroidCount)
 
 void AsteroidSpawner::SpawnAsteroid(Asteroid::AsteroidType type)
 {
+    XMFLOAT3 playerPosition = m_PlayerTransform->GetPosition();
+
+    float spawnDistance = 500.0f;
+
+    XMFLOAT3 playerForward = m_PlayerTransform->GetForward();
+
+    XMFLOAT3 spawnPosition;
+    spawnPosition.x = playerPosition.x + spawnDistance * playerForward.x;
+    spawnPosition.y = playerPosition.y;
+    spawnPosition.z = playerPosition.z + spawnDistance * playerForward.z;
+
     if (type == Asteroid::SMALL)
     {
+        XMFLOAT3 direction;
+        XMStoreFloat3(&direction, XMVector3Normalize(XMLoadFloat3(&spawnPosition) - XMLoadFloat3(&m_LastPlayerPosition)));
+
         AsteroidSmallBehaviour* asteroid2 = GameObject::Instantiate<AsteroidSmall>("Asteroid " + std::to_string(m_AliveAsteroidCount))->GetComponent<AsteroidSmallBehaviour>();
-        asteroid2->Initialize(XMFLOAT3(0.0f, 0.0f, -10.0f), 5.0f);
+        asteroid2->Initialize(direction, 30.0f, spawnPosition);
         m_AliveAsteroids.push_back(asteroid2->gameObject);
         m_AliveAsteroidCount++;
     }
     else if (type == Asteroid::MEDIUM)
     {
         AsteroidMediumBehaviour* asteroid1 = GameObject::Instantiate<AsteroidMedium>("Asteroid " + std::to_string(m_AliveAsteroidCount))->GetComponent<AsteroidMediumBehaviour>();
-        asteroid1->Initialize(m_PlayerTransform, 20.0f);
+        asteroid1->Initialize(m_PlayerTransform, 20.0f, spawnPosition);
         m_AliveAsteroids.push_back(asteroid1->gameObject);
         m_AliveAsteroidCount++;
     }
     else if (type == Asteroid::LARGE)
     {
+        XMFLOAT3 direction;
+        XMStoreFloat3(&direction, XMVector3Normalize(XMLoadFloat3(&spawnPosition) - XMLoadFloat3(&m_LastPlayerPosition)));
+
         AsteroidLargeBehaviour* asteroid = GameObject::Instantiate<AsteroidLarge>("Asteroid " + std::to_string(m_AliveAsteroidCount))->GetComponent<AsteroidLargeBehaviour>();
-        asteroid->Initialize(XMFLOAT3(5.0f, 10.0f, -2.0f), 5.0f);
+        asteroid->Initialize(direction, 30.0f, spawnPosition);
         m_AliveAsteroids.push_back(asteroid->gameObject);
         m_AliveAsteroidCount++;
     }
@@ -103,10 +122,8 @@ void AsteroidSpawner::SpawnAsteroid(Asteroid::AsteroidType type)
 
 void AsteroidSpawner::TestAsteroidLifetime()
 {
-    for (auto it = m_AliveAsteroids.begin(); it != m_AliveAsteroids.end();)
+    for (auto asteroid : m_AliveAsteroids)
     {
-        GameObject* asteroid = *it;
-
         bool shouldDestroy = false;
 
         if (asteroid->HasComponent<AsteroidSmallBehaviour>())
@@ -127,13 +144,12 @@ void AsteroidSpawner::TestAsteroidLifetime()
 
         if (shouldDestroy)
         {
+            m_AliveAsteroidCount--;
             asteroid->Destroy();
-            it = m_AliveAsteroids.erase(it);
-            m_AliveAsteroidCount--; 
         }
         else
         {
-            ++it;
+            ++asteroid;
         }
     }
 }

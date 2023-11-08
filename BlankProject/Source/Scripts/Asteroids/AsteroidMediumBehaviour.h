@@ -8,7 +8,7 @@ public:
 	void Start() override;
 	void Update() override;
 
-	void Initialize(Transform* target, float speed);
+	void Initialize(Transform* target, float speed, const XMFLOAT3& position);
 	void DestroyAfterATime();
 
 	float GetLifetime() const { return m_Lifetime; }
@@ -27,5 +27,5 @@ private:
 	float m_TimeSinceLastTeleport;
 	float m_TeleportInterval;
 
-
+	XMFLOAT3 m_Position;
 };

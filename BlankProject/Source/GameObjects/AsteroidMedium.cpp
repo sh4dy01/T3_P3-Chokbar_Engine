@@ -14,20 +14,15 @@ AsteroidMedium::AsteroidMedium() {
     SetDirection(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 
     transform->SetScale(15);
-    transform->SetPosition(0.0f, 50.0f, 50.0f);
-
-
 }
 
 AsteroidMedium::~AsteroidMedium()
 {
-
 }
 
 void AsteroidMedium::TakeDamage(int damage)
 {
     Asteroid::TakeDamage(damage);
-
 }
 
 void AsteroidMedium::DestroyAfterATime(float m_Lifetime)

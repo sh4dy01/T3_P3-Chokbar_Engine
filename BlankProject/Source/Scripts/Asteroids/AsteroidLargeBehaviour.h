@@ -8,7 +8,7 @@ public:
 	void Start() override;
 	void Update() override;
 
-	void Initialize(XMFLOAT3 direction, float speed);
+	void Initialize(XMFLOAT3 direction, float speed, const XMFLOAT3& position);
 	void DestroyAfterATime();
 
 	float GetLifetime() const { return m_Lifetime; }
@@ -17,10 +17,13 @@ public:
 private:
 
 	Transform* m_PlayerTransform;
+	XMFLOAT3 m_LastPlayerPosition;
 
 	float m_Speed;
 	float m_Lifetime;
+	float m_TimeSinceLastUpdate;
+	bool m_PlayerLastPositionSet;
 
 	XMFLOAT3 m_Direction;
-
+	XMFLOAT3 m_Position;
 };

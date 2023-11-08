@@ -19,6 +19,7 @@ public:
 private:
 
 	Transform* m_PlayerTransform;
+	XMFLOAT3 m_LastPlayerPosition;
 
 	std::vector<GameObject*> m_AliveAsteroids;
 
