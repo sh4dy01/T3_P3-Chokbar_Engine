@@ -45,7 +45,7 @@ void Application::Initialize()
 	player->m_CategoryBitmask.SetLayer(LayerID::PLAYER);
 	player->m_CollisionBitmask.SetLayer(LayerID::ASTEROID);
 
-	for (int i = 0; i < 100; i++)
+	for (int i = 0; i < 30; i++)
 	{
 		auto asteroid = GameObject::Instantiate<Asteroid>();
 		asteroid->m_CategoryBitmask.SetLayer(LayerID::ASTEROID);

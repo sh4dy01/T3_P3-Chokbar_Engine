@@ -117,9 +117,13 @@ void PhysicsWorld::CheckCollision()
 	{
 		for (size_t j = i + 1; j < m_RegisteredCollider.size(); j++)
 		{
-			if (!m_RegisteredCollider[i]->gameObject->m_CollisionBitmask.IsLayerInMask(m_RegisteredCollider[j]->gameObject->m_CategoryBitmask.GetLayer())) continue;
+			if (!m_RegisteredCollider[i]->gameObject->m_CollisionBitmask.IsLayerInMask(m_RegisteredCollider[j]->gameObject->m_CategoryBitmask.GetLayer()) ||
+				!m_RegisteredCollider[j]->gameObject->m_CollisionBitmask.IsLayerInMask(m_RegisteredCollider[i]->gameObject->m_CategoryBitmask.GetLayer())) continue;
 
-			if ((m_CurrentCollisionInfo && m_CurrentCollisionInfo->GetState() != Exit) || IsSameGridPos(m_RegisteredCollider[i]->GetAttachedRigidbody()->GetGridPosition(), m_RegisteredCollider[i]->GetGridSize(), m_RegisteredCollider[i]->GetAttachedRigidbody()->GetGridPosition(), m_RegisteredCollider[j]->GetGridSize()))
+			if (IsSameGridPos(
+				m_RegisteredCollider[i]->GetAttachedRigidbody()->GetGridPosition(), m_RegisteredCollider[i]->GetGridSize(), 
+				m_RegisteredCollider[j]->GetAttachedRigidbody()->GetGridPosition(), m_RegisteredCollider[j]->GetGridSize()) ||
+				(m_CurrentCollisionInfo && m_CurrentCollisionInfo->GetState() != Exit))
 			{
 				Collider* colliderA = m_RegisteredCollider[i];
 				Collider* colliderB = m_RegisteredCollider[j];
