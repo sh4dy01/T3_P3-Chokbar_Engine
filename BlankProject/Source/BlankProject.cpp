@@ -40,40 +40,42 @@ void Application::SetupPerGameSettings()
 
 void Application::Initialize()
 {
+	auto camera = GameObject::Instantiate<Camera>();
+
 	auto player = GameObject::Instantiate<Player>();
-	player->transform->SetPosition(0, 0, -50);
-	player->m_CategoryBitmask.SetLayer(LayerID::PLAYER);
-	player->m_CollisionBitmask.SetLayer(LayerID::ASTEROID);
+	player->transform->SetPosition(0, 0, -5);
+	camera->transform->SetParent(player->transform);
 
 	for (int i = 0; i < 30; i++)
 	{
 		auto asteroid = GameObject::Instantiate<Asteroid>();
-		asteroid->m_CategoryBitmask.SetLayer(LayerID::ASTEROID);
-		asteroid->m_CollisionBitmask.SetLayer(LayerID::PLAYER);
-		//asteroid->m_CollisionBitmask.AddLayer(LayerID::ASTEROID);
-		asteroid->m_CollisionBitmask.AddLayer(LayerID::PROJECTILE);
-
 
 		float x = (rand() % 100) - 5.5f;
 		float y = (rand() % 100) - 5.5f;
 		float z = (rand() % 100) - 5.5f;
+
 		asteroid->GetComponent<Rigidbody>()->Move(x, y, z);
 	}
 
 	GameObject::Instantiate<SkyBox>();
   
-	auto* test = NEW GameObject("ball");
+	auto* test = GameObject::Instantiate();
 	test->transform->SetPosition(-3, 0, 25);
 	test->transform->SetScale(3.f, 3.f, 3.f);
 
-	auto* mr = NEW MeshRenderer();
-	test->AddComponent<MeshRenderer>(mr);
-	auto* pr = NEW ParticleRenderer();
-	test->AddComponent<ParticleRenderer>(pr);
+
+	auto mr = test->AddComponent<MeshRenderer>();
+	auto pr = test->AddComponent<ParticleRenderer>();
+	mr->Init(MeshType::PYRAMID, MaterialType::TEXTURE);
+	mr->RegisterTexture(Resource::Load<Texture>("Resources/Textures/mars.dds"));
 	pr->Init(MeshType::CUBE, MaterialType::PARTICLE);
 	pr->SetParticleCount(100);
 	pr->Play();
-  
+
+
+	test = nullptr;
+	mr = nullptr;
+	pr = nullptr;
 	player = nullptr;
 }
 

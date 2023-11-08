@@ -18,6 +18,8 @@ public:
 	Transform();
 	~Transform() override;
 
+	void OnRemovedComponent() override;
+
 	void Translate(float x, float y, float z, Space space = Space::Local);
 	void Translate(DirectX::XMFLOAT3 translation, Space space = Space::Local);
 	void Translate(DirectX::XMVECTOR translation, Space space = Space::Local);
@@ -35,14 +37,16 @@ public:
 	void SetScale(float scale);
 	void SetScale(float x, float y, float z);
 	void SetScale(DirectX::XMFLOAT3 scale);
+	void SetParent(Transform* pParent);
+	void SetChild(Transform* pChild);
 
 	DirectX::XMFLOAT3 GetEulerAngles();
 
-	DirectX::XMFLOAT3 GetRight() { return m_Right; }
-	DirectX::XMFLOAT3 GetUp() { return m_Up; }
-	DirectX::XMFLOAT3 GetForward() { return m_Forward; }
+	DirectX::XMFLOAT3 GetRight() const { return m_Right; }
+	DirectX::XMFLOAT3 GetUp() const { return m_Up; }
+	DirectX::XMFLOAT3 GetForward() const { return m_Forward; }
 
-	DirectX::XMFLOAT3 GetPosition() { return m_Position; }
+	DirectX::XMFLOAT3 GetPosition() const { return m_Position; }
 	DirectX::XMFLOAT3 GetScale() const { return m_Scale; }
 	float GetHighestScale() const { return max(m_Scale.x, max(m_Scale.y, m_Scale.z)); }
 	DirectX::XMFLOAT4 GetQuaternion() const { return m_RotationQuaternion; }
@@ -51,11 +55,20 @@ public:
 	DirectX::XMFLOAT4X4* GetRotationMatrix() { return &m_RotationMatrix; }
 	DirectX::XMFLOAT4X4* GetScaleMatrix() { return &m_ScaleMatrix; }
 
-	DirectX::XMFLOAT4X4* GetWorldMatrix() { UpdateWorldMatrix(); return &m_WorldMatrix; }
+	DirectX::XMFLOAT4X4* GetWorldMatrix() { return &m_WorldMatrix; }
+	DirectX::XMFLOAT4X4* GetParentedWorldMatrix() { return &m_ParentedWorldMatrix; }
+	DirectX::XMFLOAT4X4* GetTransposedParentedWorldMatrix() { return &m_TransposedParentedWorldMatrix; }
+
+	//DirectX::XMFLOAT4X4* GetWorldMatrix() { UpdateWorldMatrix(); return &m_WorldMatrix; }
+
 
 	bool IsDirty() const { return m_Dirty; }
 
-	void UpdateWorldMatrix();
+	void UpdateParentedWorldMatrix();
+
+public:
+
+	Transform* m_pParent;
 
 private:
 
@@ -65,7 +78,11 @@ private:
 	void UpdateRotationMatrix();
 	void UpdateScaleMatrix();
 
+	void UpdateWorldMatrix();
+
 	bool m_Dirty;
+
+	std::vector<Transform*> m_pChildren;
 
 	DirectX::XMFLOAT3 m_Right;
 	DirectX::XMFLOAT3 m_Up;
@@ -80,5 +97,8 @@ private:
 	DirectX::XMFLOAT4X4 m_RotationMatrix;
 	DirectX::XMFLOAT4 m_RotationQuaternion;
 
+	DirectX::XMFLOAT4X4 m_LocalMatrix;
 	DirectX::XMFLOAT4X4 m_WorldMatrix;
+	DirectX::XMFLOAT4X4 m_ParentedWorldMatrix;
+	DirectX::XMFLOAT4X4 m_TransposedParentedWorldMatrix;
 };
