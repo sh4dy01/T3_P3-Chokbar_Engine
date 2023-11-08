@@ -36,6 +36,8 @@ private:
 	const float m_SlowMotionSpeed = 0.5f;
 	const float m_SlowMotion = 0.1f;
 
+	const float m_Damage = 10;
+
 	CameraComponent* m_pCamera;
 	Rigidbody* m_pRigidbody;
 };
