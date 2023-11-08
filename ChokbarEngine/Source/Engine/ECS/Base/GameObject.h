@@ -3,6 +3,7 @@
 #include "Object.h"
 #include "Engine/ECS/Base/Coordinator.h"
 #include "Engine/Core/DebugUtils.h"
+#include "Engine/Managers/LayerManager.h"
 
 
 class GameObject : public Object
@@ -100,10 +101,10 @@ public:
 	//Add bitset for collision bitmask
 
 	// Set bit for the category of the object
-	std::bitset<16> m_CategoryBitmask;
+	PhysicLayer m_CategoryBitmask;
 
 	// Decides which categories this object collides with
-	std::bitset<16> m_CollisionBitmask;
+	PhysicLayer m_CollisionBitmask;
 
 		 
 private:
