@@ -29,8 +29,6 @@ void DigitBehavior::Start()
 
 void DigitBehavior::Update()
 {
-	DEBUG_LOG("DigitBehavior::Update() : isDirty == false / " + std::to_string(m_digit));
-
 	if (!m_isDigitDirty) return;
 
 	DEBUG_LOG("DigitBehavior::Update() : isDirty == true / " + std::to_string(m_digit));
@@ -45,7 +43,7 @@ void DigitBehavior::Update()
 	// Since we are scrolling the texture with delta time, we do not know when to stop.
 	// We check if the new offset is a multiple of 0.1f, which is the size of each digit.
 	float newOffsetY = m_uiRenderer->GetUVOffsetY();
-	if (fmod(newOffsetY, 0.1f) == 0.0f)
+	if (fmod(newOffsetY, 0.1f) < 0.0001f)
 	{
 		m_isDigitDirty = false;
 	}
