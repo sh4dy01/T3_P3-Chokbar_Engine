@@ -1,7 +1,8 @@
 #include "Chokbar.h"
+
+#include "Engine/Engine.h"
+
 #include "CameraComponent.h"
-#include "Engine/ECS/Components/Component.h"
-#include <numbers>
 
 using namespace DirectX;
 
@@ -24,32 +25,32 @@ void CameraComponent::OnAddedComponent()
 
 XMVECTOR CameraComponent::GetRight() const
 {
-	return XMLoadFloat3(&m_Right);
+	return XMLoadFloat3(&transform->GetRight());
 }
 
 XMFLOAT3 CameraComponent::GetRight3f() const
 {
-	return m_Right;
+	return transform->GetRight();
 }
 
 XMVECTOR CameraComponent::GetUp() const
 {
-	return XMLoadFloat3(&m_Up);
+	return XMLoadFloat3(&transform->GetUp());
 }
 
 XMFLOAT3 CameraComponent::GetUp3f() const
 {
-	return m_Up;
+	return transform->GetUp();
 }
 
 XMVECTOR CameraComponent::GetLook() const
 {
-	return XMLoadFloat3(&m_Look);
+	return XMLoadFloat3(&transform->GetForward());
 }
 
 XMFLOAT3 CameraComponent::GetLook3f() const
 {
-	return m_Look;
+	return transform->GetForward();
 }
 
 float CameraComponent::GetNearZ() const
@@ -142,11 +143,10 @@ void CameraComponent::UpdateWindowWithNewRange()
 
 void CameraComponent::LookAt(XMFLOAT3 targetPos)
 {
-	m_LookAt = targetPos;
+
 
 	m_ViewDirty = true;
 }
-
 
 XMMATRIX CameraComponent::GetView() const
 {
@@ -155,9 +155,31 @@ XMMATRIX CameraComponent::GetView() const
 	return XMLoadFloat4x4(&m_View);
 }
 
+XMMATRIX CameraComponent::GetOrthoView() const
+{
+	assert(!m_ViewDirty);
+
+	return XMLoadFloat4x4(&m_OthoView);
+}
+
 XMMATRIX CameraComponent::GetProj() const
 {
 	return XMLoadFloat4x4(&m_Proj);
+}
+
+XMMATRIX CameraComponent::GetOrthoProj() const
+{
+	return XMLoadFloat4x4(&m_OrthoProj);
+}
+
+XMMATRIX CameraComponent::GetViewProj() const
+{
+	return XMMatrixMultiply(GetView(), GetProj());
+}
+
+XMMATRIX CameraComponent::GetOrthoViewProj() const
+{
+	return XMMatrixMultiply(GetOrthoView(), GetOrthoProj());
 }
 
 XMFLOAT4X4 CameraComponent::GetView4x4f() const
@@ -170,15 +192,44 @@ XMFLOAT4X4 CameraComponent::GetProj4x4f() const
 	return m_Proj;
 }
 
+XMFLOAT4X4 CameraComponent::GetViewProj4x4f() const
+{
+	XMFLOAT4X4 viewProj;
+	XMStoreFloat4x4(&viewProj, GetViewProj());
+	return viewProj;
+}
+
+XMFLOAT4X4 CameraComponent::GetOrthoView4x4f() const
+{
+	return m_OthoView;
+}
+
+XMFLOAT4X4 CameraComponent::GetOrthoProj4x4f() const
+{
+	return m_OrthoProj;
+}
+
+XMFLOAT4X4 CameraComponent::GetOrthoViewProj4x4f() const
+{
+	XMFLOAT4X4 viewProj;
+	XMStoreFloat4x4(&viewProj, GetOrthoViewProj());
+	return viewProj;
+}
+
 void CameraComponent::UpdateProjectionMatrix()
 {
 	XMStoreFloat4x4(&m_Proj, XMMatrixPerspectiveFovLH(XMConvertToRadians(m_FovY), m_Aspect, m_NearZ, m_FarZ));
+
+	float winWidth = Engine::GetWindow()->GetWidth();
+	float winHeight = Engine::GetWindow()->GetHeight();
+	XMStoreFloat4x4(&m_OrthoProj, XMMatrixOrthographicLH(winWidth, winHeight, m_NearZ, m_FarZ));
 }
 
 void CameraComponent::UpdateViewMatrix()
 {
 	if (transform->IsDirty() || m_ViewDirty)
 	{
+		// Perspective view
 		XMFLOAT3 Position = transform->GetPosition();
 		XMVECTOR pos = XMVectorSet(Position.x, Position.y, Position.z, 1.0F);
 		//XMVECTOR target = XMVectorSet(0.0F, 0.5F, 0.0F, 0.0F);
@@ -189,48 +240,7 @@ void CameraComponent::UpdateViewMatrix()
 		XMStoreFloat4x4(&m_View, XMMatrixLookAtLH(pos, target, XMLoadFloat3(&transform->GetUp())));
 		m_ViewDirty = false;
 
-		/*
-		XMVECTOR R = XMLoadFloat3(&m_Right);
-		XMVECTOR U = XMLoadFloat3(&m_Up);
-		XMVECTOR L = XMLoadFloat3(&m_Look);
-		XMVECTOR P = XMLoadFloat3(&transform->GetPosition());
-
-		// Keep camera’s axes orthogonal to each other and of unit length.
-		L = XMVector3Normalize(L);
-		U = XMVector3Normalize(XMVector3Cross(L, R));
-
-		// U, L already ortho-normal, so no need to normalize cross product.
-		R = XMVector3Cross(U, L);
-
-		// Fill in the view matrix entries.
-		float x = -XMVectorGetX(XMVector3Dot(P, R));
-		float y = -XMVectorGetX(XMVector3Dot(P, U));
-		float z = -XMVectorGetX(XMVector3Dot(P, L));
-
-		XMStoreFloat3(&m_Right, R);
-		XMStoreFloat3(&m_Up, U);
-		XMStoreFloat3(&m_Look, L);
-
-		m_View(0, 0) = m_Right.x;
-		m_View(1, 0) = m_Right.y;
-		m_View(2, 0) = m_Right.z;
-		m_View(3, 0) = x;
-
-		m_View(0, 1) = m_Up.x;
-		m_View(1, 1) = m_Up.y;
-		m_View(2, 1) = m_Up.z;
-		m_View(3, 1) = y;
-
-		m_View(0, 2) = m_Look.x;
-		m_View(1, 2) = m_Look.y;
-		m_View(2, 2) = m_Look.z;
-		m_View(3, 2) = z;
-
-		m_View(0, 3) = 0.0f;
-		m_View(1, 3) = 0.0f;
-		m_View(2, 3) = 0.0f;
-		m_View(3, 3) = 1.0f;
-				*/
-
+		// Orthographic view
+		XMStoreFloat4x4(&m_OthoView, XMMatrixLookAtLH(pos, target, XMLoadFloat3(&transform->GetUp())));
 	}
 }

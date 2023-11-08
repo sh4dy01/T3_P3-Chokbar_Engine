@@ -11,7 +11,7 @@ D3DMesh* GeometryHandler::m_Meshes[4];
 void GeometryHandler::CreateAllMeshes()
 {
 	m_Meshes[0] = CreateCube();
-	m_Meshes[1] = CreateUVSphere();
+	m_Meshes[1] = CreateGeoSphere();
 	m_Meshes[2] = CreatePyramid();
 	m_Meshes[3] = CreateSquare();
 }
@@ -83,7 +83,7 @@ D3DMesh* GeometryHandler::CreateCube()
 		20, 21, 22, 20, 22, 23
 	};
 
-	D3DMesh* mesh = new D3DMesh();
+	D3DMesh* mesh = NEW D3DMesh();
 	mesh->Create(v, sizeof(Vertex), _countof(v), i, sizeof(UINT), _countof(i));
 
 	return mesh;
@@ -204,7 +204,7 @@ D3DMesh* GeometryHandler::CreateUVSphere()
 		indices.push_back(baseIndex + i + 1);
 	}
 
-	D3DMesh* mesh = new D3DMesh();
+	D3DMesh* mesh = NEW D3DMesh();
 	mesh->Create(vertices.data(), sizeof(Vertex), (UINT)vertices.size(), indices.data(), sizeof(UINT), (UINT)indices.size());
 
 	return mesh;
@@ -284,7 +284,7 @@ D3DMesh* GeometryHandler::CreateGeoSphere()
 		XMStoreFloat3(&vertices[i].TangentU, XMVector3Normalize(T));
 	}
 
-	D3DMesh* mesh = new D3DMesh();
+	D3DMesh* mesh = NEW D3DMesh();
 	mesh->Create(vertices.data(), sizeof(Vertex), (UINT)vertices.size(), indices.data(), sizeof(UINT), (UINT)indices.size());
 
 	return mesh;
@@ -433,7 +433,7 @@ D3DMesh* GeometryHandler::CreatePyramid()
 		15, 16, 17
 	};
 
-	D3DMesh* mesh = new D3DMesh();
+	D3DMesh* mesh = NEW D3DMesh();
 	mesh->Create(vList, sizeof(Vertex), _countof(vList), iList, sizeof(UINT), _countof(iList));
 
 	return mesh;
@@ -448,7 +448,7 @@ D3DMesh* GeometryHandler::CreateSquare()
 	float depth = 0.5f;
 
 	vList[0] = Vertex(
-		XMFLOAT3(-width, height, depth),
+		XMFLOAT3(-width, height, 0.0f),
 		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
 		XMFLOAT3(0.0f, 0.0f, 1.0f),
 		XMFLOAT3(1.0f, 0.0f, 0.0f),
@@ -456,7 +456,7 @@ D3DMesh* GeometryHandler::CreateSquare()
 	);
 
 	vList[1] = Vertex(
-		XMFLOAT3(-width, -height, depth),
+		XMFLOAT3(-width, -height, 0.0f),
 		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
 		XMFLOAT3(0.0f, 0.0f, 1.0f),
 		XMFLOAT3(1.0f, 0.0f, 0.0f),
@@ -464,7 +464,7 @@ D3DMesh* GeometryHandler::CreateSquare()
 	);
 
 	vList[2] = Vertex(
-		XMFLOAT3(width, height, depth),
+		XMFLOAT3(width, height, 0.0f),
 		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
 		XMFLOAT3(0.0f, 0.0f, 1.0f),
 		XMFLOAT3(1.0f, 0.0f, 0.0f),
@@ -472,7 +472,7 @@ D3DMesh* GeometryHandler::CreateSquare()
 	);
 
 	vList[3] = Vertex(
-		XMFLOAT3(width, -height, depth),
+		XMFLOAT3(width, -height, 0.0f),
 		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
 		XMFLOAT3(0.0f, 0.0f, 1.0f),
 		XMFLOAT3(1.0f, 0.0f, 0.0f),

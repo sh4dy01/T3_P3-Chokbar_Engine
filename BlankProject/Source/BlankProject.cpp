@@ -1,12 +1,11 @@
 #include "BlankProject.h"
 #include "Platform/Windows/WinEntry.h"
 
-#include "Engine/Engine.h"
-
 #include "GameObjects/Camera.h"
 #include "GameObjects/Player.h"
 #include "GameObjects/Asteroid.h"
 #include "GameObjects/Skybox.h"
+#include "GameObjects/UI/Score.h"
 
 
 
@@ -23,18 +22,10 @@ public:
 	/* Initialize the application */
 	void Initialize() override;
 
-	void PreInitialize() override;
-
 	/* Game Loop */
 	void Update(const float dt) override;
 
-	void Run() override;
-
 	void Shutdown() override;
-
-	std::array<GameObject*, 3> scoreDigits; 
-	unsigned int score = 0;
-
 };
 
 ENTRYAPP(Application);
@@ -46,62 +37,36 @@ void Application::SetupPerGameSettings()
 	PerGameSettings::SetMainIcon(IDI_MAINICON);
 }
 
-void Application::PreInitialize()
-{
-	Engine::GetInstance()->Initialize();
-}
 
 void Application::Initialize()
 {
-	auto* test = new GameObject("ball");
-	test->transform->SetPosition(-3, 0, 10);
+	auto* test = NEW GameObject("ball");
+	test->transform->SetPosition(-3, 0, 25);
+	test->transform->SetScale(3.f, 3.f, 3.f);
 
-
-	auto* mr = new MeshRenderer();
-	auto* pr = new ParticleRenderer();
+	auto* mr = NEW MeshRenderer();
+	auto* pr = NEW ParticleRenderer();
 
 	test->AddComponent<MeshRenderer>(mr);
-	//test->AddComponent<ParticleRenderer>(pr);
+	test->AddComponent<ParticleRenderer>(pr);
 	mr->Init(MeshType::SPHERE, MaterialType::TEXTURE);
-	//pr->Init(MeshType::CUBE, MaterialType::PARTICLE);
-	//pr->SetParticleCount(100);
+	pr->Init(MeshType::CUBE, MaterialType::PARTICLE);
+	pr->SetParticleCount(100);
+	pr->Play();
 
-	std::string path = "Resources/Textures/mars.dds";
-	test->GetComponent<MeshRenderer>()->RegisterTexture(Resource::Load<Texture>(path));
+	test->GetComponent<MeshRenderer>()->RegisterTexture(Resource::Load<Texture>("Resources/Textures/mars.dds"));
 
-	auto* test2 = new GameObject("sky");
-	test2->transform->SetPosition(0, 0, 0);
-	test2->transform->SetScale(5000, 5000, 5000);
-
-	auto* mr2 = new MeshRenderer();
-	mr2->Init(MeshType::CUBE, MaterialType::SKYBOX);
-	std::string path2 = "Resources/Textures/spaceCM.dds";
-	mr2->RegisterTexture(Resource::Load<Texture>(path2));
-	test2->AddComponent<MeshRenderer>(mr2);
-
-	for (int i = 0; i < scoreDigits.size(); ++i) {
-		scoreDigits[i] = new GameObject("Digit" + std::to_string(i));
-		auto* mrt = new MeshRenderer();
-		scoreDigits[i]->AddComponent<MeshRenderer>(mrt);
-		mrt->Init(MeshType::SQUARE, MaterialType::TEXTURE_TRANSPARENT);
-		std::string path = "Resources/Textures/number.dds";
-		mrt->RegisterTexture(Resource::Load<Texture>(path));
-		scoreDigits[i]->transform->SetPosition(1.0f * i, 0, 0);
-	}
+	GameObject::Instantiate<Score>();
 
 	auto player = GameObject::Instantiate<Player>();
-	player->transform->SetPosition(0, 0, -5);
+	player->transform->SetPosition(0, -5, 0);
 
+	GameObject::Instantiate<SkyBox>();
+
+	test = nullptr;
+	mr = nullptr;
+	pr = nullptr;
 	player = nullptr;
-
-	//auto skybox = GameObject::Instantiate<SkyBox>();
-
-	//skybox = nullptr;
-}
-
-void Application::Run()
-{
-	Engine::GetInstance()->Run();
 }
 
 void Application::Update(const float dt)
@@ -111,5 +76,5 @@ void Application::Update(const float dt)
 
 void Application::Shutdown()
 {
-	Engine::GetInstance()->Shutdown();
+
 }

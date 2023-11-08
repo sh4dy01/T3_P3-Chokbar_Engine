@@ -34,8 +34,11 @@ ShaderBase::~ShaderBase()
 	RELPTR(m_vsByteCode);
 	RELPTR(m_psByteCode);
 
+	for (auto& cb : m_objectCBs)
+		DELPTR(cb);
+
 	m_objectCBs.clear();
-	NULLPTR(m_passCB);
+	DELPTR(m_passCB);
 }
 
 void ShaderBase::Init()
@@ -77,8 +80,9 @@ std::array<const CD3DX12_STATIC_SAMPLER_DESC, 2> ShaderBase::GetStaticSamplers()
 
 void ShaderBase::UnBind(UINT index)
 {
-	m_objectCBs.erase(m_objectCBs.begin() + index);
-	m_freeIndices.push(index);
+	DELPTR(m_objectCBs[index])
+
+		m_freeIndices.push(index);
 }
 
 ShaderBase* ShaderBase::Bind()
@@ -87,7 +91,12 @@ ShaderBase* ShaderBase::Bind()
 	return this;
 }
 
-void ShaderBase::AddObjectCB() { m_objectCBs.emplace_back(new UploadBuffer<ObjConstants>(m_generalDevice, 1, true)); }
+void ShaderBase::AddObjectCB()
+{
+	auto ub = NEW UploadBuffer<ObjConstants>(m_generalDevice, 1, true);
+	m_objectCBs.push_back(ub);
+	NULLPTR(ub);
+}
 
 void ShaderBase::UpdateObjectCB(DirectX::XMFLOAT4X4* itemWorldMatrix, UINT cbIndex)
 {
@@ -99,35 +108,27 @@ void ShaderBase::UpdateObjectCB(DirectX::XMFLOAT4X4* itemWorldMatrix, UINT cbInd
 	m_objectCBs[cbIndex]->CopyData(0, &objConstants);
 }
 
-void ShaderBase::CreatePassCB() { m_passCB = new UploadBuffer<PassConstants>(m_generalDevice, 1, true); }
+void ShaderBase::CreatePassCB() { m_passCB = NEW UploadBuffer<PassConstants>(m_generalDevice, 1, true); }
 
 void ShaderBase::UpdatePassCB(const float dt, const float totalTime)
 {
 	const XMMATRIX camView = CameraManager::GetMainCamera()->GetView();
-	const XMMATRIX camProj = CameraManager::GetMainCamera()->GetProj();
-
-	XMMATRIX viewProj = XMMatrixMultiply(camView, camProj);
-	// XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(camView), camView);
-	// XMMATRIX invProj = XMMatrixInverse(&XMMatrixDeterminant(camProj), camProj);
-	// XMMATRIX invViewProj = XMMatrixInverse(&XMMatrixDeterminant(viewProj), viewProj);
+	const XMMATRIX camOrthoProj = CameraManager::GetMainCamera()->GetOrthoProj();
+	const XMMATRIX camViewProj = CameraManager::GetMainCamera()->GetViewProj();
 
 	PassConstants mainPassCB;
+
 	XMStoreFloat4x4(&mainPassCB.View, XMMatrixTranspose(camView));
-	// XMStoreFloat4x4(&mainPassCB.InvView, XMMatrixTranspose(invView));
-	XMStoreFloat4x4(&mainPassCB.Proj, XMMatrixTranspose(camProj));
-	// XMStoreFloat4x4(&mainPassCB.InvProj, XMMatrixTranspose(invProj));
-	XMStoreFloat4x4(&mainPassCB.ViewProj, XMMatrixTranspose(viewProj));
-	// XMStoreFloat4x4(&mainPassCB.InvViewProj, XMMatrixTranspose(invViewProj));
+	XMStoreFloat4x4(&mainPassCB.OrthoProj, XMMatrixTranspose(camOrthoProj));
+	XMStoreFloat4x4(&mainPassCB.ViewProj, XMMatrixTranspose(camViewProj));
 
 	mainPassCB.LightColor = XMFLOAT4(0.9f, 0.7f, 0.7f, 1.0f);
-	mainPassCB.LightDirection = XMFLOAT3(-1.0f, -1.0f, 0.0f);
+	mainPassCB.LightDirection = XMFLOAT3(0.0f, 0.0f, 1.0f);
 	mainPassCB.EyePosW = CameraManager::GetMainCamera()->transform->GetPosition();
-	// mainPassCB.RenderTargetSize = XMFLOAT2(m_bufferWidth, m_bufferHeight);
-	// mainPassCB.InvRenderTargetSize = XMFLOAT2(1.0f / m_bufferWidth, 1.0f / m_bufferHeight);
-	// mainPassCB.NearZ = m_camera.NearZ;
-	// mainPassCB.FarZ = m_camera.FarZ;
+
 	mainPassCB.TotalTime = totalTime;
 	mainPassCB.DeltaTime = dt;
+
 	m_passCB->CopyData(0, &mainPassCB);
 }
 
@@ -295,6 +296,7 @@ void ShaderTexture::CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT
 	psoDesc.VS = { reinterpret_cast<BYTE*>(m_vsByteCode->GetBufferPointer()), m_vsByteCode->GetBufferSize() };
 	psoDesc.PS = { reinterpret_cast<BYTE*>(m_psByteCode->GetBufferPointer()), m_psByteCode->GetBufferSize() };
 	psoDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
+	psoDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
 	psoDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
 	psoDesc.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
 	psoDesc.SampleMask = UINT_MAX;
@@ -358,14 +360,14 @@ ShaderParticle::ShaderParticle(ID3D12Device* device, ID3D12DescriptorHeap* cbvHe
 
 ShaderParticle::~ShaderParticle()
 {
-	NULLPTR(m_particleInstanceDataBuffer);
+	DELPTR(m_particleInstanceDataBuffer);
 }
 
 void ShaderParticle::Init()
 {
 	ShaderBase::Init();
 
-	m_particleInstanceDataBuffer = new UploadBuffer<InstanceData>(m_generalDevice, MAX_PARTICLE_COUNT, false);
+	m_particleInstanceDataBuffer = NEW UploadBuffer<InstanceData>(m_generalDevice, MAX_PARTICLE_COUNT, false);
 }
 
 void ShaderParticle::CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT& rtvFormat, DXGI_FORMAT& dsvFormat)
@@ -520,6 +522,7 @@ void ShaderSkybox::CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT&
 	psoDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
 	psoDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
 	psoDesc.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
+	psoDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
 	psoDesc.SampleMask = UINT_MAX;
 	psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 	psoDesc.NumRenderTargets = 1;
@@ -533,124 +536,26 @@ void ShaderSkybox::CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT&
 
 	RELPTR(serializedRootSignature);
 }
-
 #pragma endregion
 
-#pragma region SHADER TEXTURE TRANSPARENT
-
-ShaderTextureTransparent::ShaderTextureTransparent(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, UINT cbvDescriptorSize, std::wstring& filepath)
-	: ShaderBase(device, cbvHeap, cbvDescriptorSize, filepath)
+#pragma region SHADER TEXTURE OFFSET
+ShaderTextureOffset::ShaderTextureOffset(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, UINT cbvDescriptorSize, std::wstring& filepath)
+	: ShaderTexture(device, cbvHeap, cbvDescriptorSize, filepath), m_uvOffsetY(0.0f)
 {
 }
 
-ShaderTextureTransparent::~ShaderTextureTransparent()
+ShaderTextureOffset::~ShaderTextureOffset()
 {
 }
 
-void ShaderTextureTransparent::UpdateObjectCB(DirectX::XMFLOAT4X4* itemWorldMatrix, UINT cbIndex)
-{
-	if (cbIndex >= m_offSetCb.size())
-		AddObjectCB();
-
-	OffSetConstants offSetConstants;
-	offSetConstants.World = *itemWorldMatrix;
-	offSetConstants.UVOffsetY = uvOffsetY;
-	m_offSetCb[cbIndex]->CopyData(0, &offSetConstants);
-}	
-
-void ShaderTextureTransparent::Init()
-{
-	ShaderBase::Init();
-	CompileShader(nullptr, "vs_main", "vs_5_0", &m_vsByteCode);
-	CompileShader(nullptr, "ps_main", "ps_5_0", &m_psByteCode);
-
-}
-
-void ShaderTextureTransparent::CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT& rtvFormat, DXGI_FORMAT& dsvFormat)
-{
-	SetInputLayout(vertexType);
-
-	CD3DX12_DESCRIPTOR_RANGE texTable;
-	texTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
-
-	CD3DX12_ROOT_PARAMETER slotRootParameter[3];
-	slotRootParameter[0].InitAsDescriptorTable(1, &texTable, D3D12_SHADER_VISIBILITY_PIXEL);
-	slotRootParameter[1].InitAsConstantBufferView(0);
-	slotRootParameter[2].InitAsConstantBufferView(1);
-
-	auto samplers = GetStaticSamplers();
-
-	CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc(_countof(slotRootParameter), slotRootParameter, 1, samplers.data(), D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
-
-	ID3DBlob* serializedRootSignature = nullptr;
-	ID3DBlob* errorBlob = nullptr;
-
-	HRESULT hr = D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &serializedRootSignature, &errorBlob);
-	ThrowIfFailed(hr);
-	hr = m_generalDevice->CreateRootSignature(0, serializedRootSignature->GetBufferPointer(), serializedRootSignature->GetBufferSize(), IID_PPV_ARGS(&m_rootSignature));
-	ThrowIfFailed(hr);
-
-	D3D12_RENDER_TARGET_BLEND_DESC blendDesc = {};
-	blendDesc.BlendEnable = TRUE;
-	blendDesc.LogicOpEnable = FALSE;
-	blendDesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;
-	blendDesc.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
-	blendDesc.BlendOp = D3D12_BLEND_OP_ADD;
-	blendDesc.SrcBlendAlpha = D3D12_BLEND_ONE;
-	blendDesc.DestBlendAlpha = D3D12_BLEND_ZERO;
-	blendDesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;
-	blendDesc.LogicOp = D3D12_LOGIC_OP_NOOP;
-	blendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
-
-	D3D12_BLEND_DESC blendStateDesc = {};
-	blendStateDesc.AlphaToCoverageEnable = FALSE;
-	blendStateDesc.IndependentBlendEnable = FALSE;
-	blendStateDesc.RenderTarget[0] = blendDesc;
-
-	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc = {};
-	ZeroMemory(&psoDesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
-	psoDesc.InputLayout = { m_inputLayout.data(), (UINT)m_inputLayout.size() };
-	psoDesc.pRootSignature = m_rootSignature;
-	psoDesc.VS = { reinterpret_cast<BYTE*>(m_vsByteCode->GetBufferPointer()), m_vsByteCode->GetBufferSize() };
-	psoDesc.PS = { reinterpret_cast<BYTE*>(m_psByteCode->GetBufferPointer()), m_psByteCode->GetBufferSize() };
-	psoDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
-	psoDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
-	psoDesc.BlendState = blendStateDesc;
-	psoDesc.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
-	psoDesc.SampleMask = UINT_MAX;
-	psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-	psoDesc.NumRenderTargets = 1;
-	psoDesc.RTVFormats[0] = rtvFormat;
-	psoDesc.SampleDesc.Count = 1;
-	psoDesc.SampleDesc.Quality = 0;
-	psoDesc.DSVFormat = dsvFormat;
-
-	hr = m_generalDevice->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&m_pipelineState));
-	ThrowIfFailed(hr);
-
-	RELPTR(serializedRootSignature);
-	RELPTR(errorBlob);
-}
-
-void ShaderTextureTransparent::BeginDraw(ID3D12GraphicsCommandList* cmdList)
-{
-	cmdList->SetGraphicsRootSignature(m_rootSignature);
-
-	cmdList->SetGraphicsRootConstantBufferView(2, m_passCB->GetResource()->GetGPUVirtualAddress());
-
-	cmdList->SetPipelineState(m_pipelineState);
-
-	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-}
-
-void ShaderTextureTransparent::Draw(ID3D12GraphicsCommandList* cmdList, IRenderer* drawnMeshR)
+void ShaderTextureOffset::Draw(ID3D12GraphicsCommandList* cmdList, IRenderer* drawnMeshR)
 {
 	assert(drawnMeshR->GetTexture(0)->HeapIndex >= 0);
 
-	if (drawnMeshR->ObjectCBIndex >= m_objectCBs.size())
+	if (drawnMeshR->ObjectCBIndex >= m_offSetCb.size())
 		AddObjectCB();
 
-	assert(drawnMeshR->ObjectCBIndex <= m_objectCBs.size());
+	assert(drawnMeshR->ObjectCBIndex <= m_offSetCb.size());
 
 	cmdList->IASetVertexBuffers(0, 1, &drawnMeshR->Mesh->VertexBufferView());
 	cmdList->IASetIndexBuffer(&drawnMeshR->Mesh->IndexBufferView());
@@ -659,14 +564,28 @@ void ShaderTextureTransparent::Draw(ID3D12GraphicsCommandList* cmdList, IRendere
 	cbvHandle.Offset(drawnMeshR->GetTexture(0)->HeapIndex, m_cbvDescriptorSize);
 
 	cmdList->SetGraphicsRootDescriptorTable(0, cbvHandle);
-	cmdList->SetGraphicsRootConstantBufferView(1, m_objectCBs[drawnMeshR->ObjectCBIndex]->GetResource()->GetGPUVirtualAddress());
+	cmdList->SetGraphicsRootConstantBufferView(1, m_offSetCb[drawnMeshR->ObjectCBIndex]->GetResource()->GetGPUVirtualAddress());
 
 
 	cmdList->DrawIndexedInstanced(drawnMeshR->Mesh->GetIndexCount(), 1, 0, 0, 0);
 }
 
-void ShaderTextureTransparent::EndDraw(ID3D12GraphicsCommandList* cmdList)
+void ShaderTextureOffset::AddObjectCB()
 {
+	auto ub = NEW UploadBuffer<OffSetConstants>(m_generalDevice, 1, true);
+	m_offSetCb.push_back(ub);
+	NULLPTR(ub);
+}
+
+void ShaderTextureOffset::UpdateObjectCB(DirectX::XMFLOAT4X4* itemWorldMatrix, UINT cbIndex)
+{
+	if (cbIndex >= m_offSetCb.size())
+		AddObjectCB();
+
+	OffSetConstants offSetConstants;
+	offSetConstants.World = *itemWorldMatrix;
+	offSetConstants.UVOffsetY = m_uvOffsetY;
+	m_offSetCb[cbIndex]->CopyData(0, &offSetConstants);
 }
 
 #pragma endregion

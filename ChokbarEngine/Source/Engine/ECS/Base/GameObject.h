@@ -1,10 +1,9 @@
 #pragma once
 
 #include "Object.h"
+#include "Engine/ECS/Base/Coordinator.h"
 #include "Engine/Core/DebugUtils.h"
-#include "Engine/ECS/Components/TransformComponent.h"
 
-class Engine;
 
 class GameObject : public Object
 {
@@ -12,27 +11,19 @@ public:
 	GameObject();
 	GameObject(const std::string &name);
 
-	template <typename... Component>
-	GameObject(const std::string &name, Component... components)
-	{
-		m_Name = name;
-		transform = Engine::GetCoordinator()->GetComponent<Transform>(GetInstanceID());
 
-		(AddComponent<Component>(), ...);
-	}
-
-	virtual ~GameObject() override;
+	~GameObject() override;
 
 	template <class GameObject>
 	static GameObject* Instantiate() 
 	{
-		return  new GameObject();
+		return NEW GameObject();
 	}
 
 	template <class GameObject>
 	static GameObject* Instantiate(const std::string& name)
 	{
-		auto go = new GameObject();
+		auto go = NEW GameObject();
 		go->SetName(name);
 
 		return go;
@@ -56,15 +47,16 @@ public:
 	template<class T>
 	T* AddComponent()
 	{
-		auto component = new T();
+		auto component = NEW T();
 		component->gameObject = this;
 		component->transform = transform;
 		component->SetEnabled(true);
-		component->OnAddedComponent();
 
 		DEBUG_LOG("Adding component: " + std::string(typeid(T).name()) + " to " + m_Name + " entity");
 
-		Engine::GetCoordinator()->AddComponent<T>(GetInstanceID(), component);
+		Coordinator::GetInstance()->AddComponent<T>(GetInstanceID(), component);
+
+		component->OnAddedComponent();
 
 		return component;
 	}
@@ -75,25 +67,26 @@ public:
 		component->gameObject = this;
 		component->transform = transform;
 		component->SetEnabled(true);
-		component->OnAddedComponent();
 
 		DEBUG_LOG("Adding component: " + std::string(typeid(Component).name()) + " to " + m_Name + " entity");
 
-		Engine::GetCoordinator()->AddComponent<Component>(GetInstanceID(), component);
+		Coordinator::GetInstance()->AddComponent<Component>(GetInstanceID(), component);
+
+		component->OnAddedComponent();
 
 		return component;
 	}
 
 	template <class T>
-	T *GetComponent()
+	T* GetComponent()
 	{
-		return Engine::GetCoordinator()->GetComponent<T>(GetInstanceID());
+		return Coordinator::GetInstance()->GetComponent<T>(GetInstanceID());
 	}
 
 	template <class T>
-	bool HasComponent()
+	bool HasComponent() const
 	{
-		return Engine::GetCoordinator()->HasComponent<T>(GetInstanceID());
+		return Coordinator::GetInstance()->HasComponent<T>(GetInstanceID());
 	}
 
 	static GameObject* Find(const std::string& name);

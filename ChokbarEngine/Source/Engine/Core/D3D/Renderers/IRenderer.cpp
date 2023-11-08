@@ -41,6 +41,8 @@ void IRenderer::OnDelete()
 
 void IRenderer::RegisterTexture(Texture* tex)
 {
+	assert(tex != nullptr);
+
 	m_textures.push_back(tex);
 }
 

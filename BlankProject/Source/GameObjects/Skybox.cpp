@@ -5,15 +5,27 @@ SkyBox::SkyBox()
 {
 	m_Name = "SkyBox";
 
+	/*
 	SkyRenderer* sr = new SkyRenderer();
-	sr->Init(MeshType::CUBE, MaterialType::SKYBOX);
-	std::string path = "Resources/Textures/spaceCM.dds";
+	sr->Init(MeshType::SPHERE, MaterialType::SKYBOX);
+	std::string path = "Resources/Textures/cubemap.dds";
 	sr->RegisterTexture(Resource::Load<Texture>(path));
 
 	AddComponent<SkyRenderer>(sr);
 
-	transform->SetScale(10.0f, 10.0f, 10.0f);
+	transform->SetScale(500.f, 500.0f, 500.0f);
 	transform->SetPosition(0.0f, 0.0f, 0.0f);
+	*/
+		
+	MeshRenderer* mr = new MeshRenderer();
+	mr->Init(MeshType::SPHERE, MaterialType::SKYBOX);
+	mr->RegisterTexture(Resource::Load<Cubemap>("Resources/Textures/cubemap.dds"));
+
+	transform->SetScale(500.f, 500.0f, 500.0f);
+	transform->SetPosition(0.0f, 0.0f, 0.0f);
+
+	AddComponent<MeshRenderer>(mr);
+	mr = nullptr;
 }
 
 SkyBox::~SkyBox()

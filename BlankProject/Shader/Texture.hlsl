@@ -64,10 +64,10 @@ float4 ps_main(PS_INPUT input) : SV_TARGET
     float4 diffuse = gDiffuseMap.Sample(gsamPointWrap, input.uv);
     
     float3 N = normalize(input.NormalW);
-    float3 L = normalize(-gDirLight);
+    float3 L = normalize(gDirLight);
     
     // Use max() to prevent total darnkess
-    float3 incomingLight = max(saturate(dot(N, L)), 0.03f) * gColLight.rgb;
+    float3 incomingLight = max(saturate(dot(N, L)), 0.08f) * gColLight.rgb;
     float3 finalColor = diffuse.rgb * incomingLight;
     
     return float4(finalColor, 1.0f);

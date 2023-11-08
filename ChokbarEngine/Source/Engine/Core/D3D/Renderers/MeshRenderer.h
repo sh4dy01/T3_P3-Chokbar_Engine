@@ -5,14 +5,15 @@
 // Double inheritance is not a good idea, I know.
 class MeshRenderer : public Component, public IRenderer
 {
+	friend class D3DRenderer;
+
 public:
 	MeshRenderer();
 	~MeshRenderer() override;
 
 private:
-	float uvOffsetY = 0.0f;
 
-public:
+private:
 	void Render(ID3D12GraphicsCommandList* cmdList) override;
 	void Update(float dt) override;
 };

@@ -7,35 +7,33 @@
 #include <numbers>
 
 
+Engine* Engine::m_Instance = nullptr;
 
-Engine *Engine::m_Instance = nullptr;
-
-Engine::Engine() = default;
+Engine::Engine()
+{
+};
 
 Engine::~Engine()
-= default;
+{
+	DELPTR(m_Coordinator);
+}
 
-Engine *Engine::GetInstance()
+Engine* Engine::GetInstance()
 {
 	if (m_Instance == nullptr)
 	{
-		m_Instance = new Engine();
+		m_Instance = NEW Engine();
 	}
 
 	return m_Instance;
 }
 
-Coordinator *Engine::GetCoordinator()
-{
-	return &GetInstance()->m_Coordinator;
-}
-
-InputHandler *Engine::GetInput()
+InputHandler* Engine::GetInput()
 {
 	return &GetInstance()->m_InputHandler;
 }
 
-CameraComponent *Engine::GetMainCamera()
+CameraComponent* Engine::GetMainCamera()
 {
 	return GetInstance()->m_CameraManager.GetMainCamera();
 }
@@ -45,20 +43,16 @@ PhysicsWorld* Engine::GetPhysicsWorld()
 	return &GetInstance()->m_PhysicsWorld;
 }
 
+Win32::Window* Engine::GetWindow()
+{
+	return &GetInstance()->m_Window;
+}
+
 #pragma region INIT
 
 void Engine::PreInitialize()
 {
-	/*
-	Logger::PrintDebugSeperator();
-	Logger::PrintLog(L"Application Starting...\n");
-	Logger::PrintLog(L"Game Name: %s\n", PerGameSettings::GameName());
-	Logger::PrintLog(L"Boot Time: %s\n", Time::GetDateTimeString().c_str());
-
-	Logger::PrintDebugSeperator();
-	*/
-
-	// SplashScreen::Open();
+	m_Coordinator = Coordinator::GetInstance();
 }
 
 
@@ -66,7 +60,7 @@ void Engine::Initialize()
 {
 	PreInitialize();
 
-	m_Coordinator.Init();
+	m_Coordinator->Init();
 
 	m_Window.CreateNewWindow(DEFAULT_WIDTH, DEFAULT_HEIGHT, PerGameSettings::GameName(), PerGameSettings::MainIcon(), Win32::RESIZABLE);
 	m_InputHandler.Init(m_Window.GetHandle());
@@ -91,19 +85,23 @@ void Engine::Run()
 	{
 		m_Window.PollEvent();
 
+		Sleep(1);
 		m_TimeManager.Tick();
 
 		if (m_IsPaused) continue;
 
 		Update(m_TimeManager.GetDeltaTime());
+
+		m_Coordinator->DestroyRegisteredEntites();
+
 		Render();
 	}
 }
 
 void Engine::InitComponents()
 {
-	m_Coordinator.AwakeComponents();
-	m_Coordinator.StartComponents();
+	m_Coordinator->AwakeComponents();
+	m_Coordinator->StartComponents();
 }
 
 bool Engine::NeedsToClose()
@@ -117,9 +115,9 @@ void Engine::Update(float dt)
 
 	m_InputHandler.Update(TimeManager::GetUnscaledDeltaTime());
 
-	m_Coordinator.UpdateSystems(dt);
-	m_Coordinator.UpdateComponents();
-	m_Coordinator.LateUpdateComponents();
+	m_Coordinator->UpdateSystems(dt);
+	m_Coordinator->UpdateComponents();
+	m_Coordinator->LateUpdateComponents();
 
 	D3DRenderer::GetInstance()->Update(dt, m_TimeManager.GetTotalTime());
 	CalculateFrameStats();
@@ -134,7 +132,7 @@ void Engine::Render()
 
 void Engine::CalculateFrameStats()
 {
-		
+
 
 	// Code computes the average frames per second, and also the
 	// average time it takes to render one frame.  These stats
@@ -169,15 +167,19 @@ void Engine::OnResize()
 {
 	D3DRenderer::GetInstance()->OnResize(m_Window.GetWidth(), m_Window.GetHeight());
 	m_CameraManager.GetMainCamera()->SetAspect(GetAspectRatio());
+	m_CameraManager.GetMainCamera()->SetWindowHeight(m_Window.GetHeight());
+	m_CameraManager.GetMainCamera()->SetWindowWidth(m_Window.GetWidth());
 }
 
 void Engine::Shutdown()
 {
 	DELPTR(m_Instance);
+
+	delete D3DRenderer::GetInstance();
 }
 
 
-void Engine::OnApplicationFocus() 
+void Engine::OnApplicationFocus()
 {
 	if (m_IsPaused) {
 		TogglePause();
@@ -187,7 +189,7 @@ void Engine::OnApplicationFocus()
 	m_InputHandler.CaptureCursor();
 }
 
-void Engine::OnApplicationLostFocus() 
+void Engine::OnApplicationLostFocus()
 {
 	if (!m_IsPaused) {
 		TogglePause();
@@ -203,10 +205,10 @@ void Engine::TogglePause()
 
 	if (m_IsPaused)
 	{
-		m_InputHandler.ReleaseCursor(); 
+		m_InputHandler.ReleaseCursor();
 	}
 	else
 	{
-		m_InputHandler.CaptureCursor(); 
+		m_InputHandler.CaptureCursor();
 	}
 }

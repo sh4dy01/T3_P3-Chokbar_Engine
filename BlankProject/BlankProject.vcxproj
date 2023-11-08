@@ -63,6 +63,7 @@
       <PrecompiledHeaderFile>BlankProject.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(ProjectDir)Source;$(SolutionDir)ChokbarEngine\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ForcedIncludeFiles>BlankProject.h</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -104,23 +105,37 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Score.cpp" />
+    <ClCompile Include="Source\Scripts\UI\DigitBehavior.cpp" />
+    <ClCompile Include="Source\GameObjects\UI\Digit.cpp" />
+    <ClCompile Include="Source\GameObjects\UI\Score.cpp" />
+    <ClCompile Include="Source\Scripts\UI\ScoreBehavior.cpp" />
+    <ClCompile Include="Source\Scripts\Asteroids\AsteroidSpawner.cpp" />
     <ClCompile Include="Source\BlankProject.cpp" />
     <ClCompile Include="Source\GameObjects\Asteroid.cpp" />
     <ClCompile Include="Source\GameObjects\Camera.cpp" />
     <ClCompile Include="Source\GameObjects\Player.cpp" />
+    <ClCompile Include="Source\GameObjects\Projectile.cpp" />
+    <ClCompile Include="Source\Scripts\Player\PlayerMovement.cpp" />
+    <ClCompile Include="Source\Scripts\Player\PlayerShoot.cpp" />
+    <ClCompile Include="Source\Scripts\ProjectileBehavior.cpp" />
     <ClCompile Include="Source\GameObjects\Skybox.cpp" />
-    <ClCompile Include="Source\Scripts\PlayerComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Scripts\UI\DigitBehavior.h" />
+    <ClInclude Include="Source\GameObjects\UI\Digit.h" />
+    <ClInclude Include="Source\GameObjects\UI\Score.h" />
+    <ClInclude Include="Source\Scripts\Asteroids\AsteroidSpawner.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="Score.h" />
+    <ClInclude Include="Source\Scripts\UI\ScoreBehavior.h" />
     <ClInclude Include="Source\BlankProject.h" />
     <ClInclude Include="Source\GameObjects\Asteroid.h" />
     <ClInclude Include="Source\GameObjects\Camera.h" />
     <ClInclude Include="Source\GameObjects\Player.h" />
+    <ClInclude Include="Source\GameObjects\Projectile.h" />
+    <ClInclude Include="Source\Scripts\Player\PlayerMovement.h" />
+    <ClInclude Include="Source\Scripts\Player\PlayerShoot.h" />
+    <ClInclude Include="Source\Scripts\ProjectileBehavior.h" />
     <ClInclude Include="Source\GameObjects\SkyBox.h" />
-    <ClInclude Include="Source\Scripts\PlayerComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="BlankProject.rc" />

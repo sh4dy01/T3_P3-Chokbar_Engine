@@ -7,4 +7,8 @@
 
 #include "../resource.h"
 
+
 #include "Engine/Core/CoreMinimal.h"
+
+using namespace std;
+using namespace DirectX;

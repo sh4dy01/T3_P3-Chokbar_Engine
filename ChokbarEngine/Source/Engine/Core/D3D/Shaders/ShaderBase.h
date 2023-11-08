@@ -25,7 +25,7 @@ protected:
 	struct PassConstants
 	{
 		DirectX::XMFLOAT4X4 View = Identity4x4();
-		DirectX::XMFLOAT4X4 Proj = Identity4x4();
+		DirectX::XMFLOAT4X4 OrthoProj = Identity4x4();
 		DirectX::XMFLOAT4X4 ViewProj = Identity4x4();
 
 		DirectX::XMFLOAT4 LightColor = { 1.0f, 0.0f, 1.0f, 1.0f };
@@ -88,8 +88,8 @@ public:
 	virtual void Draw(ID3D12GraphicsCommandList* cmdList, IRenderer* drawnMeshR) = 0;
 	virtual void EndDraw(ID3D12GraphicsCommandList* cmdList) = 0;
 
-	UINT GetCreatedIndex() { return (UINT)m_objectCBs.size() - 1; }
-	UINT GetLastIndex() { return (UINT)m_objectCBs.size(); }
+	virtual UINT GetCreatedIndex() { return (UINT)m_objectCBs.size() - 1; }
+	virtual UINT GetLastIndex() { return (UINT)m_objectCBs.size(); }
 
 	void UnBind(UINT index);
 	ShaderBase* Bind();
@@ -168,30 +168,31 @@ public:
 	void CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT& rtvFormat, DXGI_FORMAT& dsvFormat) override;
 };
 
-class ShaderTextureTransparent : public ShaderBase
+class ShaderTextureOffset : public ShaderTexture
 {
 public:
 	struct OffSetConstants
 	{
-		DirectX::XMFLOAT4X4 World;
+		DirectX::XMFLOAT4X4 World = Identity4x4();
 		float UVOffsetY = 0.0f;
 	};
 
 public:
-	ShaderTextureTransparent(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, UINT cbvDescriptorSize, std::wstring& filepath);
-	~ShaderTextureTransparent();
+	ShaderTextureOffset(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, UINT cbvDescriptorSize, std::wstring& filepath);
+	~ShaderTextureOffset();
 
-	void UpdateObjectCB(DirectX::XMFLOAT4X4* itemWorldMatrix, UINT cbIndex);
+	void SetUVOffsetY(float uvOffsetY) { m_uvOffsetY = uvOffsetY; }
+	float GetUVOffsetY() const { return m_uvOffsetY; }
 
-	void Init() override;
-	void CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT& rtvFormat, DXGI_FORMAT& dsvFormat) override;
-	
-	void BeginDraw(ID3D12GraphicsCommandList* cmdList) override;
+	UINT GetCreatedIndex() override { return (UINT)m_offSetCb.size() - 1; }
+
 	void Draw(ID3D12GraphicsCommandList* cmdList, IRenderer* drawnMeshR) override;
-	void EndDraw(ID3D12GraphicsCommandList* cmdList) override;
 
-	float uvOffsetY;
 protected:
+	void AddObjectCB() override;
+	void UpdateObjectCB(DirectX::XMFLOAT4X4* itemWorldMatrix, UINT cbIndex) override;
+
 	std::vector<UploadBuffer<OffSetConstants>*> m_offSetCb;
 
+	float m_uvOffsetY;
 };

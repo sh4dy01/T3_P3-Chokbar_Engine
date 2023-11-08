@@ -37,8 +37,11 @@ void ComponentManager::StartAllComponents()
 
 void ComponentManager::UpdateAllComponents()
 {
-	for (const auto customComponent  : m_CustomComponents)
+	const int size = m_CustomComponents.size();
+	for (int i = 0; i < size; i++)
 	{
+		auto const customComponent = m_CustomComponents[i];
+
 		if (!customComponent->gameObject->IsActive() || !customComponent->IsEnabled()) continue;
 
 		customComponent->Update();

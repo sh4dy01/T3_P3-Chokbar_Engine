@@ -45,7 +45,7 @@ private:
 private:
 
 	const float MOUSE_REFRESH_RATE;
-	const int SENSIBILITY = 10;
+	const int SENSIBILITY;
 
 	bool m_IsCaptured;
 

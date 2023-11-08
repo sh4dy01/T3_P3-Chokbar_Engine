@@ -15,6 +15,7 @@ Texture::Texture(const std::string& filename) : IResourceObject(filename), HeapI
 {
 	Resource = nullptr;
 	UploadHeap = nullptr;
+	m_textType = D3D12_SRV_DIMENSION_TEXTURE2D;
 }
 
 Texture::~Texture()
@@ -48,5 +49,5 @@ void Texture::LoadTexture(ID3D12Device* device, ID3D12GraphicsCommandList* cmdLi
 	Resource = textureResource.Detach();
 	UploadHeap = textureUploadHeap.Detach();
 
-	HeapIndex = I(D3DRenderer)->UpdateTextureHeap(this);
+	HeapIndex = I(D3DRenderer)->UpdateTextureHeap(this, m_textType);
 }

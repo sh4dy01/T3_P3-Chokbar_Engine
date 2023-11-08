@@ -148,13 +148,10 @@
     <ClCompile Include="Source\Engine\ECS\Components\Collision\SphereCollider.cpp">
       <Filter>Source\Engine\ECS\Components\Collision</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\PhysicsManager.cpp">
-      <Filter>Source\Engine\Private</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Engine\ECS\Components\Collision\Rigidbody.cpp">
       <Filter>Source\Engine\ECS\Components\Collision</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\PhysicsWorld.cpp">
+    <ClCompile Include="Source\Engine\Managers\PhysicsWorld.cpp">
       <Filter>Source\Engine\Private</Filter>
     </ClCompile>
     <ClCompile Include="Source\Engine\Resource.cpp">
@@ -184,7 +181,6 @@
     <ClCompile Include="Source\Engine\Managers\TimeManager.cpp">
       <Filter>Source\Engine\Managers\Private</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\SplashScreen.cpp" />
     <ClCompile Include="Source\Engine\Core\D3D\External\DDSTextureLoader.cpp">
       <Filter>Source\Engine\Core\D3D\External</Filter>
     </ClCompile>
@@ -234,6 +230,12 @@
       <Filter>Source\Engine\Core</Filter>
     </ClCompile>
     <ClCompile Include="Source\Engine\Core\D3D\Renderers\SkyRenderer.cpp">
+      <Filter>Source\Engine\Core\D3D\Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Core\D3D\Shaders\Cubemap.cpp">
+      <Filter>Source\Engine\Core\D3D\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Core\D3D\Renderers\UIRenderer.cpp">
       <Filter>Source\Engine\Core\D3D\Renderers</Filter>
     </ClCompile>
   </ItemGroup>
@@ -298,13 +300,10 @@
     <ClInclude Include="Source\Engine\ECS\Components\Collision\SphereCollider.h">
       <Filter>Source\Engine\ECS\Components\Collision</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\PhysicsManager.h">
-      <Filter>Source\Engine\Public</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Engine\ECS\Components\Collision\Rigidbody.h">
       <Filter>Source\Engine\ECS\Components\Collision</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\PhysicsWorld.h">
+    <ClInclude Include="Source\Engine\Managers\PhysicsWorld.h">
       <Filter>Source\Engine\Public</Filter>
     </ClInclude>
     <ClInclude Include="Source\Engine\IResourceObject.h">
@@ -325,7 +324,6 @@
     <ClInclude Include="Source\Engine\ECS\Components\CustomComponent.h">
       <Filter>Source\Engine\ECS\Components</Filter>
     </ClInclude>
-    <ClInclude Include="Source\GameObjects\Camera.h" />
     <ClInclude Include="Source\Engine\Managers\CameraManager.h">
       <Filter>Source\Engine\Managers\Public</Filter>
     </ClInclude>
@@ -335,7 +333,6 @@
     <ClInclude Include="Source\Engine\Managers\TimeManager.h">
       <Filter>Source\Engine\Managers\Public</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\SplashScreen.h" />
     <ClInclude Include="Source\Engine\Core\D3D\External\d3dx12.h">
       <Filter>Source\Engine\Core\D3D\External</Filter>
     </ClInclude>
@@ -403,6 +400,12 @@
       <Filter>Source\Engine\Core</Filter>
     </ClInclude>
     <ClInclude Include="Source\Engine\Core\D3D\Renderers\SkyRenderer.h">
+      <Filter>Source\Engine\Core\D3D\Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Core\D3D\Shaders\Cubemap.h">
+      <Filter>Source\Engine\Core\D3D\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Core\D3D\Renderers\UIRenderer.h">
       <Filter>Source\Engine\Core\D3D\Renderers</Filter>
     </ClInclude>
   </ItemGroup>

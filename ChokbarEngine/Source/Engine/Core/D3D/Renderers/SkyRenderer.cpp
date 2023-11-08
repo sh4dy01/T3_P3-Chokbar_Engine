@@ -31,6 +31,12 @@ void SkyRenderer::Render(ID3D12GraphicsCommandList* cmdList)
 
 void SkyRenderer::Update(float dt)
 {
+	if (!IsEnabled() || !Mat || !Mesh) return;
+
+	if (transform->IsDirty())
+		transform->UpdateWorldMatrix();
+
+	Mat->GetShader()->UpdateObjectCB(transform->GetWorldMatrix(), ObjectCBIndex);
 }
 
 

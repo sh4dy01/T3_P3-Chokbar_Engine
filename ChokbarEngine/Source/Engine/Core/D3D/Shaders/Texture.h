@@ -1,7 +1,8 @@
 #pragma once 
 
 #include "Engine/IResourceObject.h"
-#include <d3d12.h>
+
+struct ID3D12Resource;
 
 class Texture : public IResourceObject
 {
@@ -15,6 +16,9 @@ public:
 	UINT HeapIndex;
 
 	void Load(const std::string& filepath) override;
+
+protected:
+	int m_textType;
 
 private:
 	void LoadTexture(ID3D12Device* device, ID3D12GraphicsCommandList* cmdList);
