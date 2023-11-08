@@ -348,8 +348,6 @@ bool PhysicsWorld::AreSpheresColliding(SphereCollider* sphereA, SphereCollider* 
 	// Compare the squared distance to the squared sum of radii
 	//return XMVector3LessOrEqual(distanceSquared, XMVectorReplicate(radiiSumSquared));
 
-	DEBUG_LOG(std::to_string(distance));
-
 	return distance <= radiiSumSquared;
 }
 
