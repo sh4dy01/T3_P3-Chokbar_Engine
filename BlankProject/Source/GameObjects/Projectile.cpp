@@ -17,3 +17,7 @@ Projectile::Projectile()
 	transform->SetScale(0.1f);
 
 }
+
+Projectile::~Projectile()
+{
+}

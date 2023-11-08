@@ -53,7 +53,7 @@ void Application::Initialize()
 	player->m_CategoryBitmask.SetLayer(LayerID::PLAYER);
 	player->m_CollisionBitmask.SetLayer(LayerID::ASTEROID);
 
-	for (int i = 0; i < 1; i++)
+	for (int i = 0; i < 0; i++)
 	{
 		auto asteroid = GameObject::Instantiate<Asteroid>();
 		asteroid->m_CategoryBitmask.SetLayer(LayerID::ASTEROID);
@@ -78,14 +78,12 @@ void Application::Initialize()
 
 	GameObject::Instantiate<SkyBox>();
   
-	auto* test = NEW GameObject("ball");
+	auto* test = GameObject::Instantiate();
 	test->transform->SetPosition(-3, 0, 25);
 	test->transform->SetScale(3.f, 3.f, 3.f);
 
-	auto* mr = NEW MeshRenderer();
-	test->AddComponent<MeshRenderer>(mr);
-	auto* pr = NEW ParticleRenderer();
-	test->AddComponent<ParticleRenderer>(pr);
+	test->AddComponent<MeshRenderer>();
+	auto pr = test->AddComponent<ParticleRenderer>();
 	pr->Init(MeshType::CUBE, MaterialType::PARTICLE);
 	pr->SetParticleCount(100);
 	pr->Play();

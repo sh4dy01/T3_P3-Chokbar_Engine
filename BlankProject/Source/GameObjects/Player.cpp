@@ -25,3 +25,7 @@ Player::Player()
 	AddComponent<PlayerMovement>();
 	AddComponent<PlayerShoot>();
 }
+
+Player::~Player()
+{
+}

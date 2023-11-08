@@ -13,7 +13,7 @@ TriggerCollisionEvent::~TriggerCollisionEvent()
 
 void TriggerCollisionEvent::OnAddedComponent()
 {
-	Collider* m_holder = gameObject->GetComponent<Collider>();
+	auto* m_holder = gameObject->GetComponent<Collider>();
 
 	if (m_holder)
 	{
