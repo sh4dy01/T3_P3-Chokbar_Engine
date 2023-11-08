@@ -59,7 +59,7 @@ public:
 	DirectX::XMFLOAT4X4* GetParentedWorldMatrix() { return &m_ParentedWorldMatrix; }
 	DirectX::XMFLOAT4X4* GetTransposedParentedWorldMatrix() { return &m_TransposedParentedWorldMatrix; }
 
-	DirectX::XMFLOAT4X4* GetWorldMatrix() { UpdateWorldMatrix(); return &m_WorldMatrix; }
+	//DirectX::XMFLOAT4X4* GetWorldMatrix() { UpdateWorldMatrix(); return &m_WorldMatrix; }
 
 
 	bool IsDirty() const { return m_Dirty; }

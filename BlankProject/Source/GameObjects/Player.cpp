@@ -21,6 +21,9 @@ Player::Player()
 	rightWing->transform->SetPosition(2, 0, 0);
 	rightWing->transform->SetParent(transform);
 
+	m_CategoryBitmask.SetLayer(LayerID::PLAYER);
+	m_CollisionBitmask.SetLayer(LayerID::ASTEROID);
+
 	AddComponent<PlayerMovement>();
 	AddComponent<PlayerShoot>();
 }
