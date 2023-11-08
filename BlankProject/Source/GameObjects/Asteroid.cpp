@@ -63,3 +63,11 @@ void Asteroid::TakeDamage(int damage)
         delete this;
     }
 }
+
+void Asteroid::DestroyAfterATime(float m_Lifetime)
+{
+	m_Lifetime -= TimeManager::GetDeltaTime();
+    if (m_Lifetime <= 0) {
+        GameObject::Destroy();
+	}
+}

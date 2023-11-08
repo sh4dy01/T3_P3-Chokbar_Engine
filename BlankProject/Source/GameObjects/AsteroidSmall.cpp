@@ -5,6 +5,8 @@ AsteroidSmall::AsteroidSmall() {
 
     m_Name = "AsteroidSmall";
 
+    m_Lifetime = 5.0f;
+
     AddComponent<AsteroidSmallBehaviour>();
 
     SetHealth(20);
@@ -25,4 +27,13 @@ void AsteroidSmall::TakeDamage(int damage)
 {
     Asteroid::TakeDamage(damage);
 
+}
+
+void AsteroidSmall::DestroyAfterATime(float m_Lifetime)
+{
+	this->m_Lifetime -= TimeManager::GetDeltaTime();
+	if (m_Lifetime <= 0)
+    {
+		GameObject::Destroy();
+	}
 }

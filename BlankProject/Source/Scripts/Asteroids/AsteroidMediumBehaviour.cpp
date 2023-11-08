@@ -8,6 +8,7 @@ void AsteroidMediumBehaviour::Awake()
 
     m_Speed = 5.0f;
     m_PlayerTransform = nullptr;
+    m_Lifetime = 5.0f;
 
     m_TeleportationAngle = 66.6f;
     m_TeleportationDistance = 33.0f;
@@ -75,5 +76,15 @@ void AsteroidMediumBehaviour::Update()
     XMFLOAT3 finalPosition;
     XMStoreFloat3(&finalPosition, newPosition);
     transform->SetPosition(finalPosition);
+
+    DestroyAfterATime();
 }
 
+void AsteroidMediumBehaviour::DestroyAfterATime()
+{
+    this->m_Lifetime -= TimeManager::GetDeltaTime();
+    if (m_Lifetime <= 0)
+    {
+        gameObject->Destroy();
+    }
+}

@@ -6,6 +6,7 @@ void AsteroidLargeBehaviour::Awake()
 
 	m_Speed = 1.0f;
 	m_Direction = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	m_Lifetime = 5.0f;
 }
 
 void AsteroidLargeBehaviour::Start() 
@@ -27,4 +28,15 @@ void AsteroidLargeBehaviour::Update()
     float rotationSpeedX = 100.0f * deltaTime;
 
     transform->Rotate(rotationSpeedX, 0, 0);
+
+    DestroyAfterATime();
+}
+
+void AsteroidLargeBehaviour::DestroyAfterATime()
+{
+    this->m_Lifetime -= TimeManager::GetDeltaTime();
+    if (m_Lifetime <= 0)
+    {
+        gameObject->Destroy();
+    }
 }

@@ -12,9 +12,9 @@ public:
 	void Awake() override;
 	void Update() override;
 
-	void SpawnAsteroidWave(int targetCount);
+	void SpawnAsteroidWave(int m_WaveCount, int m_AsteroidCount);
 	void SpawnAsteroid(Asteroid::AsteroidType type);
-
+	void TestAsteroidLifetime();
 
 private:
 
@@ -25,6 +25,9 @@ private:
 	int m_AsteroidCount = 10;
 	int m_AliveAsteroidCount = 0;
 	int m_WaveCount = 0;
+
+	float m_WaveCooldown = 0.0f;
+	float m_WaveCooldownDuration = 5.0f;
 
 	float m_SpawnTimer = 1.0f;
 	float m_Timer = 0.0f;

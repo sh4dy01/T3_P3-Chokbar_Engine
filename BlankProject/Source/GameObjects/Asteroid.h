@@ -26,9 +26,12 @@ public:
    
     virtual void Update();
     virtual void TakeDamage(int damage);
+    virtual void DestroyAfterATime(float m_Lifetime);
 
 protected:
     int m_Health;
     DirectX::XMFLOAT3 m_Direction;
     AsteroidType m_Type;
+
+    float m_Lifetime;
 };
