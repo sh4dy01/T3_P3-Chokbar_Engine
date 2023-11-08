@@ -105,7 +105,8 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AsteroidLife.cpp" />
+    <ClCompile Include="Source\Scripts\TriggerCollisionEvent\AsteroidCollisionEvent.cpp" />
+    <ClCompile Include="Source\Scripts\Asteroids\AsteroidLife.cpp" />
     <ClCompile Include="Source\Scripts\Player\PlayerLife.cpp" />
     <ClCompile Include="Source\Scripts\Asteroids\AsteroidSpawner.cpp" />
     <ClCompile Include="Source\BlankProject.cpp" />
@@ -120,7 +121,8 @@
     <ClCompile Include="Source\GameObjects\Skybox.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AsteroidLife.h" />
+    <ClInclude Include="Source\Scripts\TriggerCollisionEvent\AsteroidCollisionEvent.h" />
+    <ClInclude Include="Source\Scripts\Asteroids\AsteroidLife.h" />
     <ClInclude Include="Source\Scripts\Player\PlayerLife.h" />
     <ClInclude Include="Source\Scripts\Asteroids\AsteroidSpawner.h" />
     <ClInclude Include="resource.h" />

@@ -53,7 +53,7 @@ void Application::Initialize()
 	player->m_CategoryBitmask.SetLayer(LayerID::PLAYER);
 	player->m_CollisionBitmask.SetLayer(LayerID::ASTEROID);
 
-	for (int i = 0; i < 0; i++)
+	for (int i = 0; i < 50; i++)
 	{
 		auto asteroid = GameObject::Instantiate<Asteroid>();
 		asteroid->m_CategoryBitmask.SetLayer(LayerID::ASTEROID);
@@ -65,7 +65,7 @@ void Application::Initialize()
 		float x = (rand() % 50) - 5.5f;
 		float y = (rand() % 50) - 5.5f;
 		float z = (rand() % 50) - 5.5f;
-		asteroid->GetComponent<Rigidbody>()->Move(3, 3, 3);
+		asteroid->GetComponent<Rigidbody>()->Move(x, y, z);
 
 
 		/*auto go = GameObject::Instantiate<GameObject>();

@@ -1,6 +1,11 @@
 #include "LifeComponent.h"
 
 
+void LifeComponent::Start()
+{
+	m_CurrentLife = m_MaxLife;
+}
+
 void LifeComponent::RemoveLife(float damage)
 {
 	m_CurrentLife -= damage;

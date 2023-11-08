@@ -5,6 +5,8 @@
 
 Projectile::Projectile()
 {
+	m_Name = "Projectile";
+
 	AddComponent<MeshRenderer>()->Init(SPHERE, SIMPLE);
 	AddComponent<Rigidbody>();
 	AddComponent<SphereCollider>();

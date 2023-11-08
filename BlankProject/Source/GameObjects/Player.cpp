@@ -1,6 +1,7 @@
 #include "Player.h"
 
 #include "Engine/ECS/Components/CameraComponent.h"
+#include "Scripts/Player/PlayerLife.h"
 #include "Scripts/Player/PlayerMovement.h"
 #include "Scripts/Player/PlayerShoot.h"
 
@@ -24,6 +25,7 @@ Player::Player()
 	AddComponent<MeshRenderer>()->Init(SPHERE, SIMPLE);
 	AddComponent<PlayerMovement>();
 	AddComponent<PlayerShoot>();
+	AddComponent<PlayerLife>();
 }
 
 Player::~Player()

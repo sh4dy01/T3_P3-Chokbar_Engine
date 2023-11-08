@@ -1,6 +1,9 @@
 #include "BlankProject.h"
 #include "Asteroid.h"
+
+#include "../Scripts/Asteroids/AsteroidLife.h"
 #include "Engine/Resource.h"
+#include "Scripts/TriggerCollisionEvent/AsteroidCollisionEvent.h"
 
 Asteroid::Asteroid()
 {
@@ -18,6 +21,9 @@ Asteroid::Asteroid()
 	auto sc = AddComponent<SphereCollider>();
 	sc->SetRadius(2.f);
 	//sc->SetCenter({ -4.f, -4.f, -4.f });
+
+	AddComponent<AsteroidLife>();
+	AddComponent<AsteroidCollisionEvent>();
 
 	mesh = nullptr;
 }

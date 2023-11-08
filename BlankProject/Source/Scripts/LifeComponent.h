@@ -4,6 +4,8 @@ class LifeComponent : public CustomComponent
 {
 public:
 
+	void Start() override;
+
 	void InitMaxLife(float life);
 	void RemoveLife(float damage);
 

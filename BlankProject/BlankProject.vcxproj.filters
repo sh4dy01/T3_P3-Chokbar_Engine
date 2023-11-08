@@ -59,7 +59,8 @@
     <ClCompile Include="Source\Scripts\Asteroids\AsteroidSpawner.cpp" />
     <ClCompile Include="Source\Scripts\LifeComponent.cpp" />
     <ClCompile Include="Source\Scripts\Player\PlayerLife.cpp" />
-    <ClCompile Include="AsteroidLife.cpp" />
+    <ClCompile Include="Source\Scripts\Asteroids\AsteroidLife.cpp" />
+    <ClCompile Include="Source\Scripts\TriggerCollisionEvent\AsteroidCollisionEvent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -101,7 +102,10 @@
     <ClInclude Include="Source\Scripts\Player\PlayerLife.h">
       <Filter>Source\Source</Filter>
     </ClInclude>
-    <ClInclude Include="AsteroidLife.h">
+    <ClInclude Include="Source\Scripts\Asteroids\AsteroidLife.h">
+      <Filter>Source\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scripts\TriggerCollisionEvent\AsteroidCollisionEvent.h">
       <Filter>Source\Source</Filter>
     </ClInclude>
   </ItemGroup>
