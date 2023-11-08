@@ -60,6 +60,8 @@ private:
 
     bool AreSpheresColliding(SphereCollider* sphereA, SphereCollider* sphereB) const;
 
+    void ResolveSphereCollision(Rigidbody* rbA, SphereCollider* colliderA, Rigidbody* rbB, SphereCollider* colliderB) const;
+
     void CreateNewCollisionInfo(Collider* sphereA, Collider* sphereB);
     CollisionInfo* GetCollisionInfo(const Collider* sphereA, const Collider* sphereB) const;
 

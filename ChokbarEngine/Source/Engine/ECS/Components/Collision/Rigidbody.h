@@ -32,6 +32,9 @@ public:
 	float GetMass() const;
 	void SetMass(float mass);
 
+	float GetRestitution() const;
+	void SetRestitution(float restitution);
+
 	bool IsStatic() const;
 	void SetStatic(bool isStatic);
 
@@ -48,6 +51,9 @@ private:
 
     DirectX::XMFLOAT3 m_velocity;
     DirectX::XMFLOAT3 m_force;
+
+	float m_mass;
+	float m_restitution;
 
 	bool m_isStatic;
 

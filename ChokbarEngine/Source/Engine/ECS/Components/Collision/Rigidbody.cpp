@@ -2,12 +2,12 @@
 #include "Rigidbody.h"
 
 Rigidbody::Rigidbody()
-	: m_velocity(XMFLOAT3(0, 0, 0)), m_isStatic(false), m_gridPosition(0, 0, 0)
+	: m_velocity(XMFLOAT3(0, 0, 0)), m_isStatic(false), m_gridPosition(0, 0, 0), m_mass(100.0f), m_force(XMFLOAT3(0, 0, 0)), m_restitution(0.5f)
 {
 }
 
 Rigidbody::Rigidbody(bool isStatic)
-	: m_velocity(XMFLOAT3(0, 0, 0)), m_isStatic(isStatic), m_gridPosition(0, 0, 0)
+	: m_velocity(XMFLOAT3(0, 0, 0)), m_isStatic(isStatic), m_gridPosition(0, 0, 0), m_mass(100.0f), m_force(XMFLOAT3(0, 0, 0)), m_restitution(0.5f)
 {
 }
 
@@ -99,4 +99,24 @@ void Rigidbody::AddForce(const XMFLOAT3& force)
 XMFLOAT3 Rigidbody::GetForce() const
 {
 	return m_force;
+}
+
+void Rigidbody::SetMass(float mass)
+{
+	m_mass = mass;
+}
+
+void Rigidbody::SetRestitution(float restitution)
+{
+	m_restitution = restitution;
+}
+
+float Rigidbody::GetRestitution() const
+{
+	return m_restitution;
+}
+
+float Rigidbody::GetMass() const
+{
+	return m_mass;
 }

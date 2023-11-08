@@ -6,7 +6,7 @@
 
 
 Collider::Collider()
-	: m_Center(0, 0, 0)
+	: m_Center(0.f, 0.f, 0.f)
 {
 }
 

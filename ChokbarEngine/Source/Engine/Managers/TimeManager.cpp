@@ -5,7 +5,7 @@
 float TimeManager::m_DeltaTime = 0.0f;
 float TimeManager::m_CurrTime = 0.0f;
 float TimeManager::m_TimeScale = 1.0f;
-float TimeManager::m_FixedTime = 0.02f;
+float TimeManager::m_FixedTime = 0.005f;
 
 
 TimeManager::TimeManager()

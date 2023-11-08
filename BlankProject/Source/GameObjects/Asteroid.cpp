@@ -6,13 +6,18 @@ Asteroid::Asteroid()
 {
 	m_Name = "Asteroid";
 
-	AddComponent<Rigidbody>();
+	auto rb = AddComponent<Rigidbody>();
+	rb->SetMass(100.f);
 
 	auto mesh = AddComponent<MeshRenderer>();
 	mesh->Init(SPHERE, TEXTURE);
 	mesh->RegisterTexture(Resource::Load<Texture>("Resources/Textures/mars.dds"));
 
-	AddComponent<SphereCollider>();
+	transform->SetScale(2.f);
+
+	auto sc = AddComponent<SphereCollider>();
+	sc->SetRadius(2.f);
+	//sc->SetCenter({ -4.f, -4.f, -4.f });
 
 	mesh = nullptr;
 }

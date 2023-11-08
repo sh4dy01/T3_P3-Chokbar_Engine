@@ -41,11 +41,19 @@ void Application::SetupPerGameSettings()
 void Application::Initialize()
 {
 	auto player = GameObject::Instantiate<Player>();
-	player->transform->SetPosition(0, 0, -50);
+	//player->GetComponent<Rigidbody>()->Move(0.f, 0.f, -50.f);
+
+	player->GetComponent<Rigidbody>()->Move(3.f, 3.f, 9.f);
+	player->transform->RotateYaw(180);
+
+
+	/*player->transform->SetPosition(0, 0, 50);
+	player->transform->RotateYaw(180);*/
+
 	player->m_CategoryBitmask.SetLayer(LayerID::PLAYER);
 	player->m_CollisionBitmask.SetLayer(LayerID::ASTEROID);
 
-	for (int i = 0; i < 150; i++)
+	for (int i = 0; i < 1; i++)
 	{
 		auto asteroid = GameObject::Instantiate<Asteroid>();
 		asteroid->m_CategoryBitmask.SetLayer(LayerID::ASTEROID);
@@ -57,7 +65,15 @@ void Application::Initialize()
 		float x = (rand() % 50) - 5.5f;
 		float y = (rand() % 50) - 5.5f;
 		float z = (rand() % 50) - 5.5f;
-		asteroid->GetComponent<Rigidbody>()->Move(x, y, z);
+		asteroid->GetComponent<Rigidbody>()->Move(3, 3, 3);
+
+
+		/*auto go = GameObject::Instantiate<GameObject>();
+		auto mr = new MeshRenderer();
+		mr->Init(SPHERE, SIMPLE);
+		go->AddComponent<MeshRenderer>(mr);
+		go->transform->SetPosition(x, y, z);*/
+		//go->transform->
 	}
 
 	GameObject::Instantiate<SkyBox>();
