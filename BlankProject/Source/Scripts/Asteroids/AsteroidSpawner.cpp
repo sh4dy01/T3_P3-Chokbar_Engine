@@ -32,8 +32,8 @@ void AsteroidSpawner::Update()
 
         m_WaveCooldown = m_WaveCooldownDuration;
     }
-    m_LastPlayerPosition = m_PlayerTransform->GetPosition();
 
+    m_LastPlayerPosition = m_PlayerTransform->GetPosition();
 }
 
 
@@ -93,8 +93,10 @@ void AsteroidSpawner::SpawnAsteroid(Asteroid::AsteroidType type)
 
     if (type == Asteroid::SMALL)
     {
+        XMFLOAT3 playerLastPosition = m_LastPlayerPosition;
+
         XMFLOAT3 direction;
-        XMStoreFloat3(&direction, XMVector3Normalize(XMLoadFloat3(&spawnPosition) - XMLoadFloat3(&m_LastPlayerPosition)));
+        XMStoreFloat3(&direction, XMVector3Normalize(XMLoadFloat3(&spawnPosition) - XMLoadFloat3(&playerLastPosition)));
 
         AsteroidSmallBehaviour* asteroid2 = GameObject::Instantiate<AsteroidSmall>("Asteroid " + std::to_string(m_AliveAsteroidCount))->GetComponent<AsteroidSmallBehaviour>();
         asteroid2->Initialize(direction, 30.0f, spawnPosition);
@@ -110,8 +112,10 @@ void AsteroidSpawner::SpawnAsteroid(Asteroid::AsteroidType type)
     }
     else if (type == Asteroid::LARGE)
     {
+        XMFLOAT3 playerLastPosition = m_LastPlayerPosition;
+
         XMFLOAT3 direction;
-        XMStoreFloat3(&direction, XMVector3Normalize(XMLoadFloat3(&spawnPosition) - XMLoadFloat3(&m_LastPlayerPosition)));
+        XMStoreFloat3(&direction, XMVector3Normalize(XMLoadFloat3(&spawnPosition) - XMLoadFloat3(&playerLastPosition)));
 
         AsteroidLargeBehaviour* asteroid = GameObject::Instantiate<AsteroidLarge>("Asteroid " + std::to_string(m_AliveAsteroidCount))->GetComponent<AsteroidLargeBehaviour>();
         asteroid->Initialize(direction, 30.0f, spawnPosition);

@@ -17,7 +17,6 @@ public:
 private:
 
 	Transform* m_PlayerTransform;
-	XMFLOAT3 m_LastPlayerPosition;
 
 	float m_Speed;
 	float m_Lifetime;

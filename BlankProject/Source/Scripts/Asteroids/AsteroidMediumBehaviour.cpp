@@ -45,21 +45,18 @@ void AsteroidMediumBehaviour::Update()
     if (m_TimeSinceLastTeleport >= m_TeleportInterval) {
         m_TimeSinceLastTeleport = 0.0f;
 
-        // Créez une direction aléatoire avec une composante Z toujours positive
         XMVECTOR randomDir = XMVectorSet(
-            ((float)rand() / (float)RAND_MAX) * 20.0f, // X
-            ((float)rand() / (float)RAND_MAX) * 20.0f, // Y
-            ((float)rand() / (float)RAND_MAX) * 20.0f, // Z toujours positif
+            ((float)rand() / (float)RAND_MAX) * 20.0f,
+            ((float)rand() / (float)RAND_MAX) * 20.0f,
+            ((float)rand() / (float)RAND_MAX) * 20.0f,
             0.0f
         );
         randomDir = XMVector3Normalize(randomDir);
 
-        // Assurez-vous que le vecteur aléatoire pointe globalement dans la même direction que la direction vers le joueur
         if (XMVectorGetX(XMVector3Dot(randomDir, directionToPlayer)) < 0.0f) {
             randomDir = XMVectorNegate(randomDir);
         }
 
-        // Calculez le déplacement aléatoire avec un léger décalage vers l'avant
         XMVECTOR teleportOffset = XMVectorScale(randomDir, m_TeleportationDistance);
         XMVECTOR teleportPosition = XMVectorAdd(asteroidVecPos, teleportOffset);
 
@@ -67,11 +64,9 @@ void AsteroidMediumBehaviour::Update()
         XMStoreFloat3(&teleportPos, teleportPosition);
         transform->SetPosition(teleportPos);
 
-        // Réinitialisez asteroidVecPos pour être la nouvelle position de départ pour le déplacement après la téléportation
         asteroidVecPos = teleportPosition;
     }
 
-    // Déplacez l'astéroïde vers le joueur
     XMVECTOR newPosition = XMVectorAdd(asteroidVecPos, XMVectorScale(directionToPlayer, m_Speed * TimeManager::GetDeltaTime()));
 
     XMFLOAT3 finalPosition;
