@@ -24,6 +24,8 @@ public:
     Collider* GetColliderA() const { return m_ColliderA; };
     Collider* GetColliderB() const { return m_ColliderB; };
 
+
+
 private:
 
     CollisionState m_State;
@@ -41,12 +43,16 @@ public:
 
     void RegisterCollider(Collider* collider);
     void RemoveCollider(Collider* collider);
+    XMFLOAT3 ReduceVelocity(XMFLOAT3& velocity);
+    bool IsSameGridPos(XMINT3 iGridPos, int iGridSize, XMINT3 jGridPos, int jGridSize);
 
     void Update(float dt);
    
 private:
 
     PhysicsWorld();
+
+    bool IsVelocityNull(const XMFLOAT3 velocity);
 
     void CheckCollision();
     bool AreShapesColliding(Collider* shapeA, Collider* shapeB);

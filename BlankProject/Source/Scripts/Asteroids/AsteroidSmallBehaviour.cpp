@@ -9,17 +9,16 @@ void AsteroidSmallBehaviour::Awake()
 
 void AsteroidSmallBehaviour::Start()
 {
-	XMFLOAT3 playerPosition = m_PlayerTransform->GetPosition();
+}
 
-	XMFLOAT3 asteroidPosition = transform->GetPosition();
-	XMVECTOR dirToPlayer = XMVector3Normalize(
-		XMVectorSubtract(XMLoadFloat3(&playerPosition), XMLoadFloat3(&asteroidPosition))
-	);
-
-	XMStoreFloat3(&m_Direction, dirToPlayer);
+void AsteroidSmallBehaviour::Initialize(const XMFLOAT3 direction, float speed)
+{
+	m_Direction = direction;
+	m_Speed = speed;
 }
 
 void AsteroidSmallBehaviour::Update()
 {
 	transform->Translate(XMVectorScale(XMLoadFloat3(&m_Direction), m_Speed * TimeManager::GetDeltaTime()));
 }
+

@@ -26,17 +26,19 @@ TimeManager::~TimeManager()
 
 void TimeManager::Reset()
 {
-	const auto currTime = GetCurrentFrameTime();
+	LARGE_INTEGER currTime;
+	QueryPerformanceCounter(&currTime);
 
-	m_BaseTime = currTime;
-	m_PrevTime = currTime;
+	m_BaseTime = (currTime.QuadPart - m_performtime) / m_freq;
+	m_PrevTime = (currTime.QuadPart - m_performtime) / m_freq;
 	m_StopTime = 0;
 	isStopped = false;
 }
 
 void TimeManager::Start()
 {
-	const auto startTime = GetCurrentFrameTime();
+	LARGE_INTEGER currTime;
+	QueryPerformanceCounter(&currTime);
 
 	// Accumulate the time elapsed between stop and start pairs.
 	//
@@ -47,12 +49,12 @@ void TimeManager::Start()
 	if (isStopped)
 	{
 		// then accumulate the paused time.
-		m_PausedTime += (startTime - m_StopTime);
+		m_PausedTime += ((currTime.QuadPart - m_performtime) / m_freq - m_StopTime);
 
 		// since we are starting the timer back up, the current
 		// previous time is not valid, as it occurred while paused.
 		// So reset it to the current time.
-		m_PrevTime = startTime;
+		m_PrevTime = (currTime.QuadPart - m_performtime) / m_freq;
 
 		// no longer stopped...
 		m_StopTime = 0;
@@ -64,7 +66,8 @@ void TimeManager::Stop()
 {
 	if (!isStopped)
 	{
-		const auto currTime = GetCurrentFrameTime();
+		__int64 currTime;
+		QueryPerformanceCounter(reinterpret_cast<LARGE_INTEGER*>(&currTime));
 
 		// Otherwise, save the time we stopped at, and set
 		// the Boolean flag indicating the timer is stopped.
@@ -88,10 +91,11 @@ void TimeManager::Tick()
 
 	// Time difference between this frame and the previous.
 	m_DeltaTime = (m_CurrTime - m_PrevTime);
-	DEBUG_LOG(m_DeltaTime);
 
 	// Prepare for next frame.
 	m_PrevTime = m_CurrTime;
+
+
 
 	if (m_DeltaTime < 0.0f)
 	{
@@ -111,15 +115,11 @@ float TimeManager::GetTotalTime()
 {
 	if (isStopped)
 	{
-		return static_cast<float>(((m_StopTime - m_PausedTime) - m_BaseTime) / m_freq);
+		return static_cast<float>(((m_StopTime - m_PausedTime) - m_BaseTime));
 	}
 	else
 	{
-		OutputDebugString(L"Total time: ");
-		OutputDebugStringA(std::to_string(((m_CurrTime - m_PausedTime) - m_BaseTime) / m_freq).c_str());
-		OutputDebugString(L"\n");
-
-		return static_cast<float>(((m_CurrTime - m_PausedTime) - m_BaseTime) / m_freq);
+		return static_cast<float>(((m_CurrTime - m_PausedTime) - m_BaseTime));
 	}
 }
 

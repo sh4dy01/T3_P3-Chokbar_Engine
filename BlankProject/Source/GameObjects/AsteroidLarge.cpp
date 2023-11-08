@@ -1,21 +1,19 @@
 #include "AsteroidLarge.h"
+#include "Scripts/Asteroids/AsteroidLargeBehaviour.h"
 
 AsteroidLarge::AsteroidLarge() {
+
     m_Name = "AsteroidLarge"; 
 
-    AddComponent<Rigidbody>(); 
-
-    auto mesh = AddComponent<MeshRenderer>(); 
-    mesh->Init(SPHERE, SIMPLE);
-
-    AddComponent<SphereCollider>(); 
+    AddComponent<AsteroidLargeBehaviour>();
 
     SetHealth(20);
     SetType(AsteroidType::LARGE);
     SetDirection(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
-    SetScale(DirectX::XMFLOAT3(6.0f, 6.0f, 6.0f));
+    
+    transform->SetScale(25);
+    transform->SetPosition(0.0f, 0.0f, 50.0f);
 
-    mesh = nullptr;
 }
 
 AsteroidLarge::~AsteroidLarge() 

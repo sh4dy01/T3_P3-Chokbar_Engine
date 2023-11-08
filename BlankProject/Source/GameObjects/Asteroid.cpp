@@ -1,5 +1,6 @@
 #include "BlankProject.h"
 #include "Asteroid.h"
+#include "Engine/Resource.h"
 
 Asteroid::Asteroid()
 {
@@ -8,7 +9,8 @@ Asteroid::Asteroid()
 	AddComponent<Rigidbody>();
 
 	auto mesh = AddComponent<MeshRenderer>();
-	mesh->Init(SPHERE, SIMPLE);
+	mesh->Init(SPHERE, TEXTURE);
+    mesh->RegisterTexture(Resource::Load<Texture>("Resources/Textures/mars.dds"));
 
 	AddComponent<SphereCollider>();
 
@@ -48,16 +50,6 @@ void Asteroid::SetDirection(const DirectX::XMFLOAT3& direction)
 DirectX::XMFLOAT3 Asteroid::GetDirection() const 
 {
     return m_Direction;
-}
-
-void Asteroid::SetScale(const DirectX::XMFLOAT3& scale)
-{
-	m_Scale = scale;
-}
-
-DirectX::XMFLOAT3 Asteroid::GetScale() const
-{
-	return m_Scale;
 }
 
 void Asteroid::Update() 

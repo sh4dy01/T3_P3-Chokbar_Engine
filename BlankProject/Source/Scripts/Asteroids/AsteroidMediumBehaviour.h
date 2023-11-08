@@ -8,15 +8,12 @@ public:
 	void Start() override;
 	void Update() override;
 
-	void Initialize(XMFLOAT3 direction, float speed, float lifeTime);
+	void Initialize(Transform* target, float speed);
 
 private:
 
 	Transform* m_PlayerTransform;
 
 	float m_Speed;
-	float m_LifeTime;
-
-	XMFLOAT3 m_Direction;
 
 };

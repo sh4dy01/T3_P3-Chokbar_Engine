@@ -3,23 +3,37 @@
 
 void AsteroidMediumBehaviour::Awake()
 {
-	m_Speed = 2.0f;
-	m_Direction = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	m_Speed = 5.0f;
+    m_PlayerTransform = nullptr;
 }
 
 void AsteroidMediumBehaviour::Start()
 {
-	XMFLOAT3 playerPosition = m_PlayerTransform->GetPosition();
+}
 
-	XMFLOAT3 asteroidPosition = transform->GetPosition();
-	XMVECTOR dirToPlayer = XMVector3Normalize(
-		XMVectorSubtract(XMLoadFloat3(&playerPosition), XMLoadFloat3(&asteroidPosition))
-	);
+void AsteroidMediumBehaviour::Initialize(Transform* target, float speed)
+{
+	m_PlayerTransform = target;
+	m_Speed = speed;
 
-	XMStoreFloat3(&m_Direction, dirToPlayer);
 }
 
 void AsteroidMediumBehaviour::Update()
 {
-	transform->Translate(XMVectorScale(XMLoadFloat3(&m_Direction), m_Speed * TimeManager::GetDeltaTime()));
+    XMFLOAT3 asteroidPos = transform->GetPosition();
+    XMFLOAT3 playerPos = m_PlayerTransform->GetPosition();
+
+    XMVECTOR asteroidVecPos = XMLoadFloat3(&asteroidPos);
+    XMVECTOR playerVecPos = XMLoadFloat3(&playerPos);
+
+    XMVECTOR direction = XMVectorSubtract(playerVecPos, asteroidVecPos);
+
+    direction = XMVector3Normalize(direction);
+
+    XMVECTOR velocity = XMVectorScale(direction, m_Speed * TimeManager::GetDeltaTime());
+
+    XMVECTOR newPosition = XMVectorAdd(asteroidVecPos, velocity);
+
+    XMStoreFloat3(&asteroidPos, newPosition);
+    transform->SetPosition(asteroidPos);
 }

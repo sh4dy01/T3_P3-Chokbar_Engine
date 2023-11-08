@@ -23,6 +23,9 @@ SkyBox::SkyBox()
 
 	transform->SetScale(500.f, 500.0f, 500.0f);
 	transform->SetPosition(0.0f, 0.0f, 0.0f);
+
+	AddComponent<MeshRenderer>(mr);
+	mr = nullptr;
 }
 
 SkyBox::~SkyBox()

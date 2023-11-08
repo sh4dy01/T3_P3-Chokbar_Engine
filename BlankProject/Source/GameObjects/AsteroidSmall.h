@@ -4,5 +4,9 @@
 class AsteroidSmall : public Asteroid
 {
 public:
-	AsteroidSmall();
+    AsteroidSmall();
+
+    virtual ~AsteroidSmall() override;
+
+    void TakeDamage(int damage);
 };

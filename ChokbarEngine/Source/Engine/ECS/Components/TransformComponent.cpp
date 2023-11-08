@@ -1,4 +1,6 @@
 #include "Chokbar.h"
+
+
 #include "TransformComponent.h"
 
 Transform::Transform()
@@ -18,6 +20,8 @@ Transform::Transform()
 	// Initialize rotation matrix as an identity matrix
 	// Initialize world matrix as an identity matrix
 	DirectX::XMStoreFloat4x4(&m_WorldMatrix, DirectX::XMMatrixIdentity());
+
+	m_Dirty = false;
 }
 
 Transform::~Transform()

@@ -11,5 +11,9 @@ Projectile::Projectile()
 
 	AddComponent<ProjectileBehavior>();
 
+	m_CategoryBitmask.SetLayer(LayerID::PROJECTILE);
+	m_CollisionBitmask.SetLayer(LayerID::ASTEROID);
+
 	transform->SetScale(0.1f);
+
 }

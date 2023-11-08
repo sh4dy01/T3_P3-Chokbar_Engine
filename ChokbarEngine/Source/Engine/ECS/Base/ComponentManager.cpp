@@ -1,6 +1,8 @@
 #include "Chokbar.h"
 #include "ComponentManager.h"
 
+#include "Engine/Engine.h"
+
 
 ComponentManager::ComponentManager()
 	: m_NextComponentType(0)
@@ -70,6 +72,12 @@ void ComponentManager::LateUpdateAllComponents()
 
 void ComponentManager::RegisterCustomComponent(CustomComponent* customComponent)
 {
+	if (Engine::GetInstance()->GetEngineState() == Engine::RUNTIME)
+	{
+		customComponent->Awake();
+		customComponent->Start();
+	}
+
 	m_CustomComponents.push_back(customComponent);
 }
 

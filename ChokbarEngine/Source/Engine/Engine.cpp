@@ -53,6 +53,8 @@ void Engine::PreInitialize()
 
 void Engine::Initialize()
 {
+	m_EngineState = EngineState::INITIALIZING;
+
 	PreInitialize();
 
 	m_Coordinator->Init();
@@ -75,6 +77,8 @@ void Engine::Run()
 	InitComponents();
 
 	OnResize();
+
+	m_EngineState = EngineState::RUNTIME;
 
 	while (!NeedsToClose())
 	{
@@ -127,8 +131,6 @@ void Engine::Render()
 
 void Engine::CalculateFrameStats()
 {
-		
-
 	// Code computes the average frames per second, and also the
 	// average time it takes to render one frame.  These stats
 	// are appended to the window caption bar.
@@ -142,7 +144,7 @@ void Engine::CalculateFrameStats()
 	if ((m_TimeManager.GetTotalTime() - timeElapsed) >= 1.0f)
 	{
 		std::wstring windowText;
-		float fps = (float)frameCnt; // fps = frameCnt / 1
+		auto fps = static_cast<float>(frameCnt); // fps = frameCnt / 1
 		float mspf = 1000.0f / fps;
 
 		std::wstring fpsStr = std::to_wstring(fps);
