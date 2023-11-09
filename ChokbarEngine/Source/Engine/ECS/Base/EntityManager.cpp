@@ -13,11 +13,7 @@ EntityManager::EntityManager()
 
 EntityManager::~EntityManager()
 {
-	for (auto entity : m_LivingEntities) 
-	{
-		if (entity == nullptr) continue;
-		DELPTR(entity);
-	}
+	CleanEverything();
 }
 
 InstanceID EntityManager::GetNewInstanceID()
@@ -48,6 +44,20 @@ void EntityManager::DestroyEntity(InstanceID entity)
 	m_AvailableEntities.push(entity);	// entity's id now available
 
 	--m_LivingEntityCount;
+}
+
+void EntityManager::CleanEverything() 
+{
+	for (const auto entity : m_LivingEntities)
+	{
+		if (!entity) continue;
+
+		InstanceID id = entity->GetInstanceID();
+
+		DestroyEntity(id);
+	}
+
+	m_LivingEntityCount = 0;
 }
 
 void EntityManager::SetSignature(InstanceID entity, Signature signature)

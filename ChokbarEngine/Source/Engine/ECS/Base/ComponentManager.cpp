@@ -13,10 +13,7 @@ ComponentManager::ComponentManager()
 
 ComponentManager::~ComponentManager()
 {
-	for (auto customComponent : m_CustomComponents)
-	{
-		customComponent = nullptr;
-	}
+	CleanEverything();
 }
 
 void ComponentManager::AwakeAllComponents()
@@ -68,6 +65,18 @@ void ComponentManager::LateUpdateAllComponents()
 
 		customComponent->LateUpdate();
 	}
+}
+
+void ComponentManager::CleanEverything() 
+{
+	for (auto const& pair : m_ComponentArrays)
+	{
+		auto const& component = pair.second;
+
+		component->CleanUp();
+	}
+
+	m_CustomComponents.clear();
 }
 
 void ComponentManager::RegisterCustomComponent(CustomComponent* customComponent)

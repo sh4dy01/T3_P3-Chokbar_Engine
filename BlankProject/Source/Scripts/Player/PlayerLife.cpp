@@ -1,6 +1,7 @@
 #include "PlayerLife.h"
+#include "Engine/Engine.h"
 
 void PlayerLife::OnDeath()
 {
-	// Restart the game
+	Engine::RestartGame();
 }

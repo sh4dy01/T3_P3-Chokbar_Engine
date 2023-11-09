@@ -17,6 +17,7 @@
     <ClCompile Include="Source\GameObjects\Skybox.cpp" />
     <ClCompile Include="Source\GameObjects\Wing.cpp" />
     <ClCompile Include="Source\GameObjects\Particles\ProjectileParticles.cpp" />
+    <ClCompile Include="Source\Scripts\TriggerCollisionEvent\PlayerCollisionEvent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Scripts\TriggerCollisionEvent\AsteroidCollisionEvent.h" />
@@ -36,6 +37,7 @@
     <ClInclude Include="Source\GameObjects\SkyBox.h" />
     <ClInclude Include="Source\GameObjects\Wing.h" />
     <ClInclude Include="Source\GameObjects\Particles\ProjectileParticles.h" />
+    <ClInclude Include="Source\Scripts\TriggerCollisionEvent\PlayerCollisionEvent.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="BlankProject.rc" />

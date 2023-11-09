@@ -1,6 +1,7 @@
 #include "Player.h"
 
 #include "Engine/ECS/Components/CameraComponent.h"
+#include "Scripts/TriggerCollisionEvent/PlayerCollisionEvent.h"
 #include "Scripts/Player/PlayerLife.h"
 #include "Scripts/Player/PlayerMovement.h"
 #include "Scripts/Player/PlayerShoot.h"
@@ -39,7 +40,8 @@ Player::Player()
 
 	AddComponent<PlayerMovement>();
 	AddComponent<PlayerShoot>();
-	AddComponent<PlayerLife>();
+	AddComponent<PlayerLife>()->InitMaxLife(3);
+	AddComponent<PlayerCollisionEvent>();
 }
 
 Player::~Player()
