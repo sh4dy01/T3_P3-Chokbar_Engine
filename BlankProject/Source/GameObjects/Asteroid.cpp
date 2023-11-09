@@ -15,7 +15,7 @@ Asteroid::Asteroid()
 
 	auto mesh = AddComponent<MeshRenderer>();
 	mesh->Init(SPHERE, TEXTURE);
-	mesh->RegisterTexture(Resource::Load<Texture>("Resources/Textures/mars.dds"));
+	mesh->RegisterTexture(Resource::Load<Texture>("Resources/Textures/asteroid.dds"));
 
 	//auto particle = AddComponent<ParticleRenderer>();
 	//particle->Init(CUBE, PARTICLE);
