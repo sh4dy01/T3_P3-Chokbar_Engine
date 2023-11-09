@@ -22,12 +22,10 @@ void AsteroidLargeBehaviour::Initialize(Transform* player, const XMFLOAT3& posit
     m_Position = position;
     m_Rigidbody->Move(position);
 
-    auto go = GameObject::Instantiate<AsteroidSmall>();
-
-    auto childPos = position;
+/*auto childPos = position;
     childPos.x += 10.f;
     go->GetComponent<Rigidbody>()->Move(childPos);
-    go->transform->SetParent(transform);
+    go->transform->SetParent(transform);*/
 
 }
 
@@ -41,7 +39,7 @@ void AsteroidLargeBehaviour::Update()
     XMFLOAT3 direction;
     XMStoreFloat3(&direction, XMVector3Normalize(XMVectorSubtract(XMLoadFloat3(&targetPos), XMLoadFloat3(&currentPos))));
 
-    transform->RotateRoll(90.f * TimeManager::GetDeltaTime());
+    //transform->RotateRoll(50.f * TimeManager::GetDeltaTime());
 
     m_Rigidbody->SetVelocity(XMVectorScale(XMLoadFloat3(&direction), m_Speed));
 }

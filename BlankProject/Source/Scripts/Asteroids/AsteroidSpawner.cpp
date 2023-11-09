@@ -91,7 +91,7 @@ void AsteroidSpawner::SpawnAsteroidWave()
             }
             break;
         case 5:
-            m_TargetAsteroidCount = 1;
+            m_TargetAsteroidCount = 2;
             SpawnAsteroid(Asteroid::LARGE);
             break;
         default:
