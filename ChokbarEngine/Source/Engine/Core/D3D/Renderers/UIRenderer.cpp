@@ -33,6 +33,7 @@ void UIRenderer::UpdateShader()
 
 	if (ShaderTextureOffset* offsetShader = dynamic_cast<ShaderTextureOffset*>(Mat->GetShader()))
 	{
+		transform->UpdateParentedWorldMatrix();
 		offsetShader->UpdateAsOffset(transform->GetTransposedParentedWorldMatrix(), ObjectCBIndex, m_uvOffsetY);
 	}
 }

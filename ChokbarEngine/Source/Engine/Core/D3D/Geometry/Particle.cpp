@@ -27,6 +27,10 @@ ParticleTransform::ParticleTransform() : m_Dirty(false)
 	DirectX::XMStoreFloat4x4(&m_WorldMatrix, DirectX::XMMatrixIdentity());
 }
 
+ParticleTransform::~ParticleTransform()
+{
+}
+
 void ParticleTransform::Translate(float x, float y, float z)
 {
 	// Update the position vector
@@ -183,41 +187,41 @@ void ParticleTransform::UpdateWorldMatrix()
 
 #pragma region Particle
 Particle::Particle()
-	: m_LifeTime(0.0f), m_CurrentLifeTime(0.0f), m_Velocity(XMFLOAT3(0.0f, 0.0f, 0.0f)), m_AngularVelocity(XMFLOAT3(0.0f, 0.0f, 0.0f)), m_IsActive(false)
+	: m_lifeTime(0.0f), m_currentLifeTime(0.0f), m_velocity(XMFLOAT3(0.0f, 0.0f, 0.0f)), m_angularVelocity(XMFLOAT3(0.0f, 0.0f, 0.0f)), m_isActive(false)
 {
-	m_Transform = new ParticleTransform();
+	m_transform = new ParticleTransform();
 }
 
 Particle::~Particle()
 {
-	DELPTR(m_Transform);
+	DELPTR(m_transform);
 }
 
 void Particle::Update(float deltaTime)
 {
-	m_CurrentLifeTime -= deltaTime;
+	m_currentLifeTime -= deltaTime;
 }
 
 void Particle::Reset()
 {
-	m_CurrentLifeTime = 0.0f;
+	m_currentLifeTime = 0.0f;
 
-	m_AngularVelocity = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
-	m_Velocity = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
+	m_angularVelocity = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
+	m_velocity = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
 
-	m_Transform->SetPosition(0.0f, 0.0f, 0.0f);
-	m_Transform->SetScale(1.0f, 1.0f, 1.0f);
-	m_Transform->Rotate(0.0f, 0.0f, 0.0f);
+	m_transform->SetPosition(0.0f, 0.0f, 0.0f);
+	m_transform->SetScale(1.0f, 1.0f, 1.0f);
+	m_transform->Rotate(0.0f, 0.0f, 0.0f);
 }
 
 void Particle::Init(float rLifeTime, DirectX::XMFLOAT3 rVel, DirectX::XMFLOAT3 rAngVel, DirectX::XMFLOAT3 parentPos)
 {
-	m_LifeTime = rLifeTime;
-	m_CurrentLifeTime = 0.0f;
+	m_lifeTime = rLifeTime;
+	m_currentLifeTime = 0.0f;
 
-	m_AngularVelocity = rAngVel;
-	m_Velocity = rVel;
+	m_angularVelocity = rAngVel;
+	m_velocity = rVel;
 
-	m_Transform->SetPosition(parentPos);
+	m_transform->SetPosition(parentPos);
 }
 #pragma endregion

@@ -16,15 +16,15 @@ DigitBehavior::~DigitBehavior()
 
 void DigitBehavior::Awake()
 {
-	float uvOffsetY = CalculateUVOffsetFromDigit();
 
-	m_uiRenderer = gameObject->GetComponent<UIRenderer>();
-	m_uiRenderer->SetOffsetY(uvOffsetY);
 }
 
 void DigitBehavior::Start()
 {
+	float uvOffsetY = CalculateUVOffsetFromDigit();
 
+	m_uiRenderer = gameObject->GetComponent<UIRenderer>();
+	m_uiRenderer->SetOffsetY(uvOffsetY);
 }
 
 void DigitBehavior::Update()

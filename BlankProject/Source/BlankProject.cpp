@@ -6,7 +6,7 @@
 #include "GameObjects/Asteroid.h"
 #include "GameObjects/Skybox.h"
 #include "GameObjects/UI/Score.h"
-
+#include "GameObjects/Particles/ProjectileParticles.h"
 
 
 class Application : public Win32::IApplication
@@ -40,6 +40,9 @@ void Application::SetupPerGameSettings()
 
 void Application::Initialize()
 {
+	GameObject::Instantiate<ProjectileParticles>();
+
+	
 	auto camera = GameObject::Instantiate<Camera>();
 
 	auto player = GameObject::Instantiate<Player>();
@@ -50,11 +53,11 @@ void Application::Initialize()
 
 	for (int i = 0; i < 50; i++)
 	{
-		auto asteroid = GameObject::Instantiate<Asteroid>();
-
-		float x = (rand() % 50) - 5.5f;
-		float y = (rand() % 50) - 5.5f;
-		float z = (rand() % 50) - 5.5f;
+		const auto asteroid = GameObject::Instantiate<Asteroid>();
+		
+		const float x = (rand() % 50) - 5.5f;
+		const float y = (rand() % 50) - 5.5f;
+		const float z = (rand() % 50) - 5.5f;
 		asteroid->GetComponent<Rigidbody>()->Move(x, y, z);
 	}
 
