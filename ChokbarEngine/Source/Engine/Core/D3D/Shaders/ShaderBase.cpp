@@ -545,6 +545,8 @@ ShaderTextureOffset::ShaderTextureOffset(ID3D12Device* device, ID3D12DescriptorH
 
 ShaderTextureOffset::~ShaderTextureOffset()
 {
+	for (auto& cb : m_offSetCb)
+		DELPTR(cb);
 }
 
 void ShaderTextureOffset::Draw(ID3D12GraphicsCommandList* cmdList, IRenderer* drawnMeshR)

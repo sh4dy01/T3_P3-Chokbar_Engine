@@ -58,14 +58,16 @@ void AsteroidSpawner::SpawnAsteroidWave()
         switch (m_WaveCount)
         {
         case 1:
-            m_TargetAsteroidCount = 2;
+            m_TargetAsteroidCount = 6;
             SpawnAsteroid(Asteroid::SMALL);
             break;
         case 2:
-            m_TargetAsteroidCount = 3;
+            m_TargetAsteroidCount = 5;
+            m_SpawnTimerDuration = 2.f;
             SpawnAsteroid(Asteroid::MEDIUM);
             break;
         case 3:
+            m_TargetAsteroidCount = 10;
             if (m_AliveAsteroidCount % 4 == 0)
             {
                 SpawnAsteroid(Asteroid::SMALL);
@@ -76,7 +78,9 @@ void AsteroidSpawner::SpawnAsteroidWave()
             }
             break;
         case 4:
-            m_TargetAsteroidCount = 4;
+            m_TargetAsteroidCount = 10;
+            m_SpawnTimerDuration = 1.f;
+
             if (m_AliveAsteroidCount % 2 == 0)
             {
                 SpawnAsteroid(Asteroid::SMALL);

@@ -36,6 +36,7 @@ Transform::~Transform()
 {
 	NULL(m_pParent);
 
+
 	for (auto child : m_pChildren)
 	{
 		NULL(child);
@@ -44,9 +45,11 @@ Transform::~Transform()
 
 void Transform::OnRemovedComponent()
 {
+	NULL(m_pParent);
+
 	for (auto child : m_pChildren)
 	{
-		child->SetParent(nullptr);
+		NULL(child);
 	}
 }
 
