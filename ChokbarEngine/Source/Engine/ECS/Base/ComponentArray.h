@@ -86,6 +86,10 @@ public:
 		{
 			DELPTR(component);
 		}
+
+		m_Size = 0;
+		m_EntityToIndexMap.clear();
+		m_IndexToEntityMap.clear();
 	}
 
 	std::array<Component*, MAX_ENTITIES>* GetAllData()

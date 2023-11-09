@@ -159,12 +159,11 @@ void PhysicsWorld::CheckCollision()
 					switch (m_CurrentCollisionInfo->GetState())
 					{
 					case Enter:
-
-						if (!m_CurrentCollisionInfo) return;
-						if (!m_CurrentCollisionInfo->GetColliderA() || !m_CurrentCollisionInfo->GetColliderB()) return;
-
-						m_CurrentCollisionInfo->GetColliderA()->CallOnTriggerEnter(m_CurrentCollisionInfo->GetColliderB());
-						m_CurrentCollisionInfo->GetColliderB()->CallOnTriggerEnter(m_CurrentCollisionInfo->GetColliderA());
+						
+						if (m_CurrentCollisionInfo)
+							m_CurrentCollisionInfo->GetColliderA()->CallOnTriggerEnter(m_CurrentCollisionInfo->GetColliderB());
+						if (m_CurrentCollisionInfo)
+							m_CurrentCollisionInfo->GetColliderB()->CallOnTriggerEnter(m_CurrentCollisionInfo->GetColliderA());						
 
 						//distance = sqrt(pow(iGridPos.x - jGridPos.x, 2) + pow(iGridPos.y - jGridPos.y, 2) + pow(iGridPos.z - jGridPos.z, 2)) - ((SphereCollider*)m_RegisteredCollider[i])->GetRadius() + ((SphereCollider*)m_RegisteredCollider[j])->GetRadius();
 
