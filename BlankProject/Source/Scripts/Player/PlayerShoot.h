@@ -3,7 +3,6 @@
 class PlayerShoot : public CustomComponent
 {
 public:
-
 	PlayerShoot() = default;
 
 	void Awake() override;
@@ -11,7 +10,6 @@ public:
 	void Update() override;
 
 private:
-
 	void HandleShoot();
 	void ShootProjectileFromWings();
 	void ShootProjectile(XMFLOAT3 position, XMFLOAT3 direction);
@@ -19,12 +17,11 @@ private:
 	void HandleZoomAndSlowMotion();
 
 private:
-
 	const float m_ShootOffset = 2.0f;
 	const float m_ShootDelay = 0.1f;
 	float m_ShootTimer = 0.0f;
 
-	const float m_ProjectileSpeed = 5.0f;
+	const float m_ProjectileSpeed = 15.0f;
 	const float m_ProjectileLifeTime = 2.0f;
 
 	const float m_ZoomSpeed = 0.1f;
@@ -36,6 +33,11 @@ private:
 	const float m_SlowMotionSpeed = 0.5f;
 	const float m_SlowMotion = 0.1f;
 
-	CameraComponent* m_pCamera;
-	Rigidbody* m_pRigidbody;
+	const float m_Damage = 10;
+
+	Transform *m_LeftWing;
+	Transform *m_RightWing;
+
+	CameraComponent *m_pCamera;
+	Rigidbody *m_pRigidbody;
 };

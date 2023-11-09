@@ -77,6 +77,24 @@
     <ClCompile Include="Source\Scripts\Asteroids\AsteroidMediumBehaviour.cpp">
       <Filter>Source\Source\Scripts</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Scripts\TriggerCollisionEvent\AsteroidCollisionEvent.cpp">
+      <Filter>Source\Source\Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scripts\Asteroids\AsteroidLife.cpp">
+      <Filter>Source\Source\Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scripts\Player\PlayerLife.cpp">
+      <Filter>Source\Source\Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scripts\LifeComponent.cpp">
+      <Filter>Source\Source\Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GameObjects\Wing.cpp">
+      <Filter>Source\Source\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GameObjects\Particles\ProjectileParticles.cpp">
+      <Filter>Source\Source\GameObjects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -130,21 +148,37 @@
     <ClInclude Include="Source\Scripts\Asteroids\AsteroidMediumBehaviour.h">
       <Filter>Source\Source\Scripts</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Scripts\TriggerCollisionEvent\AsteroidCollisionEvent.h">
+      <Filter>Source\Source\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scripts\Asteroids\AsteroidLife.h">
+      <Filter>Source\Source\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scripts\Player\PlayerLife.h">
+      <Filter>Source\Source\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scripts\LifeComponent.h">
+      <Filter>Source\Source\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scripts\Player\PlayerMovement.h">
+      <Filter>Source\Source\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scripts\ProjectileBehavior.h">
+      <Filter>Source\Source\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GameObjects\Wing.h">
+      <Filter>Source\Source\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GameObjects\Particles\ProjectileParticles.h">
+      <Filter>Source\Source\GameObjects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="BlankProject.rc">
-      <Filter>Resources</Filter>
-    </ResourceCompile>
+    <ResourceCompile Include="BlankProject.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Content\Icons\mainIcon.ico">
-      <Filter>Resources\Icons</Filter>
-    </Image>
-    <Image Include="Resources\Textures\4k.dds">
-      <Filter>Resources\Textures</Filter>
-    </Image>
-    <Image Include="Resources\Textures\angry_winnie.dds">
-      <Filter>Resources\Textures</Filter>
-    </Image>
+    <Image Include="Content\Icons\mainIcon.ico" />
+    <Image Include="Resources\Textures\4k.dds" />
+    <Image Include="Resources\Textures\angry_winnie.dds" />
   </ItemGroup>
 </Project>

@@ -7,7 +7,6 @@
 #include "GameObjects/Skybox.h"
 #include "Scripts/Asteroids/AsteroidSpawner.h"
 
-
 class Application : public Win32::IApplication
 {
 
@@ -25,7 +24,6 @@ public:
 	void Update(const float dt) override;
 
 	void Shutdown() override;
-
 };
 
 ENTRYAPP(Application);
@@ -37,47 +35,57 @@ void Application::SetupPerGameSettings()
 	PerGameSettings::SetMainIcon(IDI_MAINICON);
 }
 
-
 void Application::Initialize()
 {
-	auto player = GameObject::Instantiate<Player>();
-	player->transform->SetPosition(0, 0, -50);
-	player->m_CategoryBitmask.SetLayer(LayerID::PLAYER);
-	player->m_CollisionBitmask.SetLayer(LayerID::ASTEROID);
+	auto camera = GameObject::Instantiate<Camera>();
 
-	for (int i = 0; i < 0; i++)
+	auto player = GameObject::Instantiate<Player>();
+
+	player->GetComponent<Rigidbody>()->Move(3.f, 3.f, 9.f);
+
+	player->transform->SetPosition(0, 0, -5);
+	camera->transform->SetParent(player->transform);
+
+	for (int i = 0; i < 50; i++)
 	{
 		auto asteroid = GameObject::Instantiate<Asteroid>();
-		asteroid->m_CategoryBitmask.SetLayer(LayerID::ASTEROID);
-		asteroid->m_CollisionBitmask.SetLayer(LayerID::PLAYER);
-		//asteroid->m_CollisionBitmask.AddLayer(LayerID::ASTEROID);
-		asteroid->m_CollisionBitmask.AddLayer(LayerID::PROJECTILE);
 
-
-		float x = (rand() % 100) - 5.5f;
-		float y = (rand() % 100) - 5.5f;
-		float z = (rand() % 100) - 5.5f;
+		float x = (rand() % 50) - 5.5f;
+		float y = (rand() % 50) - 5.5f;
+		float z = (rand() % 50) - 5.5f;
 		asteroid->GetComponent<Rigidbody>()->Move(x, y, z);
+
+		/*auto go = GameObject::Instantiate<GameObject>();
+		auto mr = new MeshRenderer();
+		mr->Init(SPHERE, SIMPLE);
+		go->AddComponent<MeshRenderer>(mr);
+		go->transform->SetPosition(x, y, z);*/
+		// go->transform->
 	}
 
 	GameObject::Instantiate<SkyBox>();
-  
-	auto* test = NEW GameObject("ball");
+
+	/*
+	auto* test = GameObject::Instantiate();
 	test->transform->SetPosition(-3, 0, 25);
 	test->transform->SetScale(3.f, 3.f, 3.f);
 
-	auto spawner = GameObject::Instantiate();
-	spawner->AddComponent<AsteroidSpawner>();
-
-	auto* mr = NEW MeshRenderer();
-	test->AddComponent<MeshRenderer>(mr);
-	auto* pr = NEW ParticleRenderer();
-	test->AddComponent<ParticleRenderer>(pr);
+	test->AddComponent<MeshRenderer>();
+	auto pr = test->AddComponent<ParticleRenderer>();
 	pr->Init(MeshType::CUBE, MaterialType::PARTICLE);
 	pr->SetParticleCount(100);
 	pr->Play();
-  
-	player = nullptr;
+
+	test = GameObject::Instantiate();
+	test->transform->SetPosition(3, 0, 25);
+	test->transform->SetScale(3.f, 3.f, 3.f);
+
+	test->AddComponent<MeshRenderer>();
+	pr = test->AddComponent<ParticleRenderer>();
+	pr->Init(MeshType::CUBE, MaterialType::PARTICLE);
+	pr->SetParticleCount(100);
+	pr->Play();
+	*/
 }
 
 void Application::Update(const float dt)
@@ -87,5 +95,4 @@ void Application::Update(const float dt)
 
 void Application::Shutdown()
 {
-
 }

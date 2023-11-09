@@ -16,19 +16,17 @@ SkyBox::SkyBox()
 	transform->SetScale(500.f, 500.0f, 500.0f);
 	transform->SetPosition(0.0f, 0.0f, 0.0f);
 	*/
-		
-	MeshRenderer* mr = new MeshRenderer();
+
+	auto mr = AddComponent<MeshRenderer>();
 	mr->Init(MeshType::SPHERE, MaterialType::SKYBOX);
 	mr->RegisterTexture(Resource::Load<Cubemap>("Resources/Textures/cubemap.dds"));
 
 	transform->SetScale(500000.f, 500000.0f, 500000.0f);
 	transform->SetPosition(0.0f, 0.0f, 0.0f);
 
-	AddComponent<MeshRenderer>(mr);
 	mr = nullptr;
 }
 
 SkyBox::~SkyBox()
 {
 }
-

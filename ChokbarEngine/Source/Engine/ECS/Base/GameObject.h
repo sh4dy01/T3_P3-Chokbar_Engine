@@ -58,7 +58,7 @@ public:
 		component->transform = transform;
 		component->SetEnabled(true);
 
-		DEBUG_LOG("Adding component: " + std::string(typeid(T).name()) + " to " + m_Name + " entity");
+		//DEBUG_LOG("Adding component: " + std::string(typeid(T).name()) + " to " + m_Name + " entity");
 
 		Coordinator::GetInstance()->AddComponent<T>(GetInstanceID(), component);
 
@@ -74,7 +74,7 @@ public:
 		component->transform = transform;
 		component->SetEnabled(true);
 
-		DEBUG_LOG("Adding component: " + std::string(typeid(Component).name()) + " to " + m_Name + " entity");
+		//DEBUG_LOG("Adding component: " + std::string(typeid(Component).name()) + " to " + m_Name + " entity");
 
 		Coordinator::GetInstance()->AddComponent<Component>(GetInstanceID(), component);
 

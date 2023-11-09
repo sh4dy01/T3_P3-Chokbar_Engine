@@ -11,7 +11,7 @@ class ParticleRenderer : public Component, public IRenderer
 	friend class D3DRenderer;
 public:
 	ParticleRenderer();
-	~ParticleRenderer();
+	~ParticleRenderer() override;
 
 	void Play();
 	void Pause();
