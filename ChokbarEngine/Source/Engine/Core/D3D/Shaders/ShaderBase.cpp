@@ -93,7 +93,7 @@ ShaderBase* ShaderBase::Bind()
 
 void ShaderBase::AddObjectCB() 
 { 
-	auto ub = NEW UploadBuffer<ObjConstants>(m_generalDevice, 1, true);
+	auto ub = new UploadBuffer<ObjConstants>(m_generalDevice, 1, true);
 	m_objectCBs.push_back(ub);
 	NULLPTR(ub);
 }
@@ -108,7 +108,7 @@ void ShaderBase::UpdateObjectCB(DirectX::XMFLOAT4X4* itemWorldMatrix, UINT cbInd
 	m_objectCBs[cbIndex]->CopyData(0, &objConstants);
 }
 
-void ShaderBase::CreatePassCB() { m_passCB = NEW UploadBuffer<PassConstants>(m_generalDevice, 1, true); }
+void ShaderBase::CreatePassCB() { m_passCB = new UploadBuffer<PassConstants>(m_generalDevice, 1, true); }
 
 void ShaderBase::UpdatePassCB(const float dt, const float totalTime)
 {
@@ -366,7 +366,7 @@ void ShaderParticle::Init()
 {
 	ShaderBase::Init();
 
-	m_particleInstanceDataBuffer = NEW UploadBuffer<InstanceData>(m_generalDevice, MAX_PARTICLE_COUNT, false);
+	m_particleInstanceDataBuffer = new UploadBuffer<InstanceData>(m_generalDevice, MAX_PARTICLE_COUNT, false);
 }
 
 void ShaderParticle::CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT& rtvFormat, DXGI_FORMAT& dsvFormat)
@@ -573,7 +573,7 @@ void ShaderTextureOffset::Draw(ID3D12GraphicsCommandList* cmdList, IRenderer* dr
 
 void ShaderTextureOffset::AddObjectCB()
 {
-	auto ub = NEW UploadBuffer<OffSetConstants>(m_generalDevice, 1, true);
+	auto ub = new UploadBuffer<OffSetConstants>(m_generalDevice, 1, true);
 	m_offSetCb.push_back(ub);
 	NULLPTR(ub);
 

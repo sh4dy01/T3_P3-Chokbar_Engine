@@ -65,11 +65,11 @@ ShaderBase* Resource::FindShader(MaterialType& id)
 void Resource::CreateShaders(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, UINT cbvSrvDescriptorSize)
 {
 	std::wstring shaderPathSimple = L"Shader/Simple.hlsl";
-	m_shaders[MaterialType::SIMPLE] = NEW ShaderSimple(device, cbvHeap, cbvSrvDescriptorSize, shaderPathSimple);
+	m_shaders[MaterialType::SIMPLE] = new ShaderSimple(device, cbvHeap, cbvSrvDescriptorSize, shaderPathSimple);
 	m_shaders[MaterialType::SIMPLE]->Init();
 
 	std::wstring shaderPathTex = L"Shader/Texture.hlsl";
-	m_shaders[MaterialType::TEXTURE] = NEW ShaderTexture(device, cbvHeap, cbvSrvDescriptorSize, shaderPathTex);
+	m_shaders[MaterialType::TEXTURE] = new ShaderTexture(device, cbvHeap, cbvSrvDescriptorSize, shaderPathTex);
 	m_shaders[MaterialType::TEXTURE]->Init();
 
 	std::wstring shaderPathTexTrans = L"Shader/Texture_Transparent.hlsl";
@@ -77,11 +77,11 @@ void Resource::CreateShaders(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap
 	m_shaders[MaterialType::TEXTURE_UI]->Init();
 
 	std::wstring shaderPathParticle = L"Shader/Particle.hlsl";
-	m_shaders[MaterialType::PARTICLE] = NEW ShaderParticle(device, cbvHeap, cbvSrvDescriptorSize, shaderPathParticle);
+	m_shaders[MaterialType::PARTICLE] = new ShaderParticle(device, cbvHeap, cbvSrvDescriptorSize, shaderPathParticle);
 	m_shaders[MaterialType::PARTICLE]->Init();
 
 	std::wstring shaderPathSkybox = L"Shader/Sky.hlsl";
-	m_shaders[MaterialType::SKYBOX] = NEW ShaderSkybox(device, cbvHeap, cbvSrvDescriptorSize, shaderPathSkybox);
+	m_shaders[MaterialType::SKYBOX] = new ShaderSkybox(device, cbvHeap, cbvSrvDescriptorSize, shaderPathSkybox);
 	m_shaders[MaterialType::SKYBOX]->Init();
 }
 
@@ -96,7 +96,7 @@ void Resource::CreateMaterials()
 
 void Resource::CreateMaterial(const MaterialType& mt, const std::string& name)
 {
-	m_materials[mt] = NEW Material();
+	m_materials[mt] = new Material();
 	m_materials[mt]->SetShader(m_shaders[mt]);
 	m_materials[mt]->Name = name;
 }

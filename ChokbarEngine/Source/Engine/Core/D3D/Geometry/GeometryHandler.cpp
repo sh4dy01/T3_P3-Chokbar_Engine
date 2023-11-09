@@ -84,7 +84,7 @@ D3DMesh* GeometryHandler::CreateCube()
 		20, 21, 22, 20, 22, 23
 	};
 
-	D3DMesh* mesh = NEW D3DMesh();
+	D3DMesh* mesh = new D3DMesh();
 	mesh->Create(v, sizeof(Vertex), _countof(v), i, sizeof(UINT), _countof(i));
 
 	return mesh;
@@ -205,7 +205,7 @@ D3DMesh* GeometryHandler::CreateUVSphere()
 		indices.push_back(baseIndex + i + 1);
 	}
 
-	D3DMesh* mesh = NEW D3DMesh();
+	D3DMesh* mesh = new D3DMesh();
 	mesh->Create(vertices.data(), sizeof(Vertex), (UINT)vertices.size(), indices.data(), sizeof(UINT), (UINT)indices.size());
 
 	return mesh;
@@ -287,7 +287,7 @@ D3DMesh* GeometryHandler::CreateGeoSphere()
 		vertices[i].Color = XMFLOAT4(0.8f, 0.1f, 0.1f, 1.0f);
 	}
 
-	D3DMesh* mesh = NEW D3DMesh();
+	D3DMesh* mesh = new D3DMesh();
 	mesh->Create(vertices.data(), sizeof(Vertex), (UINT)vertices.size(), indices.data(), sizeof(UINT), (UINT)indices.size());
 
 	return mesh;
@@ -436,7 +436,7 @@ D3DMesh* GeometryHandler::CreatePyramid()
 		15, 16, 17
 	};
 
-	D3DMesh* mesh = NEW D3DMesh();
+	D3DMesh* mesh = new D3DMesh();
 	mesh->Create(vList, sizeof(Vertex), _countof(vList), iList, sizeof(UINT), _countof(iList));
 
 	return mesh;

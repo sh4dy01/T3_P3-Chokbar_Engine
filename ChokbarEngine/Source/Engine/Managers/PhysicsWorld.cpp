@@ -258,7 +258,7 @@ void PhysicsWorld::HandleCollision(Collider *const sphereA, Collider *const sphe
 
 void PhysicsWorld::CreateNewCollisionInfo(Collider *const sphereA, Collider *const sphereB)
 {
-	auto newCollisionInfo = NEW CollisionInfo(sphereA, sphereB);
+	auto newCollisionInfo = new CollisionInfo(sphereA, sphereB);
 
 	m_RegisteredCollisionInfos.push_back(newCollisionInfo);
 	m_CurrentCollisionInfo = newCollisionInfo;

@@ -124,13 +124,8 @@
     <ClCompile Include="Source\Scripts\TriggerCollisionEvent\PlanetCollisionEvent.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\Scripts\TriggerCollisionEvent\AsteroidCollisionEvent.h" />
-    <ClInclude Include="Source\Scripts\Asteroids\AsteroidLife.h" />
     <ClInclude Include="Source\Scripts\Player\PlayerLife.h" />
-    <ClInclude Include="Source\Scripts\Asteroids\AsteroidSpawner.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="Source\BlankProject.h" />
-    <ClInclude Include="Source\GameObjects\Asteroid.h" />
     <ClInclude Include="Source\GameObjects\Camera.h" />
     <ClInclude Include="Source\GameObjects\Player.h" />
     <ClInclude Include="Source\GameObjects\Projectile.h" />
@@ -260,13 +255,24 @@
     <ClInclude Include="Source\Scripts\Asteroids\AsteroidBehaviour.h">
       <Filter>Source\Source\Scripts</Filter>
     </ClInclude>
+    <ClInclude Include="Source\BlankProject.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GameObjects\Asteroid.h" />
+    <ClInclude Include="Source\Scripts\TriggerCollisionEvent\AsteroidCollisionEvent.h" />
+    <ClInclude Include="Source\Scripts\Asteroids\AsteroidLife.h" />
+    <ClInclude Include="Source\Scripts\Asteroids\AsteroidSpawner.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="BlankProject.rc" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Content\Icons\mainIcon.ico" />
-    <Image Include="Resources\Textures\4k.dds" />
-    <Image Include="Resources\Textures\angry_winnie.dds" />
+    <Image Include="Resources\Textures\4k.dds">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\angry_winnie.dds">
+      <Filter>Resources\Textures</Filter>
+    </Image>
   </ItemGroup>
 </Project>

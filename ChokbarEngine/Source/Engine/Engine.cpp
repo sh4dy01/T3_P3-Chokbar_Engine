@@ -22,7 +22,7 @@ Engine* Engine::GetInstance()
 {
 	if (m_Instance == nullptr)
 	{
-		m_Instance = NEW Engine();
+		m_Instance = new Engine();
 	}
 
 	return m_Instance;
