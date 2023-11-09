@@ -96,7 +96,23 @@ bool PhysicsWorld::IsSameGridPos(const XMINT3 iGridPos, const int iGridSize, XMI
 
 void PhysicsWorld::Update(float dt)
 {
-	for (const auto &collider : m_RegisteredCollider)
+	if (m_timer >= TimeManager::GetFixedTime())
+	{
+		Coordinator::GetInstance()->FixedUpdateComponents();
+
+		UpdateVelocity(dt);
+
+		CheckCollision();
+
+		m_timer = 0.0f;
+	}
+
+	m_timer += dt;
+}
+
+void PhysicsWorld::UpdateVelocity(float dt)
+{
+	for (const auto& collider : m_RegisteredCollider)
 	{
 		Rigidbody* rb = collider->GetAttachedRigidbody();
 
@@ -115,31 +131,6 @@ void PhysicsWorld::Update(float dt)
 
 		rb->SetVelocity(ReduceVelocity(velocity));
 	}
-
-	m_timer += dt;
-
-	if (m_timer >= TimeManager::GetFixedTime())
-	{
-		Coordinator::GetInstance()->FixedUpdateComponents();
-
-		CheckCollision();
-
-		m_timer = 0.0f;
-	}
-}
-
-bool PhysicsWorld::IsVelocityNull(const XMFLOAT3 velocity)
-{
-	return	std::abs(velocity.x) <= FLT_EPSILON &&
-		std::abs(velocity.y) <= FLT_EPSILON &&
-		std::abs(velocity.z) <= FLT_EPSILON;
-}
-
-bool PhysicsWorld::IsSameGridPos(const XMINT3 iGridPos, const int iGridSize, XMINT3 jGridPos, int jGridSize)
-{
-	return	std::abs(iGridPos.x - jGridPos.x) < iGridSize + jGridSize &&
-		std::abs(iGridPos.y - jGridPos.y) < iGridSize + jGridSize &&
-		std::abs(iGridPos.z - jGridPos.z) < iGridSize + jGridSize;
 }
 
 // Placeholder function to convert XMVECTOR to XMFLOAT3

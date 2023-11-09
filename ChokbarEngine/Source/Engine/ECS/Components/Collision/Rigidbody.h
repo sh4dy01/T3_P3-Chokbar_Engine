@@ -45,6 +45,7 @@ public:
 
 	void SetBodyType(BodyType bodyType) { m_BodyType = bodyType; }
 
+
 	BodyType GetBodyType() const { return m_BodyType; }
 	XMINT3 GetGridPosition() const { return m_gridPosition; }
 
@@ -52,7 +53,6 @@ private:
 	std::vector<Collider *> m_collisionShapes;
 
 	BodyType m_BodyType;
-
 	XMFLOAT3 m_velocity;
 	XMFLOAT3 m_force;
 

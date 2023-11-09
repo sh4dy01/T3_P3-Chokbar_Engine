@@ -8,6 +8,7 @@ public:
 	void Awake() override;
 	void Start() override;
 	void Update() override;
+	void FixedUpdate() override;
 
 	void Initialize(Transform* target, const XMFLOAT3& position);
 

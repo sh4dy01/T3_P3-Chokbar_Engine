@@ -24,6 +24,9 @@ ParticleRenderer::~ParticleRenderer()
 {
 	for (auto& p : m_particles)
 		DELPTR(p)
+
+	m_particles.clear();
+	m_particleInstanceData.clear();
 }
 
 
@@ -48,6 +51,8 @@ void ParticleRenderer::Stop()
 {
 	for (UINT i = 0; i < MAX_PARTICLE_COUNT; i++)
 		DELPTR(m_particles[i])
+
+	m_particles.clear();
 }
 
 void ParticleRenderer::AddParticles(UINT count)
@@ -91,7 +96,7 @@ void ParticleRenderer::Prepare()
 
 void ParticleRenderer::CreateMissingParticles()
 {
-	m_particles.resize(m_particleCount);
+	m_particles.resize(m_particleCount, nullptr);
 	m_particleInstanceData.resize(m_particleCount);
 	
 	for (UINT i = 0; i < m_particleCount; i++)
@@ -106,13 +111,13 @@ void ParticleRenderer::CreateMissingParticles()
 
 Particle* ParticleRenderer::CreateParticle()
 {
-	Particle* p = new Particle();
+	Particle* p = NEW Particle();
 
 	const float rLiftTime = rand() % 3 + 1.0f;
 
-	const float randomDirX = ((static_cast<float>(rand() % 100) * 0.01f) - 0.5f) * 2.0f; // Get a random number between -1 and 1
-	const float randomDirY = ((static_cast<float>(rand() % 100) * 0.01f) - 0.5f) * 2.0f; // ..
-	const float randomDirZ = ((static_cast<float>(rand() % 100) * 0.01f) - 0.5f) * 2.0f; // ..
+	const float randomDirX = ((static_cast<float>(rand() % 100) * 0.25f) - 0.5f) * 2.0f; // Get a random number between -1 and 1
+	const float randomDirY = ((static_cast<float>(rand() % 100) * 0.25f) - 0.5f) * 2.0f; // ..
+	const float randomDirZ = ((static_cast<float>(rand() % 100) * 0.25f) - 0.5f) * 2.0f; // ..
 	const XMFLOAT3 rVel = { randomDirX, randomDirY, randomDirZ };
 
 	const float randomRotX = ((static_cast<float>(rand() % 100) * 0.1f) - 5.0f) * 2.0f; // Get a random number between -10 and 10
@@ -120,7 +125,7 @@ Particle* ParticleRenderer::CreateParticle()
 	const float randomRotZ = ((static_cast<float>(rand() % 100) * 0.1f) - 5.0f) * 2.0f; // ..
 	const XMFLOAT3 rAngVel = { randomRotX, randomRotY, randomRotZ };
 
-	const float randomScale = ((static_cast<float>(rand() % 100) * 0.01f) * 0.25f) + 0.1f; // Get a random number between 0.1f and 0.35f
+	const float randomScale = ((static_cast<float>(rand() % 100) * 0.01f) * 5) + 0.1f; // Get a random number between 0.1f and 0.35f
 	p->m_transform->SetScale(randomScale, randomScale, randomScale);
 
 	p->Init(rLiftTime, rVel, rAngVel, transform->GetPosition());
@@ -144,7 +149,8 @@ void ParticleRenderer::UpdateParticles(const float dt)
 			m_particles.erase(m_particles.begin() + i);
 			m_particleInstanceData.erase(m_particleInstanceData.begin() + i);
 			m_particleCount--;
-			i--;
+			if (i > 0)
+				i--;
 			continue;
 		}
 

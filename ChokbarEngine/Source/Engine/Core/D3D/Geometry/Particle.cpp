@@ -189,7 +189,7 @@ void ParticleTransform::UpdateWorldMatrix()
 Particle::Particle()
 	: m_lifeTime(0.0f), m_currentLifeTime(0.0f), m_velocity(XMFLOAT3(0.0f, 0.0f, 0.0f)), m_angularVelocity(XMFLOAT3(0.0f, 0.0f, 0.0f)), m_isActive(false)
 {
-	m_transform = new ParticleTransform();
+	m_transform = NEW ParticleTransform();
 }
 
 Particle::~Particle()

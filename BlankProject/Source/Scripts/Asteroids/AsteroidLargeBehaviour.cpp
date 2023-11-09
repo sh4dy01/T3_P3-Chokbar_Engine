@@ -33,13 +33,17 @@ void AsteroidLargeBehaviour::Update()
 {
     AsteroidBehaviour::Update();
 
+    transform->RotateRoll(80.f * TimeManager::GetDeltaTime());
+   
+}
+
+void AsteroidLargeBehaviour::FixedUpdate()
+{
     XMFLOAT3 targetPos = m_Target->GetPosition();
     XMFLOAT3 currentPos = transform->GetPosition();
 
     XMFLOAT3 direction;
     XMStoreFloat3(&direction, XMVector3Normalize(XMVectorSubtract(XMLoadFloat3(&targetPos), XMLoadFloat3(&currentPos))));
-
-    transform->RotateRoll(80.f * TimeManager::GetDeltaTime());
 
     m_Rigidbody->SetVelocity(XMVectorScale(XMLoadFloat3(&direction), m_Speed));
 }

@@ -27,7 +27,7 @@ private:
 	const float m_Sensitivity = 2;
 
 	const float m_MaxVerticalThrust = 40.f;
-	const float m_MaxForwardThrust = 100.f;
+	const float m_MaxForwardThrust = 100;
 	const float m_MaxLateralThrust = 75.f;
 
 	const float m_VerticalThrustIncrement = 2.f;

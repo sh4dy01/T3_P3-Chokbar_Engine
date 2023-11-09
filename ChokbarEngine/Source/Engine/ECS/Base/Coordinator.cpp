@@ -64,7 +64,7 @@ Coordinator* Coordinator::GetInstance()
 {
 	if (!m_Instance)
 	{
-		m_Instance = new Coordinator();
+		m_Instance = NEW Coordinator();
 	}
 
 	return m_Instance;
