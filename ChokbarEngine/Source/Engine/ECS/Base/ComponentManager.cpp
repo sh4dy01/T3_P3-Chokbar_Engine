@@ -18,8 +18,11 @@ ComponentManager::~ComponentManager()
 
 void ComponentManager::AwakeAllComponents()
 {
-	for (auto const customComponent : m_CustomComponents)
+	const int size = m_CustomComponents.size();
+
+	for (int i = 0; i < size; i++) 
 	{
+		auto const customComponent = m_CustomComponents[i];
 		customComponent->Awake();
 		customComponent->SetInitialized();
 	}

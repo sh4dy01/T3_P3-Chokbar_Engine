@@ -74,6 +74,7 @@ void Application::Initialize()
 
 	auto spawner = GameObject::Instantiate();
 	spawner->AddComponent<AsteroidSpawner>();
+
 	camera = nullptr;
 	crossAir = nullptr;
 }
