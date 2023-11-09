@@ -47,10 +47,11 @@ XMVECTOR CameraComponent::GetLook() const
 
 XMFLOAT3 CameraComponent::GetLook3f() const
 {
-	if (transform->m_pParent != nullptr)
+	if (transform->m_pParent)
 	{
 		return transform->m_pParent->GetForward();
 	}
+
 	return transform->GetForward();
 }
 

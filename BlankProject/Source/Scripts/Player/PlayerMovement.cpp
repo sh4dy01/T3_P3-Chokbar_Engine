@@ -109,10 +109,10 @@ void PlayerMovement::ApplyOppositeForce(float& outForce, float incrementValue)
 
 void PlayerMovement::ApplyMovement()
 {
-	m_pRigidbody->AddVelocity(
-		std::clamp(m_CurrentLateralThrust, -m_MaxLateralThrust, m_MaxLateralThrust) * TimeManager::GetDeltaTime(),
-		std::clamp(m_CurrentVerticalThrust, -m_MaxVerticalThrust, m_MaxVerticalThrust) * TimeManager::GetDeltaTime(),
-		std::clamp(m_CurrentForwardThrust, -m_MaxForwardThrust, m_MaxForwardThrust) * TimeManager::GetDeltaTime());
+	m_pRigidbody->SetVelocity(
+		std::clamp(m_CurrentLateralThrust, -m_MaxLateralThrust, m_MaxLateralThrust),
+		std::clamp(m_CurrentVerticalThrust, -m_MaxVerticalThrust, m_MaxVerticalThrust),
+		std::clamp(m_CurrentForwardThrust, -m_MaxForwardThrust, m_MaxForwardThrust));
 }
 
 void PlayerMovement::HandleRotation()

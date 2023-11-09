@@ -36,7 +36,8 @@ void IRenderer::Init(MeshType meshType, MaterialType matType)
 
 void IRenderer::OnDelete()
 {
-	Mat->GetShader()->UnBind(ObjectCBIndex);
+	if (Mat)
+		Mat->GetShader()->UnBind(ObjectCBIndex);
 }
 
 void IRenderer::RegisterTexture(Texture* tex)

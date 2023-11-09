@@ -3,7 +3,7 @@
 Wing::Wing()
 {
 	AddComponent<MeshRenderer>()->Init(CUBE, SIMPLE);
-	transform->SetScale(1, 1, 3);
+	transform->SetScale(0.5f, 0.5f, 3);
 }
 
 Wing::~Wing()
