@@ -39,6 +39,8 @@ Player::Player()
 
 	m_CategoryBitmask.SetLayer(LayerID::PLAYER);
 	m_CollisionBitmask.SetLayer(LayerID::ASTEROID);
+	m_CollisionBitmask.SetLayer(LayerID::OBSTACLE);
+
 
 	AddComponent<PlayerMovement>();
 	AddComponent<PlayerShoot>();

@@ -17,6 +17,6 @@ void PlayerCollisionEvent::OnTriggerEnter(Collider* other)
 	if (other->gameObject->m_CategoryBitmask.GetLayer() == ASTEROID)
 	{
 		DEBUG_LOG("Player")
-		m_PlayerLife->RemoveLife(5);
+		m_PlayerLife->RemoveLife(1);
 	}
 }

@@ -18,6 +18,8 @@
     <ClCompile Include="Source\GameObjects\Wing.cpp" />
     <ClCompile Include="Source\GameObjects\Particles\ProjectileParticles.cpp" />
     <ClCompile Include="Source\Scripts\TriggerCollisionEvent\PlayerCollisionEvent.cpp" />
+    <ClCompile Include="Source\GameObjects\Planet.cpp" />
+    <ClCompile Include="Source\Scripts\TriggerCollisionEvent\PlanetCollisionEvent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Scripts\TriggerCollisionEvent\AsteroidCollisionEvent.h" />
@@ -38,6 +40,8 @@
     <ClInclude Include="Source\GameObjects\Wing.h" />
     <ClInclude Include="Source\GameObjects\Particles\ProjectileParticles.h" />
     <ClInclude Include="Source\Scripts\TriggerCollisionEvent\PlayerCollisionEvent.h" />
+    <ClInclude Include="Source\GameObjects\Planet.h" />
+    <ClInclude Include="Source\Scripts\TriggerCollisionEvent\PlanetCollisionEvent.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="BlankProject.rc" />

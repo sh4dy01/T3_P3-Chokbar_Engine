@@ -47,7 +47,6 @@ void PlayerShoot::ShootProjectileFromWings()
 {
 	XMFLOAT3 forward = m_pCamera->GetLook3f();
 	float angle = XMConvertToRadians(m_ShootOffsetAngle);
-	forward.x -= angle;
 
 	ShootProjectile(m_LeftWing->GetWorldPosition(), forward);
 

@@ -23,7 +23,7 @@ public:
 
 	void Translate(float x, float y, float z, Space space = Space::Local);
 	void Translate(DirectX::XMFLOAT3 translation, Space space = Space::Local);
-	void Translate(DirectX::XMVECTOR translation, Space space = Space::Local);
+	void XM_CALLCONV Translate(DirectX::XMVECTOR translation, Space space = Space::Local);
 
 	void RotateYaw(float angle, Space space = Space::Local);
 	void RotatePitch(float angle, Space space = Space::Local);

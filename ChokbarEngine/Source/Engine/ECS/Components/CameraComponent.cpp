@@ -6,7 +6,7 @@ using namespace DirectX;
 CameraComponent::CameraComponent()
 	: m_ViewDirty(true)
 {
-	SetLens(70.0F, 1.0f, 1.0f, 1000.0f);
+	SetLens(70.0F, 1.0f, 1.0f, 5000);
 }
 
 CameraComponent::~CameraComponent()
