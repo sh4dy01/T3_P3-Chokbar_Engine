@@ -1,17 +1,23 @@
 #include "AsteroidLife.h"
+#include "AsteroidSpawner.h"
 
 void AsteroidLife::Awake()
 {
 	LifeComponent::Awake();
 }
 
+void AsteroidLife::Start()
+{
+	m_ParticleRenderer = GameObject::Find("Particles")->GetComponent<ParticleRenderer>();
+}
+
 void AsteroidLife::OnDeath()
 {
-	// if (const auto pr = gameObject->GetComponent<ParticleRenderer>())
-	// {
-	// 	pr->SetParticleCount(5);
-	// 	pr->Play();
-	// }
-	
-	//gameObject->Destroy();
+	AsteroidSpawner::OnDestroyedAsteroid(gameObject);
+	gameObject->Destroy();
+
+	m_ParticleRenderer->transform->SetPosition(transform->GetWorldPosition());
+	m_ParticleRenderer->AddParticles(50);
+
+	//Instantiate particles
 }

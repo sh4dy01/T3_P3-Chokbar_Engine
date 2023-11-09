@@ -27,6 +27,7 @@ void ScoreBehavior::Awake()
 
 void ScoreBehavior::Start()
 {
+
 }
 
 void ScoreBehavior::Update()

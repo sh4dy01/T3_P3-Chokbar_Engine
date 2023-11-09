@@ -20,4 +20,3 @@ SkyBox::SkyBox()
 SkyBox::~SkyBox()
 {
 }
-

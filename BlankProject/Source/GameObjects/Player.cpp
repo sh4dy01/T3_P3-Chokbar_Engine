@@ -23,8 +23,6 @@ Player::Player()
 	
 	//transform->SetScale(2.f);
 
-	AddComponent<MeshRenderer>()->Init(SPHERE, SIMPLE);
-
 	auto leftWing = GameObject::Instantiate<Wing>();
 	leftWing->SetName("LeftWing");
 	leftWing->transform->SetPosition(-2.5f, 0, 1);

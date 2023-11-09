@@ -27,7 +27,6 @@ void PlayerMovement::FixedUpdate()
 	ApplyMovement();
 }
 
-
 void PlayerMovement::HandleForwardThrust()
 {
 	if (InputHandler::IsKeyHeld('z'))
@@ -102,7 +101,7 @@ void PlayerMovement::HandleVerticalThrust()
 	}
 }
 
-void PlayerMovement::ApplyOppositeForce(float& outForce, float incrementValue)
+void PlayerMovement::ApplyOppositeForce(float &outForce, float incrementValue)
 {
 	outForce += incrementValue * m_OppositeThrustMultiplier;
 }

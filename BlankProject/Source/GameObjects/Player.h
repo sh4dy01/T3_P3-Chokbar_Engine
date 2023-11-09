@@ -1,6 +1,6 @@
 #pragma once
 
-class Player : public GameObject 
+class Player : public GameObject
 {
 public:
 	Player();

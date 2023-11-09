@@ -1,6 +1,5 @@
 #include "Chokbar.h"
 
-
 #include "TransformComponent.h"
 
 Transform::Transform()
@@ -11,7 +10,7 @@ Transform::Transform()
 	m_Forward = DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f);
 
 	m_pParent = nullptr;
-	m_pChildren = std::vector<Transform*>();
+	m_pChildren = std::vector<Transform *>();
 
 	// Initialize position, scale, and rotation
 	m_Position = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
@@ -37,6 +36,7 @@ Transform::~Transform()
 {
 	NULL(m_pParent);
 
+
 	for (auto child : m_pChildren)
 	{
 		NULL(child);
@@ -45,9 +45,11 @@ Transform::~Transform()
 
 void Transform::OnRemovedComponent()
 {
+	NULL(m_pParent);
+
 	for (auto child : m_pChildren)
 	{
-		child->SetParent(nullptr);
+		NULL(child);
 	}
 }
 
@@ -175,12 +177,33 @@ void Transform::SetScale(DirectX::XMFLOAT3 scaleFactors)
 	SetScale(scaleFactors.x, scaleFactors.y, scaleFactors.z);
 }
 
-void Transform::SetParent(Transform* pParent)
+void Transform::LookAt(const DirectX::XMFLOAT3 target)
+{
+	DirectX::XMVECTOR directionVector = XMVectorSubtract(XMLoadFloat3(&target), XMLoadFloat3(&m_Position));
+	directionVector = XMVector3Normalize(directionVector);
+
+	float pitch = 0.0f;
+	float yaw = 0.0f;
+	float roll = 0.0f;
+
+	if (XMVector3NotEqual(directionVector, XMVectorZero()))
+	{
+		pitch = asin(XMVectorGetY(directionVector));
+		yaw = atan2(XMVectorGetX(directionVector), XMVectorGetZ(directionVector));
+	}
+
+	pitch = XMConvertToDegrees(pitch);
+	yaw = XMConvertToDegrees(yaw);
+	roll = XMConvertToDegrees(roll);
+
+	Rotate(DirectX::XMFLOAT3(pitch, yaw, roll));
+}
+
+void Transform::SetParent(Transform *pParent)
 {
 	m_pParent = pParent;
 	pParent->m_pChildren.push_back(this);
 }
-
 
 DirectX::XMFLOAT3 Transform::GetEulerAngles()
 {
@@ -206,7 +229,6 @@ DirectX::XMFLOAT3 Transform::GetWorldPosition() const
 	worldPosition.z = m_ParentedWorldMatrix._43;
 
 	return worldPosition;
-
 }
 
 void Transform::UpdatePositionMatrix()
@@ -254,7 +276,7 @@ void Transform::UpdateWorldMatrix()
 
 void Transform::UpdateParentedWorldMatrix()
 {
-	//if (m_Dirty || m_pParent && m_pParent->IsDirty())
+	// if (m_Dirty || m_pParent && m_pParent->IsDirty())
 	{
 		DirectX::XMFLOAT4X4 parentWorldMatrix;
 
@@ -276,7 +298,7 @@ void Transform::UpdateParentedWorldMatrix()
 	}
 }
 
-Transform* Transform::GetChild(const char* str) const
+Transform *Transform::GetChild(const char *str) const
 {
 	for (const auto child : m_pChildren)
 	{

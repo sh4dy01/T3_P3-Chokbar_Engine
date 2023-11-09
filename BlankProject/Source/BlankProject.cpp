@@ -9,6 +9,7 @@
 #include "GameObjects/UI/CrossAir.h"
 #include "GameObjects/Particles/ProjectileParticles.h"
 #include "GameObjects/Planet.h"
+#include "Scripts/Asteroids/AsteroidSpawner.h"
 
 
 class Application : public Win32::IApplication
@@ -39,7 +40,6 @@ void Application::SetupPerGameSettings()
 	PerGameSettings::SetMainIcon(IDI_MAINICON);
 }
 
-
 void Application::Initialize()
 {
 	GameObject::Instantiate<ProjectileParticles>();
@@ -53,13 +53,13 @@ void Application::Initialize()
 
 	camera->transform->SetParent(player->transform);
 
-	for (int i = 0; i < 100; i++)
+	for (int i = 0; i < 200; i++)
 	{
 		const auto asteroid = GameObject::Instantiate<Planet>();
 		
-		const float x = (rand() % 1500) - 750;
-		const float y = (rand() % 1500) - 752;
-		const float z = (rand() % 1500) - 750;
+		const float x = (rand() % 2500) - 1250;
+		const float y = (rand() % 2500) - 1250;
+		const float z = (rand() % 2500) - 1250;
 
 		asteroid->GetComponent<Rigidbody>()->Move(x, y, z);
 		
@@ -72,6 +72,9 @@ void Application::Initialize()
 	auto crossAir = GameObject::Instantiate<CrossAir>();
 	crossAir->transform->SetPosition(0, 0, 0);
 
+	auto spawner = GameObject::Instantiate();
+	spawner->AddComponent<AsteroidSpawner>();
+
 	camera = nullptr;
 	crossAir = nullptr;
 }
@@ -83,5 +86,4 @@ void Application::Update(const float dt)
 
 void Application::Shutdown()
 {
-
 }
