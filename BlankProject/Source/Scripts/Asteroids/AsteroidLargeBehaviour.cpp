@@ -23,7 +23,10 @@ void AsteroidLargeBehaviour::Initialize(Transform* player, const XMFLOAT3& posit
     m_Rigidbody->Move(position);
 
     auto go = GameObject::Instantiate<AsteroidSmall>();
-    go->GetComponent<Rigidbody>()->Move(position);
+
+    auto childPos = position;
+    childPos.x += 10.f;
+    go->GetComponent<Rigidbody>()->Move(childPos);
     go->transform->SetParent(transform);
 
 }
