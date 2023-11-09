@@ -72,7 +72,6 @@ void Application::Initialize()
 	auto crossAir = GameObject::Instantiate<CrossAir>();
 	crossAir->transform->SetPosition(0, 0, 0);
 
-	player = nullptr;
 	camera = nullptr;
 	crossAir = nullptr;
 }
