@@ -19,11 +19,11 @@ void AsteroidCollisionEvent::OnTriggerEnter(Collider* other)
 	if (other->gameObject->m_CategoryBitmask.GetLayer() == PROJECTILE)
 	{
 		m_AsteroidLife->RemoveLife(10);
-
+		/*
 		const auto particles = GameObject::Instantiate<ProjectileParticles>()->GetComponent<ParticleRenderer>();
 		particles->transform->SetPosition(other->gameObject->transform->GetWorldPosition());
 		particles->SetParticleCount(100);
-		particles->Play();
+		particles->Play();*/
 
 		other->gameObject->Destroy();
 
