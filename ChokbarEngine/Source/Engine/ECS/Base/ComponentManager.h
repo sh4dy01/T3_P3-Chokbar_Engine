@@ -24,6 +24,8 @@ public:
 
 	// Notify each component array that an entity has been destroyed
 	// If it has a component for that entity, it will remove it
+
+	void CleanEverything();
 	void EntityDestroyed(InstanceID entity);
 
 public:

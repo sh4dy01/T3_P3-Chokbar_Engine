@@ -51,8 +51,9 @@ void Engine::PreInitialize()
 }
 
 
-void Engine::Initialize()
+void Engine::Initialize(Win32::IApplication* game)
 {
+	m_Game = game;
 	m_EngineState = EngineState::INITIALIZING;
 
 	PreInitialize();
@@ -72,6 +73,8 @@ void Engine::Initialize()
 
 void Engine::Run()
 {
+	m_Game->Initialize();
+
 	m_TimeManager.Reset();
 
 	InitComponents();
@@ -106,6 +109,15 @@ void Engine::InitComponents()
 bool Engine::NeedsToClose()
 {
 	return m_Window.NeedsToClose();
+}
+
+void Engine::RestartGame()
+{
+	Coordinator::GetInstance()->CleanUp();
+	GetInstance()->m_PhysicsWorld.CleanUp();
+	CameraManager::SetMainCamera(nullptr);
+
+	GetInstance()->Run();
 }
 
 void Engine::Update(float dt)
@@ -168,6 +180,8 @@ void Engine::OnResize()
 
 void Engine::Shutdown()
 {
+	m_Game->Shutdown();
+
 	DELPTR(m_Instance);
 
 	delete D3DRenderer::GetInstance();

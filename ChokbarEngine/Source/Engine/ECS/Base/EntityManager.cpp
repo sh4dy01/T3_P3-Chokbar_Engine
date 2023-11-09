@@ -50,6 +50,18 @@ void EntityManager::DestroyEntity(InstanceID entity)
 	--m_LivingEntityCount;
 }
 
+void EntityManager::CleanEverything() 
+{
+	for (const auto entity : m_LivingEntities)
+	{
+		if (!entity) continue;
+
+		InstanceID id = entity->GetInstanceID();
+
+		DestroyEntity(id);
+	}
+}
+
 void EntityManager::SetSignature(InstanceID entity, Signature signature)
 {
 	assert(entity < MAX_ENTITIES && "InstanceID id is out of range");

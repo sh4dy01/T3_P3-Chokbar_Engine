@@ -10,6 +10,7 @@ public:
 
 	virtual ~IComponentArray() = default;
 	virtual void EntityDestroyed(InstanceID entity) = 0;
+	virtual void CleanUp() = 0;
 
 };
 
@@ -20,10 +21,7 @@ public:
 
 	~ComponentArray() override
 	{
-		for (auto& component : m_ComponentArray)
-		{
-			DELPTR(component);
-		}
+		CleanUp();
 	}
 
 	void InsertData(InstanceID entity, Component* component) {
@@ -79,6 +77,14 @@ public:
 		{
 			// Remove the entity's component if it existed
 			RemoveData(entity);
+		}
+	}
+
+	void CleanUp() override 
+	{
+		for (auto& component : m_ComponentArray)
+		{
+			DELPTR(component);
 		}
 	}
 

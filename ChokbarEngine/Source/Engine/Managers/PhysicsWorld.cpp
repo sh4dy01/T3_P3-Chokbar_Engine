@@ -29,6 +29,11 @@ PhysicsWorld::PhysicsWorld()
 
 PhysicsWorld::~PhysicsWorld()
 {
+	CleanUp();
+}
+
+void PhysicsWorld::CleanUp() 
+{
 	for (auto& rigidbody : m_RegisteredCollider)
 	{
 		rigidbody = nullptr;
@@ -41,6 +46,7 @@ PhysicsWorld::~PhysicsWorld()
 
 	m_RegisteredCollider.clear();
 	m_RegisteredCollisionInfos.clear();
+	m_CurrentCollisionInfo = nullptr;
 }
 
 void PhysicsWorld::RegisterCollider(Collider* collider)
@@ -149,9 +155,13 @@ void PhysicsWorld::CheckCollision()
 				{
 					float distance;
 
+
 					switch (m_CurrentCollisionInfo->GetState())
 					{
 					case Enter:
+
+						if (!m_CurrentCollisionInfo) return;
+						if (!m_CurrentCollisionInfo->GetColliderA() || !m_CurrentCollisionInfo->GetColliderB()) return;
 
 						m_CurrentCollisionInfo->GetColliderA()->CallOnTriggerEnter(m_CurrentCollisionInfo->GetColliderB());
 						m_CurrentCollisionInfo->GetColliderB()->CallOnTriggerEnter(m_CurrentCollisionInfo->GetColliderA());
@@ -167,7 +177,7 @@ void PhysicsWorld::CheckCollision()
 						//m_rigidbodies[i]->CallOnCollisionStay(m_CurrentCollisionInfo.ColliderB);
 						//m_rigidbodies[j]->CallOnCollisionStay(m_CurrentCollisionInfo.ColliderA);
 
-						DEBUG_LOG(rbA->gameObject->GetName() << " continue colliding with " << rbB->gameObject->GetName());
+						//DEBUG_LOG(rbA->gameObject->GetName() << " continue colliding with " << rbB->gameObject->GetName());
 
 						//ResolveSphereCollision(rbA, dynamic_cast<SphereCollider*>(colliderA), rbB, dynamic_cast<SphereCollider*>(colliderB));
 
