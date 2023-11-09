@@ -21,6 +21,7 @@ void ComponentManager::AwakeAllComponents()
 	for (auto const customComponent : m_CustomComponents)
 	{
 		customComponent->Awake();
+		customComponent->SetInitialized();
 	}
 }
 
@@ -41,7 +42,7 @@ void ComponentManager::UpdateAllComponents()
 	{
 		auto const customComponent = m_CustomComponents[i];
 
-		if (!customComponent->gameObject->IsActive() || !customComponent->IsEnabled()) continue;
+		if (!customComponent->gameObject->IsActive() || !customComponent->IsEnabled() || !customComponent->IsInitialized()) continue;
 
 		customComponent->Update();
 	}
@@ -85,6 +86,7 @@ void ComponentManager::RegisterCustomComponent(CustomComponent* customComponent)
 	{
 		customComponent->Awake();
 		customComponent->Start();
+		customComponent->SetInitialized();
 	}
 
 	m_CustomComponents.push_back(customComponent);
