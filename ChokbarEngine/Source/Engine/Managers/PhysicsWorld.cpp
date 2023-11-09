@@ -128,20 +128,6 @@ void PhysicsWorld::Update(float dt)
 	}
 }
 
-bool PhysicsWorld::IsVelocityNull(const XMFLOAT3 velocity)
-{
-	return	std::abs(velocity.x) <= FLT_EPSILON &&
-		std::abs(velocity.y) <= FLT_EPSILON &&
-		std::abs(velocity.z) <= FLT_EPSILON;
-}
-
-bool PhysicsWorld::IsSameGridPos(const XMINT3 iGridPos, const int iGridSize, XMINT3 jGridPos, int jGridSize)
-{
-	return	std::abs(iGridPos.x - jGridPos.x) < iGridSize + jGridSize &&
-		std::abs(iGridPos.y - jGridPos.y) < iGridSize + jGridSize &&
-		std::abs(iGridPos.z - jGridPos.z) < iGridSize + jGridSize;
-}
-
 // Placeholder function to convert XMVECTOR to XMFLOAT3
 XMFLOAT3 XMVECTORToXMFLOAT3(XMVECTOR v) {
 	XMFLOAT3 result;
@@ -165,8 +151,6 @@ void PhysicsWorld::CheckCollision()
 				(m_CurrentCollisionInfo && m_CurrentCollisionInfo->GetState() != Exit))
 			{
 				
-				
-
 				Collider* colliderA = m_RegisteredCollider[i];
 				Collider* colliderB = m_RegisteredCollider[j];
 
