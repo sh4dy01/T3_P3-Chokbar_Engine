@@ -31,7 +31,7 @@ private:
 	const float m_MaxLateralThrust = 15.f;
 
 	const float m_VerticalThrustIncrement = 0.15f;
-	const float m_ForwardThrustIncrement = 0.5f;
+	const float m_ForwardThrustIncrement = 0.25f;
 	const float m_LateralThrustIncrement = 0.15f;
 
 	const float m_VerticalThrustReduction = 0.99f;

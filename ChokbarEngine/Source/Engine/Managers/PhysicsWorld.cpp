@@ -96,7 +96,6 @@ void PhysicsWorld::Update(float dt)
 		fixedVelocity.y *= dt;
 		fixedVelocity.z *= dt;
 
-
 		rb->Move(fixedVelocity);
 
 		rb->SetVelocity(ReduceVelocity(velocity));
@@ -128,6 +127,13 @@ bool PhysicsWorld::IsSameGridPos(const XMINT3 iGridPos, const int iGridSize, XMI
 		std::abs(iGridPos.z - jGridPos.z) < iGridSize + jGridSize;
 }
 
+// Placeholder function to convert XMVECTOR to XMFLOAT3
+XMFLOAT3 XMVECTORToXMFLOAT3(XMVECTOR v) {
+	XMFLOAT3 result;
+	XMStoreFloat3(&result, v);
+	return result;
+}
+
 void PhysicsWorld::CheckCollision()
 {
 	for (size_t i = 0; i < m_RegisteredCollider.size(); i++)
@@ -156,9 +162,6 @@ void PhysicsWorld::CheckCollision()
 
 				if (AreShapesColliding(colliderA, colliderB))
 				{
-					float distance;
-
-
 					switch (m_CurrentCollisionInfo->GetState())
 					{
 					case Enter:
@@ -167,9 +170,6 @@ void PhysicsWorld::CheckCollision()
 							m_CurrentCollisionInfo->GetColliderA()->CallOnTriggerEnter(m_CurrentCollisionInfo->GetColliderB());
 						if (m_CurrentCollisionInfo)
 							m_CurrentCollisionInfo->GetColliderB()->CallOnTriggerEnter(m_CurrentCollisionInfo->GetColliderA());						
-
-						//distance = sqrt(pow(iGridPos.x - jGridPos.x, 2) + pow(iGridPos.y - jGridPos.y, 2) + pow(iGridPos.z - jGridPos.z, 2)) - ((SphereCollider*)m_RegisteredCollider[i])->GetRadius() + ((SphereCollider*)m_RegisteredCollider[j])->GetRadius();
-
 
 						DEBUG_LOG(m_RegisteredCollider[i]->gameObject->GetName() << " entered in collision with " << m_RegisteredCollider[j]->gameObject->GetName());
 
@@ -181,82 +181,7 @@ void PhysicsWorld::CheckCollision()
 
 						//DEBUG_LOG(rbA->gameObject->GetName() << " continue colliding with " << rbB->gameObject->GetName());
 
-						//ResolveSphereCollision(rbA, dynamic_cast<SphereCollider*>(colliderA), rbB, dynamic_cast<SphereCollider*>(colliderB));
-
-
-
-						//// Calculate the collision normal
-						//XMVECTOR collisionNormal = XMVector3Normalize(XMVectorSubtract(XMLoadFloat3(&bTransform.GetPosition()), XMLoadFloat3(&aTransform.GetPosition())));
-
-						//// Calculate relative velocity
-						//XMVECTOR velocityA = XMLoadFloat3(&rbA->GetVelocity());
-						//XMVECTOR velocityB = XMLoadFloat3(&rbB->GetVelocity());
-						//XMVECTOR relativeVelocity = XMVectorSubtract(velocityA, velocityB);
-
-						//// Calculate the velocity along the normal
-						//float velocityAlongNormal = XMVector3Dot(relativeVelocity, collisionNormal).m128_f32[0];
-
-						//// Calculate the restitution (assuming perfect elastic collision for simplicity)
-						//float restitution = 1.0f;
-
-						//// Calculate the impulse scalar
-						//float massA = rbA->GetMass();
-						//float massB = rbB->GetMass();
-						//float impulseScalar = -(1 + restitution) * velocityAlongNormal / (massA + massB);
-
-						//// Apply the impulse to each velocity
-						//XMVECTOR impulse = XMVectorScale(collisionNormal, impulseScalar);
-						//XMVECTOR newVelocityA = XMVectorAdd(velocityA, XMVectorScale(impulse, massB));
-						//XMVECTOR newVelocityB = XMVectorSubtract(velocityB, XMVectorScale(impulse, massA));
-
-						//// Convert XMVECTOR velocities back to XMFLOAT3 and set them
-						//XMFLOAT3 finalVelocityA, finalVelocityB;
-						//XMStoreFloat3(&finalVelocityA, newVelocityA);
-						//XMStoreFloat3(&finalVelocityB, newVelocityB);
-
-						//rbA->SetVelocity(finalVelocityA);
-						//rbB->SetVelocity(finalVelocityB);
-
-
-
-						if (rbA->GetBodyType() == Static && rbB->GetBodyType() == Static) continue;
-
-
-						// Calculate the distance between the centers of the two spheres
-						float distance = sqrt(
-							pow(aTransform.GetPosition().x - bTransform.GetPosition().x, 2) +
-							pow(aTransform.GetPosition().y - bTransform.GetPosition().y, 2) +
-							pow(aTransform.GetPosition().z - bTransform.GetPosition().z, 2)
-						);
-
-						// Subtract the sum of the radii to get the actual overlap distance
-						distance -= (dynamic_cast<SphereCollider*>(colliderA)->GetRadius() +
-							dynamic_cast<SphereCollider*>(colliderB)->GetRadius());
-
-						// Calculate the normalized direction vector from B to A
-						XMFLOAT3 directionVec = XMFLOAT3(
-							(aTransform.GetPosition().x - bTransform.GetPosition().x) / 10,
-							(aTransform.GetPosition().y - bTransform.GetPosition().y) / 10,
-							(aTransform.GetPosition().z - bTransform.GetPosition().z) / 10
-						);
-						XMVECTOR direction = XMVector3Normalize(XMLoadFloat3(&directionVec));
-
-						// Set the velocities based on the direction vector
-						// This would need to be calculated based on the collision response (e.g., reflect the velocities)
-						// Here is a placeholder for setting the new velocity of rbA; you would need to calculate this properly
-						if (rbA->GetBodyType() == Dynamic)
-							rbA->SetVelocity(directionVec); // This is just an example and not the correct collision response
-
-						if (rbB->GetBodyType() != Dynamic) continue;
-
-						// The velocity for rbB would be in the opposite direction, but again, you need to calculate it based on physics
-						XMFLOAT3 newVelocityB = {
-							-directionVec.x,
-							-directionVec.y,
-							-directionVec.z
-						};
-						rbB->SetVelocity(newVelocityB);
-
+						ResolveSphereCollision(rbA, dynamic_cast<SphereCollider*>(colliderA), rbB, dynamic_cast<SphereCollider*>(colliderB));
 					}
 
 					break;
@@ -275,10 +200,7 @@ void PhysicsWorld::CheckCollision()
 					m_CurrentCollisionInfo = nullptr;
 				}
 			}
-
 		}
-
-		//DEBUG_LOG(std::to_string(temp));
 	}
 }
 
@@ -385,59 +307,38 @@ void PhysicsWorld::ResolveSphereCollision(Rigidbody* rbA, SphereCollider* collid
 	XMVECTOR posB = XMLoadFloat3(&rbB->transform->GetPosition());
 	XMVECTOR collisionNormal = XMVector3Normalize(XMVectorSubtract(posB, posA));
 
-	// Calculate relative velocity
-	XMVECTOR velocityA = XMLoadFloat3(&rbA->GetVelocity());
-	XMVECTOR velocityB = XMLoadFloat3(&rbB->GetVelocity());
-	XMVECTOR relativeVelocity = XMVectorSubtract(velocityB, velocityA);
-	float velocityAlongNormal = XMVector3Dot(relativeVelocity, collisionNormal).m128_f32[0];
+	// Calculate the relative velocity
+	XMVECTOR velA = XMLoadFloat3(&rbA->GetVelocity());
+	XMVECTOR velB = XMLoadFloat3(&rbB->GetVelocity());
+	XMVECTOR relativeVelocity = XMVectorSubtract(velB, velA);
 
-	// Early out if velocities are separating
+	// Calculate the velocity along the normal
+	float velocityAlongNormal = XMVectorGetX(XMVector3Dot(relativeVelocity, collisionNormal));
+
+	// Check if the spheres are already moving apart
 	if (velocityAlongNormal > 0) {
 		return;
 	}
 
-	// Restitution (assume some average restitution for now)
-	float restitution = 0.5f * (rbA->GetRestitution() + rbB->GetRestitution());
+	// Calculate restitution (this should be the smallest restitution of the two colliding bodies)
+	float restitution = 0.5f; // assuming perfectly elastic collision for now
 
 	// Calculate impulse scalar
-	float massA = rbA->GetMass();
-	float massB = rbB->GetMass();
-	float impulseScalar = -(1 + restitution) * velocityAlongNormal / (1 / massA + 1 / massB);
+	float impulseScalar = -(1 + restitution) * velocityAlongNormal;
+	impulseScalar /= (1 / rbA->GetMass()) + (1 / rbB->GetMass());
 
 	// Apply impulse
-	XMVECTOR impulse = XMVectorScale(collisionNormal, impulseScalar);
-	XMVECTOR newVelocityA = XMVectorSubtract(velocityA, XMVectorScale(impulse, 1 / massA));
-	XMVECTOR newVelocityB = XMVectorAdd(velocityB, XMVectorScale(impulse, 1 / massB));
+	XMVECTOR impulse = XMVectorMultiply(collisionNormal, XMVectorReplicate(impulseScalar));
+	XMVECTOR newVelA = XMVectorSubtract(velA, XMVectorMultiply(impulse, XMVectorReplicate(1 / rbA->GetMass())));
+	XMVECTOR newVelB = XMVectorAdd(velB, XMVectorMultiply(impulse, XMVectorReplicate(1 / rbB->GetMass())));
 
-	// Update velocities
-	XMFLOAT3 newVelA;
-	XMStoreFloat3(&newVelA, newVelocityA);
-	rbA->SetVelocity(newVelA); // Changed from AddVelocity to SetVelocity
+	// Convert XMVECTOR to XMFLOAT3
+	XMFLOAT3 newVelocityA;
+	XMFLOAT3 newVelocityB;
+	XMStoreFloat3(&newVelocityA, newVelA);
+	XMStoreFloat3(&newVelocityB, newVelB);
 
-	XMFLOAT3 newVelB;
-	XMStoreFloat3(&newVelB, newVelocityB);
-	rbB->SetVelocity(newVelB); // Changed from AddVelocity to SetVelocity
-
-	//// Positional Correction
-	//float penetrationDepth = colliderA->GetRadius() + colliderB->GetRadius() - XMVector3Length(XMVectorSubtract(posB, posA)).m128_f32[0];
-	//if (penetrationDepth > 0.0f) {
-	//	const float percent = 0.8f; // typically 80% to 20% of penetration is corrected
-	//	const float slop = 0.01f; // small tolerance to avoid jitter
-	//	float correction = std::max<float>(penetrationDepth - slop, 0.0f) / (1 / massA + 1 / massB) * percent;
-
-	//	// Calculate correction vector
-	//	XMVECTOR correctionVector = XMVectorScale(collisionNormal, correction);
-
-	//	// Apply correction vectors to the positions
-	//	XMVECTOR posCorrectionA = XMVectorScale(correctionVector, -1 / massA);
-	//	XMVECTOR posCorrectionB = XMVectorScale(correctionVector, 1 / massB);
-
-	//	// Apply the position corrections
-	//	posA = XMVectorSubtract(posA, posCorrectionA);
-	//	posB = XMVectorAdd(posB, posCorrectionB);
-
-	//	// Set the new positions to the rigid bodies
-	//	rbA->Move(posA);
-	//	rbB->Move(posB);
-	//}
+	// Set the new velocities
+	rbA->SetVelocity(newVelocityA);
+	rbB->SetVelocity(newVelocityB);
 }
