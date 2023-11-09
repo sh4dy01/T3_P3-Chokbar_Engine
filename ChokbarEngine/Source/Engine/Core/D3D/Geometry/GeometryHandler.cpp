@@ -6,14 +6,15 @@
 
 using namespace DirectX;
 
-D3DMesh* GeometryHandler::m_Meshes[4];
+D3DMesh* GeometryHandler::m_Meshes[5];
 
 void GeometryHandler::CreateAllMeshes()
 {
 	m_Meshes[0] = CreateCube();
 	m_Meshes[1] = CreateGeoSphere();
 	m_Meshes[2] = CreatePyramid();
-	m_Meshes[3] = CreateSquare();
+	m_Meshes[3] = CreateUISquare(1.0f, 0.1f);
+	m_Meshes[4] = CreateUISquare(1.0f, 1.0f);
 }
 
 void GeometryHandler::DestroyAllMeshes()
@@ -439,7 +440,7 @@ D3DMesh* GeometryHandler::CreatePyramid()
 	return mesh;
 }
 
-D3DMesh* GeometryHandler::CreateSquare()
+D3DMesh* GeometryHandler::CreateUISquare(const float uvOffsetX, const float uvOffsetY)
 {
 	Vertex vList[4];
 
@@ -460,7 +461,7 @@ D3DMesh* GeometryHandler::CreateSquare()
 		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
 		XMFLOAT3(0.0f, 0.0f, 1.0f),
 		XMFLOAT3(1.0f, 0.0f, 0.0f),
-		XMFLOAT2(0.0f, 0.1f)
+		XMFLOAT2(0.0f, uvOffsetY)
 	);
 
 	vList[2] = Vertex(
@@ -468,7 +469,7 @@ D3DMesh* GeometryHandler::CreateSquare()
 		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
 		XMFLOAT3(0.0f, 0.0f, 1.0f),
 		XMFLOAT3(1.0f, 0.0f, 0.0f),
-		XMFLOAT2(1.0f, 0.0f)
+		XMFLOAT2(uvOffsetX, 0.0f)
 	);
 
 	vList[3] = Vertex(
@@ -476,7 +477,7 @@ D3DMesh* GeometryHandler::CreateSquare()
 		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
 		XMFLOAT3(0.0f, 0.0f, 1.0f),
 		XMFLOAT3(1.0f, 0.0f, 0.0f),
-		XMFLOAT2(1.0f, 0.1f)
+		XMFLOAT2(uvOffsetX, uvOffsetY)
 	);
 
 	UINT iList[] =

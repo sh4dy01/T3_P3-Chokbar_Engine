@@ -18,12 +18,11 @@
     <ClCompile Include="Source\GameObjects\Wing.cpp" />
     <ClCompile Include="Source\GameObjects\Particles\ProjectileParticles.cpp" />
     <ClCompile Include="Source\Scripts\TriggerCollisionEvent\PlayerCollisionEvent.cpp" />
-    <ClCompile Include="Source\Scripts\UI\ScoreBehavior.cpp">
-      <Filter>Source\Source\Scripts</Filter>
-    </ClCompile>
     <ClCompile Include="Source\GameObjects\UI\Score.cpp" />
     <ClCompile Include="Source\GameObjects\UI\Digit.cpp" />
     <ClCompile Include="Source\Scripts\UI\DigitBehavior.cpp" />
+    <ClCompile Include="Source\Scripts\UI\ScoreBehavior.cpp" />
+    <ClCompile Include="Source\GameObjects\UI\CrossAir.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Scripts\TriggerCollisionEvent\AsteroidCollisionEvent.h" />
@@ -77,18 +76,11 @@
     <ClInclude Include="Source\GameObjects\SkyBox.h">
       <Filter>Source\Source\GameObjects</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Scripts\UI\ScoreBehavior.h">
-      <Filter>Source\Source\Scripts</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\GameObjects\UI\Score.h">
-      <Filter>Source\Source</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\GameObjects\UI\Digit.h">
-      <Filter>Source\Source</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Scripts\UI\DigitBehavior.h">
-      <Filter>Source\Source</Filter>
-    </ClInclude>
+    <ClInclude Include="Source\Scripts\UI\DigitBehavior.h" />
+    <ClInclude Include="Source\GameObjects\UI\Digit.h" />
+    <ClInclude Include="Source\GameObjects\UI\Score.h" />
+    <ClInclude Include="Source\Scripts\UI\ScoreBehavior.h" />
+    <ClInclude Include="Source\GameObjects\UI\CrossAir.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="BlankProject.rc" />

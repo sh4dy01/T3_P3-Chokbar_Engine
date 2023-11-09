@@ -4,7 +4,7 @@
 enum MaterialType {
 	SIMPLE,
 	TEXTURE,
-	TEXTURE_OFFSET,
+	TEXTURE_UI,
 	PARTICLE,
 	SKYBOX,
 	NONE

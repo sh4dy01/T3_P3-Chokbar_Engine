@@ -73,8 +73,8 @@ void Resource::CreateShaders(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap
 	m_shaders[MaterialType::TEXTURE]->Init();
 
 	std::wstring shaderPathTexTrans = L"Shader/Texture_Transparent.hlsl";
-	m_shaders[MaterialType::TEXTURE_OFFSET] = new ShaderTextureOffset(device, cbvHeap, cbvSrvDescriptorSize, shaderPathTexTrans);
-	m_shaders[MaterialType::TEXTURE_OFFSET]->Init();
+	m_shaders[MaterialType::TEXTURE_UI] = new ShaderTextureOffset(device, cbvHeap, cbvSrvDescriptorSize, shaderPathTexTrans);
+	m_shaders[MaterialType::TEXTURE_UI]->Init();
 
 	std::wstring shaderPathParticle = L"Shader/Particle.hlsl";
 	m_shaders[MaterialType::PARTICLE] = NEW ShaderParticle(device, cbvHeap, cbvSrvDescriptorSize, shaderPathParticle);
@@ -87,19 +87,16 @@ void Resource::CreateShaders(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap
 
 void Resource::CreateMaterials()
 {
-	m_materials[MaterialType::SIMPLE] = NEW Material();
-	m_materials[MaterialType::SIMPLE]->SetShader(m_shaders[MaterialType::SIMPLE]);
+	CreateMaterial(MaterialType::SIMPLE, "Simple");
+	CreateMaterial(MaterialType::TEXTURE, "Texture");
+	CreateMaterial(MaterialType::TEXTURE_UI, "TextureOffset");
+	CreateMaterial(MaterialType::PARTICLE, "Particle");
+	CreateMaterial(MaterialType::SKYBOX, "Skybox");
+}
 
-	m_materials[MaterialType::TEXTURE] = NEW Material();
-	m_materials[MaterialType::TEXTURE]->SetShader(m_shaders[MaterialType::TEXTURE]);
-
-	m_materials[MaterialType::TEXTURE_OFFSET] = new Material();
-	m_materials[MaterialType::TEXTURE_OFFSET]->SetShader(m_shaders[MaterialType::TEXTURE_OFFSET]);
-
-	m_materials[MaterialType::PARTICLE] = new Material();
-	m_materials[MaterialType::PARTICLE]->SetShader(m_shaders[MaterialType::PARTICLE]);
-
-	m_materials[MaterialType::SKYBOX] = NEW Material();
-	m_materials[MaterialType::SKYBOX]->SetShader(m_shaders[MaterialType::SKYBOX]);
-
+void Resource::CreateMaterial(const MaterialType& mt, const std::string& name)
+{
+	m_materials[mt] = NEW Material();
+	m_materials[mt]->SetShader(m_shaders[mt]);
+	m_materials[mt]->Name = name;
 }

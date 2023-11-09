@@ -6,6 +6,7 @@
 #include "GameObjects/Asteroid.h"
 #include "GameObjects/Skybox.h"
 #include "GameObjects/UI/Score.h"
+#include "GameObjects/UI/CrossAir.h"
 #include "GameObjects/Particles/ProjectileParticles.h"
 
 
@@ -65,8 +66,12 @@ void Application::Initialize()
 
 	GameObject::Instantiate<Score>();
 
+	auto crossAir = GameObject::Instantiate<CrossAir>();
+	crossAir->transform->SetPosition(0, 0, 0);
+
 	player = nullptr;
 	camera = nullptr;
+	crossAir = nullptr;
 }
 
 void Application::Update(const float dt)
