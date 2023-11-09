@@ -2,14 +2,10 @@
 #include "Rigidbody.h"
 
 Rigidbody::Rigidbody()
-	: m_velocity(XMFLOAT3(0, 0, 0)), m_isStatic(false), m_gridPosition(0, 0, 0), m_mass(100.0f), m_force(XMFLOAT3(0, 0, 0)), m_restitution(0.5f)
+	: m_BodyType(BodyType::Dynamic),m_velocity(XMFLOAT3(0, 0, 0)), m_force(XMFLOAT3(0, 0, 0)), m_mass(100.0f), m_restitution(0.5f), m_gridPosition(0, 0, 0)
 {
 }
 
-Rigidbody::Rigidbody(bool isStatic)
-	: m_velocity(XMFLOAT3(0, 0, 0)), m_isStatic(isStatic), m_gridPosition(0, 0, 0), m_mass(100.0f), m_force(XMFLOAT3(0, 0, 0)), m_restitution(0.5f)
-{
-}
 
 void Rigidbody::OnAddedComponent()
 {
@@ -22,11 +18,6 @@ void Rigidbody::OnAddedComponent()
 
 Rigidbody::~Rigidbody()
 {
-}
-
-void Rigidbody::SetStatic(bool isStatic)
-{
-	m_isStatic = isStatic;
 }
 
 void Rigidbody::Move(float x, float y, float z, Transform::Space space)
@@ -51,11 +42,6 @@ void Rigidbody::Move(const XMVECTOR& displacement, Transform::Space space)
 	XMStoreFloat3(&displacementFloat3, displacement);
 
 	Move(displacementFloat3, space);
-}
-
-bool Rigidbody::IsStatic() const
-{
-	return m_isStatic;
 }
 
 void Rigidbody::SetVelocity(const XMFLOAT3& velocity)

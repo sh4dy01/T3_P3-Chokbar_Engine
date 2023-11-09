@@ -70,14 +70,16 @@ void PhysicsWorld::Update(float dt)
 	{
 		Rigidbody* rb = collider->GetAttachedRigidbody();
 
-		if (rb->IsStatic()) continue;
+		if (rb->GetBodyType() == Static) continue;
 
 		XMFLOAT3 velocity = rb->GetVelocity();
 
 		if (IsVelocityNull(velocity)) continue;
 
 		XMFLOAT3 fixedVelocity = velocity;
-
+		fixedVelocity.x *= dt;
+		fixedVelocity.y *= dt;
+		fixedVelocity.z *= dt;
 
 
 		rb->Move(fixedVelocity);
@@ -196,7 +198,7 @@ void PhysicsWorld::CheckCollision()
 
 
 
-
+						if (rbA->GetBodyType() == Static && rbB->GetBodyType() == Static) continue;
 
 
 						// Calculate the distance between the centers of the two spheres
@@ -221,7 +223,10 @@ void PhysicsWorld::CheckCollision()
 						// Set the velocities based on the direction vector
 						// This would need to be calculated based on the collision response (e.g., reflect the velocities)
 						// Here is a placeholder for setting the new velocity of rbA; you would need to calculate this properly
-						rbA->SetVelocity(directionVec); // This is just an example and not the correct collision response
+						if (rbA->GetBodyType() == Dynamic)
+							rbA->SetVelocity(directionVec); // This is just an example and not the correct collision response
+
+						if (rbB->GetBodyType() != Dynamic) continue;
 
 						// The velocity for rbB would be in the opposite direction, but again, you need to calculate it based on physics
 						XMFLOAT3 newVelocityB = {
