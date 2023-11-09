@@ -17,6 +17,9 @@ Asteroid::Asteroid()
 	mesh->Init(SPHERE, TEXTURE);
 	mesh->RegisterTexture(Resource::Load<Texture>("Resources/Textures/mars.dds"));
 
+	//auto particle = AddComponent<ParticleRenderer>();
+	//particle->Init(CUBE, PARTICLE);
+
 	transform->SetScale(2.f);
 
 	auto sc = AddComponent<SphereCollider>();

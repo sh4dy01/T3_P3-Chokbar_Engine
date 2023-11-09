@@ -12,35 +12,33 @@ using namespace DirectX;
 
 ParticleRenderer::ParticleRenderer() : IRenderer()
 {
-	srand(time(NULL));
+	srand(time(nullptr));
 	m_Color1 = XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
 	m_Color2 = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+
+	m_particles.resize(0);
+	m_particleInstanceData.resize(0);
 }
 
 ParticleRenderer::~ParticleRenderer()
 {
 	for (auto& p : m_particles)
-		DELPTR(p);
+		DELPTR(p)
 }
 
 
-void ParticleRenderer::Init(MeshType meshType, MaterialType matType)
+void ParticleRenderer::Init(const MeshType meshType, const MaterialType matType)
 {
 	IRenderer::Init(meshType, matType);
-
-	m_particles = std::array<Particle*, MAX_PARTICLE_COUNT>{};
-	m_particleInstanceData = std::array<InstanceData, MAX_PARTICLE_COUNT>{};
-
-	Prepare();
 }
 
-void ParticleRenderer::Play()
+void ParticleRenderer::Play() const
 {
 	for (UINT i = 0; i < m_particleCount; i++)
 		m_particles[i]->Awake();
 }
 
-void ParticleRenderer::Pause()
+void ParticleRenderer::Pause() const
 {
 	for (UINT i = 0; i < m_particleCount; i++)
 		m_particles[i]->Sleep();
@@ -49,13 +47,19 @@ void ParticleRenderer::Pause()
 void ParticleRenderer::Stop()
 {
 	for (UINT i = 0; i < MAX_PARTICLE_COUNT; i++)
-		DELPTR(m_particles[i]);
+		DELPTR(m_particles[i])
 }
 
 
 void ParticleRenderer::SetParticleCount(UINT count)
 {
 	m_particleCount = count > MAX_PARTICLE_COUNT ? MAX_PARTICLE_COUNT : count;
+	Prepare();
+}
+
+void ParticleRenderer::AddParticles(UINT count)
+{
+	m_particleCount = (m_particleCount + count > MAX_PARTICLE_COUNT) ? MAX_PARTICLE_COUNT : m_particleCount + count;
 	Prepare();
 }
 
@@ -69,7 +73,7 @@ void ParticleRenderer::Render(ID3D12GraphicsCommandList* cmdList)
 {
 	if (!IsEnabled() || !Mat || !Mesh) return;
 
-	auto shader = Mat->GetShader();
+	const auto shader = Mat->GetShader();
 	shader->BeginDraw(cmdList);
 
 	shader->Draw(cmdList, this);
@@ -94,6 +98,9 @@ void ParticleRenderer::Prepare()
 
 void ParticleRenderer::CreateMissingParticles()
 {
+	m_particles.resize(m_particleCount, nullptr);
+	m_particleInstanceData.resize(m_particleCount);
+	
 	for (UINT i = 0; i < m_particleCount; i++)
 	{
 		// Skip all created particles
@@ -107,20 +114,20 @@ Particle* ParticleRenderer::CreateParticle()
 {
 	Particle* p = new Particle();
 
-	float rLiftTime = rand() % 30 + 1.0f;
+	const float rLiftTime = rand() % 30 + 1.0f;
 
-	float randomDirX = (((float)(rand() % 100) * 0.01f) - 0.5f) * 2.0f; // Get a random number between -1 and 1
-	float randomDirY = (((float)(rand() % 100) * 0.01f) - 0.5f) * 2.0f; // ..
-	float randomDirZ = (((float)(rand() % 100) * 0.01f) - 0.5f) * 2.0f; // ..
-	DirectX::XMFLOAT3 rVel = { randomDirX, randomDirY, randomDirZ };
+	const float randomDirX = ((static_cast<float>(rand() % 100) * 0.01f) - 0.5f) * 2.0f; // Get a random number between -1 and 1
+	const float randomDirY = ((static_cast<float>(rand() % 100) * 0.01f) - 0.5f) * 2.0f; // ..
+	const float randomDirZ = ((static_cast<float>(rand() % 100) * 0.01f) - 0.5f) * 2.0f; // ..
+	const XMFLOAT3 rVel = { randomDirX, randomDirY, randomDirZ };
 
-	float randomRotX = (((float)(rand() % 100) * 0.1f) - 5.0f) * 2.0f; // Get a random number between -10 and 10
-	float randomRotY = (((float)(rand() % 100) * 0.1f) - 5.0f) * 2.0f; // ..
-	float randomRotZ = (((float)(rand() % 100) * 0.1f) - 5.0f) * 2.0f; // ..
-	DirectX::XMFLOAT3 rAngVel = { randomRotX, randomRotY, randomRotZ };
+	const float randomRotX = ((static_cast<float>(rand() % 100) * 0.1f) - 5.0f) * 2.0f; // Get a random number between -10 and 10
+	const float randomRotY = ((static_cast<float>(rand() % 100) * 0.1f) - 5.0f) * 2.0f; // ..
+	const float randomRotZ = ((static_cast<float>(rand() % 100) * 0.1f) - 5.0f) * 2.0f; // ..
+	const XMFLOAT3 rAngVel = { randomRotX, randomRotY, randomRotZ };
 
-	float randomScale = (((float)(rand() % 100) * 0.01f) * 0.25f) + 0.1f; // Get a random number between 0.1f and 0.35f
-	p->m_Transform->SetScale(randomScale, randomScale, randomScale);
+	const float randomScale = ((static_cast<float>(rand() % 100) * 0.01f) * 0.25f) + 0.1f; // Get a random number between 0.1f and 0.35f
+	p->m_transform->SetScale(randomScale, randomScale, randomScale);
 
 	p->Init(rLiftTime, rVel, rAngVel, transform->GetPosition());
 
@@ -128,7 +135,7 @@ Particle* ParticleRenderer::CreateParticle()
 }
 
 
-void ParticleRenderer::UpdateParticles(float dt)
+void ParticleRenderer::UpdateParticles(const float dt)
 {
 	for (UINT i = 0; i < m_particleCount; i++)
 	{
@@ -142,23 +149,24 @@ void ParticleRenderer::UpdateParticles(float dt)
 
 		if (!p->IsAlive())
 		{
+			//DELPTR(p);
 			p->Sleep();
 			p->Reset();
 			continue;
 		}
 
-		p->m_CurrentLifeTime += dt;
-		pid.AgeRatio = (p->m_LifeTime - p->m_CurrentLifeTime) / p->m_LifeTime;
+		p->m_currentLifeTime += dt;
+		pid.AgeRatio = (p->m_lifeTime - p->m_currentLifeTime) / p->m_lifeTime;
 
 		// Update position
-		p->m_Transform->Translate(p->m_Velocity.x * dt, p->m_Velocity.y * dt, p->m_Velocity.z * dt);
+		p->m_transform->Translate(p->m_velocity.x * dt, p->m_velocity.y * dt, p->m_velocity.z * dt);
 
 		// Update rotation
-		p->m_Transform->Rotate(p->m_AngularVelocity.x * dt, p->m_AngularVelocity.y * dt, p->m_AngularVelocity.z * dt);
+		p->m_transform->Rotate(p->m_angularVelocity.x * dt, p->m_angularVelocity.y * dt, p->m_angularVelocity.z * dt);
 
 		// Update InstanceData World matrix
-		p->m_Transform->UpdateWorldMatrix();
-		pid.World = *p->m_Transform->GetWorldMatrix();
+		p->m_transform->UpdateWorldMatrix();
+		pid.World = *p->m_transform->GetWorldMatrix();
 		pid.Color1 = m_Color1;
 		pid.Color2 = m_Color2;
 	}
@@ -166,11 +174,11 @@ void ParticleRenderer::UpdateParticles(float dt)
 	UpdateShaderBuffer();
 }
 
-void ParticleRenderer::UpdateShaderBuffer()
+void ParticleRenderer::UpdateShaderBuffer() const
 {
-	if (ShaderParticle* shader = dynamic_cast<ShaderParticle*>(Mat->GetShader()))
+	if (const auto shader = dynamic_cast<ShaderParticle*>(Mat->GetShader()))
 	{
-		for (int i = 0; i < m_particleInstanceData.size(); i++)
+		for (int i = 0; i < static_cast<int>(m_particleInstanceData.size()); i++)
 		{
 			shader->UpdateParticleInstanceDataBuffer(i, &m_particleInstanceData[i]);
 		}
