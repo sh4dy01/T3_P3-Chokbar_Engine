@@ -51,7 +51,7 @@ void PlayerShoot::ShootProjectileFromWings()
 	ShootProjectile(m_LeftWing->GetWorldPosition(), forward);
 
 	forward = m_pCamera->GetLook3f();
-	forward.x += angle;
+	//forward.x += angle;
 	ShootProjectile(m_RightWing->GetWorldPosition(), forward);
 }
 
