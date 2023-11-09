@@ -27,7 +27,7 @@ void AsteroidMedium::TakeDamage(int damage)
 
 void AsteroidMedium::DestroyAfterATime(float m_Lifetime)
 {
-    this->m_Lifetime -= TimeManager::GetDeltaTime();
+    m_Lifetime -= TimeManager::GetDeltaTime();
     if (m_Lifetime <= 0)
     {
 		GameObject::Destroy();

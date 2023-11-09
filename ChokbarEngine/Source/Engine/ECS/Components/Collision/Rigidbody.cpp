@@ -53,6 +53,16 @@ void Rigidbody::SetVelocity(float x, float y, float z)
 	m_velocity.z = z;
 }
 
+void Rigidbody::SetVelocity(const XMVECTOR& direction)
+{
+	XMFLOAT3 velocity;
+	XMStoreFloat3(&velocity, direction);
+	
+	m_velocity.x = velocity.x;
+	m_velocity.y = velocity.y;
+	m_velocity.z = velocity.z;
+}
+
 void Rigidbody::AddVelocity(float x, float y, float z)
 {
 	m_velocity.x += x;

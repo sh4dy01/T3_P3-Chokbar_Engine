@@ -26,6 +26,7 @@ public:
 
 	void SetVelocity(const XMFLOAT3 &velocity);
 	void SetVelocity(float x, float y, float z);
+	void SetVelocity(const XMVECTOR& velocity);
 	void AddVelocity(const XMFLOAT3 &velocity);
 	void AddVelocity(float x, float y, float z);
 

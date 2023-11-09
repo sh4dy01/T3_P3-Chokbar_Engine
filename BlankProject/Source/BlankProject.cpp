@@ -86,6 +86,9 @@ void Application::Initialize()
 	pr->SetParticleCount(100);
 	pr->Play();
 	*/
+
+	auto spawner = GameObject::Instantiate();
+	spawner->AddComponent<AsteroidSpawner>();
 }
 
 void Application::Update(const float dt)

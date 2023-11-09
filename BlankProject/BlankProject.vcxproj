@@ -108,6 +108,7 @@
     <ClCompile Include="Source\GameObjects\AsteroidLarge.cpp" />
     <ClCompile Include="Source\GameObjects\AsteroidMedium.cpp" />
     <ClCompile Include="Source\GameObjects\AsteroidSmall.cpp" />
+    <ClCompile Include="Source\Scripts\Asteroids\AsteroidBehaviour.cpp" />
     <ClCompile Include="Source\Scripts\Asteroids\AsteroidLargeBehaviour.cpp" />
     <ClCompile Include="Source\Scripts\Asteroids\AsteroidMediumBehaviour.cpp" />
     <ClCompile Include="Source\Scripts\Asteroids\AsteroidSmallBehaviour.cpp" />
@@ -132,6 +133,7 @@
     <ClInclude Include="Source\GameObjects\AsteroidLarge.h" />
     <ClInclude Include="Source\GameObjects\AsteroidMedium.h" />
     <ClInclude Include="Source\GameObjects\AsteroidSmall.h" />
+    <ClInclude Include="Source\Scripts\Asteroids\AsteroidBehaviour.h" />
     <ClInclude Include="Source\Scripts\Asteroids\AsteroidLargeBehaviour.h" />
     <ClInclude Include="Source\Scripts\Asteroids\AsteroidMediumBehaviour.h" />
     <ClInclude Include="Source\Scripts\Asteroids\AsteroidSmallBehaviour.h" />

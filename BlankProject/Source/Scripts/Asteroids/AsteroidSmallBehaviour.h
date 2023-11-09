@@ -1,6 +1,7 @@
 #pragma once
+#include "AsteroidBehaviour.h"
 
-class AsteroidSmallBehaviour : public CustomComponent
+class AsteroidSmallBehaviour : public AsteroidBehaviour
 {
 public:
     AsteroidSmallBehaviour() = default;
@@ -8,18 +9,5 @@ public:
     void Start() override;
     void Update() override;
 
-    void Initialize(XMFLOAT3 direction, float speed, const XMFLOAT3& position);
-    void DestroyAfterATime();
-
-    float GetLifetime() const { return m_Lifetime; }
-
-private:
-
-    Transform* m_PlayerTransform;
-
-    float m_Speed;
-    float m_Lifetime;
-
-    XMFLOAT3 m_Direction;
-    XMFLOAT3 m_Position;
+    void Initialize(XMFLOAT3 direction, float speed, const XMFLOAT3& position) override;
 };

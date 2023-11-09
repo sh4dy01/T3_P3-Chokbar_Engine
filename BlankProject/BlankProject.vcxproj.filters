@@ -95,6 +95,9 @@
     <ClCompile Include="Source\GameObjects\Particles\ProjectileParticles.cpp">
       <Filter>Source\Source\GameObjects</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Scripts\Asteroids\AsteroidBehaviour.cpp">
+      <Filter>Source\Source\Scripts</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -171,6 +174,9 @@
     </ClInclude>
     <ClInclude Include="Source\GameObjects\Particles\ProjectileParticles.h">
       <Filter>Source\Source\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scripts\Asteroids\AsteroidBehaviour.h">
+      <Filter>Source\Source\Scripts</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

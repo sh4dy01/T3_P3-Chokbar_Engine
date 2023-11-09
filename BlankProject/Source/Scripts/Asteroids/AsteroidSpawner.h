@@ -14,6 +14,8 @@ public:
 
 	void SpawnAsteroidWave();
 	void SpawnAsteroid(Asteroid::AsteroidType type);
+	static void OnDestroyedAsteroid(GameObject* go);
+
 
 private:
 

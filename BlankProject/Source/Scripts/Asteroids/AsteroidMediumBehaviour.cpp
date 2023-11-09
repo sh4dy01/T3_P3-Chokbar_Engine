@@ -8,13 +8,16 @@ void AsteroidMediumBehaviour::Awake()
 
     m_Speed = 5.0f;
     m_PlayerTransform = nullptr;
-    m_Lifetime = 5.0f;
+    m_Lifetime = 50.0f;
 
     m_TeleportationAngle = 66.6f;
     m_TeleportationDistance = 99.f;
     m_TeleportInterval = 2.f;  
 
     m_TimeSinceLastTeleport = 0.0f;
+
+    m_Rigidbody = gameObject->GetComponent<Rigidbody>();
+    gameObject->GetComponent<SphereCollider>()->SetRadius(transform->GetHighestScale());
 }
 
 void AsteroidMediumBehaviour::Start()
@@ -26,7 +29,7 @@ void AsteroidMediumBehaviour::Initialize(Transform* target, float speed, const X
 	m_PlayerTransform = target;
 	m_Speed = speed;
 	m_Position = position;
-    transform->SetPosition(position);
+    m_Rigidbody->Move(position);
 }
 
 void AsteroidMediumBehaviour::Update()
@@ -62,7 +65,7 @@ void AsteroidMediumBehaviour::Update()
 
         XMFLOAT3 teleportPos;
         XMStoreFloat3(&teleportPos, teleportPosition);
-        transform->SetPosition(teleportPos);
+        m_Rigidbody->Move(teleportPos);
 
         asteroidVecPos = teleportPosition;
     }
@@ -71,16 +74,7 @@ void AsteroidMediumBehaviour::Update()
 
     XMFLOAT3 finalPosition;
     XMStoreFloat3(&finalPosition, newPosition);
-    transform->SetPosition(finalPosition);
+    m_Rigidbody->Move(finalPosition);
 
     DestroyAfterATime();
-}
-
-void AsteroidMediumBehaviour::DestroyAfterATime()
-{
-    this->m_Lifetime -= TimeManager::GetDeltaTime();
-    if (m_Lifetime <= 0)
-    {
-        gameObject->Destroy();
-    }
 }

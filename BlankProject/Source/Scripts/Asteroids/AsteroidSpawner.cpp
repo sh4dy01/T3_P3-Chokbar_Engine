@@ -77,11 +77,10 @@ void AsteroidSpawner::SpawnAsteroidWave()
         }
         else
         {
-            // Décrémentez le compteur de délai
             m_Timer -= TimeManager::GetDeltaTime();
         }
     }
-    else
+    else if (m_AliveAsteroidCount == 0 && m_TargetAsteroidCount == m_TargetAsteroidCount)
     {
         m_WaveCount++;
         m_AliveAsteroidCount = 0;
@@ -138,4 +137,10 @@ void AsteroidSpawner::SpawnAsteroid(Asteroid::AsteroidType type)
     }
 
     m_AliveAsteroidCount++;   
+}
+
+void AsteroidSpawner::OnDestroyedAsteroid(GameObject* go)
+{
+    go->Destroy();
+    m_AliveAsteroidCount--;
 }
