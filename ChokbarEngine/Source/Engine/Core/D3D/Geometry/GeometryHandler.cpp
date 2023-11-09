@@ -32,40 +32,40 @@ D3DMesh* GeometryHandler::CreateCube()
 	float depth = 0.5f;
 
 	// Fill in the front face vertex data.
-	v[0] = Vertex(-width, -height, -depth, 0.0f, 0.0f, 0.0f, 1.0F, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
-	v[1] = Vertex(-width, +height, -depth, 0.0f, 0.0f, 0.0f, 1.0F, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-	v[2] = Vertex(+width, +height, -depth, 0.0f, 0.0f, 0.0f, 1.0F, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
-	v[3] = Vertex(+width, -height, -depth, 0.0f, 0.0f, 0.0f, 1.0F, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f);
+	v[0] = Vertex(-width, -height, -depth, 0.15f, 0.1f, 0.15f, 1.0F, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
+	v[1] = Vertex(-width, +height, -depth, 0.15f, 0.1f, 0.15f, 1.0F, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+	v[2] = Vertex(+width, +height, -depth, 0.15f, 0.1f, 0.15f, 1.0F, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+	v[3] = Vertex(+width, -height, -depth, 0.15f, 0.1f, 0.15f, 1.0F, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f);
 
 	// Fill in the back face vertex data.
-	v[4] = Vertex(-width, -height, +depth, 0.0f, 0.0f, 0.0f, 1.0F, 0.0f, 0.0f, 1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f);
-	v[5] = Vertex(+width, -height, +depth, 0.0f, 0.0f, 0.0f, 1.0F, 0.0f, 0.0f, 1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
-	v[6] = Vertex(+width, +height, +depth, 0.0f, 0.0f, 0.0f, 1.0F, 0.0f, 0.0f, 1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-	v[7] = Vertex(-width, +height, +depth, 0.0f, 0.0f, 0.0f, 1.0F, 0.0f, 0.0f, 1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+	v[4] = Vertex(-width, -height, +depth, 0.15f, 0.1f, 0.15f, 1.0F, 0.0f, 0.0f, 1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f);
+	v[5] = Vertex(+width, -height, +depth, 0.15f, 0.1f, 0.15f, 1.0F, 0.0f, 0.0f, 1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
+	v[6] = Vertex(+width, +height, +depth, 0.15f, 0.1f, 0.15f, 1.0F, 0.0f, 0.0f, 1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+	v[7] = Vertex(-width, +height, +depth, 0.15f, 0.1f, 0.15f, 1.0F, 0.0f, 0.0f, 1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
 
 	// Fill in the top face vertex data.
-	v[8] = Vertex(-width, +height, -depth, 0.0f, 0.0f, 0.0f, 1.0F, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
-	v[9] = Vertex(-width, +height, +depth, 0.0f, 0.0f, 0.0f, 1.0F, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-	v[10] = Vertex(+width, +height, +depth, 0.0f, 0.0f, 0.0f, 1.0F, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
-	v[11] = Vertex(+width, +height, -depth, 0.0f, 0.0f, 0.0f, 1.0F, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f);
+	v[8] = Vertex(-width, +height, -depth, 0.15f, 0.1f, 0.15f, 1.0F, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
+	v[9] = Vertex(-width, +height, +depth, 0.15f, 0.1f, 0.15f, 1.0F, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+	v[10] = Vertex(+width, +height, +depth, 0.15f, 0.1f, 0.15f, 1.0F, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+	v[11] = Vertex(+width, +height, -depth, 0.15f, 0.1f, 0.15f, 1.0F, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f);
 
 	// Fill in the bottom face vertex data.
-	v[12] = Vertex(-width, -height, -depth, 0.0f, 0.0f, 0.0f, 1.0F, 0.0f, -1.0f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f);
-	v[13] = Vertex(+width, -height, -depth, 0.0f, 0.0f, 0.0f, 1.0F, 0.0f, -1.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
-	v[14] = Vertex(+width, -height, +depth, 0.0f, 0.0f, 0.0f, 1.0F, 0.0f, -1.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-	v[15] = Vertex(-width, -height, +depth, 0.0f, 0.0f, 0.0f, 1.0F, 0.0f, -1.0f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+	v[12] = Vertex(-width, -height, -depth, 0.15f, 0.1f, 0.15f, 1.0F, 0.0f, -1.0f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f);
+	v[13] = Vertex(+width, -height, -depth, 0.15f, 0.1f, 0.15f, 1.0F, 0.0f, -1.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
+	v[14] = Vertex(+width, -height, +depth, 0.15f, 0.1f, 0.15f, 1.0F, 0.0f, -1.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+	v[15] = Vertex(-width, -height, +depth, 0.15f, 0.1f, 0.15f, 1.0F, 0.0f, -1.0f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
 
 	// Fill in the left face vertex data.
-	v[16] = Vertex(-width, -height, +depth, 0.0f, 0.0f, 0.0f, 1.0F, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f);
-	v[17] = Vertex(-width, +height, +depth, 0.0f, 0.0f, 0.0f, 1.0F, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f);
-	v[18] = Vertex(-width, +height, -depth, 0.0f, 0.0f, 0.0f, 1.0F, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f);
-	v[19] = Vertex(-width, -height, -depth, 0.0f, 0.0f, 0.0f, 1.0F, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f);
+	v[16] = Vertex(-width, -height, +depth, 0.15f, 0.1f, 0.15f, 1.0F, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f);
+	v[17] = Vertex(-width, +height, +depth, 0.15f, 0.1f, 0.15f, 1.0F, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f);
+	v[18] = Vertex(-width, +height, -depth, 0.15f, 0.1f, 0.15f, 1.0F, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f);
+	v[19] = Vertex(-width, -height, -depth, 0.15f, 0.1f, 0.15f, 1.0F, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f);
 
 	// Fill in the right face vertex data.
-	v[20] = Vertex(+width, -height, -depth, 0.0f, 0.0f, 0.0f, 1.0F, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f);
-	v[21] = Vertex(+width, +height, -depth, 0.0f, 0.0f, 0.0f, 1.0F, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f);
-	v[22] = Vertex(+width, +height, +depth, 0.0f, 0.0f, 0.0f, 1.0F, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f);
-	v[23] = Vertex(+width, -height, +depth, 0.0f, 0.0f, 0.0f, 1.0F, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
+	v[20] = Vertex(+width, -height, -depth, 0.15f, 0.1f, 0.15f, 1.0F, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f);
+	v[21] = Vertex(+width, +height, -depth, 0.15f, 0.1f, 0.15f, 1.0F, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f);
+	v[22] = Vertex(+width, +height, +depth, 0.15f, 0.1f, 0.15f, 1.0F, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f);
+	v[23] = Vertex(+width, -height, +depth, 0.15f, 0.1f, 0.15f, 1.0F, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
 
 	UINT i[36] =
 	{
@@ -278,9 +278,11 @@ D3DMesh* GeometryHandler::CreateGeoSphere()
 		vertices[i].TangentU.x = -radius * sinf(phi) * sinf(theta);
 		vertices[i].TangentU.y = 0.0f;
 		vertices[i].TangentU.z = +radius * sinf(phi) * cosf(theta);
-
+		
 		XMVECTOR T = XMLoadFloat3(&vertices[i].TangentU);
 		XMStoreFloat3(&vertices[i].TangentU, XMVector3Normalize(T));
+
+		vertices[i].Color = XMFLOAT4(0.8f, 0.1f, 0.1f, 1.0f);
 	}
 
 	D3DMesh* mesh = NEW D3DMesh();
