@@ -50,6 +50,11 @@ XMVECTOR CameraComponent::GetLook() const
 
 XMFLOAT3 CameraComponent::GetLook3f() const
 {
+	if (transform->m_pParent)
+	{
+		return transform->m_pParent->GetForward();
+	}
+
 	return transform->GetForward();
 }
 
@@ -227,20 +232,16 @@ void CameraComponent::UpdateProjectionMatrix()
 
 void CameraComponent::UpdateViewMatrix()
 {
-	if (transform->IsDirty() || m_ViewDirty)
+	//if (transform->IsDirty() || m_ViewDirty)
 	{
-		// Perspective view
-		XMFLOAT3 Position = transform->GetPosition();
-		XMVECTOR pos = XMVectorSet(Position.x, Position.y, Position.z, 1.0F);
-		//XMVECTOR target = XMVectorSet(0.0F, 0.5F, 0.0F, 0.0F);
-		//XMVECTOR target = XMVectorMultiply(XMLoadFloat3(&Position), XMLoadFloat3(&m_Look));
-		XMFLOAT3 forward = transform->GetForward();
-		XMVECTOR target = XMVectorAdd(XMLoadFloat3(&Position), XMLoadFloat3(&forward));
+		transform->UpdateParentedWorldMatrix();
+		XMStoreFloat4x4(&m_View, XMMatrixInverse(&XMMatrixDeterminant(XMLoadFloat4x4(transform->GetParentedWorldMatrix())), XMLoadFloat4x4(transform->GetParentedWorldMatrix())));
 
-		XMStoreFloat4x4(&m_View, XMMatrixLookAtLH(pos, target, XMLoadFloat3(&transform->GetUp())));
 		m_ViewDirty = false;
 
 		// Orthographic view
-		XMStoreFloat4x4(&m_OthoView, XMMatrixLookAtLH(pos, target, XMLoadFloat3(&transform->GetUp())));
+		XMFLOAT3 pos = transform->m_pParent->GetPosition();
+		XMFLOAT3 target = transform->m_pParent->GetForward();
+		XMStoreFloat4x4(&m_OthoView, XMMatrixLookAtLH(XMLoadFloat3(&pos), XMLoadFloat3(&target), XMLoadFloat3(&transform->GetUp())));
 	}
 }

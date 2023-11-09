@@ -4,7 +4,7 @@
 
 #include "DigitBehavior.h"
 
-DigitBehavior::DigitBehavior() : m_isDigitDirty(false), m_digit(0)
+DigitBehavior::DigitBehavior() : m_isDigitDirty(false), m_digit(0), m_prevOffsetY(0.0f)
 {
 	m_uiRenderer = nullptr;
 }
@@ -30,8 +30,6 @@ void DigitBehavior::Start()
 void DigitBehavior::Update()
 {
 	if (!m_isDigitDirty) return;
-
-	DEBUG_LOG("DigitBehavior::Update() : isDirty == true / " + std::to_string(m_digit));
 
 	// Store the previous offset
 	m_prevOffsetY = m_uiRenderer->GetUVOffsetY();

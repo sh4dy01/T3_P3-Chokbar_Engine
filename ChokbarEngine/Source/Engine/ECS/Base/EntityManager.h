@@ -21,6 +21,8 @@ public:
 	Signature GetSignature(InstanceID entity);
 	GameObject* GetEntityByName(const std::string& name) const;
 
+	void CleanEverything();
+
 
 private:
 

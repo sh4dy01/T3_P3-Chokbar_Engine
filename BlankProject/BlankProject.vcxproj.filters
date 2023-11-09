@@ -1,62 +1,23 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source">
-      <UniqueIdentifier>{1dbb11b6-7a2a-4e08-97be-c9df9a41844f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resources">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-    <Filter Include="Source\pch">
-      <UniqueIdentifier>{33a068a0-f765-4623-8a29-b7edd8fac429}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resources\Icons">
-      <UniqueIdentifier>{15324fc2-6742-46fa-a087-4bbb72c73f45}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resources\Textures">
-      <UniqueIdentifier>{86997fae-a36e-4534-ae35-30788f0e3f9a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Source">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="Source\Source\Scripts">
-      <UniqueIdentifier>{646a91ac-18b1-445b-af3f-9c16e52359d7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Source\GameObjects">
-      <UniqueIdentifier>{cde6e016-f063-4abf-ae97-9f4fec802737}</UniqueIdentifier>
-    </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Source\BlankProject.cpp">
-      <Filter>Source\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Scripts\Player\PlayerMovement.cpp">
-      <Filter>Source\Source\Scripts</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\GameObjects\Asteroid.cpp">
-      <Filter>Source\Source\GameObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\GameObjects\Camera.cpp">
-      <Filter>Source\Source\GameObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\GameObjects\Player.cpp">
-      <Filter>Source\Source\GameObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\GameObjects\Skybox.cpp">
-      <Filter>Source\Source\GameObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Scripts\Player\PlayerShoot.cpp">
-      <Filter>Source\Source\Scripts</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\GameObjects\Projectile.cpp">
-      <Filter>Source\Source\GameObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Scripts\ProjectileBehavior.cpp">
-      <Filter>Source\Source\Scripts</Filter>
-    </ClCompile>
+    <ClCompile Include="Source\Scripts\TriggerCollisionEvent\AsteroidCollisionEvent.cpp" />
+    <ClCompile Include="Source\Scripts\Asteroids\AsteroidLife.cpp" />
+    <ClCompile Include="Source\Scripts\Player\PlayerLife.cpp" />
     <ClCompile Include="Source\Scripts\Asteroids\AsteroidSpawner.cpp" />
+    <ClCompile Include="Source\BlankProject.cpp" />
+    <ClCompile Include="Source\GameObjects\Asteroid.cpp" />
+    <ClCompile Include="Source\GameObjects\Camera.cpp" />
+    <ClCompile Include="Source\GameObjects\Player.cpp" />
+    <ClCompile Include="Source\GameObjects\Projectile.cpp" />
+    <ClCompile Include="Source\Scripts\LifeComponent.cpp" />
+    <ClCompile Include="Source\Scripts\Player\PlayerMovement.cpp" />
+    <ClCompile Include="Source\Scripts\Player\PlayerShoot.cpp" />
+    <ClCompile Include="Source\Scripts\ProjectileBehavior.cpp" />
+    <ClCompile Include="Source\GameObjects\Skybox.cpp" />
+    <ClCompile Include="Source\GameObjects\Wing.cpp" />
+    <ClCompile Include="Source\GameObjects\Particles\ProjectileParticles.cpp" />
+    <ClCompile Include="Source\Scripts\TriggerCollisionEvent\PlayerCollisionEvent.cpp" />
     <ClCompile Include="Source\Scripts\UI\ScoreBehavior.cpp">
       <Filter>Source\Source\Scripts</Filter>
     </ClCompile>
@@ -65,6 +26,24 @@
     <ClCompile Include="Source\Scripts\UI\DigitBehavior.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Scripts\TriggerCollisionEvent\AsteroidCollisionEvent.h" />
+    <ClInclude Include="Source\Scripts\Asteroids\AsteroidLife.h" />
+    <ClInclude Include="Source\Scripts\Player\PlayerLife.h" />
+    <ClInclude Include="Source\Scripts\Asteroids\AsteroidSpawner.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="Source\BlankProject.h" />
+    <ClInclude Include="Source\GameObjects\Asteroid.h" />
+    <ClInclude Include="Source\GameObjects\Camera.h" />
+    <ClInclude Include="Source\GameObjects\Player.h" />
+    <ClInclude Include="Source\GameObjects\Projectile.h" />
+    <ClInclude Include="Source\Scripts\LifeComponent.h" />
+    <ClInclude Include="Source\Scripts\Player\PlayerMovement.h" />
+    <ClInclude Include="Source\Scripts\Player\PlayerShoot.h" />
+    <ClInclude Include="Source\Scripts\ProjectileBehavior.h" />
+    <ClInclude Include="Source\GameObjects\SkyBox.h" />
+    <ClInclude Include="Source\GameObjects\Wing.h" />
+    <ClInclude Include="Source\GameObjects\Particles\ProjectileParticles.h" />
+    <ClInclude Include="Source\Scripts\TriggerCollisionEvent\PlayerCollisionEvent.h" />
     <ClInclude Include="resource.h">
       <Filter>Resources</Filter>
     </ClInclude>
@@ -112,19 +91,11 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="BlankProject.rc">
-      <Filter>Resources</Filter>
-    </ResourceCompile>
+    <ResourceCompile Include="BlankProject.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Content\Icons\mainIcon.ico">
-      <Filter>Resources\Icons</Filter>
-    </Image>
-    <Image Include="Resources\Textures\4k.dds">
-      <Filter>Resources\Textures</Filter>
-    </Image>
-    <Image Include="Resources\Textures\angry_winnie.dds">
-      <Filter>Resources\Textures</Filter>
-    </Image>
+    <Image Include="Content\Icons\mainIcon.ico" />
+    <Image Include="Resources\Textures\4k.dds" />
+    <Image Include="Resources\Textures\angry_winnie.dds" />
   </ItemGroup>
 </Project>

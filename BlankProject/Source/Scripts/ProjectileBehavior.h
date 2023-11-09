@@ -17,6 +17,7 @@ private:
 	float m_Speed;
 	float m_LifeTime;
 
+	Rigidbody* m_pRigidbody;
 	XMFLOAT3 m_Direction;
 
 };

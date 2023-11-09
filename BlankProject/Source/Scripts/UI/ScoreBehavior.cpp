@@ -18,12 +18,15 @@ ScoreBehavior::~ScoreBehavior()
 
 void ScoreBehavior::Awake()
 {
-
+	transform->SetPosition(0, 0.91f, 0);
+	for (int i = 0; i < NUM_DIGIT_PER_SCORE; i++)
+	{
+		CreateDigit(i);
+	}
 }
 
 void ScoreBehavior::Start()
 {
-	//UpdateScore(5);
 }
 
 void ScoreBehavior::Update()
@@ -45,10 +48,15 @@ void ScoreBehavior::UpdateScore(UINT newScore)
 void ScoreBehavior::CreateDigit(UINT index)
 {
 	Digit* digit = GameObject::Instantiate<Digit>();
+
 	float startX = 0.0f - (NUM_DIGIT_PER_SCORE * 0.5f * 0.1f) + 0.05f;
-	digit->transform->SetPosition(startX + 0.10f * index, 0.91f, 0);
+	digit->transform->SetPosition(startX + 0.10f * index, 0, 0);
+
+	digit->transform->SetParent(gameObject->transform);
 
 	digitsObjects[index] = digit;
+
+	digit = nullptr;
 }
 
 void ScoreBehavior::OnDelete()

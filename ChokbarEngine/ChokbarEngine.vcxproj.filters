@@ -235,6 +235,9 @@
     <ClCompile Include="Source\Engine\Core\D3D\Shaders\Cubemap.cpp">
       <Filter>Source\Engine\Core\D3D\Shaders</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Engine\Managers\LayerManager.cpp">
+      <Filter>Source\Engine\Managers\Private</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Engine\Core\D3D\Renderers\UIRenderer.cpp">
       <Filter>Source\Engine\Core\D3D\Renderers</Filter>
     </ClCompile>
@@ -407,6 +410,9 @@
     </ClInclude>
     <ClInclude Include="Source\Engine\Core\D3D\Renderers\UIRenderer.h">
       <Filter>Source\Engine\Core\D3D\Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Managers\LayerManager.h">
+      <Filter>Source\Engine\Managers\Public</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

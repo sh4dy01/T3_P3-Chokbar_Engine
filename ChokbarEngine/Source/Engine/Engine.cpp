@@ -56,8 +56,11 @@ void Engine::PreInitialize()
 }
 
 
-void Engine::Initialize()
+void Engine::Initialize(Win32::IApplication* game)
 {
+	m_Game = game;
+	m_EngineState = EngineState::INITIALIZING;
+
 	PreInitialize();
 
 	m_Coordinator->Init();
@@ -75,11 +78,15 @@ void Engine::Initialize()
 
 void Engine::Run()
 {
+	m_Game->Initialize();
+
 	m_TimeManager.Reset();
 
 	InitComponents();
 
 	OnResize();
+
+	m_EngineState = EngineState::RUNTIME;
 
 	while (!NeedsToClose())
 	{
@@ -109,6 +116,15 @@ bool Engine::NeedsToClose()
 	return m_Window.NeedsToClose();
 }
 
+void Engine::RestartGame()
+{
+	Coordinator::GetInstance()->CleanUp();
+	GetInstance()->m_PhysicsWorld.CleanUp();
+	CameraManager::SetMainCamera(nullptr);
+
+	GetInstance()->Run();
+}
+
 void Engine::Update(float dt)
 {
 	m_PhysicsWorld.Update(dt);
@@ -132,8 +148,6 @@ void Engine::Render()
 
 void Engine::CalculateFrameStats()
 {
-
-
 	// Code computes the average frames per second, and also the
 	// average time it takes to render one frame.  These stats
 	// are appended to the window caption bar.
@@ -147,7 +161,7 @@ void Engine::CalculateFrameStats()
 	if ((m_TimeManager.GetTotalTime() - timeElapsed) >= 1.0f)
 	{
 		std::wstring windowText;
-		float fps = (float)frameCnt; // fps = frameCnt / 1
+		auto fps = static_cast<float>(frameCnt); // fps = frameCnt / 1
 		float mspf = 1000.0f / fps;
 
 		std::wstring fpsStr = std::to_wstring(fps);
@@ -173,6 +187,8 @@ void Engine::OnResize()
 
 void Engine::Shutdown()
 {
+	m_Game->Shutdown();
+
 	DELPTR(m_Instance);
 
 	delete D3DRenderer::GetInstance();

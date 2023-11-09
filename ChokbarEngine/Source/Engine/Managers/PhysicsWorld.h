@@ -24,6 +24,8 @@ public:
     Collider* GetColliderA() const { return m_ColliderA; };
     Collider* GetColliderB() const { return m_ColliderB; };
 
+
+
 private:
 
     CollisionState m_State;
@@ -41,18 +43,27 @@ public:
 
     void RegisterCollider(Collider* collider);
     void RemoveCollider(Collider* collider);
+    XMFLOAT3 ReduceVelocity(XMFLOAT3& velocity);
+    bool IsSameGridPos(XMINT3 iGridPos, int iGridSize, XMINT3 jGridPos, int jGridSize);
 
     void Update(float dt);
+    
    
 private:
 
     PhysicsWorld();
+
+    void CleanUp();
+
+    bool IsVelocityNull(const XMFLOAT3 velocity);
 
     void CheckCollision();
     bool AreShapesColliding(Collider* shapeA, Collider* shapeB);
     void HandleCollision(Collider* sphereA, Collider* sphereB);
 
     bool AreSpheresColliding(SphereCollider* sphereA, SphereCollider* sphereB) const;
+
+    void ResolveSphereCollision(Rigidbody* rbA, SphereCollider* colliderA, Rigidbody* rbB, SphereCollider* colliderB) const;
 
     void CreateNewCollisionInfo(Collider* sphereA, Collider* sphereB);
     CollisionInfo* GetCollisionInfo(const Collider* sphereA, const Collider* sphereB) const;

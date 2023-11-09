@@ -105,6 +105,12 @@ void Coordinator::FixedUpdateComponents()
 	m_ComponentManager->FixedUpdateAllComponents();
 }
 
+void Coordinator::CleanUp() 
+{
+	m_ComponentManager->CleanEverything();
+	m_EntityManager->CleanEverything();
+}
+
 void Coordinator::RegisterCustomComponent(CustomComponent* customComponent)
 {
 	m_ComponentManager->RegisterCustomComponent(customComponent);

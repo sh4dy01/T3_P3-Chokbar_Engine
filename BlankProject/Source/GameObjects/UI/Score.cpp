@@ -6,15 +6,7 @@
 
 Score::Score()
 {
-	ScoreBehavior* scoreBehavior = NEW ScoreBehavior();
-	AddComponent<ScoreBehavior>(scoreBehavior);
-
-	for (int i = 0; i < NUM_DIGIT_PER_SCORE; i++)
-	{
-		scoreBehavior->CreateDigit(i);
-	}
-
-	scoreBehavior = nullptr;
+	AddComponent<ScoreBehavior>();
 }
 
 Score::~Score()

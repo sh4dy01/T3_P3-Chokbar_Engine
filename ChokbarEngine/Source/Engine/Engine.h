@@ -8,6 +8,12 @@ class Engine
 {
 public:
 
+	enum EngineState
+	{
+		INITIALIZING,
+		RUNTIME,
+	};
+
 	~Engine();
 
 	static Engine* GetInstance();
@@ -16,12 +22,16 @@ public:
 	static CameraComponent *GetMainCamera();
 	static Win32::Window* GetWindow();
 
-	void Initialize();
+	static void RestartGame();
+
+	void Initialize(Win32::IApplication* game);
 	void Run();
 	void Shutdown();
 
 	void OnApplicationFocus();
 	void OnApplicationLostFocus();
+
+	EngineState GetEngineState() const { return m_EngineState; }
 
 private:
 
@@ -45,16 +55,19 @@ private:
 	float GetAspectRatio() const { return m_Window.GetWidth() / static_cast<float>(m_Window.GetHeight()); }
 
 private:
+
 	static Engine *m_Instance;
 	Coordinator* m_Coordinator;
-
 	TimeManager m_TimeManager;
 	CameraManager m_CameraManager;
 	InputHandler m_InputHandler;
 	PhysicsWorld m_PhysicsWorld;
 
 	Win32::Window m_Window;
+	Win32::IApplication* m_Game;
 
 	bool m_IsPaused = false;
+
+	EngineState m_EngineState;
 
 };

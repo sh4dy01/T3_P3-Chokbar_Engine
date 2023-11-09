@@ -33,7 +33,7 @@ void UIRenderer::UpdateShader()
 
 	if (ShaderTextureOffset* offsetShader = dynamic_cast<ShaderTextureOffset*>(Mat->GetShader()))
 	{
-		offsetShader->UpdateAsOffset(transform->GetWorldMatrix(), ObjectCBIndex, m_uvOffsetY);
+		offsetShader->UpdateAsOffset(transform->GetTransposedParentedWorldMatrix(), ObjectCBIndex, m_uvOffsetY);
 	}
 }
 
@@ -54,8 +54,8 @@ void UIRenderer::Update(float dt)
 {
 	if (!IsEnabled() || !Mat || !Mesh) return;
 
-	if (transform->IsDirty())
-		transform->UpdateWorldMatrix();
+	//if (transform->IsDirty())
+	transform->UpdateParentedWorldMatrix();
 
-	Mat->GetShader()->UpdateObjectCB(transform->GetWorldMatrix(), ObjectCBIndex);
+	Mat->GetShader()->UpdateObjectCB(transform->GetTransposedParentedWorldMatrix(), ObjectCBIndex);
 }

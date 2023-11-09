@@ -24,13 +24,10 @@ int CALLBACK WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
 
 		game->SetupPerGameSettings();
 
-		engine->Initialize();
-
-		game->Initialize();
+		engine->Initialize(game);
 
 		engine->Run();
 
-		game->Shutdown();
 		engine->Shutdown();
 
 		DELPTR(game);

@@ -6,13 +6,11 @@
 
 Digit::Digit()
 {
-	UIRenderer* meshRenderer = new UIRenderer();
-	AddComponent<UIRenderer>(meshRenderer);
+	auto meshRenderer = AddComponent<UIRenderer>();
 	meshRenderer->Init(MeshType::SQUARE, MaterialType::TEXTURE_OFFSET);
 	meshRenderer->RegisterTexture(Resource::Load<Texture>("Resources/Textures/number.dds"));
 
-	m_digitBehavior = NEW DigitBehavior();
-	AddComponent<DigitBehavior>(m_digitBehavior);
+	m_digitBehavior = AddComponent<DigitBehavior>();
 
 	meshRenderer = nullptr;
 }

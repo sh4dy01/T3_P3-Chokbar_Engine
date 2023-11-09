@@ -82,7 +82,7 @@ void ShaderBase::UnBind(UINT index)
 {
 	DELPTR(m_objectCBs[index])
 
-		m_freeIndices.push(index);
+	m_freeIndices.push(index);
 }
 
 ShaderBase* ShaderBase::Bind()
@@ -91,8 +91,8 @@ ShaderBase* ShaderBase::Bind()
 	return this;
 }
 
-void ShaderBase::AddObjectCB()
-{
+void ShaderBase::AddObjectCB() 
+{ 
 	auto ub = NEW UploadBuffer<ObjConstants>(m_generalDevice, 1, true);
 	m_objectCBs.push_back(ub);
 	NULLPTR(ub);
@@ -124,8 +124,7 @@ void ShaderBase::UpdatePassCB(const float dt, const float totalTime)
 
 	mainPassCB.LightColor = XMFLOAT4(0.9f, 0.7f, 0.7f, 1.0f);
 	mainPassCB.LightDirection = XMFLOAT3(0.0f, 0.0f, 1.0f);
-	mainPassCB.EyePosW = CameraManager::GetMainCamera()->transform->GetPosition();
-
+	mainPassCB.EyePosW = CameraManager::GetMainCamera()->transform->m_pParent->GetPosition();
 	mainPassCB.TotalTime = totalTime;
 	mainPassCB.DeltaTime = dt;
 

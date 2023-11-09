@@ -40,7 +40,7 @@ PS_INPUT vs_main(VS_INPUT input)
 {
     PS_INPUT vOut;
     float4 pos = float4(input.Pos * 50.0f, 1.f);
-    pos = mul(float4(pos.xy, 0.0f, 1.0f), gWorld);
+    //pos = mul(float4(pos.xy, 0.0f, 1.0f), gWorld);
     pos = mul(float4(pos.xy, 0.0f, 1.0f), gOrthoProj);
     pos.x += gWorld._41;
     pos.y += gWorld._42;

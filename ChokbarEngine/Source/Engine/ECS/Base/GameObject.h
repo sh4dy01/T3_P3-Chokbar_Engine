@@ -3,6 +3,7 @@
 #include "Object.h"
 #include "Engine/ECS/Base/Coordinator.h"
 #include "Engine/Core/DebugUtils.h"
+#include "Engine/Managers/LayerManager.h"
 
 
 class GameObject : public Object
@@ -13,6 +14,11 @@ public:
 
 
 	~GameObject() override;
+
+	static GameObject* Instantiate()
+	{
+		return NEW GameObject();
+	}
 
 	template <class GameObject>
 	static GameObject* Instantiate() 
@@ -52,7 +58,7 @@ public:
 		component->transform = transform;
 		component->SetEnabled(true);
 
-		DEBUG_LOG("Adding component: " + std::string(typeid(T).name()) + " to " + m_Name + " entity");
+		//DEBUG_LOG("Adding component: " + std::string(typeid(T).name()) + " to " + m_Name + " entity");
 
 		Coordinator::GetInstance()->AddComponent<T>(GetInstanceID(), component);
 
@@ -68,7 +74,7 @@ public:
 		component->transform = transform;
 		component->SetEnabled(true);
 
-		DEBUG_LOG("Adding component: " + std::string(typeid(Component).name()) + " to " + m_Name + " entity");
+		//DEBUG_LOG("Adding component: " + std::string(typeid(Component).name()) + " to " + m_Name + " entity");
 
 		Coordinator::GetInstance()->AddComponent<Component>(GetInstanceID(), component);
 
@@ -97,7 +103,15 @@ public:
 public:
 
 	Transform *transform;
+	//Add bitset for collision bitmask
 
+	// Set bit for the category of the object
+	PhysicLayer m_CategoryBitmask;
+
+	// Decides which categories this object collides with
+	PhysicLayer m_CollisionBitmask;
+
+		 
 private:
 
 	bool m_IsActive;

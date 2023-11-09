@@ -11,7 +11,7 @@ public:
 	void OnAddedComponent() override;
 
 	virtual void OnTriggerEnter(Collider* other) = 0;
-	virtual void OnTriggerStay(Collider* other) = 0;
-	virtual void OnTriggerExit(Collider* other) = 0;
+	//virtual void OnTriggerStay(Collider* other) {};
+	//virtual void OnTriggerExit(Collider* other) {};
 
 };

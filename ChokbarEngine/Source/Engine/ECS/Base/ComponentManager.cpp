@@ -1,6 +1,8 @@
 #include "Chokbar.h"
 #include "ComponentManager.h"
 
+#include "Engine/Engine.h"
+
 
 ComponentManager::ComponentManager()
 	: m_NextComponentType(0)
@@ -11,10 +13,7 @@ ComponentManager::ComponentManager()
 
 ComponentManager::~ComponentManager()
 {
-	for (auto customComponent : m_CustomComponents)
-	{
-		customComponent = nullptr;
-	}
+	CleanEverything();
 }
 
 void ComponentManager::AwakeAllComponents()
@@ -68,8 +67,26 @@ void ComponentManager::LateUpdateAllComponents()
 	}
 }
 
+void ComponentManager::CleanEverything() 
+{
+	for (auto const& pair : m_ComponentArrays)
+	{
+		auto const& component = pair.second;
+
+		component->CleanUp();
+	}
+
+	m_CustomComponents.clear();
+}
+
 void ComponentManager::RegisterCustomComponent(CustomComponent* customComponent)
 {
+	if (Engine::GetInstance()->GetEngineState() == Engine::RUNTIME)
+	{
+		customComponent->Awake();
+		customComponent->Start();
+	}
+
 	m_CustomComponents.push_back(customComponent);
 }
 

@@ -8,7 +8,7 @@ class Collider : public Component
 {
 public:
 
-    enum class ShapeType {
+	enum class ShapeType {
 		Sphere,
 	};
 
@@ -26,21 +26,27 @@ public:
 	void RegisterTriggerCollisionEvent(TriggerCollisionEvent* triggerCollisionEvent);
 
 
-	void SetCenter(const DirectX::XMFLOAT3& center) { m_Center = center; }
-    DirectX::XMFLOAT3 GetCenter() const { return m_Center; }
+	void SetCenter(const DirectX::XMFLOAT3& center) { m_Center = center; };
+	DirectX::XMFLOAT3 GetCenter() const { return m_Center; };
 
-	Rigidbody* GetAttachedRigidbody() const { return m_AttachedRigidbody; }
-	ShapeType GetType() const { return m_type; }
-	
+	ShapeType GetType() const { return m_type; };
+
+	int GetGridSize() const { return m_GridSize; };
+
+	Rigidbody* GetAttachedRigidbody() const { return m_AttachedRigidbody; };
+
 protected:
 
 	Collider();
+	void SetGridSize(int gridPos) { m_GridSize = gridPos; };
 
 protected:
 
 	ShapeType m_type;
 
-    DirectX::XMFLOAT3 m_Center;
+	DirectX::XMFLOAT3 m_Center;
+
+	int m_GridSize;
 
 private:
 

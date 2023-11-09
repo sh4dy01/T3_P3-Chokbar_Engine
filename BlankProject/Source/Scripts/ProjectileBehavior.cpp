@@ -11,19 +11,25 @@ void ProjectileBehavior::Awake()
 
 void ProjectileBehavior::Start()
 {
+	m_pRigidbody = gameObject->GetComponent<Rigidbody>();
 }
 
 void ProjectileBehavior::Initialize(const XMFLOAT3 direction, float speed, float lifeTime)
 {
-	m_Direction = direction;
 	m_Speed = speed;
+
+	m_Direction = direction;
+	m_Direction.x *= m_Speed;
+	m_Direction.y *= m_Speed;
+	m_Direction.z *= m_Speed;
+
 	m_LifeTime = lifeTime;
+
+	m_pRigidbody->SetVelocity(m_Direction);
 }
 
 void ProjectileBehavior::Update()
 {
-	transform->Translate(XMVectorScale(XMLoadFloat3(&m_Direction), m_Speed * TimeManager::GetDeltaTime()));
-
 	if (m_LifeTime > 0)
 	{
 		m_LifeTime -= TimeManager::GetDeltaTime();

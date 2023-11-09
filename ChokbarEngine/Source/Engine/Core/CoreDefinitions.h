@@ -1,6 +1,8 @@
 #pragma once
 
 #define MAX_NAME_STRING 256
+#define MAX_LAYERS 8
+#define CELL_SIZE 1
 #define HInstance() GetModuleHandle(NULL)
 
 typedef std::wstring WSTRING;
