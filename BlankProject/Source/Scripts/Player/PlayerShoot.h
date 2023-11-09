@@ -37,6 +37,7 @@ private:
 	const float m_SlowMotion = 0.1f;
 
 	const float m_Damage = 10;
+	const float m_ShootOffsetAngle = 3.5f;
 
 	Transform* m_LeftWing;
 	Transform* m_RightWing;

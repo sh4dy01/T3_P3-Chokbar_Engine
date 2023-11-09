@@ -46,8 +46,8 @@ void Application::Initialize()
 	const auto camera = GameObject::Instantiate<Camera>();
 
 	const auto player = GameObject::Instantiate<Player>();
-	player->GetComponent<Rigidbody>()->Move(3.f, 3.f, 9.f);
-	player->transform->SetPosition(0, 0, -5);
+	player->GetComponent<Rigidbody>()->Move(0, 0, 75);
+	player->transform->RotateYaw(180);
 	
 	camera->transform->SetParent(player->transform);
 

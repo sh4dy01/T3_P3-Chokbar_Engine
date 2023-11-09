@@ -19,6 +19,8 @@ void AsteroidCollisionEvent::OnTriggerEnter(Collider* other)
 {
 	if (other->gameObject->m_CategoryBitmask.GetLayer() == PROJECTILE)
 	{
+		if (!m_ParticleRenderer->transform) return;
+
 		m_AsteroidLife->RemoveLife(10);
 		
 		m_ParticleRenderer->transform->SetPosition(other->gameObject->transform->GetWorldPosition());
