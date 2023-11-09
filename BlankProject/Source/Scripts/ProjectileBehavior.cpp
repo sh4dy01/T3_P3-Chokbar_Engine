@@ -24,6 +24,8 @@ void ProjectileBehavior::Initialize(const XMFLOAT3 direction, float speed, float
 	m_Direction.z *= m_Speed;
 
 	m_LifeTime = lifeTime;
+
+	m_pRigidbody->SetVelocity(m_Direction);
 }
 
 void ProjectileBehavior::Update()
@@ -36,9 +38,4 @@ void ProjectileBehavior::Update()
 	{
 		gameObject->Destroy();
 	}
-}
-
-void ProjectileBehavior::FixedUpdate()
-{
-	m_pRigidbody->Move(m_Direction);
 }

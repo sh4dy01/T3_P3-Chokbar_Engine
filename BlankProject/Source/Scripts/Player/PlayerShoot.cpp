@@ -8,6 +8,9 @@ void PlayerShoot::Awake()
 {
 	m_pCamera = CameraManager::GetMainCamera();
 	m_pRigidbody = gameObject->GetComponent<Rigidbody>();
+
+	m_LeftWing = transform->GetChild("LeftWing");
+	m_RightWing = transform->GetChild("RightWing");
 }
 
 void PlayerShoot::Start()
@@ -42,27 +45,24 @@ void PlayerShoot::HandleShoot()
 
 void PlayerShoot::ShootProjectileFromWings()
 {
-	XMFLOAT3 forward = transform->GetForward();
+	const XMFLOAT3 forward = m_pCamera->GetLook3f();
 
-	XMFLOAT3 projLeftPos = transform->GetPosition();
-	XMStoreFloat3(&projLeftPos, XMVectorAdd(XMLoadFloat3(&projLeftPos), XMLoadFloat3(&forward)));
-	projLeftPos.x -= m_ShootOffset;
-
-	ShootProjectile(projLeftPos, m_pCamera->GetLook3f());
-
-
-	XMFLOAT3 projRightPos = transform->GetPosition();
-	XMStoreFloat3(&projRightPos, XMVectorAdd(XMLoadFloat3(&projRightPos), XMLoadFloat3(&forward)));
-	projRightPos.x += m_ShootOffset;
-
-	ShootProjectile(projRightPos, m_pCamera->GetLook3f());
+	ShootProjectile(m_LeftWing->GetWorldPosition(), forward);
+	ShootProjectile(m_RightWing->GetWorldPosition(), forward);
 }
 
 void PlayerShoot::ShootProjectile(XMFLOAT3 position, XMFLOAT3 direction)
 {
+	XMFLOAT3 playerVelocity = m_pRigidbody->GetVelocity();
+	float playerSpeed = XMVector3Length(XMLoadFloat3(&playerVelocity)).m128_f32[0];
+
+	//XMVECTOR test = XMVectorScale(XMVectorAdd(XMLoadFloat3(&direction), XMLoadFloat3(&playerVelocity)), 0.5f);
+	//MFLOAT3 test2;
+	//XMStoreFloat3(&test2, XMVector3Normalize(test));
+
 	const auto projectile = GameObject::Instantiate<Projectile>()->GetComponent<ProjectileBehavior>();
 	projectile->transform->SetPosition(position);
-	projectile->Initialize(direction, 2, m_ProjectileLifeTime);
+	projectile->Initialize(direction, m_ProjectileSpeed + playerSpeed, m_ProjectileLifeTime);
 }
 
 

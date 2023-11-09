@@ -24,7 +24,7 @@ private:
 	const float m_ShootDelay = 0.1f;
 	float m_ShootTimer = 0.0f;
 
-	const float m_ProjectileSpeed = 5.0f;
+	const float m_ProjectileSpeed = 15.0f;
 	const float m_ProjectileLifeTime = 2.0f;
 
 	const float m_ZoomSpeed = 0.1f;
@@ -37,6 +37,9 @@ private:
 	const float m_SlowMotion = 0.1f;
 
 	const float m_Damage = 10;
+
+	Transform* m_LeftWing;
+	Transform* m_RightWing;
 
 	CameraComponent* m_pCamera;
 	Rigidbody* m_pRigidbody;
