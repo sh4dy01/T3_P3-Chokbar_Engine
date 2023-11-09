@@ -57,9 +57,9 @@ void Application::Initialize()
 	{
 		const auto asteroid = GameObject::Instantiate<Planet>();
 		
-		const float x = (rand() % 10) - 10;
-		const float y = (rand() % 10) - 10;
-		const float z = (rand() % 10) - 10;
+		const float x = (rand() % 1500) - 750;
+		const float y = (rand() % 1500) - 752;
+		const float z = (rand() % 1500) - 750;
 
 		asteroid->GetComponent<Rigidbody>()->Move(x, y, z);
 		

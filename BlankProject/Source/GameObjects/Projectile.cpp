@@ -15,6 +15,7 @@ Projectile::Projectile()
 
 	m_CategoryBitmask.SetLayer(LayerID::PROJECTILE);
 	m_CollisionBitmask.SetLayer(LayerID::ASTEROID);
+	m_CollisionBitmask.AddLayer(LayerID::OBSTACLE);
 
 	transform->SetScale(0.15f, 0.15f, 0.15f);
 

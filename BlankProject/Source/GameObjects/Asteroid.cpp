@@ -20,10 +20,10 @@ Asteroid::Asteroid()
 	//auto particle = AddComponent<ParticleRenderer>();
 	//particle->Init(CUBE, PARTICLE);
 
-	transform->SetScale(2.f);
+	transform->SetScale(20.f);
 
 	auto sc = AddComponent<SphereCollider>();
-	sc->SetRadius(2.f);
+	sc->SetRadius(20.f);
 	//sc->SetCenter({ -4.f, -4.f, -4.f });
 
 	AddComponent<AsteroidLife>();

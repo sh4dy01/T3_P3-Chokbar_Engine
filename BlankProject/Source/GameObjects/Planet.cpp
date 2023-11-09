@@ -13,17 +13,18 @@ Planet::Planet()
 	mesh->Init(SPHERE, TEXTURE);
 	mesh->RegisterTexture(Resource::Load<Texture>("Resources/Textures/mars.dds"));
 
-	transform->SetScale(1);
+	transform->SetScale(30);
 
 	auto sc = AddComponent<SphereCollider>();
-	//sc->SetRadius(1);
+	sc->SetRadius(30);
 
-	AddComponent<PlanetCollisionEvent>();
 
 	m_CategoryBitmask.SetLayer(LayerID::OBSTACLE);
 	m_CollisionBitmask.SetLayer(LayerID::PLAYER);
 	m_CollisionBitmask.AddLayer(LayerID::ASTEROID);
 	m_CollisionBitmask.AddLayer(LayerID::PROJECTILE);
+
+	AddComponent<PlanetCollisionEvent>();
 
 	mesh = nullptr;
 }
