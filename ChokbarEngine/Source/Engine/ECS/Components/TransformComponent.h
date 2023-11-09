@@ -36,13 +36,14 @@ public:
 	void SetScale(float x, float y, float z);
 	void SetScale(DirectX::XMFLOAT3 scale);
 
+	void LookAt(const DirectX::XMFLOAT3 target);
 	DirectX::XMFLOAT3 GetEulerAngles();
 
 	DirectX::XMFLOAT3 GetRight() { return m_Right; }
 	DirectX::XMFLOAT3 GetUp() { return m_Up; }
-	DirectX::XMFLOAT3 GetForward() { return m_Forward; }
+	DirectX::XMFLOAT3 GetForward() const { return m_Forward; }
 
-	DirectX::XMFLOAT3 GetPosition() { return m_Position; }
+	DirectX::XMFLOAT3 GetPosition() const { return m_Position; }
 	DirectX::XMFLOAT3 GetScale() const { return m_Scale; }
 	float GetHighestScale() const { return max(m_Scale.x, max(m_Scale.y, m_Scale.z)); }
 	DirectX::XMFLOAT4 GetQuaternion() const { return m_RotationQuaternion; }

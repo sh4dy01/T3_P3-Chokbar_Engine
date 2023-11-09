@@ -152,6 +152,28 @@ void Transform::SetScale(DirectX::XMFLOAT3 scaleFactors)
 	SetScale(scaleFactors.x, scaleFactors.y, scaleFactors.z);
 }
 
+void Transform::LookAt(const DirectX::XMFLOAT3 target)
+{
+	DirectX::XMVECTOR directionVector = XMVectorSubtract(XMLoadFloat3(&target), XMLoadFloat3(&m_Position));
+	directionVector = XMVector3Normalize(directionVector);
+
+	float pitch = 0.0f;
+	float yaw = 0.0f;
+	float roll = 0.0f;
+
+	if (XMVector3NotEqual(directionVector, XMVectorZero()))
+	{
+		pitch = asin(XMVectorGetY(directionVector));
+		yaw = atan2(XMVectorGetX(directionVector), XMVectorGetZ(directionVector));
+	}
+
+	pitch = XMConvertToDegrees(pitch);
+	yaw = XMConvertToDegrees(yaw);
+	roll = XMConvertToDegrees(roll);
+
+	Rotate(DirectX::XMFLOAT3(pitch, yaw, roll));
+}
+
 DirectX::XMFLOAT3 Transform::GetEulerAngles()
 {
 	// Extract the Euler angles from the rotation matrix

@@ -24,20 +24,7 @@ void AsteroidLargeBehaviour::Initialize(const XMFLOAT3 direction, float speed, c
 
 void AsteroidLargeBehaviour::Update()
 {
-    if (m_PlayerTransform)
-    {
-        XMFLOAT3 currentPlayerPosition = m_PlayerTransform->GetPosition();
-
-        XMFLOAT3 directionToPlayer;
-        XMStoreFloat3(&directionToPlayer, XMVector3Normalize(XMLoadFloat3(&currentPlayerPosition) - XMLoadFloat3(&m_Position)));
-
-        transform->Translate(XMVectorScale(XMLoadFloat3(&directionToPlayer), m_Speed * TimeManager::GetDeltaTime()));
-    }
-
-    float deltaTime = TimeManager::GetDeltaTime();
-    float rotationSpeedX = 100.0f * deltaTime;
-
-    transform->Rotate(rotationSpeedX, 0, 0);
+    transform->Translate(XMVectorScale(XMLoadFloat3(&m_Direction), m_Speed * TimeManager::GetDeltaTime()));
 
     DestroyAfterATime();
 }

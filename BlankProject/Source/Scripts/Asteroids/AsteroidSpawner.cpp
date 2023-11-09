@@ -14,146 +14,128 @@ AsteroidSpawner::~AsteroidSpawner()
 void AsteroidSpawner::Awake()
 {
     m_PlayerTransform = GameObject::Find("Player")->transform;
-    m_WaveCooldown = m_WaveCooldownDuration;
+    m_SpawnTimerDuration = 1.0f;
+    m_AliveAsteroidCount = 0;
+    m_Timer = m_SpawnTimerDuration;
+    m_WaveCount = 1;
+    m_TargetAsteroidCount = 10;
 }
 
 void AsteroidSpawner::Update()
 {
-    m_WaveCooldown -= TimeManager::GetDeltaTime();
-
-    if (m_WaveCooldown <= 0.0f)
-    {
-        m_WaveCount++;
-        if (m_WaveCount >= 5)
-        {
-            m_WaveCount = 0;
-        }
-        SpawnAsteroidWave(m_WaveCount, m_AsteroidCount);
-
-        m_WaveCooldown = m_WaveCooldownDuration;
-    }
+    SpawnAsteroidWave();
 
     m_LastPlayerPosition = m_PlayerTransform->GetPosition();
 }
 
-
-void AsteroidSpawner::SpawnAsteroidWave(int waveCount, int asteroidCount)
+void AsteroidSpawner::SpawnAsteroidWave()
 {
-    for (int i = 0; i < asteroidCount; i++)
+    if (m_AliveAsteroidCount < m_TargetAsteroidCount)
     {
-        switch (waveCount)
+        if (m_Timer <= 0.0f)
         {
-        case 1:
-            SpawnAsteroid(Asteroid::SMALL);
-            break;
-        case 2:
-            SpawnAsteroid(Asteroid::MEDIUM);
-            break;
-        case 3:
-            SpawnAsteroid(Asteroid::LARGE);
-            break;
-        case 4:
-            if (i % 2 == 0)
+            switch (m_WaveCount)
             {
+            case 1:
+                m_TargetAsteroidCount = 2;
                 SpawnAsteroid(Asteroid::SMALL);
-            }
-            else
-            {
+                break;
+            case 2:
+                m_TargetAsteroidCount = 3;
                 SpawnAsteroid(Asteroid::MEDIUM);
+                break;
+            case 3:
+                if (m_AliveAsteroidCount % 4 == 0)
+                {
+                    SpawnAsteroid(Asteroid::SMALL);
+                }
+                else
+                {
+                    SpawnAsteroid(Asteroid::MEDIUM);
+                }
+                break;
+            case 4:
+                m_TargetAsteroidCount = 4;
+                if (m_AliveAsteroidCount % 2 == 0)
+                {
+                    SpawnAsteroid(Asteroid::SMALL);
+                }
+                else
+                {
+                    SpawnAsteroid(Asteroid::MEDIUM);
+                }
+                break;
+            case 5:
+                m_TargetAsteroidCount = 1;
+                SpawnAsteroid(Asteroid::LARGE);
+                break;
+            default:
+                break;
             }
-            break;
-        case 5:
-            if (i % 4 == 0)
-            {
-                SpawnAsteroid(Asteroid::SMALL);
-            }
-            else
-            {
-                SpawnAsteroid(Asteroid::MEDIUM);
-            }
-            break;
-        default:
-            break;
+
+            m_Timer = m_SpawnTimerDuration;
         }
+        else
+        {
+            // Décrémentez le compteur de délai
+            m_Timer -= TimeManager::GetDeltaTime();
+        }
+    }
+    else
+    {
+        m_WaveCount++;
+        m_AliveAsteroidCount = 0;
+        m_AliveAsteroids.clear();
     }
 }
 
 void AsteroidSpawner::SpawnAsteroid(Asteroid::AsteroidType type)
 {
     XMFLOAT3 playerPosition = m_PlayerTransform->GetPosition();
-
-    float spawnDistance = 500.0f;
-
     XMFLOAT3 playerForward = m_PlayerTransform->GetForward();
 
-    XMFLOAT3 spawnPosition;
-    spawnPosition.x = playerPosition.x + spawnDistance * playerForward.x;
-    spawnPosition.y = playerPosition.y;
-    spawnPosition.z = playerPosition.z + spawnDistance * playerForward.z;
+    float spawnDistance = 500.0f;
+    float maxAngle = 30.0f;
 
+   
+    float randomAngle = (rand() % (2 * static_cast<int>(maxAngle * 100.0f))) / 100.0f - maxAngle;
+
+    XMMATRIX rotationMatrix = XMMatrixRotationY(XMConvertToRadians(randomAngle));
+    XMFLOAT3 direction;
+    XMStoreFloat3(&direction, XMVector3Transform(XMLoadFloat3(&playerForward), rotationMatrix));
+
+    XMFLOAT3 spawnPosition;
+    spawnPosition.x = playerPosition.x + spawnDistance * direction.x;
+    spawnPosition.y = playerPosition.y + spawnDistance * direction.y;
+    spawnPosition.z = playerPosition.z + spawnDistance * direction.z;
     if (type == Asteroid::SMALL)
     {
         XMFLOAT3 playerLastPosition = m_LastPlayerPosition;
 
         XMFLOAT3 direction;
-        XMStoreFloat3(&direction, XMVector3Normalize(XMLoadFloat3(&spawnPosition) - XMLoadFloat3(&playerLastPosition)));
+        XMStoreFloat3(&direction, XMVector3Normalize(XMVectorSubtract(XMLoadFloat3(&playerLastPosition), XMLoadFloat3(&spawnPosition))));
 
         AsteroidSmallBehaviour* asteroid2 = GameObject::Instantiate<AsteroidSmall>("Asteroid " + std::to_string(m_AliveAsteroidCount))->GetComponent<AsteroidSmallBehaviour>();
-        asteroid2->Initialize(direction, 30.0f, spawnPosition);
+        asteroid2->Initialize(direction, 300, spawnPosition);
         m_AliveAsteroids.push_back(asteroid2->gameObject);
-        m_AliveAsteroidCount++;
     }
     else if (type == Asteroid::MEDIUM)
     {
         AsteroidMediumBehaviour* asteroid1 = GameObject::Instantiate<AsteroidMedium>("Asteroid " + std::to_string(m_AliveAsteroidCount))->GetComponent<AsteroidMediumBehaviour>();
         asteroid1->Initialize(m_PlayerTransform, 20.0f, spawnPosition);
         m_AliveAsteroids.push_back(asteroid1->gameObject);
-        m_AliveAsteroidCount++;
     }
     else if (type == Asteroid::LARGE)
     {
         XMFLOAT3 playerLastPosition = m_LastPlayerPosition;
 
         XMFLOAT3 direction;
-        XMStoreFloat3(&direction, XMVector3Normalize(XMLoadFloat3(&spawnPosition) - XMLoadFloat3(&playerLastPosition)));
+        XMStoreFloat3(&direction, XMVector3Normalize(XMVectorSubtract(XMLoadFloat3(&playerLastPosition), XMLoadFloat3(&spawnPosition))));
 
         AsteroidLargeBehaviour* asteroid = GameObject::Instantiate<AsteroidLarge>("Asteroid " + std::to_string(m_AliveAsteroidCount))->GetComponent<AsteroidLargeBehaviour>();
-        asteroid->Initialize(direction, 30.0f, spawnPosition);
+        asteroid->Initialize(direction, 300.0f, spawnPosition);
         m_AliveAsteroids.push_back(asteroid->gameObject);
-        m_AliveAsteroidCount++;
     }
-}
 
-void AsteroidSpawner::TestAsteroidLifetime()
-{
-    for (auto asteroid : m_AliveAsteroids)
-    {
-        bool shouldDestroy = false;
-
-        if (asteroid->HasComponent<AsteroidSmallBehaviour>())
-        {
-            AsteroidSmallBehaviour* asteroidBehaviour = asteroid->GetComponent<AsteroidSmallBehaviour>();
-            shouldDestroy = (asteroidBehaviour->GetLifetime() <= 0.0f);
-        }
-        else if (asteroid->HasComponent<AsteroidMediumBehaviour>())
-        {
-            AsteroidMediumBehaviour* asteroidBehaviour = asteroid->GetComponent<AsteroidMediumBehaviour>();
-            shouldDestroy = (asteroidBehaviour->GetLifetime() <= 0.0f);
-        }
-        else if (asteroid->HasComponent<AsteroidLargeBehaviour>())
-        {
-            AsteroidLargeBehaviour* asteroidBehaviour = asteroid->GetComponent<AsteroidLargeBehaviour>();
-            shouldDestroy = (asteroidBehaviour->GetLifetime() <= 0.0f);
-        }
-
-        if (shouldDestroy)
-        {
-            m_AliveAsteroidCount--;
-            asteroid->Destroy();
-        }
-        else
-        {
-            ++asteroid;
-        }
-    }
+    m_AliveAsteroidCount++;   
 }

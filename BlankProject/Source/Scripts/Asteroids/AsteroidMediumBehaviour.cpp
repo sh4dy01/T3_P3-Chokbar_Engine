@@ -11,8 +11,8 @@ void AsteroidMediumBehaviour::Awake()
     m_Lifetime = 5.0f;
 
     m_TeleportationAngle = 66.6f;
-    m_TeleportationDistance = 33.0f;
-    m_TeleportInterval = 0.5f;  
+    m_TeleportationDistance = 99.f;
+    m_TeleportInterval = 2.f;  
 
     m_TimeSinceLastTeleport = 0.0f;
 }
