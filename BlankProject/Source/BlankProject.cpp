@@ -5,7 +5,12 @@
 #include "GameObjects/Player.h"
 #include "GameObjects/Asteroid.h"
 #include "GameObjects/Skybox.h"
+#include "GameObjects/UI/Score.h"
+#include "GameObjects/UI/CrossAir.h"
+#include "GameObjects/Particles/ProjectileParticles.h"
+#include "GameObjects/Planet.h"
 #include "Scripts/Asteroids/AsteroidSpawner.h"
+
 
 class Application : public Win32::IApplication
 {
@@ -37,63 +42,45 @@ void Application::SetupPerGameSettings()
 
 void Application::Initialize()
 {
+	GameObject::Instantiate<ProjectileParticles>();
+
+	
 	auto camera = GameObject::Instantiate<Camera>();
 
-	auto player = GameObject::Instantiate<Player>();
+	const auto player = GameObject::Instantiate<Player>();
+	player->GetComponent<Rigidbody>()->Move(0, 0, 75);
+	player->transform->RotateYaw(180);
 
-	player->GetComponent<Rigidbody>()->Move(3.f, 3.f, 9.f);
-
-	player->transform->SetPosition(0, 0, -5);
 	camera->transform->SetParent(player->transform);
 
-	for (int i = 0; i < 50; i++)
+	for (int i = 0; i < 100; i++)
 	{
-		auto asteroid = GameObject::Instantiate<Asteroid>();
+		const auto asteroid = GameObject::Instantiate<Planet>();
+		
+		const float x = (rand() % 1500) - 750;
+		const float y = (rand() % 1500) - 752;
+		const float z = (rand() % 1500) - 750;
 
-		float x = (rand() % 50) - 5.5f;
-		float y = (rand() % 50) - 5.5f;
-		float z = (rand() % 50) - 5.5f;
 		asteroid->GetComponent<Rigidbody>()->Move(x, y, z);
-
-		/*auto go = GameObject::Instantiate<GameObject>();
-		auto mr = new MeshRenderer();
-		mr->Init(SPHERE, SIMPLE);
-		go->AddComponent<MeshRenderer>(mr);
-		go->transform->SetPosition(x, y, z);*/
-		// go->transform->
+		
 	}
 
 	GameObject::Instantiate<SkyBox>();
 
-	/*
-	auto* test = GameObject::Instantiate();
-	test->transform->SetPosition(-3, 0, 25);
-	test->transform->SetScale(3.f, 3.f, 3.f);
+	GameObject::Instantiate<Score>();
 
-	test->AddComponent<MeshRenderer>();
-	auto pr = test->AddComponent<ParticleRenderer>();
-	pr->Init(MeshType::CUBE, MaterialType::PARTICLE);
-	pr->SetParticleCount(100);
-	pr->Play();
-
-	test = GameObject::Instantiate();
-	test->transform->SetPosition(3, 0, 25);
-	test->transform->SetScale(3.f, 3.f, 3.f);
-
-	test->AddComponent<MeshRenderer>();
-	pr = test->AddComponent<ParticleRenderer>();
-	pr->Init(MeshType::CUBE, MaterialType::PARTICLE);
-	pr->SetParticleCount(100);
-	pr->Play();
-	*/
+	auto crossAir = GameObject::Instantiate<CrossAir>();
+	crossAir->transform->SetPosition(0, 0, 0);
 
 	auto spawner = GameObject::Instantiate();
 	spawner->AddComponent<AsteroidSpawner>();
+	camera = nullptr;
+	crossAir = nullptr;
 }
 
 void Application::Update(const float dt)
-
 {
+
 }
 
 void Application::Shutdown()

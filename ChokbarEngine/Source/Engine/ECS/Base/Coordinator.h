@@ -47,6 +47,7 @@ private:
 	void FixedUpdateComponents();
 	void LateUpdateComponents();
 	void UpdateSystems(float dt);
+	void CleanUp();
 
 	void DestroyRegisteredEntites();
 

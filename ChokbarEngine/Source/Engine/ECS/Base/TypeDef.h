@@ -4,7 +4,7 @@
 #include <cstdint>
 
 using InstanceID = std::uint32_t;
-const InstanceID MAX_ENTITIES = 500;
+const InstanceID MAX_ENTITIES = 2000;
 
 using ComponentType = std::uint8_t;
 const ComponentType MAX_COMPONENTS = 32;

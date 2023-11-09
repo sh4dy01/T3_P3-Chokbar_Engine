@@ -16,13 +16,16 @@ Asteroid::Asteroid()
 
 	auto mesh = AddComponent<MeshRenderer>();
 	mesh->Init(SPHERE, TEXTURE);
-	mesh->RegisterTexture(Resource::Load<Texture>("Resources/Textures/mars.dds"));
+	mesh->RegisterTexture(Resource::Load<Texture>("Resources/Textures/asteroid.dds"));
 
-	transform->SetScale(2.f);
+	//auto particle = AddComponent<ParticleRenderer>();
+	//particle->Init(CUBE, PARTICLE);
+
+	transform->SetScale(20.f);
 
 	auto sc = AddComponent<SphereCollider>();
-	sc->SetRadius(2.f);
-	// sc->SetCenter({ -4.f, -4.f, -4.f });
+	sc->SetRadius(20.f);
+	//sc->SetCenter({ -4.f, -4.f, -4.f });
 
 	AddComponent<AsteroidLife>();
 	AddComponent<AsteroidCollisionEvent>();
@@ -31,6 +34,8 @@ Asteroid::Asteroid()
 	m_CollisionBitmask.SetLayer(LayerID::PLAYER);
 	m_CollisionBitmask.AddLayer(LayerID::ASTEROID);
 	m_CollisionBitmask.AddLayer(LayerID::PROJECTILE);
+	m_CollisionBitmask.AddLayer(LayerID::OBSTACLE);
+
 
 	mesh = nullptr;
 }

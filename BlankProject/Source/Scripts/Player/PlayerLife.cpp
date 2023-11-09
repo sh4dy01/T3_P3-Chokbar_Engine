@@ -1,6 +1,13 @@
 #include "PlayerLife.h"
+#include "Engine/Engine.h"
+
+
+void PlayerLife::Awake()
+{
+	InitMaxLife(3);
+}
 
 void PlayerLife::OnDeath()
 {
-	// Restart the game
+	Engine::RestartGame();
 }

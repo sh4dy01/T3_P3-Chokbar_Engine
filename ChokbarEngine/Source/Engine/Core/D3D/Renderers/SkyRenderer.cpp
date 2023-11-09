@@ -36,7 +36,7 @@ void SkyRenderer::Update(float dt)
 	if (transform->IsDirty())
 		transform->UpdateParentedWorldMatrix();
 
-	Mat->GetShader()->UpdateObjectCB(transform->GetParentedWorldMatrix(), ObjectCBIndex);
+	Mat->GetShader()->UpdateObjectCB(transform->GetTransposedParentedWorldMatrix(), ObjectCBIndex);
 }
 
 

@@ -1,4 +1,7 @@
 #include "Chokbar.h"
+
+#include "Engine/Engine.h"
+
 #include "CameraComponent.h"
 
 using namespace DirectX;
@@ -6,7 +9,7 @@ using namespace DirectX;
 CameraComponent::CameraComponent()
 	: m_ViewDirty(true)
 {
-	SetLens(70.0F, 1.0f, 1.0f, 1000.0f);
+	SetLens(70.0F, 1.0f, 1.0f, 5000);
 }
 
 CameraComponent::~CameraComponent()
@@ -143,14 +146,12 @@ void CameraComponent::UpdateWindowWithNewRange()
 	m_FarWindowHeight = 2.0f * m_FarZ * tanf(0.5f * m_FovY);
 }
 
-
 void CameraComponent::LookAt(XMFLOAT3 targetPos)
 {
 
 
 	m_ViewDirty = true;
 }
-
 
 XMMATRIX CameraComponent::GetView() const
 {
@@ -159,9 +160,31 @@ XMMATRIX CameraComponent::GetView() const
 	return XMLoadFloat4x4(&m_View);
 }
 
+XMMATRIX CameraComponent::GetOrthoView() const
+{
+	assert(!m_ViewDirty);
+
+	return XMLoadFloat4x4(&m_OthoView);
+}
+
 XMMATRIX CameraComponent::GetProj() const
 {
 	return XMLoadFloat4x4(&m_Proj);
+}
+
+XMMATRIX CameraComponent::GetOrthoProj() const
+{
+	return XMLoadFloat4x4(&m_OrthoProj);
+}
+
+XMMATRIX CameraComponent::GetViewProj() const
+{
+	return XMMatrixMultiply(GetView(), GetProj());
+}
+
+XMMATRIX CameraComponent::GetOrthoViewProj() const
+{
+	return XMMatrixMultiply(GetOrthoView(), GetOrthoProj());
 }
 
 XMFLOAT4X4 CameraComponent::GetView4x4f() const
@@ -174,18 +197,51 @@ XMFLOAT4X4 CameraComponent::GetProj4x4f() const
 	return m_Proj;
 }
 
+XMFLOAT4X4 CameraComponent::GetViewProj4x4f() const
+{
+	XMFLOAT4X4 viewProj;
+	XMStoreFloat4x4(&viewProj, GetViewProj());
+	return viewProj;
+}
+
+XMFLOAT4X4 CameraComponent::GetOrthoView4x4f() const
+{
+	return m_OthoView;
+}
+
+XMFLOAT4X4 CameraComponent::GetOrthoProj4x4f() const
+{
+	return m_OrthoProj;
+}
+
+XMFLOAT4X4 CameraComponent::GetOrthoViewProj4x4f() const
+{
+	XMFLOAT4X4 viewProj;
+	XMStoreFloat4x4(&viewProj, GetOrthoViewProj());
+	return viewProj;
+}
+
 void CameraComponent::UpdateProjectionMatrix()
 {
 	XMStoreFloat4x4(&m_Proj, XMMatrixPerspectiveFovLH(XMConvertToRadians(m_FovY), m_Aspect, m_NearZ, m_FarZ));
+
+	float winWidth = Engine::GetWindow()->GetWidth();
+	float winHeight = Engine::GetWindow()->GetHeight();
+	XMStoreFloat4x4(&m_OrthoProj, XMMatrixOrthographicLH(winWidth, winHeight, m_NearZ, m_FarZ));
 }
 
 void CameraComponent::UpdateViewMatrix()
 {
-	//if (transform->IsDirty() || (transform->m_pParent && transform->m_pParent->IsDirty()) || m_ViewDirty)
+	//if (transform->IsDirty() || m_ViewDirty)
 	{
 		transform->UpdateParentedWorldMatrix();
 		XMStoreFloat4x4(&m_View, XMMatrixInverse(&XMMatrixDeterminant(XMLoadFloat4x4(transform->GetParentedWorldMatrix())), XMLoadFloat4x4(transform->GetParentedWorldMatrix())));
 
 		m_ViewDirty = false;
+
+		// Orthographic view
+		XMFLOAT3 pos = transform->m_pParent->GetPosition();
+		XMFLOAT3 target = transform->m_pParent->GetForward();
+		XMStoreFloat4x4(&m_OthoView, XMMatrixLookAtLH(XMLoadFloat3(&pos), XMLoadFloat3(&target), XMLoadFloat3(&transform->GetUp())));
 	}
 }

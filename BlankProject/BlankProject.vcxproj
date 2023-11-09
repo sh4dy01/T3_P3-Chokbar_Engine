@@ -105,6 +105,14 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\GameObjects\UI\CrossAir.cpp" />
+    <ClCompile Include="Source\Scripts\UI\DigitBehavior.cpp" />
+    <ClCompile Include="Source\GameObjects\UI\Digit.cpp" />
+    <ClCompile Include="Source\GameObjects\UI\Score.cpp" />
+    <ClCompile Include="Source\Scripts\UI\ScoreBehavior.cpp" />
+    <ClCompile Include="Source\GameObjects\Planet.cpp" />
+    <ClCompile Include="Source\Scripts\TriggerCollisionEvent\PlanetCollisionEvent.cpp" />
+    <ClCompile Include="Source\Scripts\TriggerCollisionEvent\PlayerCollisionEvent.cpp" />
     <ClCompile Include="Source\GameObjects\AsteroidLarge.cpp" />
     <ClCompile Include="Source\GameObjects\AsteroidMedium.cpp" />
     <ClCompile Include="Source\GameObjects\AsteroidSmall.cpp" />
@@ -130,6 +138,13 @@
     <ClCompile Include="Source\GameObjects\Wing.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\GameObjects\Planet.h" />
+    <ClInclude Include="Source\Scripts\TriggerCollisionEvent\PlanetCollisionEvent.h" />
+    <ClInclude Include="Source\GameObjects\UI\CrossAir.h" />
+    <ClInclude Include="Source\Scripts\UI\DigitBehavior.h" />
+    <ClInclude Include="Source\GameObjects\UI\Digit.h" />
+    <ClInclude Include="Source\GameObjects\UI\Score.h" />
+    <ClInclude Include="Source\Scripts\TriggerCollisionEvent\PlayerCollisionEvent.h" />
     <ClInclude Include="Source\GameObjects\AsteroidLarge.h" />
     <ClInclude Include="Source\GameObjects\AsteroidMedium.h" />
     <ClInclude Include="Source\GameObjects\AsteroidSmall.h" />
@@ -143,6 +158,7 @@
     <ClInclude Include="Source\Scripts\Player\PlayerLife.h" />
     <ClInclude Include="Source\Scripts\Asteroids\AsteroidSpawner.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="Source\Scripts\UI\ScoreBehavior.h" />
     <ClInclude Include="Source\BlankProject.h" />
     <ClInclude Include="Source\GameObjects\Asteroid.h" />
     <ClInclude Include="Source\GameObjects\Camera.h" />

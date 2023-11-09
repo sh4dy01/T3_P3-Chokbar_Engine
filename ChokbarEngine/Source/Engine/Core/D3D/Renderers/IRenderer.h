@@ -8,8 +8,6 @@ struct ID3D12GraphicsCommandList;
 
 class IRenderer
 {
-	friend class D3DRenderer;
-
 public:
 	IRenderer();
 	virtual ~IRenderer();

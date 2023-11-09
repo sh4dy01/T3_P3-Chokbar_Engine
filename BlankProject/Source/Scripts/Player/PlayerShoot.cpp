@@ -45,9 +45,13 @@ void PlayerShoot::HandleShoot()
 
 void PlayerShoot::ShootProjectileFromWings()
 {
-	const XMFLOAT3 forward = m_pCamera->GetLook3f();
+	XMFLOAT3 forward = m_pCamera->GetLook3f();
+	float angle = XMConvertToRadians(m_ShootOffsetAngle);
 
 	ShootProjectile(m_LeftWing->GetWorldPosition(), forward);
+
+	forward = m_pCamera->GetLook3f();
+	forward.x += angle;
 	ShootProjectile(m_RightWing->GetWorldPosition(), forward);
 }
 

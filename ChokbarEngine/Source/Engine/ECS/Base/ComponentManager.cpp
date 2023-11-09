@@ -13,10 +13,7 @@ ComponentManager::ComponentManager()
 
 ComponentManager::~ComponentManager()
 {
-	for (auto customComponent : m_CustomComponents)
-	{
-		customComponent = nullptr;
-	}
+	CleanEverything();
 }
 
 void ComponentManager::AwakeAllComponents()
@@ -24,6 +21,7 @@ void ComponentManager::AwakeAllComponents()
 	for (auto const customComponent : m_CustomComponents)
 	{
 		customComponent->Awake();
+		customComponent->SetInitialized();
 	}
 }
 
@@ -44,7 +42,7 @@ void ComponentManager::UpdateAllComponents()
 	{
 		auto const customComponent = m_CustomComponents[i];
 
-		if (!customComponent->gameObject->IsActive() || !customComponent->IsEnabled()) continue;
+		if (!customComponent->gameObject->IsActive() || !customComponent->IsEnabled() || !customComponent->IsInitialized()) continue;
 
 		customComponent->Update();
 	}
@@ -70,12 +68,25 @@ void ComponentManager::LateUpdateAllComponents()
 	}
 }
 
+void ComponentManager::CleanEverything() 
+{
+	for (auto const& pair : m_ComponentArrays)
+	{
+		auto const& component = pair.second;
+
+		component->CleanUp();
+	}
+
+	m_CustomComponents.clear();
+}
+
 void ComponentManager::RegisterCustomComponent(CustomComponent* customComponent)
 {
 	if (Engine::GetInstance()->GetEngineState() == Engine::RUNTIME)
 	{
 		customComponent->Awake();
 		customComponent->Start();
+		customComponent->SetInitialized();
 	}
 
 	m_CustomComponents.push_back(customComponent);

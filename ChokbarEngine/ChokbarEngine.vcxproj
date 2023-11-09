@@ -56,7 +56,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;WIN32;BUILD_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
@@ -139,7 +139,6 @@
     <ClCompile Include="Source\Engine\Engine.cpp" />
     <ClCompile Include="Source\Engine\Managers\TimeManager.cpp" />
     <ClCompile Include="Source\Engine\Managers\PhysicsWorld.cpp" />
-    <ClCompile Include="Source\Engine\SplashScreen.cpp" />
     <ClCompile Include="Source\Engine\IResourceObject.cpp" />
     <ClCompile Include="Source\Engine\Managers\CameraManager.cpp" />
     <ClCompile Include="Source\Engine\Managers\InputHandler.cpp" />
@@ -147,6 +146,7 @@
     <ClCompile Include="Source\Platform\Windows\IApplication.cpp" />
     <ClCompile Include="Source\Platform\Windows\Win32Utils.cpp" />
     <ClCompile Include="Source\Platform\Windows\Window.cpp" />
+    <ClCompile Include="Source\Engine\Core\D3D\Renderers\UIRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Engine\Managers\LayerManager.h" />
@@ -201,11 +201,11 @@
     <ClInclude Include="Source\Engine\Engine.h" />
     <ClInclude Include="Source\Engine\IResourceObject.h" />
     <ClInclude Include="Source\Engine\Resource.h" />
-    <ClInclude Include="Source\Engine\SplashScreen.h" />
     <ClInclude Include="Source\Platform\Windows\IApplication.h" />
     <ClInclude Include="Source\Platform\Windows\Win32Utils.h" />
     <ClInclude Include="Source\Platform\Windows\Window.h" />
     <ClInclude Include="Source\Platform\Windows\WinEntry.h" />
+    <ClInclude Include="Source\Engine\Core\D3D\Renderers\UIRenderer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
