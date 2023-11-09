@@ -156,8 +156,6 @@ void PhysicsWorld::CheckCollision()
 				(m_CurrentCollisionInfo && m_CurrentCollisionInfo->GetState() != Exit))
 			{
 				
-				
-
 				Collider* colliderA = m_RegisteredCollider[i];
 				Collider* colliderB = m_RegisteredCollider[j];
 
