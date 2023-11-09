@@ -53,6 +53,15 @@ void PhysicsWorld::RemoveCollider(Collider* collider)
 	if (m_RegisteredCollider.empty()) return;
 
 	std::erase(m_RegisteredCollider, collider);
+
+	for (auto collisionInfo : m_RegisteredCollisionInfos)
+	{
+		if (collisionInfo->GetColliderA() == collider || collisionInfo->GetColliderB() == collider)
+		{
+			std::erase(m_RegisteredCollisionInfos, collisionInfo);
+			DELPTR(collisionInfo);
+		}
+	}
 }
 
 XMFLOAT3 PhysicsWorld::ReduceVelocity(XMFLOAT3& velocity)
@@ -250,6 +259,8 @@ void PhysicsWorld::CheckCollision()
 
 						break;
 					}
+
+					m_CurrentCollisionInfo = nullptr;
 				}
 			}
 
