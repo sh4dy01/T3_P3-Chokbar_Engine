@@ -10,6 +10,7 @@ using namespace DirectX;
 
 MeshRenderer::MeshRenderer() : IRenderer()
 {
+	m_IsClippable = true;
 }
 
 MeshRenderer::~MeshRenderer()
