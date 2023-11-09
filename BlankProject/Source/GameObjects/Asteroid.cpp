@@ -2,7 +2,6 @@
 #include "Asteroid.h"
 #include "Engine/Resource.h"
 
-#include "../Scripts/Asteroids/AsteroidLife.h"
 #include "Engine/Resource.h"
 #include "Scripts/TriggerCollisionEvent/AsteroidCollisionEvent.h"
 
@@ -27,7 +26,7 @@ Asteroid::Asteroid()
 	sc->SetRadius(20.f);
 	//sc->SetCenter({ -4.f, -4.f, -4.f });
 
-	AddComponent<AsteroidLife>();
+	m_Life = AddComponent<AsteroidLife>();
 	AddComponent<AsteroidCollisionEvent>();
 
 	m_CategoryBitmask.SetLayer(LayerID::ASTEROID);
@@ -54,16 +53,6 @@ void Asteroid::SetType(AsteroidType type)
 	m_Type = type;
 }
 
-int Asteroid::GetHealth() const
-{
-	return m_Health;
-}
-
-void Asteroid::SetHealth(int health)
-{
-	m_Health = health;
-}
-
 void Asteroid::SetDirection(const DirectX::XMFLOAT3 &direction)
 {
 	m_Direction = direction;
@@ -78,14 +67,6 @@ void Asteroid::Update()
 {
 }
 
-void Asteroid::TakeDamage(int damage)
-{
-	m_Health -= damage;
-	if (m_Health <= 0)
-	{
-		delete this;
-	}
-}
 
 void Asteroid::DestroyAfterATime(float m_Lifetime)
 {

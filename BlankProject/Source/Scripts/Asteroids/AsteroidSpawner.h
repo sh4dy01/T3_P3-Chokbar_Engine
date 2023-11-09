@@ -27,6 +27,7 @@ private:
 
 	int m_TargetAsteroidCount = 10;
 	inline static int m_AliveAsteroidCount = 0;
+	int m_SpawnedAsteroidCount = 0;
 	int m_WaveCount = 0;
 
 	float m_Timer = 0.0f;

@@ -22,7 +22,7 @@ private:
 	float m_ShootTimer = 0.0f;
 
 	const float m_ProjectileSpeed = 200.0f;
-	const float m_ProjectileLifeTime = 2.0f;
+	const float m_ProjectileLifeTime = 5.0f;
 
 	const float m_ZoomSpeed = 0.1f;
 	const float m_Zoom = 2.0f;

@@ -9,19 +9,15 @@ AsteroidSmall::AsteroidSmall() {
 
     SetType(AsteroidType::SMALL);
     SetDirection(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+    m_Life->InitMaxLife(25);
 
-    transform->SetScale(2);
     AddComponent<AsteroidSmallBehaviour>();
 
+    transform->SetScale(10);
 }
 
 AsteroidSmall::~AsteroidSmall()
 {
-}
-
-void AsteroidSmall::TakeDamage(int damage)
-{
-    Asteroid::TakeDamage(damage);
 }
 
 void AsteroidSmall::DestroyAfterATime(float m_Lifetime)

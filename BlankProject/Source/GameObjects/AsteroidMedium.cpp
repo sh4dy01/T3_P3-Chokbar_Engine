@@ -9,7 +9,7 @@ AsteroidMedium::AsteroidMedium() {
 
     AddComponent<AsteroidMediumBehaviour>();
 
-    SetHealth(20);
+    m_Life->InitMaxLife(75);
     SetType(AsteroidType::MEDIUM);
     SetDirection(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 
@@ -18,11 +18,6 @@ AsteroidMedium::AsteroidMedium() {
 
 AsteroidMedium::~AsteroidMedium()
 {
-}
-
-void AsteroidMedium::TakeDamage(int damage)
-{
-    Asteroid::TakeDamage(damage);
 }
 
 void AsteroidMedium::DestroyAfterATime(float m_Lifetime)

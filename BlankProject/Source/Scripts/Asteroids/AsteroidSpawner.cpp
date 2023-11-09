@@ -17,7 +17,7 @@ void AsteroidSpawner::Awake()
     m_SpawnTimerDuration = 1.0f;
     m_AliveAsteroidCount = 0;
     m_Timer = m_SpawnTimerDuration;
-    m_WaveCount = 5;
+    m_WaveCount = 1;
     m_TargetAsteroidCount = 10;
     m_IsSpawning = true;
 }
@@ -27,7 +27,7 @@ void AsteroidSpawner::Update()
     if (m_IsSpawning)
         SpawnAsteroidWave();
 
-    if (m_IsSpawning && m_AliveAsteroidCount >= m_TargetAsteroidCount)
+    if (m_IsSpawning && m_SpawnedAsteroidCount >= m_TargetAsteroidCount)
         m_IsSpawning = false;
 
    // CheckIfWaveSpawned();
@@ -43,6 +43,7 @@ void AsteroidSpawner::TriggerNextWave()
     m_WaveCount++;
     m_IsSpawning = true;
     m_AliveAsteroidCount = 0;
+    m_SpawnedAsteroidCount = 0;
     m_Timer = m_SpawnTimerDuration;
 }
 
@@ -58,6 +59,7 @@ void AsteroidSpawner::SpawnAsteroidWave()
         switch (m_WaveCount)
         {
         case 1:
+            m_SpawnTimerDuration = .5f;
             m_TargetAsteroidCount = 6;
             SpawnAsteroid(Asteroid::SMALL);
             break;
@@ -130,8 +132,9 @@ void AsteroidSpawner::SpawnAsteroid(Asteroid::AsteroidType type)
         XMFLOAT3 playerLastPosition = m_LastPlayerPosition;
 
         XMFLOAT3 direction;
-        XMStoreFloat3(&direction, XMVector3Normalize(XMVectorSubtract(XMLoadFloat3(&playerLastPosition), XMLoadFloat3(&spawnPosition))));
+        spawnPosition.y += rand() % 100 - 50;
 
+        XMStoreFloat3(&direction, XMVector3Normalize(XMVectorSubtract(XMLoadFloat3(&playerLastPosition), XMLoadFloat3(&spawnPosition))));
         AsteroidSmallBehaviour* asteroid2 = GameObject::Instantiate<AsteroidSmall>("Asteroid " + std::to_string(m_AliveAsteroidCount))->GetComponent<AsteroidSmallBehaviour>();
         asteroid2->Initialize(direction, spawnPosition);
     }
@@ -146,6 +149,7 @@ void AsteroidSpawner::SpawnAsteroid(Asteroid::AsteroidType type)
         asteroid->Initialize(m_PlayerTransform, spawnPosition);
     }
 
+    m_SpawnedAsteroidCount++;
     m_AliveAsteroidCount++;   
 }
 

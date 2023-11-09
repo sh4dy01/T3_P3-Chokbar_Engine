@@ -3,7 +3,7 @@
 
 void AsteroidSmallBehaviour::Awake()
 {
-	m_Speed = 50.0f;
+	m_Speed = 300.0f;
 	m_Direction = XMFLOAT3(0.0f, 0.0f, 0.0f);
     m_Lifetime = 5.f; 
     m_Rigidbody = gameObject->GetComponent<Rigidbody>();
@@ -18,7 +18,7 @@ void AsteroidSmallBehaviour::Initialize(const XMFLOAT3 direction, const XMFLOAT3
 {
 	m_Direction = direction;
     m_Position = position;
-    m_Rigidbody->Move(position);
+    m_Rigidbody->Move(m_Position);
 
     m_Rigidbody->SetVelocity(XMVectorScale(XMLoadFloat3(&m_Direction), m_Speed));
 }

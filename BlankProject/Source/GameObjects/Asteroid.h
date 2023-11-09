@@ -1,4 +1,5 @@
 #pragma once
+#include "../Scripts/Asteroids/AsteroidLife.h"
 
 
 class Asteroid : public GameObject 
@@ -18,18 +19,16 @@ public:
     AsteroidType GetType() const;
     void SetType(AsteroidType type);
 
-    int GetHealth() const;
-    void SetHealth(int health);
-
     void SetDirection(const DirectX::XMFLOAT3& direction);
     DirectX::XMFLOAT3 GetDirection() const;
    
     virtual void Update();
-    virtual void TakeDamage(int damage);
     virtual void DestroyAfterATime(float m_Lifetime);
 
 protected:
-    int m_Health;
+
+    AsteroidLife* m_Life;
+
     DirectX::XMFLOAT3 m_Direction;
     AsteroidType m_Type;
 

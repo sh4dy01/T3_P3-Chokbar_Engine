@@ -8,8 +8,6 @@ public:
 
 	virtual ~AsteroidMedium() override;
 
-	void TakeDamage(int damage);
-
 	void DestroyAfterATime(float m_Lifetime) override;
 
 private:

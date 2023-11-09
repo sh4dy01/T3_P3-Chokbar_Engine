@@ -9,7 +9,7 @@ AsteroidLarge::AsteroidLarge() {
 
     AddComponent<AsteroidLargeBehaviour>();
 
-    SetHealth(20);
+    m_Life->InitMaxLife(200);
     SetType(AsteroidType::LARGE);
     SetDirection(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
     
@@ -19,11 +19,6 @@ AsteroidLarge::AsteroidLarge() {
 
 AsteroidLarge::~AsteroidLarge() 
 {
-}
-
-void AsteroidLarge::TakeDamage(int damage)
-{
-    Asteroid::TakeDamage(damage);
 }
 
 void AsteroidLarge::DestroyAfterATime(float m_Lifetime)
