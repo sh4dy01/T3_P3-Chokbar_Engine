@@ -39,4 +39,3 @@ void MeshRenderer::Update(float dt)
 
 	Mat->GetShader()->UpdateObjectCB(transform->GetTransposedParentedWorldMatrix(), ObjectCBIndex);
 }
-

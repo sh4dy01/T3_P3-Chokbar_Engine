@@ -25,7 +25,7 @@ protected:
 	struct PassConstants
 	{
 		DirectX::XMFLOAT4X4 View = Identity4x4();
-		DirectX::XMFLOAT4X4 Proj = Identity4x4();
+		DirectX::XMFLOAT4X4 OrthoProj = Identity4x4();
 		DirectX::XMFLOAT4X4 ViewProj = Identity4x4();
 
 		DirectX::XMFLOAT4 LightColor = { 1.0f, 0.0f, 1.0f, 1.0f };
@@ -88,8 +88,8 @@ public:
 	virtual void Draw(ID3D12GraphicsCommandList* cmdList, IRenderer* drawnMeshR) = 0;
 	virtual void EndDraw(ID3D12GraphicsCommandList* cmdList) = 0;
 
-	UINT GetCreatedIndex() { return (UINT)m_objectCBs.size() - 1; }
-	UINT GetLastIndex() { return (UINT)m_objectCBs.size(); }
+	virtual UINT GetCreatedIndex() { return (UINT)m_objectCBs.size() - 1; }
+	virtual UINT GetLastIndex() { return (UINT)m_objectCBs.size(); }
 
 	void UnBind(UINT index);
 	ShaderBase* Bind();
@@ -166,4 +166,28 @@ public:
 	~ShaderSkybox();
 
 	void CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT& rtvFormat, DXGI_FORMAT& dsvFormat) override;
+};
+
+class ShaderTextureOffset : public ShaderTexture
+{
+public:
+	struct OffSetConstants
+	{
+		DirectX::XMFLOAT4X4 World = Identity4x4();
+		float UVOffsetY = 0.0f;
+	};
+
+public:
+	ShaderTextureOffset(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, UINT cbvDescriptorSize, std::wstring& filepath);
+	~ShaderTextureOffset();
+
+	UINT GetCreatedIndex() override { return (UINT)m_offSetCb.size() - 1; }
+
+	void Draw(ID3D12GraphicsCommandList* cmdList, IRenderer* drawnMeshR) override;
+	void UpdateAsOffset(DirectX::XMFLOAT4X4* itemWorldMatrix, UINT cbIndex, float offSetY);
+
+protected:
+	void AddObjectCB() override;
+
+	std::vector<UploadBuffer<OffSetConstants>*> m_offSetCb;
 };

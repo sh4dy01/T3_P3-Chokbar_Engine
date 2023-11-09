@@ -181,7 +181,6 @@
     <ClCompile Include="Source\Engine\Managers\TimeManager.cpp">
       <Filter>Source\Engine\Managers\Private</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\SplashScreen.cpp" />
     <ClCompile Include="Source\Engine\Core\D3D\External\DDSTextureLoader.cpp">
       <Filter>Source\Engine\Core\D3D\External</Filter>
     </ClCompile>
@@ -238,6 +237,9 @@
     </ClCompile>
     <ClCompile Include="Source\Engine\Managers\LayerManager.cpp">
       <Filter>Source\Engine\Managers\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Core\D3D\Renderers\UIRenderer.cpp">
+      <Filter>Source\Engine\Core\D3D\Renderers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -334,7 +336,6 @@
     <ClInclude Include="Source\Engine\Managers\TimeManager.h">
       <Filter>Source\Engine\Managers\Public</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\SplashScreen.h" />
     <ClInclude Include="Source\Engine\Core\D3D\External\d3dx12.h">
       <Filter>Source\Engine\Core\D3D\External</Filter>
     </ClInclude>
@@ -406,6 +407,9 @@
     </ClInclude>
     <ClInclude Include="Source\Engine\Core\D3D\Shaders\Cubemap.h">
       <Filter>Source\Engine\Core\D3D\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Core\D3D\Renderers\UIRenderer.h">
+      <Filter>Source\Engine\Core\D3D\Renderers</Filter>
     </ClInclude>
     <ClInclude Include="Source\Engine\Managers\LayerManager.h">
       <Filter>Source\Engine\Managers\Public</Filter>

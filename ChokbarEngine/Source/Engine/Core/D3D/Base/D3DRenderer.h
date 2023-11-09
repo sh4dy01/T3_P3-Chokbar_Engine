@@ -61,7 +61,7 @@ private:
 	void RenderObjects();
 	void UpdateRenderedObjects(const float dt, const float totalTime);
 
-	void CreateFustrum();
+	void CreateFrustum();
 
 	D3D12_CPU_DESCRIPTOR_HANDLE CurrentBackBufferView() const;
 	D3D12_CPU_DESCRIPTOR_HANDLE DepthStencilView() const;
@@ -127,6 +127,7 @@ private:
 	std::array<MeshRenderer*, MAX_ENTITIES>* m_meshRenderers;
 	std::array<ParticleRenderer*, MAX_ENTITIES>* m_particleRenderers;
 	std::array<SkyRenderer*, MAX_ENTITIES>* m_skyRenderers;
+	std::array<UIRenderer*, MAX_ENTITIES>* m_uiRenderers;
 
 	UINT m_texIndex;
 

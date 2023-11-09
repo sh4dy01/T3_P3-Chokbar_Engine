@@ -4,6 +4,7 @@
 #include "D3D/Renderers/MeshRenderer.h"
 #include "D3D/Renderers/ParticleRenderer.h"
 #include "D3D/Renderers/SkyRenderer.h"
+#include "D3D/Renderers/UIRenderer.h"
 #include "Engine/ECS/Components/Collision/Collider.h"
 #include "Engine/ECS/Components/Collision/RigidBody.h"
 
@@ -44,6 +45,7 @@ void Coordinator::RegisterComponents()
 	RegisterComponent<CameraComponent>();
 	RegisterComponent<ParticleRenderer>();
 	RegisterComponent<SkyRenderer>();
+	RegisterComponent<UIRenderer>();
 }
 
 void Coordinator::RegisterSystems()

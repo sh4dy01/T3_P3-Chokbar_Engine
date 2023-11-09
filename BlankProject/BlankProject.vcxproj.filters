@@ -18,6 +18,11 @@
     <ClCompile Include="Source\GameObjects\Wing.cpp" />
     <ClCompile Include="Source\GameObjects\Particles\ProjectileParticles.cpp" />
     <ClCompile Include="Source\Scripts\TriggerCollisionEvent\PlayerCollisionEvent.cpp" />
+    <ClCompile Include="Source\GameObjects\UI\Score.cpp" />
+    <ClCompile Include="Source\GameObjects\UI\Digit.cpp" />
+    <ClCompile Include="Source\Scripts\UI\DigitBehavior.cpp" />
+    <ClCompile Include="Source\Scripts\UI\ScoreBehavior.cpp" />
+    <ClCompile Include="Source\GameObjects\UI\CrossAir.cpp" />
     <ClCompile Include="Source\GameObjects\Planet.cpp" />
     <ClCompile Include="Source\Scripts\TriggerCollisionEvent\PlanetCollisionEvent.cpp" />
   </ItemGroup>
@@ -40,6 +45,44 @@
     <ClInclude Include="Source\GameObjects\Wing.h" />
     <ClInclude Include="Source\GameObjects\Particles\ProjectileParticles.h" />
     <ClInclude Include="Source\Scripts\TriggerCollisionEvent\PlayerCollisionEvent.h" />
+    <ClInclude Include="resource.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\BlankProject.h">
+      <Filter>Source\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scripts\Player\PlayerMovement.h">
+      <Filter>Source\Source\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GameObjects\Asteroid.h">
+      <Filter>Source\Source\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GameObjects\Camera.h">
+      <Filter>Source\Source\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GameObjects\Player.h">
+      <Filter>Source\Source\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scripts\Player\PlayerShoot.h">
+      <Filter>Source\Source\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GameObjects\Projectile.h">
+      <Filter>Source\Source\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scripts\ProjectileBehavior.h">
+      <Filter>Source\Source\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scripts\Asteroids\AsteroidSpawner.h">
+      <Filter>Source\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GameObjects\SkyBox.h">
+      <Filter>Source\Source\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scripts\UI\DigitBehavior.h" />
+    <ClInclude Include="Source\GameObjects\UI\Digit.h" />
+    <ClInclude Include="Source\GameObjects\UI\Score.h" />
+    <ClInclude Include="Source\Scripts\UI\ScoreBehavior.h" />
+    <ClInclude Include="Source\GameObjects\UI\CrossAir.h" />
     <ClInclude Include="Source\GameObjects\Planet.h" />
     <ClInclude Include="Source\Scripts\TriggerCollisionEvent\PlanetCollisionEvent.h" />
   </ItemGroup>
