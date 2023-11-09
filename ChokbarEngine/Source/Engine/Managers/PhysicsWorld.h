@@ -47,10 +47,13 @@ public:
     bool IsSameGridPos(XMINT3 iGridPos, int iGridSize, XMINT3 jGridPos, int jGridSize);
 
     void Update(float dt);
+    
    
 private:
 
     PhysicsWorld();
+
+    void CleanUp();
 
     bool IsVelocityNull(const XMFLOAT3 velocity);
 

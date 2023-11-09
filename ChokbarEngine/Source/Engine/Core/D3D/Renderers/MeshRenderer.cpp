@@ -10,6 +10,7 @@ using namespace DirectX;
 
 MeshRenderer::MeshRenderer() : IRenderer()
 {
+	m_IsClippable = true;
 }
 
 MeshRenderer::~MeshRenderer()
@@ -33,9 +34,8 @@ void MeshRenderer::Update(float dt)
 {
 	if (!IsEnabled() || !Mat || !Mesh) return;
 
-	if (transform->IsDirty())
-		transform->UpdateWorldMatrix();
+	//if ((transform->m_pParent && transform->m_pParent->IsDirty()) || transform->IsDirty())
+		transform->UpdateParentedWorldMatrix();
 
-	Mat->GetShader()->UpdateObjectCB(transform->GetWorldMatrix(), ObjectCBIndex);
+	Mat->GetShader()->UpdateObjectCB(transform->GetTransposedParentedWorldMatrix(), ObjectCBIndex);
 }
-

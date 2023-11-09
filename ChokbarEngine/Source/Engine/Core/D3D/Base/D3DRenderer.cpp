@@ -5,9 +5,12 @@
 #include "D3D/Shaders/Texture.h"
 #include "D3D/Shaders/ShaderBase.h"
 #include "D3D/Shaders/Material.h"
+
 #include "D3D/Renderers/MeshRenderer.h"
 #include "D3D/Renderers/ParticleRenderer.h"
 #include "D3D/Renderers/SkyRenderer.h"
+#include "D3D/Renderers/UIRenderer.h"
+
 #include "D3D/Geometry/GeometryHandler.h"
 
 #include "Engine/Engine.h"
@@ -467,9 +470,10 @@ void D3DRenderer::GetRenderComponentsRef()
 	m_meshRenderers = coordinator->GetAllComponentsOfType<MeshRenderer>()->GetAllData();
 	m_particleRenderers = coordinator->GetAllComponentsOfType<ParticleRenderer>()->GetAllData();
 	m_skyRenderers = coordinator->GetAllComponentsOfType<SkyRenderer>()->GetAllData();
+	m_uiRenderers = coordinator->GetAllComponentsOfType<UIRenderer>()->GetAllData();
 }
 
-void D3DRenderer::CreateFustrum()
+void D3DRenderer::CreateFrustum()
 {
 	BoundingFrustum::CreateFromMatrix(m_Frustum, Engine::GetMainCamera()->GetProj());
 }
@@ -497,6 +501,12 @@ int D3DRenderer::UpdateTextureHeap(Texture* tex, int textType)
 
 void D3DRenderer::UpdateRenderedObjects(const float dt, const float totalTime)
 {
+	for (UIRenderer* uir : *m_uiRenderers)
+	{
+		if (!uir) continue;
+		uir->Update(dt);
+	}
+
 	for (MeshRenderer* mr : *m_meshRenderers)
 	{
 		if (!mr) continue;
@@ -508,14 +518,26 @@ void D3DRenderer::UpdateRenderedObjects(const float dt, const float totalTime)
 		if (!pr) continue;
 		pr->Update(dt);
 	}
+
+	for (SkyRenderer* sr : *m_skyRenderers)
+	{
+		if (!sr) continue;
+		sr->Update(dt);
+	}
 }
 
 void D3DRenderer::RenderObjects()
 {
+	for (UIRenderer* uir : *m_uiRenderers)
+	{
+		if (!uir) continue;
+		uir->Render(m_pCommandList);
+	}
+
 	// Create the bounding frustum from the camera's projection matrix
 	// For more Frustrum information, please see the chapter 16 of the book
-	// This method is really advanced and is not mandatory for an exam
-	CreateFustrum();
+	// Frustum culling is really advanced and is not mandatory for an exam
+	CreateFrustum();
 
 	XMMATRIX view = Engine::GetMainCamera()->GetView();
 	XMMATRIX invView = XMMatrixInverse(nullptr, view);
@@ -527,17 +549,21 @@ void D3DRenderer::RenderObjects()
 		// Create a bounding sphere from the mesh renderer's transform
 		// Note that we get the highest scale of the transform to make sure the bounding sphere is big enough
 		// This could be improved by using the bounding box instead
-		BoundingSphere bs;
-		bs.Center = mr->transform->GetPosition();
-		bs.Radius = mr->transform->GetHighestScale();
 
-		// Create a bounding frustum from the camera's view matrix
-		BoundingFrustum frustrant;
-		m_Frustum.Transform(frustrant, invView);
+		if (mr->IsClippable())
+		{
+			BoundingSphere bs;
+			bs.Center = mr->transform->GetPosition();
+			bs.Radius = mr->transform->GetHighestScale();
 
-		// If the bounding sphere is not in the camera's view, don't render the mesh
-		if (frustrant.Contains(bs) == DirectX::DISJOINT) continue;
-		
+			// Create a bounding frustum from the camera's view matrix
+			BoundingFrustum viewFrustum;
+			m_Frustum.Transform(viewFrustum, invView);
+
+			// If the bounding sphere is not in the camera's view, don't render the mesh
+			if (viewFrustum.Contains(bs) == DirectX::DISJOINT) continue;
+		}
+
 		mr->Render(m_pCommandList);
 	}
 

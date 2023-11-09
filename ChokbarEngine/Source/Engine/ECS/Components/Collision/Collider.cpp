@@ -14,7 +14,7 @@ Collider::~Collider()
 {
 	for (auto triggerCollisionEvent : m_triggerCollisionEvents)
 	{
-		DELPTR(triggerCollisionEvent);
+		NULLPTR(triggerCollisionEvent);
 	}
 }
 
@@ -26,6 +26,7 @@ void Collider::CallOnTriggerEnter(Collider* other) const
 	}
 }
 
+/*
 void Collider::CallOnTriggerStay(Collider* other) const
 {
 	for (const auto triggerCollisionEvent : m_triggerCollisionEvents)
@@ -41,7 +42,7 @@ void Collider::CallOnTriggerExit(Collider* other) const
 		triggerCollisionEvent->OnTriggerExit(other);
 	}
 }
-
+*/
 void Collider::OnAddedComponent()
 {
 	const auto rigidbody = gameObject->GetComponent<Rigidbody>();

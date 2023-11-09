@@ -22,7 +22,9 @@ private:
 
 	static D3DMesh* CreatePyramid();
 
+	static D3DMesh* CreateUISquare(const float uvOffsetX, const float uvOffsetY);
+
 private:
 
-	static D3DMesh* m_Meshes[4];
+	static D3DMesh* m_Meshes[5];
 };
