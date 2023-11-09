@@ -41,43 +41,61 @@ void Application::SetupPerGameSettings()
 void Application::Initialize()
 {
 	auto player = GameObject::Instantiate<Player>();
-	//player->GetComponent<Rigidbody>()->Move(0.f, 0.f, -50.f);
-
-	player->GetComponent<Rigidbody>()->Move(3.f, 3.f, 9.f);
-	player->transform->RotateYaw(180);
-
-
-	/*player->transform->SetPosition(0, 0, 50);
-	player->transform->RotateYaw(180);*/
-
 	player->m_CategoryBitmask.SetLayer(LayerID::PLAYER);
 	player->m_CollisionBitmask.SetLayer(LayerID::ASTEROID);
+	player->GetComponent<Rigidbody>()->Move(0.f, 0.f, -10.f);
 
-	for (int i = 0; i < 1; i++)
-	{
-		auto asteroid = GameObject::Instantiate<Asteroid>();
-		asteroid->m_CategoryBitmask.SetLayer(LayerID::ASTEROID);
-		asteroid->m_CollisionBitmask.SetLayer(LayerID::PLAYER);
-		//asteroid->m_CollisionBitmask.AddLayer(LayerID::ASTEROID);
-		asteroid->m_CollisionBitmask.AddLayer(LayerID::PROJECTILE);
+	auto asteroid = GameObject::Instantiate<Asteroid>();
+	asteroid->m_CategoryBitmask.SetLayer(LayerID::ASTEROID);
+	asteroid->m_CollisionBitmask.SetLayer(LayerID::PLAYER);
+	asteroid->m_CollisionBitmask.AddLayer(LayerID::PROJECTILE);
+	asteroid->m_CollisionBitmask.AddLayer(LayerID::ASTEROID);
+	asteroid->GetComponent<Rigidbody>()->Move(-2, 0, 0);
+	asteroid->GetComponent<Rigidbody>()->SetVelocity({ 1.0f, 0.1f, 0 });
+
+	auto asteroid2 = GameObject::Instantiate<Asteroid>();
+	asteroid2->m_CategoryBitmask.SetLayer(LayerID::ASTEROID);
+	asteroid2->m_CollisionBitmask.SetLayer(LayerID::PLAYER);
+	asteroid2->m_CollisionBitmask.AddLayer(LayerID::PROJECTILE);
+	asteroid2->m_CollisionBitmask.AddLayer(LayerID::ASTEROID);
+	asteroid2->GetComponent<Rigidbody>()->Move(2, 0, 0);
+	asteroid2->GetComponent<Rigidbody>()->SetVelocity({ -1.0f, -0.1f, 0 });
+
+	/*auto collider = GameObject::Instantiate<GameObject>();
+	collider->AddComponent<MeshRenderer>()->Init(SPHERE, SIMPLE);
+	collider->transform->SetScale(asteroid2->GetComponent<SphereCollider>()->GetRadius());
+	XMFLOAT3 spherPos = asteroid2->transform->GetPosition();
+	spherPos.x += asteroid2->GetComponent<SphereCollider>()->GetCenter().x;
+	spherPos.y += asteroid2->GetComponent<SphereCollider>()->GetCenter().y;
+	spherPos.z += asteroid2->GetComponent<SphereCollider>()->GetCenter().z;
+
+	collider->transform->SetPosition(spherPos);*/
+
+	//for (int i = 0; i < 1; i++)
+	//{
+	//	auto asteroid = GameObject::Instantiate<Asteroid>();
+	//	asteroid->m_CategoryBitmask.SetLayer(LayerID::ASTEROID);
+	//	asteroid->m_CollisionBitmask.SetLayer(LayerID::PLAYER);
+	//	//asteroid->m_CollisionBitmask.AddLayer(LayerID::ASTEROID);
+	//	asteroid->m_CollisionBitmask.AddLayer(LayerID::PROJECTILE);
 
 
-		float x = (rand() % 50) - 5.5f;
-		float y = (rand() % 50) - 5.5f;
-		float z = (rand() % 50) - 5.5f;
-		asteroid->GetComponent<Rigidbody>()->Move(3, 3, 3);
+	//	float x = (rand() % 50) - 5.5f;
+	//	float y = (rand() % 50) - 5.5f;
+	//	float z = (rand() % 50) - 5.5f;
+	//	asteroid->GetComponent<Rigidbody>()->Move(3, 3, 3);
+	//	asteroid->GetComponent<Rigidbody>()->SetVelocity({ 0, 0, 0.1f });
 
-
-		/*auto go = GameObject::Instantiate<GameObject>();
-		auto mr = new MeshRenderer();
-		mr->Init(SPHERE, SIMPLE);
-		go->AddComponent<MeshRenderer>(mr);
-		go->transform->SetPosition(x, y, z);*/
-		//go->transform->
-	}
+	//	/*auto go = GameObject::Instantiate<GameObject>();
+	//	auto mr = new MeshRenderer();
+	//	mr->Init(SPHERE, SIMPLE);
+	//	go->AddComponent<MeshRenderer>(mr);
+	//	go->transform->SetPosition(x, y, z);*/
+	//	//go->transform->
+	//}
 
 	GameObject::Instantiate<SkyBox>();
-  
+
 	auto* test = NEW GameObject("ball");
 	test->transform->SetPosition(-3, 0, 25);
 	test->transform->SetScale(3.f, 3.f, 3.f);
@@ -89,7 +107,7 @@ void Application::Initialize()
 	pr->Init(MeshType::CUBE, MaterialType::PARTICLE);
 	pr->SetParticleCount(100);
 	pr->Play();
-  
+
 	player = nullptr;
 }
 

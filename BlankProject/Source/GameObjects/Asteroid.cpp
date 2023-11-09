@@ -12,12 +12,12 @@ Asteroid::Asteroid()
 	auto mesh = AddComponent<MeshRenderer>();
 	mesh->Init(SPHERE, TEXTURE);
 	mesh->RegisterTexture(Resource::Load<Texture>("Resources/Textures/mars.dds"));
-
-	transform->SetScale(2.f);
+	transform->SetScale(1.0f);
+	//transform->SetScale(2.f);
 
 	auto sc = AddComponent<SphereCollider>();
-	sc->SetRadius(2.f);
-	//sc->SetCenter({ -4.f, -4.f, -4.f });
+	sc->SetRadius(2.0f);
+	sc->SetCenter({ 0.f, 0.f, 0.f });
 
 	mesh = nullptr;
 }
