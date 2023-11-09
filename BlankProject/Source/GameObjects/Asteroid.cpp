@@ -11,6 +11,7 @@ Asteroid::Asteroid()
 
 	auto rb = AddComponent<Rigidbody>();
 	rb->SetMass(100.f);
+	rb->SetBodyType(BodyType::Static);
 
 	auto mesh = AddComponent<MeshRenderer>();
 	mesh->Init(SPHERE, TEXTURE);

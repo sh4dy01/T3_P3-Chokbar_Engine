@@ -5,6 +5,7 @@
 
 #include <DirectXMath.h>
 
+
 class Transform : public Component
 {
 	friend class CameraComponent;
@@ -38,7 +39,6 @@ public:
 	void SetScale(float x, float y, float z);
 	void SetScale(DirectX::XMFLOAT3 scale);
 	void SetParent(Transform* pParent);
-	void SetChild(Transform* pChild);
 
 	DirectX::XMFLOAT3 GetEulerAngles();
 
@@ -46,6 +46,7 @@ public:
 	DirectX::XMFLOAT3 GetUp() const { return m_Up; }
 	DirectX::XMFLOAT3 GetForward() const { return m_Forward; }
 
+	DirectX::XMFLOAT3 GetWorldPosition() const;
 	DirectX::XMFLOAT3 GetPosition() const { return m_Position; }
 	DirectX::XMFLOAT3 GetScale() const { return m_Scale; }
 	float GetHighestScale() const { return max(m_Scale.x, max(m_Scale.y, m_Scale.z)); }
@@ -65,6 +66,7 @@ public:
 	bool IsDirty() const { return m_Dirty; }
 
 	void UpdateParentedWorldMatrix();
+	Transform* GetChild(const char* str) const;
 
 public:
 

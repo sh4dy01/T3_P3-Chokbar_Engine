@@ -29,6 +29,12 @@ Transform::Transform()
 
 Transform::~Transform()
 {
+	NULL(m_pParent);
+
+	for (auto child : m_pChildren)
+	{
+		NULL(child);
+	}
 }
 
 void Transform::OnRemovedComponent()
@@ -166,14 +172,9 @@ void Transform::SetScale(DirectX::XMFLOAT3 scaleFactors)
 void Transform::SetParent(Transform* pParent)
 {
 	m_pParent = pParent;
-	//SetChild(pParent);
+	pParent->m_pChildren.push_back(this);
 }
 
-void Transform::SetChild(Transform* pChild)
-{
-	//pChild->m_pParent = this;
-	//m_pChildren.push_back(pChild);
-}
 
 DirectX::XMFLOAT3 Transform::GetEulerAngles()
 {
@@ -189,6 +190,17 @@ DirectX::XMFLOAT3 Transform::GetEulerAngles()
 
 	// Return the Euler angles
 	return DirectX::XMFLOAT3(pitch_deg, yaw_deg, roll_deg);
+}
+
+DirectX::XMFLOAT3 Transform::GetWorldPosition() const
+{
+	XMFLOAT3 worldPosition;
+	worldPosition.x = m_ParentedWorldMatrix._41;
+	worldPosition.y = m_ParentedWorldMatrix._42;
+	worldPosition.z = m_ParentedWorldMatrix._43;
+
+	return worldPosition;
+
 }
 
 void Transform::UpdatePositionMatrix()
@@ -256,4 +268,17 @@ void Transform::UpdateParentedWorldMatrix()
 
 		m_Dirty = false;
 	}
+}
+
+Transform* Transform::GetChild(const char* str) const
+{
+	for (const auto child : m_pChildren)
+	{
+		if (child->gameObject->GetName() == str)
+		{
+			return child;
+		}
+	}
+
+	return nullptr;
 }

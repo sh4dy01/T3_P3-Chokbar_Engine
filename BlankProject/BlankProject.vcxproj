@@ -105,6 +105,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\GameObjects\Particles\ProjectileParticles.cpp" />
     <ClCompile Include="Source\Scripts\TriggerCollisionEvent\AsteroidCollisionEvent.cpp" />
     <ClCompile Include="Source\Scripts\Asteroids\AsteroidLife.cpp" />
     <ClCompile Include="Source\Scripts\Player\PlayerLife.cpp" />
@@ -122,6 +123,7 @@
     <ClCompile Include="Source\GameObjects\Wing.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\GameObjects\Particles\ProjectileParticles.h" />
     <ClInclude Include="Source\Scripts\TriggerCollisionEvent\AsteroidCollisionEvent.h" />
     <ClInclude Include="Source\Scripts\Asteroids\AsteroidLife.h" />
     <ClInclude Include="Source\Scripts\Player\PlayerLife.h" />
