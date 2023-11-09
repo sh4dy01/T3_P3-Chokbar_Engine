@@ -6,10 +6,5 @@ class AsteroidSmall : public Asteroid
 public:
     AsteroidSmall();
 
-    virtual ~AsteroidSmall() override;
-
-    void DestroyAfterATime(float m_Lifetime) override;
-
-private:
-    float m_Lifetime;
+    ~AsteroidSmall() override;
 };

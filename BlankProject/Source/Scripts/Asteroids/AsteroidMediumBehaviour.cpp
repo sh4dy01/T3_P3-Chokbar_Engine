@@ -6,7 +6,7 @@ void AsteroidMediumBehaviour::Awake()
 
     srand(time(NULL));
 
-    m_Speed = 10.0f;
+    m_Speed = 1.0f;
     m_Target = nullptr;
     m_Lifetime = 20.0f;
 
@@ -35,6 +35,10 @@ void AsteroidMediumBehaviour::Update()
 {
     m_TimeSinceLastTeleport += TimeManager::GetDeltaTime();
 
+    if (m_TimeSinceLastTeleport >= m_TeleportInterval) 
+    {
+        m_TimeSinceLastTeleport = 0.0f;
+
     XMFLOAT3 asteroidPos = transform->GetPosition();
     XMFLOAT3 playerPos = m_Target->GetPosition();
 
@@ -44,8 +48,7 @@ void AsteroidMediumBehaviour::Update()
     XMVECTOR directionToPlayer = XMVectorSubtract(playerVecPos, asteroidVecPos);
     directionToPlayer = XMVector3Normalize(directionToPlayer);
 
-    if (m_TimeSinceLastTeleport >= m_TeleportInterval) {
-        m_TimeSinceLastTeleport = 0.0f;
+   
 
         XMVECTOR randomDir = XMVectorSet(
             ((float)rand() / (float)RAND_MAX) * 20.0f,
@@ -67,12 +70,14 @@ void AsteroidMediumBehaviour::Update()
         m_Rigidbody->Move(teleportPos);
 
         asteroidVecPos = teleportPosition;
+
+        XMVECTOR newPosition = XMVectorAdd(asteroidVecPos, XMVectorScale(directionToPlayer, m_Speed * TimeManager::GetDeltaTime()));
+        XMFLOAT3 finalPosition;
+        XMStoreFloat3(&finalPosition, newPosition);
+        m_Rigidbody->Move(finalPosition);
     }
 
-    XMVECTOR newPosition = XMVectorAdd(asteroidVecPos, XMVectorScale(directionToPlayer, m_Speed * TimeManager::GetDeltaTime()));
-    XMFLOAT3 finalPosition;
-    XMStoreFloat3(&finalPosition, newPosition);
-    m_Rigidbody->Move(finalPosition);
+  
 
 
     AsteroidBehaviour::DestroyAfterATime();

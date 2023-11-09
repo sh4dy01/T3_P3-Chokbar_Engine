@@ -14,17 +14,9 @@ AsteroidMedium::AsteroidMedium() {
     SetDirection(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 
     transform->SetScale(15);
+    GetComponent<SphereCollider>()->SetRadius(15);
 }
 
 AsteroidMedium::~AsteroidMedium()
 {
-}
-
-void AsteroidMedium::DestroyAfterATime(float m_Lifetime)
-{
-    m_Lifetime -= TimeManager::GetDeltaTime();
-    if (m_Lifetime <= 0)
-    {
-		GameObject::Destroy();
-	}
 }

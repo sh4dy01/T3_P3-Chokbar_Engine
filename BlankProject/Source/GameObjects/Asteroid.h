@@ -14,16 +14,13 @@ public:
     };
 
     Asteroid();
-    virtual ~Asteroid();
+    virtual ~Asteroid() override;
 
     AsteroidType GetType() const;
     void SetType(AsteroidType type);
 
     void SetDirection(const DirectX::XMFLOAT3& direction);
     DirectX::XMFLOAT3 GetDirection() const;
-   
-    virtual void Update();
-    virtual void DestroyAfterATime(float m_Lifetime);
 
 protected:
 

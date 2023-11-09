@@ -17,7 +17,7 @@ void AsteroidSpawner::Awake()
     m_SpawnTimerDuration = 1.0f;
     m_AliveAsteroidCount = 0;
     m_Timer = m_SpawnTimerDuration;
-    m_WaveCount = 1;
+    m_WaveCount = 5;
     m_TargetAsteroidCount = 10;
     m_IsSpawning = true;
 }
@@ -94,6 +94,8 @@ void AsteroidSpawner::SpawnAsteroidWave()
             break;
         case 5:
             m_TargetAsteroidCount = 2;
+            m_SpawnTimerDuration = 1.f;
+
             SpawnAsteroid(Asteroid::LARGE);
             break;
         default:

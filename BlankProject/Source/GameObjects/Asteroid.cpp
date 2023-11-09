@@ -62,17 +62,3 @@ DirectX::XMFLOAT3 Asteroid::GetDirection() const
 {
 	return m_Direction;
 }
-
-void Asteroid::Update()
-{
-}
-
-
-void Asteroid::DestroyAfterATime(float m_Lifetime)
-{
-	m_Lifetime -= TimeManager::GetDeltaTime();
-	if (m_Lifetime <= 0)
-	{
-		GameObject::Destroy();
-	}
-}

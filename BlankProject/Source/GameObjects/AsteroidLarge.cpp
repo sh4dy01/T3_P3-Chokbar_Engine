@@ -13,19 +13,10 @@ AsteroidLarge::AsteroidLarge() {
     SetType(AsteroidType::LARGE);
     SetDirection(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
     
-    transform->SetScale(25);
-    transform->Rotate(0.0f, 0.0f, 0.0f);
+    transform->SetScale(100);
+    GetComponent<SphereCollider>()->SetRadius(100);
 }
 
 AsteroidLarge::~AsteroidLarge() 
 {
-}
-
-void AsteroidLarge::DestroyAfterATime(float m_Lifetime)
-{
-    m_Lifetime -= TimeManager::GetDeltaTime();
-    if (m_Lifetime <= 0)
-    {
-        GameObject::Destroy();
-    }
 }
