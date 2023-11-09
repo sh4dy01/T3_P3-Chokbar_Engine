@@ -12,6 +12,7 @@ void AsteroidCollisionEvent::OnAddedComponent()
 	TriggerCollisionEvent::OnAddedComponent();
 
 	m_AsteroidLife = gameObject->GetComponent<AsteroidLife>();
+	GetParticleRenderer();
 }
 
 void AsteroidCollisionEvent::OnTriggerEnter(Collider* other)
@@ -19,14 +20,17 @@ void AsteroidCollisionEvent::OnTriggerEnter(Collider* other)
 	if (other->gameObject->m_CategoryBitmask.GetLayer() == PROJECTILE)
 	{
 		m_AsteroidLife->RemoveLife(10);
-		/*
-		const auto particles = GameObject::Instantiate<ProjectileParticles>()->GetComponent<ParticleRenderer>();
-		particles->transform->SetPosition(other->gameObject->transform->GetWorldPosition());
-		particles->SetParticleCount(100);
-		particles->Play();*/
+		
+		m_ParticleRenderer->transform->SetPosition(other->gameObject->transform->GetWorldPosition());
+		m_ParticleRenderer->AddParticles(10);
 
 		other->gameObject->Destroy();
 
-		DEBUG_LOG("Asteroid life: " << m_AsteroidLife->GetCurrentLife());
+		DEBUG_LOG("Asteroid life: " << m_AsteroidLife->GetCurrentLife())
 	}
+}
+
+void AsteroidCollisionEvent::GetParticleRenderer()
+{
+	m_ParticleRenderer = GameObject::Find("Particles")->GetComponent<ParticleRenderer>();
 }

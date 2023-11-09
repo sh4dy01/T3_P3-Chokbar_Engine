@@ -5,7 +5,7 @@
 #include "GameObjects/Player.h"
 #include "GameObjects/Asteroid.h"
 #include "GameObjects/Skybox.h"
-
+#include "GameObjects/Particles/ProjectileParticles.h"
 
 
 class Application : public Win32::IApplication
@@ -40,60 +40,28 @@ void Application::SetupPerGameSettings()
 
 void Application::Initialize()
 {
-	auto camera = GameObject::Instantiate<Camera>();
+	GameObject::Instantiate<ProjectileParticles>();
 
-	auto player = GameObject::Instantiate<Player>();
+	
+	const auto camera = GameObject::Instantiate<Camera>();
 
+	const auto player = GameObject::Instantiate<Player>();
 	player->GetComponent<Rigidbody>()->Move(3.f, 3.f, 9.f);
-
-
 	player->transform->SetPosition(0, 0, -5);
+	
 	camera->transform->SetParent(player->transform);
 
 	for (int i = 0; i < 50; i++)
 	{
-		auto asteroid = GameObject::Instantiate<Asteroid>();
-
-
-		float x = (rand() % 50) - 5.5f;
-		float y = (rand() % 50) - 5.5f;
-		float z = (rand() % 50) - 5.5f;
+		const auto asteroid = GameObject::Instantiate<Asteroid>();
+		
+		const float x = (rand() % 50) - 5.5f;
+		const float y = (rand() % 50) - 5.5f;
+		const float z = (rand() % 50) - 5.5f;
 		asteroid->GetComponent<Rigidbody>()->Move(x, y, z);
-
-
-		/*auto go = GameObject::Instantiate<GameObject>();
-		auto mr = new MeshRenderer();
-		mr->Init(SPHERE, SIMPLE);
-		go->AddComponent<MeshRenderer>(mr);
-		go->transform->SetPosition(x, y, z);*/
-		//go->transform->
 	}
 
 	GameObject::Instantiate<SkyBox>();
-
-	/*
-	auto* test = GameObject::Instantiate();
-	test->transform->SetPosition(-3, 0, 25);
-	test->transform->SetScale(3.f, 3.f, 3.f);
-
-	test->AddComponent<MeshRenderer>();
-	auto pr = test->AddComponent<ParticleRenderer>();
-	pr->Init(MeshType::CUBE, MaterialType::PARTICLE);
-	pr->SetParticleCount(100);
-	pr->Play();
-
-	test = GameObject::Instantiate();
-	test->transform->SetPosition(3, 0, 25);
-	test->transform->SetScale(3.f, 3.f, 3.f);
-
-	test->AddComponent<MeshRenderer>();
-	pr = test->AddComponent<ParticleRenderer>();
-	pr->Init(MeshType::CUBE, MaterialType::PARTICLE);
-	pr->SetParticleCount(100);
-	pr->Play();
-	*/
-
-
 }
 
 void Application::Update(const float dt)

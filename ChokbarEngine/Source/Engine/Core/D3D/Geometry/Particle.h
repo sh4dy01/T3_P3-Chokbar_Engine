@@ -13,7 +13,7 @@ class ParticleTransform
 {
 public:
 	ParticleTransform();
-	~ParticleTransform() = default;
+	~ParticleTransform();
 
 public:
 	void Translate(float x, float y, float z);
@@ -79,25 +79,25 @@ public:
 
 	void Update(float deltaTime);
 
-	bool IsAlive() const { return m_CurrentLifeTime < m_LifeTime; }
-	bool IsActive() const { return m_IsActive; }
+	bool IsAlive() const { return m_currentLifeTime < m_lifeTime; }
+	bool IsActive() const { return m_isActive; }
 
-	void Sleep() { m_IsActive = false; }
-	void Awake() { m_IsActive = true; }
+	void Sleep() { m_isActive = false; }
+	void Awake() { m_isActive = true; }
 
 	void Reset();
 	void Init(float rLifeTime, DirectX::XMFLOAT3 rVel, DirectX::XMFLOAT3 rAngVel, DirectX::XMFLOAT3 parentPos);
 
 
 
-	float m_CurrentLifeTime;
-	float m_LifeTime;
+	float m_currentLifeTime;
+	float m_lifeTime;
 
-	DirectX::XMFLOAT3 m_Velocity;
-	DirectX::XMFLOAT3 m_AngularVelocity;
+	DirectX::XMFLOAT3 m_velocity;
+	DirectX::XMFLOAT3 m_angularVelocity;
 
-	ParticleTransform* m_Transform;
+	ParticleTransform* m_transform;
 
 private:
-	bool m_IsActive;
+	bool m_isActive;
 };

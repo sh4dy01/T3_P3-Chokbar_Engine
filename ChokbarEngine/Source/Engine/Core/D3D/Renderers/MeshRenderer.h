@@ -12,4 +12,12 @@ public:
 public:
 	void Render(ID3D12GraphicsCommandList* cmdList) override;
 	void Update(float dt) override;
+
+	void SetClippable(bool value) { m_IsClippable = value; }
+	bool IsClippable() { return m_IsClippable; }
+
+private:
+
+	bool m_IsClippable;
+
 };

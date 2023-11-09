@@ -527,16 +527,19 @@ void D3DRenderer::RenderObjects()
 		// Create a bounding sphere from the mesh renderer's transform
 		// Note that we get the highest scale of the transform to make sure the bounding sphere is big enough
 		// This could be improved by using the bounding box instead
-		BoundingSphere bs;
-		bs.Center = mr->transform->GetPosition();
-		bs.Radius = mr->transform->GetHighestScale();
+		if (mr->IsClippable())
+		{
+			BoundingSphere bs;
+			bs.Center = mr->transform->GetPosition();
+			bs.Radius = mr->transform->GetHighestScale();
 
-		// Create a bounding frustum from the camera's view matrix
-		BoundingFrustum frustrant;
-		m_Frustum.Transform(frustrant, invView);
+			// Create a bounding frustum from the camera's view matrix
+			BoundingFrustum frustrant;
+			m_Frustum.Transform(frustrant, invView);
 
-		// If the bounding sphere is not in the camera's view, don't render the mesh
-		if (frustrant.Contains(bs) == DirectX::DISJOINT) continue;
+			// If the bounding sphere is not in the camera's view, don't render the mesh
+			if (frustrant.Contains(bs) == DirectX::DISJOINT) continue;
+		}
 		
 		mr->Render(m_pCommandList);
 	}
