@@ -7,7 +7,7 @@
 #include <numbers>
 
 
-Engine *Engine::m_Instance = nullptr;
+Engine* Engine::m_Instance = nullptr;
 
 Engine::Engine()
 {
@@ -18,7 +18,7 @@ Engine::~Engine()
 	DELPTR(m_Coordinator);
 }
 
-Engine *Engine::GetInstance()
+Engine* Engine::GetInstance()
 {
 	if (m_Instance == nullptr)
 	{
@@ -28,12 +28,12 @@ Engine *Engine::GetInstance()
 	return m_Instance;
 }
 
-InputHandler *Engine::GetInput()
+InputHandler* Engine::GetInput()
 {
 	return &GetInstance()->m_InputHandler;
 }
 
-CameraComponent *Engine::GetMainCamera()
+CameraComponent* Engine::GetMainCamera()
 {
 	return GetInstance()->m_CameraManager.GetMainCamera();
 }
@@ -41,6 +41,11 @@ CameraComponent *Engine::GetMainCamera()
 PhysicsWorld* Engine::GetPhysicsWorld()
 {
 	return &GetInstance()->m_PhysicsWorld;
+}
+
+Win32::Window* Engine::GetWindow()
+{
+	return &GetInstance()->m_Window;
 }
 
 #pragma region INIT
@@ -176,6 +181,8 @@ void Engine::OnResize()
 {
 	D3DRenderer::GetInstance()->OnResize(m_Window.GetWidth(), m_Window.GetHeight());
 	m_CameraManager.GetMainCamera()->SetAspect(GetAspectRatio());
+	m_CameraManager.GetMainCamera()->SetWindowHeight(m_Window.GetHeight());
+	m_CameraManager.GetMainCamera()->SetWindowWidth(m_Window.GetWidth());
 }
 
 void Engine::Shutdown()
@@ -188,7 +195,7 @@ void Engine::Shutdown()
 }
 
 
-void Engine::OnApplicationFocus() 
+void Engine::OnApplicationFocus()
 {
 	if (m_IsPaused) {
 		TogglePause();
@@ -198,7 +205,7 @@ void Engine::OnApplicationFocus()
 	m_InputHandler.CaptureCursor();
 }
 
-void Engine::OnApplicationLostFocus() 
+void Engine::OnApplicationLostFocus()
 {
 	if (!m_IsPaused) {
 		TogglePause();
@@ -214,10 +221,10 @@ void Engine::TogglePause()
 
 	if (m_IsPaused)
 	{
-		m_InputHandler.ReleaseCursor(); 
+		m_InputHandler.ReleaseCursor();
 	}
 	else
 	{
-		m_InputHandler.CaptureCursor(); 
+		m_InputHandler.CaptureCursor();
 	}
 }

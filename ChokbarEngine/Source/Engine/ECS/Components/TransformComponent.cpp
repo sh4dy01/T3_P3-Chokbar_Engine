@@ -26,6 +26,10 @@ Transform::Transform()
 	DirectX::XMStoreFloat4x4(&m_TransposedParentedWorldMatrix, DirectX::XMMatrixIdentity());
 	DirectX::XMStoreFloat4x4(&m_ParentedWorldMatrix, DirectX::XMMatrixIdentity());
 
+	// Initialize parented world matrix as an identity matrix
+	DirectX::XMStoreFloat4x4(&m_ParentedWorldMatrix, DirectX::XMMatrixIdentity());
+	DirectX::XMStoreFloat4x4(&m_TransposedParentedWorldMatrix, DirectX::XMMatrixIdentity());
+
 	m_Dirty = false;
 }
 

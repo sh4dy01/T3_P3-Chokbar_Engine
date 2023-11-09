@@ -34,6 +34,9 @@ public:
 	float GetFarWindowWidth()const;
 	float GetFarWindowHeight()const;
 
+	void SetWindowWidth(float width) { m_windowWidth = width; UpdateWindowWithNewRange(); }
+	void SetWindowHeight(float height) { m_windowHeight = height; UpdateWindowWithNewRange(); }
+
 	// Set frustum.
 	void SetFOV(float fovY);
 	void SetAspect(float aspect);
@@ -47,6 +50,20 @@ public:
 	// Get View/Proj matrices.
 	DirectX::XMMATRIX GetView()const;
 	DirectX::XMMATRIX GetProj()const;
+	DirectX::XMMATRIX GetViewProj()const;
+
+	DirectX::XMMATRIX GetOrthoProj()const;
+	DirectX::XMMATRIX GetOrthoView()const;
+	DirectX::XMMATRIX GetOrthoViewProj()const;
+
+	DirectX::XMFLOAT4X4 GetView4x4f()const;
+	DirectX::XMFLOAT4X4 GetProj4x4f()const;
+	DirectX::XMFLOAT4X4 GetViewProj4x4f()const; 
+
+	DirectX::XMFLOAT4X4 GetOrthoProj4x4f()const;
+	DirectX::XMFLOAT4X4 GetOrthoView4x4f()const;
+	DirectX::XMFLOAT4X4 GetOrthoViewProj4x4f()const;
+
 
 	// Strafe/Walk the camera a distance d.
 	void Strafe(float d);
@@ -56,8 +73,7 @@ public:
 	void Pitch(float angle);
 	void RotateY(float angle);
 
-	DirectX::XMFLOAT4X4 GetView4x4f()const;
-	DirectX::XMFLOAT4X4 GetProj4x4f()const;
+
 
 	// After modifying camera position/orientation, call to rebuild the view matrix.
 	void UpdateViewMatrix();
@@ -79,12 +95,16 @@ private:
 	float m_FarZ = 1000.0f;
 	float m_Aspect = 0.0f;
 	float m_FovY = 75.0f;
+	float m_windowWidth = 0.0f;
 	float m_NearWindowHeight = 0.0f;
+	float m_windowHeight = 0.0f;
 	float m_FarWindowHeight = 0.0f;
 
 	bool m_ViewDirty;
 
 	// Cache View/Proj matrices.
 	DirectX::XMFLOAT4X4 m_View = Identity4x4();
+	DirectX::XMFLOAT4X4 m_OthoView = Identity4x4();
 	DirectX::XMFLOAT4X4 m_Proj = Identity4x4();
+	DirectX::XMFLOAT4X4 m_OrthoProj = Identity4x4();
 };

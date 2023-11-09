@@ -20,6 +20,7 @@ public:
 	static InputHandler *GetInput();
 	static PhysicsWorld *GetPhysicsWorld();
 	static CameraComponent *GetMainCamera();
+	static Win32::Window* GetWindow();
 
 	static void RestartGame();
 

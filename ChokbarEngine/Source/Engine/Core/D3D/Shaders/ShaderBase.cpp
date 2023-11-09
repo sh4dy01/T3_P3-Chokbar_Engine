@@ -113,28 +113,18 @@ void ShaderBase::CreatePassCB() { m_passCB = NEW UploadBuffer<PassConstants>(m_g
 void ShaderBase::UpdatePassCB(const float dt, const float totalTime)
 {
 	const XMMATRIX camView = CameraManager::GetMainCamera()->GetView();
-	const XMMATRIX camProj = CameraManager::GetMainCamera()->GetProj();
-
-	XMMATRIX viewProj = XMMatrixMultiply(camView, camProj);
-	// XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(camView), camView);
-	// XMMATRIX invProj = XMMatrixInverse(&XMMatrixDeterminant(camProj), camProj);
-	// XMMATRIX invViewProj = XMMatrixInverse(&XMMatrixDeterminant(viewProj), viewProj);
+	const XMMATRIX camOrthoProj = CameraManager::GetMainCamera()->GetOrthoProj();
+	const XMMATRIX camViewProj = CameraManager::GetMainCamera()->GetViewProj();
 
 	PassConstants mainPassCB;
+
 	XMStoreFloat4x4(&mainPassCB.View, XMMatrixTranspose(camView));
-	// XMStoreFloat4x4(&mainPassCB.InvView, XMMatrixTranspose(invView));
-	XMStoreFloat4x4(&mainPassCB.Proj, XMMatrixTranspose(camProj));
-	// XMStoreFloat4x4(&mainPassCB.InvProj, XMMatrixTranspose(invProj));
-	XMStoreFloat4x4(&mainPassCB.ViewProj, XMMatrixTranspose(viewProj));
-	// XMStoreFloat4x4(&mainPassCB.InvViewProj, XMMatrixTranspose(invViewProj));
+	XMStoreFloat4x4(&mainPassCB.OrthoProj, XMMatrixTranspose(camOrthoProj));
+	XMStoreFloat4x4(&mainPassCB.ViewProj, XMMatrixTranspose(camViewProj));
 
 	mainPassCB.LightColor = XMFLOAT4(0.9f, 0.7f, 0.7f, 1.0f);
 	mainPassCB.LightDirection = XMFLOAT3(0.0f, 0.0f, 1.0f);
 	mainPassCB.EyePosW = CameraManager::GetMainCamera()->transform->m_pParent->GetPosition();
-	// mainPassCB.RenderTargetSize = XMFLOAT2(m_bufferWidth, m_bufferHeight);
-	// mainPassCB.InvRenderTargetSize = XMFLOAT2(1.0f / m_bufferWidth, 1.0f / m_bufferHeight);
-	// mainPassCB.NearZ = m_camera.NearZ;
-	// mainPassCB.FarZ = m_camera.FarZ;
 	mainPassCB.TotalTime = totalTime;
 	mainPassCB.DeltaTime = dt;
 
@@ -305,6 +295,7 @@ void ShaderTexture::CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT
 	psoDesc.VS = { reinterpret_cast<BYTE*>(m_vsByteCode->GetBufferPointer()), m_vsByteCode->GetBufferSize() };
 	psoDesc.PS = { reinterpret_cast<BYTE*>(m_psByteCode->GetBufferPointer()), m_psByteCode->GetBufferSize() };
 	psoDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
+	psoDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
 	psoDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
 	psoDesc.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
 	psoDesc.SampleMask = UINT_MAX;
@@ -543,6 +534,59 @@ void ShaderSkybox::CreatePsoAndRootSignature(VertexType vertexType, DXGI_FORMAT&
 	ThrowIfFailed(hr);
 
 	RELPTR(serializedRootSignature);
+}
+#pragma endregion
+
+#pragma region SHADER TEXTURE OFFSET
+ShaderTextureOffset::ShaderTextureOffset(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, UINT cbvDescriptorSize, std::wstring& filepath)
+	: ShaderTexture(device, cbvHeap, cbvDescriptorSize, filepath)
+{
+}
+
+ShaderTextureOffset::~ShaderTextureOffset()
+{
+}
+
+void ShaderTextureOffset::Draw(ID3D12GraphicsCommandList* cmdList, IRenderer* drawnMeshR)
+{
+	assert(drawnMeshR->GetTexture(0)->HeapIndex >= 0);
+
+	if (drawnMeshR->ObjectCBIndex >= m_offSetCb.size())
+		AddObjectCB();
+
+	assert(drawnMeshR->ObjectCBIndex <= m_offSetCb.size());
+
+	cmdList->IASetVertexBuffers(0, 1, &drawnMeshR->Mesh->VertexBufferView());
+	cmdList->IASetIndexBuffer(&drawnMeshR->Mesh->IndexBufferView());
+
+	auto cbvHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(I(D3DRenderer)->GetCbvHeap()->GetGPUDescriptorHandleForHeapStart());
+	cbvHandle.Offset(drawnMeshR->GetTexture(0)->HeapIndex, m_cbvDescriptorSize);
+
+	cmdList->SetGraphicsRootDescriptorTable(0, cbvHandle);
+	cmdList->SetGraphicsRootConstantBufferView(1, m_offSetCb[drawnMeshR->ObjectCBIndex]->GetResource()->GetGPUVirtualAddress());
+
+
+	cmdList->DrawIndexedInstanced(drawnMeshR->Mesh->GetIndexCount(), 1, 0, 0, 0);
+}
+
+void ShaderTextureOffset::AddObjectCB()
+{
+	auto ub = NEW UploadBuffer<OffSetConstants>(m_generalDevice, 1, true);
+	m_offSetCb.push_back(ub);
+	NULLPTR(ub);
+
+	ShaderBase::AddObjectCB();
+}
+
+void ShaderTextureOffset::UpdateAsOffset(DirectX::XMFLOAT4X4* itemWorldMatrix, UINT cbIndex, float offSetY)
+{
+	if (cbIndex >= m_offSetCb.size())
+		AddObjectCB();
+
+	OffSetConstants offSetConstants;
+	offSetConstants.World = *itemWorldMatrix;
+	offSetConstants.UVOffsetY = offSetY;
+	m_offSetCb[cbIndex]->CopyData(0, &offSetConstants);
 }
 
 #pragma endregion

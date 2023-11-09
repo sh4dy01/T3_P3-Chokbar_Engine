@@ -54,4 +54,5 @@ private:
 	static void CreateShaders(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap, UINT cbvSrvDescriptorSize);
 
 	static void CreateMaterials();
+	static void CreateMaterial(const MaterialType& mt, const std::string& name);
 };
