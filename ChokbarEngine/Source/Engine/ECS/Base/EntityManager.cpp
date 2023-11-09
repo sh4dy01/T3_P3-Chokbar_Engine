@@ -58,6 +58,11 @@ void EntityManager::CleanEverything()
 	}
 
 	m_LivingEntityCount = 0;
+
+	for (InstanceID entity = 0; entity < MAX_ENTITIES; ++entity)
+	{
+		m_AvailableEntities.push(entity);
+	}
 }
 
 void EntityManager::SetSignature(InstanceID entity, Signature signature)

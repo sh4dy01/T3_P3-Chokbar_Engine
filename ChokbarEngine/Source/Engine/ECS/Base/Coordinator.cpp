@@ -107,6 +107,7 @@ void Coordinator::FixedUpdateComponents()
 
 void Coordinator::CleanUp() 
 {
+	DestroyRegisteredEntites();
 	m_ComponentManager->CleanEverything();
 	m_EntityManager->CleanEverything();
 }
