@@ -39,8 +39,3 @@ void ProjectileBehavior::Update()
 		gameObject->Destroy();
 	}
 }
-
-void ProjectileBehavior::FixedUpdate()
-{
-	m_pRigidbody->Move(m_Direction);
-}

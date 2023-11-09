@@ -73,80 +73,37 @@ XMFLOAT3 PhysicsWorld::ReduceVelocity(XMFLOAT3 &velocity)
 	return velocity;
 }
 
+bool PhysicsWorld::IsVelocityNull(const XMFLOAT3 velocity)
+{
+	return std::abs(velocity.x) <= FLT_EPSILON &&
+		   std::abs(velocity.y) <= FLT_EPSILON &&
+		   std::abs(velocity.z) <= FLT_EPSILON;
+}
+
+bool PhysicsWorld::IsSameGridPos(const XMINT3 iGridPos, const int iGridSize, XMINT3 jGridPos, int jGridSize)
+{
+	return std::abs(iGridPos.x - jGridPos.x) < iGridSize + jGridSize &&
+		   std::abs(iGridPos.y - jGridPos.y) < iGridSize + jGridSize &&
+		   std::abs(iGridPos.z - jGridPos.z) < iGridSize + jGridSize;
+}
+
 void PhysicsWorld::Update(float dt)
 {
 	for (const auto &collider : m_RegisteredCollider)
 	{
-		Rigidbody *rb = collider->GetAttachedRigidbody();
+		Rigidbody* rb = collider->GetAttachedRigidbody();
 
-		if (rb->GetBodyType() == Static)
-			continue;
+		if (rb->GetBodyType() == Static) continue;
 
 		XMFLOAT3 velocity = rb->GetVelocity();
 
-		if (IsVelocityNull(velocity))
-			continue;
+		if (IsVelocityNull(velocity)) continue;
 
 		XMFLOAT3 fixedVelocity = velocity;
 		fixedVelocity.x *= dt;
 		fixedVelocity.y *= dt;
 		fixedVelocity.z *= dt;
 
-		rb->Move(fixedVelocity);
-
-		rb->SetVelocity(ReduceVelocity(velocity));
-	}
-
-	m_timer += dt;
-
-	if (m_timer >= TimeManager::GetFixedTime())
-	{
-		Coordinator::GetInstance()->FixedUpdateComponents();
-
-		CheckCollision();
-
-		m_timer = 0.0f;
-	}
-}
-
-bool PhysicsWorld::IsVelocityNull(const XMFLOAT3 velocity)
-{
-	return std::abs(velocity.x) <= FLT_EPSILON &&
-		   std::abs(velocity.y) <= FLT_EPSILON &&
-		   std::abs(velocity.z) <= FLT_EPSILON;
-}
-
-bool PhysicsWorld::IsSameGridPos(const XMINT3 iGridPos, const int iGridSize, XMINT3 jGridPos, int jGridSize)
-{
-	return std::abs(iGridPos.x - jGridPos.x) < iGridSize + jGridSize &&
-		   std::abs(iGridPos.y - jGridPos.y) < iGridSize + jGridSize &&
-		   std::abs(iGridPos.z - jGridPos.z) < iGridSize + jGridSize;
-}
-
-XMFLOAT3 PhysicsWorld::ReduceVelocity(XMFLOAT3 &velocity)
-{
-	velocity.x *= 0.9f;
-	velocity.y *= 0.9f;
-	velocity.z *= 0.9f;
-
-	return velocity;
-}
-
-void PhysicsWorld::Update(float dt)
-{
-	for (const auto &collider : m_RegisteredCollider)
-	{
-		Rigidbody *rb = collider->GetAttachedRigidbody();
-
-		if (rb->IsStatic())
-			continue;
-
-		XMFLOAT3 velocity = rb->GetVelocity();
-
-		if (IsVelocityNull(velocity))
-			continue;
-
-		XMFLOAT3 fixedVelocity = velocity;
 
 		rb->Move(fixedVelocity);
 
@@ -163,21 +120,6 @@ void PhysicsWorld::Update(float dt)
 
 		m_timer = 0.0f;
 	}
-}
-
-bool PhysicsWorld::IsVelocityNull(const XMFLOAT3 velocity)
-{
-	return std::abs(velocity.x) <= FLT_EPSILON &&
-		   std::abs(velocity.y) <= FLT_EPSILON &&
-		   std::abs(velocity.z) <= FLT_EPSILON;
-}
-
-bool PhysicsWorld::IsSameGridPos(const XMINT3 iGridPos, const int iGridSize, XMINT3 jGridPos, int jGridSize)
-{
-	DEBUG_LOG("Testing " << iGridPos.x << iGridPos.y << iGridPos.z << " and \n " << jGridPos.x << jGridPos.y << jGridPos.z)
-	return std::abs(iGridPos.x - jGridPos.x) < iGridSize + jGridSize &&
-		   std::abs(iGridPos.y - jGridPos.y) < iGridSize + jGridSize &&
-		   std::abs(iGridPos.z - jGridPos.z) < iGridSize + jGridSize;
 }
 
 void PhysicsWorld::CheckCollision()

@@ -39,6 +39,7 @@ public:
 	void SetScale(float scale);
 	void SetScale(float x, float y, float z);
 	void SetScale(DirectX::XMFLOAT3 scale);
+
 	void SetParent(Transform *pParent);
 
 	void LookAt(const DirectX::XMFLOAT3 target);
