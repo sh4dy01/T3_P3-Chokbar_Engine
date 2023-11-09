@@ -13,8 +13,8 @@ using namespace DirectX;
 ParticleRenderer::ParticleRenderer() : IRenderer()
 {
 	srand(time(nullptr));
-	m_Color1 = XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
-	m_Color2 = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+	m_Color2 = XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
+	m_Color1 = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 
 	m_particles.resize(0);
 	m_particleInstanceData.resize(0);
@@ -48,13 +48,6 @@ void ParticleRenderer::Stop()
 {
 	for (UINT i = 0; i < MAX_PARTICLE_COUNT; i++)
 		DELPTR(m_particles[i])
-}
-
-
-void ParticleRenderer::SetParticleCount(UINT count)
-{
-	m_particleCount = count > MAX_PARTICLE_COUNT ? MAX_PARTICLE_COUNT : count;
-	Prepare();
 }
 
 void ParticleRenderer::AddParticles(UINT count)
@@ -98,15 +91,16 @@ void ParticleRenderer::Prepare()
 
 void ParticleRenderer::CreateMissingParticles()
 {
-	m_particles.resize(m_particleCount, nullptr);
+	m_particles.resize(m_particleCount);
 	m_particleInstanceData.resize(m_particleCount);
 	
 	for (UINT i = 0; i < m_particleCount; i++)
 	{
-		// Skip all created particles
 		if (m_particles[i] != nullptr) continue;
 
-		m_particles[i] = CreateParticle();
+		Particle* p = CreateParticle();
+		p->Awake();
+		m_particles.push_back(p);
 	}
 }
 
@@ -114,7 +108,7 @@ Particle* ParticleRenderer::CreateParticle()
 {
 	Particle* p = new Particle();
 
-	const float rLiftTime = rand() % 30 + 1.0f;
+	const float rLiftTime = rand() % 3 + 1.0f;
 
 	const float randomDirX = ((static_cast<float>(rand() % 100) * 0.01f) - 0.5f) * 2.0f; // Get a random number between -1 and 1
 	const float randomDirY = ((static_cast<float>(rand() % 100) * 0.01f) - 0.5f) * 2.0f; // ..
@@ -144,16 +138,17 @@ void ParticleRenderer::UpdateParticles(const float dt)
 		// If you want to do that, you need to implement a particle pool.
 		if (p == nullptr || !p->IsActive()) continue;
 
-		InstanceData& pid = m_particleInstanceData[i];
-
-
 		if (!p->IsAlive())
 		{
-			//DELPTR(p);
-			p->Sleep();
-			p->Reset();
+			DELPTR(p)
+			m_particles.erase(m_particles.begin() + i);
+			m_particleInstanceData.erase(m_particleInstanceData.begin() + i);
+			m_particleCount--;
+			i--;
 			continue;
 		}
+
+		InstanceData& pid = m_particleInstanceData[i];
 
 		p->m_currentLifeTime += dt;
 		pid.AgeRatio = (p->m_lifeTime - p->m_currentLifeTime) / p->m_lifeTime;
