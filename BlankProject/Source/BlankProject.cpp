@@ -53,13 +53,13 @@ void Application::Initialize()
 
 	camera->transform->SetParent(player->transform);
 
-	for (int i = 0; i < 200; i++)
+	for (int i = 0; i < 250; i++)
 	{
 		const auto asteroid = GameObject::Instantiate<Planet>();
 		
-		const float x = (rand() % 2500) - 1250;
-		const float y = (rand() % 2500) - 1250;
-		const float z = (rand() % 2500) - 1250;
+		const float x = (rand() % 4000) - 2000;
+		const float y = (rand() % 4000) - 2000;
+		const float z = (rand() % 4000) - 2000;
 
 		asteroid->GetComponent<Rigidbody>()->Move(x, y, z);
 		

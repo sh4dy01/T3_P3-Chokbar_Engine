@@ -4,7 +4,7 @@
 
 void PlayerLife::Awake()
 {
-	InitMaxLife(3);
+	InitMaxLife(1);
 }
 
 void PlayerLife::OnDeath()

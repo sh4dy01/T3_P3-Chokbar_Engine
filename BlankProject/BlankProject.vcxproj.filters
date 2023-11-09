@@ -122,6 +122,7 @@
     <ClCompile Include="Source\GameObjects\UI\CrossAir.cpp" />
     <ClCompile Include="Source\GameObjects\Planet.cpp" />
     <ClCompile Include="Source\Scripts\TriggerCollisionEvent\PlanetCollisionEvent.cpp" />
+    <ClCompile Include="Source\Scripts\Asteroids\PlanetLife.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Scripts\TriggerCollisionEvent\AsteroidCollisionEvent.h" />
@@ -259,6 +260,9 @@
     </ClInclude>
     <ClInclude Include="Source\Scripts\Asteroids\AsteroidBehaviour.h">
       <Filter>Source\Source\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scripts\Asteroids\PlanetLife.h">
+      <Filter>Source\Source</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -30,6 +30,7 @@ private:
 	int m_SpawnedAsteroidCount = 0;
 	int m_WaveCount = 0;
 
+	float m_Difficulty = 1.0f;
 	float m_Timer = 0.0f;
 	float m_SpawnTimerDuration = 1.0f;
 

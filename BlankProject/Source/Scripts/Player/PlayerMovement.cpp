@@ -11,6 +11,8 @@ void PlayerMovement::Awake()
 void PlayerMovement::Start()
 {
 	m_pRigidbody = gameObject->GetComponent<Rigidbody>();
+	m_pCamera = CameraManager::GetMainCamera();
+	m_pCamera->SetFOV(m_BasicFov);
 }
 
 void PlayerMovement::Update()
@@ -29,6 +31,7 @@ void PlayerMovement::FixedUpdate()
 
 void PlayerMovement::HandleForwardThrust()
 {
+
 	if (InputHandler::IsKeyHeld('z'))
 	{
 		if (m_CurrentForwardThrust < 0)
@@ -39,6 +42,8 @@ void PlayerMovement::HandleForwardThrust()
 		{
 			m_CurrentForwardThrust += m_ForwardThrustIncrement;
 		}
+
+		m_pCamera->SetFOV(std::clamp(m_pCamera->GetFovY() + m_IncrementFov * TimeManager::GetDeltaTime(), m_BasicFov, m_MaxFov));
 	}
 	else if (InputHandler::IsKeyHeld('s'))
 	{
@@ -50,11 +55,19 @@ void PlayerMovement::HandleForwardThrust()
 		{
 			m_CurrentForwardThrust -= m_ForwardThrustIncrement;
 		}
+
+		m_pCamera->SetFOV(std::clamp(m_pCamera->GetFovY() - m_IncrementFov * TimeManager::GetDeltaTime(), m_BasicFov - 5, m_MaxFov));
 	}
 	else
 	{
 		m_CurrentForwardThrust *= m_ForwardThrustReduction;
+
+		if (m_pCamera->GetFovY() < m_BasicFov)
+			m_pCamera->SetFOV(std::clamp(m_pCamera->GetFovY() + m_IncrementFov * TimeManager::GetDeltaTime(), m_BasicFov - 4, m_BasicFov));
+		else
+			m_pCamera->SetFOV(std::clamp(m_pCamera->GetFovY() - m_IncrementFov * 1.5f * TimeManager::GetDeltaTime(), m_BasicFov, m_MaxFov));
 	}
+
 }
 void PlayerMovement::HandleLateralThrust()
 {

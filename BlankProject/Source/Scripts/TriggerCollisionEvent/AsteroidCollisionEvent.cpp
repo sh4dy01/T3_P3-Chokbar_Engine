@@ -25,7 +25,7 @@ void AsteroidCollisionEvent::OnTriggerEnter(Collider* other)
 		m_AsteroidLife->RemoveLife(10);
 		
 		m_ParticleRenderer->transform->SetPosition(other->gameObject->transform->GetWorldPosition());
-		m_ParticleRenderer->AddParticles(100);
+		m_ParticleRenderer->AddParticles(10);
 
 		other->gameObject->Destroy();
 

@@ -100,9 +100,9 @@ void PhysicsWorld::Update(float dt)
 	{
 		Coordinator::GetInstance()->FixedUpdateComponents();
 
-		UpdateVelocity(dt);
-
 		CheckCollision();
+
+		UpdateVelocity(dt);
 
 		m_timer = 0.0f;
 	}
@@ -307,8 +307,8 @@ bool PhysicsWorld::AreSpheresColliding(SphereCollider *sphereA, SphereCollider *
 void PhysicsWorld::ResolveSphereCollision(Rigidbody *rbA, SphereCollider *colliderA, Rigidbody *rbB, SphereCollider *colliderB) const
 {
 	// Calculate the collision normal
-	XMVECTOR posA = XMLoadFloat3(&rbA->transform->GetPosition());
-	XMVECTOR posB = XMLoadFloat3(&rbB->transform->GetPosition());
+	XMVECTOR posA = XMLoadFloat3(&rbA->transform->GetWorldPosition());
+	XMVECTOR posB = XMLoadFloat3(&rbB->transform->GetWorldPosition());
 	XMVECTOR collisionNormal = XMVector3Normalize(XMVectorSubtract(posB, posA));
 
 	// Calculate the relative velocity
@@ -343,6 +343,6 @@ void PhysicsWorld::ResolveSphereCollision(Rigidbody *rbA, SphereCollider *collid
 	XMStoreFloat3(&newVelocityB, newVelB);
 
 	// Set the new velocities
-	rbA->SetVelocity(newVelocityA);
-	rbB->SetVelocity(newVelocityB);
+	rbA->AddVelocity(newVelocityA);
+	rbB->AddVelocity(newVelocityB);
 }

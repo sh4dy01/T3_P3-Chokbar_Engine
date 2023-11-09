@@ -13,8 +13,8 @@ AsteroidLarge::AsteroidLarge() {
     SetType(AsteroidType::LARGE);
     SetDirection(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
     
-    transform->SetScale(100);
-    GetComponent<SphereCollider>()->SetRadius(100);
+    transform->SetScale(150);
+    GetComponent<SphereCollider>()->SetRadius(150);
 }
 
 AsteroidLarge::~AsteroidLarge() 

@@ -18,8 +18,7 @@ Player::Player()
 	rb->SetRestitution(0.8f);
 
 	auto sc = AddComponent<SphereCollider>();
-	//sc->SetRadius(4.f);
-	//sc->SetCenter({ -2.f, -2.f, -2.f });
+	sc->SetRadius(2.f);
 	
 	//transform->SetScale(2.f);
 

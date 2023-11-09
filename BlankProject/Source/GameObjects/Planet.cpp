@@ -1,4 +1,6 @@
 #include "Planet.h"
+
+#include "Scripts/Asteroids/PlanetLife.h"
 #include "Scripts/TriggerCollisionEvent/PlanetCollisionEvent.h"
 
 Planet::Planet()
@@ -13,11 +15,12 @@ Planet::Planet()
 	mesh->Init(SPHERE, TEXTURE);
 	mesh->RegisterTexture(Resource::Load<Texture>("Resources/Textures/mars.dds"));
 
-	transform->SetScale(30);
+	transform->SetScale(50);
 
 	auto sc = AddComponent<SphereCollider>();
-	sc->SetRadius(30);
+	sc->SetRadius(50);
 
+	AddComponent<PlanetLife>();
 
 	m_CategoryBitmask.SetLayer(LayerID::OBSTACLE);
 	m_CollisionBitmask.SetLayer(LayerID::PLAYER);

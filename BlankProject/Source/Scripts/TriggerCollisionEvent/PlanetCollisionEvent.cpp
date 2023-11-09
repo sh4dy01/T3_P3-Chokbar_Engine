@@ -1,11 +1,11 @@
 #include "PlanetCollisionEvent.h"
 
-#include "GameObjects/Particles/ProjectileParticles.h"
-
 
 void PlanetCollisionEvent::OnAddedComponent()
 {
 	TriggerCollisionEvent::OnAddedComponent();
+
+	m_PlanetLife = gameObject->GetComponent<PlanetLife>();
 
 	GetParticleRenderer();
 }
@@ -18,6 +18,7 @@ void PlanetCollisionEvent::OnTriggerEnter(Collider* other)
 		
 		m_ParticleRenderer->transform->SetPosition(other->gameObject->transform->GetWorldPosition());
 		m_ParticleRenderer->AddParticles(10);
+		m_PlanetLife->RemoveLife(1);
 
 		other->gameObject->Destroy();
 	}

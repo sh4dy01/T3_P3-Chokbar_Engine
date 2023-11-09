@@ -17,14 +17,11 @@ Asteroid::Asteroid()
 	mesh->Init(SPHERE, TEXTURE);
 	mesh->RegisterTexture(Resource::Load<Texture>("Resources/Textures/asteroid.dds"));
 
-	//auto particle = AddComponent<ParticleRenderer>();
-	//particle->Init(CUBE, PARTICLE);
 
 	transform->SetScale(20.f);
 
 	auto sc = AddComponent<SphereCollider>();
 	sc->SetRadius(20.f);
-	//sc->SetCenter({ -4.f, -4.f, -4.f });
 
 	m_Life = AddComponent<AsteroidLife>();
 	AddComponent<AsteroidCollisionEvent>();

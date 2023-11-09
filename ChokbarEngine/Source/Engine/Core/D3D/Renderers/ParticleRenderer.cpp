@@ -141,9 +141,9 @@ void ParticleRenderer::UpdateParticles(const float dt)
 		Particle* p = m_particles[i];
 		// We skip all inactive particles. This particle renderer does not support dynamic particle generation. 
 		// If you want to do that, you need to implement a particle pool.
-		if (p == nullptr || !p->IsActive()) continue;
+		if (p == nullptr) continue;
 
-		if (!p->IsAlive())
+		if (!p->IsAlive() || !p->IsActive())
 		{
 			DELPTR(p)
 			m_particles.erase(m_particles.begin() + i);

@@ -15,7 +15,6 @@ void PlayerShoot::Awake()
 
 void PlayerShoot::Start()
 {
-	m_pCamera->SetFOV(m_BasicFOV);
 	m_ShootTimer = m_ShootDelay;
 }
 
@@ -23,7 +22,7 @@ void PlayerShoot::Start()
 void PlayerShoot::Update()
 {
 	HandleShoot();
-	HandleZoomAndSlowMotion();
+	HandleSlowMotion();
 }
 
 void PlayerShoot::HandleShoot()
@@ -70,11 +69,10 @@ void PlayerShoot::ShootProjectile(XMFLOAT3 position, XMFLOAT3 direction)
 }
 
 
-void PlayerShoot::HandleZoomAndSlowMotion()
+void PlayerShoot::HandleSlowMotion()
 {
 	if (InputHandler::IsKeyHeld(VK_RBUTTON))
 	{
-		//m_pCamera->SetFOV(m_BasicFOV / m_Zoom);
 		float currentTimeScale = TimeManager::GetTimeScale();
 
 		if (currentTimeScale > m_SlowMotion)
@@ -85,9 +83,7 @@ void PlayerShoot::HandleZoomAndSlowMotion()
 	}
 	else if (TimeManager::GetTimeScale() < 1)
 	{
-		//m_pCamera->SetFOV(m_BasicFOV);
 		TimeManager::SetTimeScale(std::clamp(TimeManager::GetTimeScale() + m_SlowMotionRecoverSpeed * TimeManager::GetUnscaledDeltaTime(), 0.1f, 1.f));
 	}
 
-	//DEBUG_LOG("TimeScale: " + std::to_string(TimeManager::GetTimeScale()));
 }

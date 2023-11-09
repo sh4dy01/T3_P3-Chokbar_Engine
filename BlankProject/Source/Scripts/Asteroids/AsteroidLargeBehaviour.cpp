@@ -1,10 +1,9 @@
 #include "AsteroidLargeBehaviour.h"
-#include <GameObjects/AsteroidSmall.h>
 
 
 void AsteroidLargeBehaviour::Awake() 
 {
-	m_Speed = 100.0f;
+	m_Speed = 120.0f;
 	m_Direction = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_Lifetime = 20.0f;
 

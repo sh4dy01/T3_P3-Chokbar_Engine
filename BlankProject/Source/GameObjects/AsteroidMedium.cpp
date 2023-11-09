@@ -13,8 +13,10 @@ AsteroidMedium::AsteroidMedium() {
     SetType(AsteroidType::MEDIUM);
     SetDirection(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 
-    transform->SetScale(15);
-    GetComponent<SphereCollider>()->SetRadius(15);
+    transform->SetScale(50);
+    GetComponent<SphereCollider>()->SetRadius(50);
+
+    transform->gameObject->m_CollisionBitmask.AddLayer(LayerID::PLAYER);
 }
 
 AsteroidMedium::~AsteroidMedium()

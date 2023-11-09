@@ -5,6 +5,9 @@
 #define CELL_SIZE 1
 #define HInstance() GetModuleHandle(NULL)
 
+#define DEFAULT_WIDTH 1280
+#define DEFAULT_HEIGHT 720
+
 typedef std::wstring WSTRING;
 typedef std::string  STRING;
 
