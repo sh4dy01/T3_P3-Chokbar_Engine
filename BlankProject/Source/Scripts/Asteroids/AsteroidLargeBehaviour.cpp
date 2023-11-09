@@ -1,12 +1,12 @@
 #include "AsteroidLargeBehaviour.h"
+#include <GameObjects/AsteroidSmall.h>
 
 
 void AsteroidLargeBehaviour::Awake() 
 {
-
-	m_Speed = 0.0f;
+	m_Speed = 100.0f;
 	m_Direction = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	m_Lifetime = 100.0f;
+	m_Lifetime = 20.0f;
 
     m_Rigidbody = gameObject->GetComponent<Rigidbody>();
     gameObject->GetComponent<SphereCollider>()->SetRadius(transform->GetHighestScale());
@@ -16,17 +16,29 @@ void AsteroidLargeBehaviour::Start()
 {
 }
 
-void AsteroidLargeBehaviour::Initialize(const XMFLOAT3 direction, float speed, const XMFLOAT3& position)
+void AsteroidLargeBehaviour::Initialize(Transform* player, const XMFLOAT3& position)
 {
-	m_Direction = direction;
-	m_Speed = speed;
+	m_Target = player;
     m_Position = position;
     m_Rigidbody->Move(position);
 
-    m_Rigidbody->SetVelocity(XMVectorScale(XMLoadFloat3(&m_Direction), m_Speed));
+    auto go = GameObject::Instantiate<AsteroidSmall>();
+    go->GetComponent<Rigidbody>()->Move(position);
+    go->transform->SetParent(transform);
+
 }
 
 void AsteroidLargeBehaviour::Update()
 {
-    DestroyAfterATime();
+    AsteroidBehaviour::Update();
+
+    XMFLOAT3 targetPos = m_Target->GetPosition();
+    XMFLOAT3 currentPos = transform->GetPosition();
+
+    XMFLOAT3 direction;
+    XMStoreFloat3(&direction, XMVector3Normalize(XMVectorSubtract(XMLoadFloat3(&targetPos), XMLoadFloat3(&currentPos))));
+
+    transform->RotateRoll(90.f * TimeManager::GetDeltaTime());
+
+    m_Rigidbody->SetVelocity(XMVectorScale(XMLoadFloat3(&direction), m_Speed));
 }

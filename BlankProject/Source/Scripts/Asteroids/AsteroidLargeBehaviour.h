@@ -9,5 +9,9 @@ public:
 	void Start() override;
 	void Update() override;
 
-	void Initialize(XMFLOAT3 direction, float speed, const XMFLOAT3& position) override;
+	void Initialize(Transform* target, const XMFLOAT3& position);
+
+private:
+
+	Transform* m_Target;
 };
