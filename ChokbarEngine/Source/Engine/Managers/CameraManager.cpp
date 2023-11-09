@@ -1,3 +1,4 @@
+#include "CameraManager.h"
 
 CameraComponent* CameraManager::m_MainCamera = nullptr;
 

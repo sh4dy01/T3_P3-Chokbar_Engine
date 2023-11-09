@@ -17,19 +17,19 @@ public:
 
 	static GameObject* Instantiate()
 	{
-		return NEW GameObject();
+		return new GameObject();
 	}
 
 	template <class GameObject>
 	static GameObject* Instantiate() 
 	{
-		return NEW GameObject();
+		return new GameObject();
 	}
 
 	template <class GameObject>
 	static GameObject* Instantiate(const std::string& name)
 	{
-		auto go = NEW GameObject();
+		auto go = new GameObject();
 		go->SetName(name);
 
 		return go;
@@ -53,7 +53,7 @@ public:
 	template<class T>
 	T* AddComponent()
 	{
-		auto component = NEW T();
+		auto component = new T();
 		component->gameObject = this;
 		component->transform = transform;
 		component->SetEnabled(true);

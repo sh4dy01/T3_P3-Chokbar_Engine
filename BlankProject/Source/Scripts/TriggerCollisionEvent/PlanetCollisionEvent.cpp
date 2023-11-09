@@ -1,3 +1,5 @@
+#include "BlankProject.h"
+
 #include "PlanetCollisionEvent.h"
 
 #include "GameObjects/Particles/ProjectileParticles.h"

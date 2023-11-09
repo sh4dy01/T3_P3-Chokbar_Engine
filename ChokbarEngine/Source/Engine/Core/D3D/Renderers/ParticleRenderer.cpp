@@ -111,7 +111,7 @@ void ParticleRenderer::CreateMissingParticles()
 
 Particle* ParticleRenderer::CreateParticle()
 {
-	Particle* p = NEW Particle();
+	Particle* p = new Particle();
 
 	const float rLiftTime = rand() % 3 + 1.0f;
 
