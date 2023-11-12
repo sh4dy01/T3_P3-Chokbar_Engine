@@ -1,20 +1,20 @@
 #pragma once
 
 /* ------------------------------------------------------------------------- */
-/* HELPER FONCTIONS                                                          */
+/* HELPER FUNCTIONS                                                          */
 /* ------------------------------------------------------------------------- */
 #pragma region HelperFunctions
 
-inline DirectX::XMFLOAT4X4 Identity4x4()
+inline DirectX::XMFLOAT4X4 Identity4X4()
 {
-	static DirectX::XMFLOAT4X4 Id(
+	static DirectX::XMFLOAT4X4 identity4X4(
 		1.0F, 0.0F, 0.0F, 0.0F,
 		0.0F, 1.0F, 0.0F, 0.0F,
 		0.0F, 0.0F, 1.0F, 0.0F,
 		0.0F, 0.0F, 0.0F, 1.0F
 	);
 
-	return Id;
+	return identity4X4;
 }
 #pragma endregion
 

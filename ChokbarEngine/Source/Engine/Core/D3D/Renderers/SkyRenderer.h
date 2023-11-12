@@ -1,8 +1,12 @@
 #pragma once 
 
-// Double inheritance is not a good idea, I know.
-class SkyRenderer : public Component, public IRenderer
+/*
+This class is responsible for rendering the skybox.
+It is not working yet.
+*/
+class SkyRenderer final : public Component, public IRenderer
 {
+	// Only the D3DRenderer can Update and Render this class.
 	friend class D3DRenderer;
 
 public:

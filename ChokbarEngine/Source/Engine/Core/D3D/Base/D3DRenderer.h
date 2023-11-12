@@ -1,10 +1,8 @@
 #pragma once
 
-#include "D3DUtils.h"
-
 #pragma region GLOBAL VARIABLES
 
-static const int SWAP_CHAIN_BUFFER_COUNT = 2;
+static constexpr int SWAP_CHAIN_BUFFER_COUNT = 2;
 
 #pragma endregion
 
@@ -12,6 +10,11 @@ class MeshRenderer;
 class ParticleRenderer;
 class Texture;
 
+/*
+Base render class for the D3D12 API.
+It contains all the necessary components and methods to use the D3D12 API.
+This class is a singleton, you can get any DX12 component from it.
+*/
 class D3DRenderer
 {
 public:
@@ -21,15 +24,15 @@ public:
 public:
 	static D3DRenderer* GetInstance();
 
-	void InitializeD3D12(Win32::Window* window);
+	void InitializeD3D12(const Win32::Window* window);
 	void OnResize(int, int);
-	void Update(const float dt, const float totalTime);
+	void Update(const float dt, const float totalTime) const;
 	void Render();
 
-	ID3D12Device* GetDevice() const { return m_pD3dDevice; }
+	ID3D12Device* GetDevice() const { return m_pDevice; }
 	ID3D12GraphicsCommandList* GetCommandList() const { return m_pCommandList; }
-	ID3D12DescriptorHeap* GetCbvHeap() const { return m_pCbvHeap; }
-	void BeginList();
+	ID3D12DescriptorHeap* GetCbvHeap() const { return m_pCbvSrvHeap; }
+	void BeginList() const;
 	void EndList();
 
 	int UpdateTextureHeap(Texture* tex, int textType);
@@ -59,7 +62,7 @@ private:
 
 	void GetRenderComponentsRef();
 	void RenderObjects();
-	void UpdateRenderedObjects(const float dt, const float totalTime);
+	void UpdateRenderedObjects(const float dt, const float totalTime) const;
 
 	void CreateFrustum();
 
@@ -68,7 +71,7 @@ private:
 
 	/* Creates an ID3D12InfoQueue to catch any error within the Command Queue.
 	Any error will break the code */
-	void DEBUG_CreateInfoQueue();
+	void DEBUG_CreateInfoQueue() const;
 
 private:
 	static D3DRenderer* m_pApp;
@@ -85,8 +88,8 @@ private:
 	IDXGIFactory4* m_pDxgiFactory;
 
 	/* D3D12 Device : Represents a GPU device */
-	ID3D12Device* m_pD3dDevice;
-	D3D_DRIVER_TYPE m_D3dDriverType;
+	ID3D12Device* m_pDevice;
+	D3D_DRIVER_TYPE m_driveType;
 	/* D3D12 Fence : Used to synchronize the CPU and GPU
 	We use the fence to wait for the CPU or GPU to finish their work.
 	The other one will be put on hold */
@@ -103,13 +106,16 @@ private:
 	ID3D12DescriptorHeap* m_pRtvHeap;
 	/* D3D12 DepthStencilView DescriptorHeap :  */
 	ID3D12DescriptorHeap* m_pDsvHeap;
-	/* D3D12 ConstantBufferView DescriptorHeap :  */
-	ID3D12DescriptorHeap* m_pCbvHeap;
+	/*
+	D3D12 ConstantBufferView DescriptorHeap : The cbv heap is used to store every resource needed by the shaders. We store the constant buffers, the textures or samplers
+	The DX12 approach is to store everything in a single heap, but we can prevent to store constant buffers and samplers. This methods will be further explained in the ShaderBase class
+	*/
+	ID3D12DescriptorHeap* m_pCbvSrvHeap;
 
 	/* Speaks for itself I guess */
-	UINT m_RtvDescriptorSize;
-	UINT m_DsvDescriptorSize;
-	UINT m_CbvSrvUavDescriptorSize;
+	UINT m_rtvDescriptorSize;
+	UINT m_dsvDescriptorSize;
+	UINT m_cbvSrvUavDescriptorSize;
 
 	/* D3D12 SwapChain : Used to swap the back buffer */
 	IDXGISwapChain* m_pSwapChain;
@@ -117,19 +123,29 @@ private:
 	ID3D12Resource* m_pSwapChainBuffer[SWAP_CHAIN_BUFFER_COUNT];
 	/* Index of the current back buffer */
 	int m_currBackBuffer;
-	DXGI_FORMAT m_BackBufferFormat;
+	DXGI_FORMAT m_backBufferFormat;
 
 	/* The depth stencil buffer is used to render perspective given the object position
 	This results with objects appearing to be behind each others */
 	ID3D12Resource* m_pDepthStencilBuffer;
-	DXGI_FORMAT m_DepthStencilFormat;
+	DXGI_FORMAT m_depthStencilFormat;
 
+	/*
+	These arrays store renderers of different types. Each renderer is associated with an entity.
+	Some renderers like MeshRenderers needs to be clipped by the frustum, so we differentiate them from the others
+	TODO : Implemented frustum clipping for ParticleRenderers
+	*/
 	std::array<MeshRenderer*, MAX_ENTITIES>* m_meshRenderers;
 	std::array<ParticleRenderer*, MAX_ENTITIES>* m_particleRenderers;
 	std::array<SkyRenderer*, MAX_ENTITIES>* m_skyRenderers;
 	std::array<UIRenderer*, MAX_ENTITIES>* m_uiRenderers;
 
-	UINT m_texIndex;
+	/*
+	Keeps track of how many textures were created in the CBV/SRV/UAV heap.
+	TODO : Move this the Resource class
+	*/
+	int m_texIndex;
 
-	DirectX::BoundingFrustum m_Frustum;
+	/* The frustum is used to clip objects that are not in the camera's view */
+	DirectX::BoundingFrustum m_frustum;
 };

@@ -1,5 +1,8 @@
 #pragma once
 
+/*
+This class serves as a wrapper for the ID3D12Resource that is used to upload data to the GPU.
+*/
 template<typename T>
 class UploadBuffer
 {
@@ -10,11 +13,11 @@ public:
 	UploadBuffer(const UploadBuffer& rhs) = delete;
 	UploadBuffer& operator=(const UploadBuffer& rhs) = delete;
 
-	UINT GetElementByteSize() const { return m_elementByteSize; }
-	ID3D12Resource* GetResource() const { return m_uploadBuffer; }
-	BYTE* GetMappedData() { return m_mappedData; }
+	[[nodiscard]] UINT GetElementByteSize() const { return m_elementByteSize; }
+	[[nodiscard]] ID3D12Resource* GetResource() const { return m_uploadBuffer; }
+	[[nodiscard]] BYTE* GetMappedData() const { return m_mappedData; }
 
-	void CopyData(int elementIndex, const void* data);
+	void CopyData(int elementIndex, const void* data) const;
 
 private:
 	ID3D12Resource* m_uploadBuffer;
@@ -25,22 +28,21 @@ private:
 
 template<typename T>
 UploadBuffer<T>::UploadBuffer(ID3D12Device* device, UINT elementCount, BOOL isConstantBuffer) :
-	m_isConstantBuffer(isConstantBuffer), m_mappedData(nullptr), m_elementByteSize(0)
+	m_elementByteSize(0), m_mappedData(nullptr), m_isConstantBuffer(isConstantBuffer)
 {
 	m_elementByteSize = sizeof(T);
 
 	if (isConstantBuffer)
 		m_elementByteSize = (sizeof(T) + 255) & ~255;
 
-	device->CreateCommittedResource(
-		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-		D3D12_HEAP_FLAG_NONE,
-		&CD3DX12_RESOURCE_DESC::Buffer(m_elementByteSize * elementCount),
-		D3D12_RESOURCE_STATE_GENERIC_READ,
-		nullptr,
-		IID_PPV_ARGS(&m_uploadBuffer));
+	const CD3DX12_HEAP_PROPERTIES heapProperties(D3D12_HEAP_TYPE_UPLOAD);
+	const CD3DX12_RESOURCE_DESC resourceDesc = CD3DX12_RESOURCE_DESC::Buffer(m_elementByteSize * elementCount);
+	HRESULT hr =
+		device->CreateCommittedResource(&heapProperties, D3D12_HEAP_FLAG_NONE, &resourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&m_uploadBuffer));
+	ThrowIfFailed(hr)
 
-	m_uploadBuffer->Map(0, nullptr, reinterpret_cast<void**>(&m_mappedData));
+	hr = m_uploadBuffer->Map(0, nullptr, reinterpret_cast<void**>(&m_mappedData));
+	ThrowIfFailed(hr)
 }
 
 
@@ -54,7 +56,7 @@ UploadBuffer<T>::~UploadBuffer()
 }
 
 template<typename T>
-void UploadBuffer<T>::CopyData(int elementIndex, const void* data)
+void UploadBuffer<T>::CopyData(int elementIndex, const void* data) const
 {
 	memcpy(&m_mappedData[elementIndex * m_elementByteSize], data, sizeof(T));
 }

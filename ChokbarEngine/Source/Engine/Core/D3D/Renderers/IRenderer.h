@@ -6,6 +6,10 @@ class Texture;
 
 struct ID3D12GraphicsCommandList;
 
+/*
+Base class for all Render components
+It manages to communication between Shader classes, Mesh classes and D3DRenderer class
+*/
 class IRenderer
 {
 public:
@@ -13,10 +17,10 @@ public:
 	virtual ~IRenderer();
 
 public:
-	virtual void Init(MeshType meshType, MaterialType matType);
+	virtual void Init(const MeshType meshType, const MaterialType matType);
 
-	Texture* GetTexture(UINT index) const { return m_textures[index]; }
-	std::vector<Texture*> GetTextures() const { return m_textures; }
+	[[nodiscard]] Texture* GetTexture(const UINT index) const { return m_textures[index]; }
+	[[nodiscard]] std::vector<Texture*> GetTextures() const { return m_textures; }
 	void RegisterTexture(Texture* tex);
 
 public:
@@ -26,7 +30,7 @@ public:
 	Material* Mat;
 
 protected:
-	void OnDelete();
+	void OnDelete() const;
 	void BindMaterial(Material* mat);
 
 	virtual void Render(ID3D12GraphicsCommandList* cmdList) = 0;

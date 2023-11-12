@@ -103,8 +103,8 @@ private:
 	bool m_ViewDirty;
 
 	// Cache View/Proj matrices.
-	DirectX::XMFLOAT4X4 m_View = Identity4x4();
-	DirectX::XMFLOAT4X4 m_OthoView = Identity4x4();
-	DirectX::XMFLOAT4X4 m_Proj = Identity4x4();
-	DirectX::XMFLOAT4X4 m_OrthoProj = Identity4x4();
+	DirectX::XMFLOAT4X4 m_View = Identity4X4();
+	DirectX::XMFLOAT4X4 m_OthoView = Identity4X4();
+	DirectX::XMFLOAT4X4 m_Proj = Identity4X4();
+	DirectX::XMFLOAT4X4 m_OrthoProj = Identity4X4();
 };

@@ -8,11 +8,11 @@ public:
 	Material();
 	~Material();
 
-	std::string Name = "";
+	std::string Name;
 
 	void SetShader(ShaderBase* shader);
-	ShaderBase* GetShader() const { return m_shader; }
+	[[nodiscard]] ShaderBase* GetShader() const { return m_shader; }
 
 private:
-	ShaderBase* m_shader = nullptr;
+	ShaderBase* m_shader;
 };

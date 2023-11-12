@@ -13,8 +13,8 @@ using namespace DirectX;
 ParticleRenderer::ParticleRenderer() : IRenderer()
 {
 	srand(time(nullptr));
-	m_Color2 = XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
-	m_Color1 = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+	m_color2 = XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
+	m_color1 = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 
 	m_particles.resize(0);
 	m_particleInstanceData.resize(0);
@@ -103,15 +103,13 @@ void ParticleRenderer::CreateMissingParticles()
 	{
 		if (m_particles[i] != nullptr) continue;
 
-		Particle* p = CreateParticle();
-		p->Awake();
-		m_particles.push_back(p);
+		CreateParticle();
 	}
 }
 
-Particle* ParticleRenderer::CreateParticle()
+void ParticleRenderer::CreateParticle()
 {
-	Particle* p = new Particle();
+	auto* p = new Particle();
 
 	const float rLiftTime = rand() % 3 + 1.0f;
 
@@ -126,11 +124,12 @@ Particle* ParticleRenderer::CreateParticle()
 	const XMFLOAT3 rAngVel = { randomRotX, randomRotY, randomRotZ };
 
 	const float randomScale = ((static_cast<float>(rand() % 100) * 0.01f) * 5) + 0.1f; // Get a random number between 0.1f and 0.35f
-	p->m_transform->SetScale(randomScale, randomScale, randomScale);
+	p->Transform->SetScale(randomScale, randomScale, randomScale);
 
 	p->Init(rLiftTime, rVel, rAngVel, transform->GetPosition());
-
-	return p;
+	p->Awake();
+	
+	m_particles.push_back(p);
 }
 
 
@@ -139,10 +138,11 @@ void ParticleRenderer::UpdateParticles(const float dt)
 	for (UINT i = 0; i < m_particleCount; i++)
 	{
 		Particle* p = m_particles[i];
-		// We skip all inactive particles. This particle renderer does not support dynamic particle generation. 
-		// If you want to do that, you need to implement a particle pool.
+
+		// Since some particles might be deleted, we need to check if the pointer is still valid
 		if (p == nullptr) continue;
 
+		// If the particle is dead, delete it
 		if (!p->IsAlive() || !p->IsActive())
 		{
 			DELPTR(p)
@@ -154,22 +154,25 @@ void ParticleRenderer::UpdateParticles(const float dt)
 			continue;
 		}
 
-		InstanceData& pid = m_particleInstanceData[i];
+		// Get the reference to the particle's InstanceData to be copied to the shader buffer
+		auto& [World, Color1, Color2, AgeRatio] = m_particleInstanceData[i];
 
-		p->m_currentLifeTime += dt;
-		pid.AgeRatio = (p->m_lifeTime - p->m_currentLifeTime) / p->m_lifeTime;
+		// Update particle's lifetime and InstanceData AgeRatio
+		p->CurrentLifeTime += dt;
+		AgeRatio = (p->LifeTime - p->CurrentLifeTime) / p->LifeTime;
 
-		// Update position
-		p->m_transform->Translate(p->m_velocity.x * dt, p->m_velocity.y * dt, p->m_velocity.z * dt);
+		// Update position with particle's velocity
+		p->Transform->Translate(p->Velocity.x * dt, p->Velocity.y * dt, p->Velocity.z * dt);
 
-		// Update rotation
-		p->m_transform->Rotate(p->m_angularVelocity.x * dt, p->m_angularVelocity.y * dt, p->m_angularVelocity.z * dt);
+		// Update rotation with particle's angular velocity
+		p->Transform->Rotate(p->AngularVelocity.x * dt, p->AngularVelocity.y * dt, p->AngularVelocity.z * dt);
 
 		// Update InstanceData World matrix
-		p->m_transform->UpdateWorldMatrix();
-		pid.World = *p->m_transform->GetWorldMatrix();
-		pid.Color1 = m_Color1;
-		pid.Color2 = m_Color2;
+		p->Transform->UpdateWorldMatrix();
+		World = *p->Transform->GetWorldMatrix();
+		
+		Color1 = m_color1;
+		Color2 = m_color2;
 	}
 
 	UpdateShaderBuffer();
@@ -177,8 +180,10 @@ void ParticleRenderer::UpdateParticles(const float dt)
 
 void ParticleRenderer::UpdateShaderBuffer() const
 {
+	// Make sure the shader is a ParticleShader, otherwise we can't update the InstanceData buffer
 	if (const auto shader = dynamic_cast<ShaderParticle*>(Mat->GetShader()))
 	{
+		// Update the InstanceData buffer for each particle
 		for (int i = 0; i < static_cast<int>(m_particleInstanceData.size()); i++)
 		{
 			shader->UpdateParticleInstanceDataBuffer(i, &m_particleInstanceData[i]);

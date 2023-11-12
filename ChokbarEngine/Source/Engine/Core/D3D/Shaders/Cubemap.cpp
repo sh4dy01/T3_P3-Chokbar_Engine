@@ -10,6 +10,4 @@ Cubemap::Cubemap(const std::string& name) : Texture(name)
 }
 
 Cubemap::~Cubemap()
-{
-
-}
+= default;

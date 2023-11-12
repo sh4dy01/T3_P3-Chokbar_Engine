@@ -20,15 +20,15 @@ Texture::Texture(const std::string& filename) : IResourceObject(filename), HeapI
 
 Texture::~Texture()
 {
-	RELPTR(UploadHeap);
-	RELPTR(Resource);
+	RELPTR(UploadHeap)
+	RELPTR(Resource)
 }
 
 void Texture::Load(const std::string& filepath)
 {
 	m_filepath = filepath;
 
-	auto app = I(D3DRenderer);
+	const auto app = I(D3DRenderer);
 	app->BeginList();
 
 	LoadTexture(app->GetDevice(), app->GetCommandList());
@@ -38,13 +38,14 @@ void Texture::Load(const std::string& filepath)
 
 void Texture::LoadTexture(ID3D12Device* device, ID3D12GraphicsCommandList* cmdList)
 {
-	// This is a bit ugly, but CreateDDSTextureFromFile12 needs ComPtr, which we do not use in the rest of the engine.
+	// This is a bit ugly, but CreateDDSTextureFromFile12 needs ComPtr, which we do not use in the rest of the project.
 	ComPtr<ID3D12Resource> textureUploadHeap = UploadHeap;
 	ComPtr<ID3D12Resource> textureResource = Resource;
 
 	// I hate this. But idk how to convert from std::string to const wchar_t*. Please help
-	const std::wstring wstr = std::wstring(m_filepath.begin(), m_filepath.end());
-	CreateDDSTextureFromFile12(device, cmdList, wstr.c_str(), textureResource, textureUploadHeap);
+	const auto wstr = std::wstring(m_filepath.begin(), m_filepath.end());
+	HRESULT hr = CreateDDSTextureFromFile12(device, cmdList, wstr.c_str(), textureResource, textureUploadHeap);
+	ThrowIfFailed(hr)
 
 	Resource = textureResource.Detach();
 	UploadHeap = textureUploadHeap.Detach();

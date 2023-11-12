@@ -1,9 +1,12 @@
 #pragma once
 
-class Cubemap : public Texture
+/*
+Special texture type for cubemaps textures.
+*/
+class Cubemap final : public Texture
 {
 public:
-	Cubemap(const std::string& name);
-	~Cubemap();
+	explicit Cubemap(const std::string& name);
+	~Cubemap() override;
 };
 

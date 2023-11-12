@@ -4,8 +4,11 @@
 
 #define MAX_PARTICLE_COUNT 5000
 
-// Double inheritance is not a good idea, I know.
-class ParticleRenderer : public Component, public IRenderer
+/*
+Particle Renderer is a component that renders particles.
+For now, it is used as a general renderer for all particles.
+*/
+class ParticleRenderer final : public Component, public IRenderer
 {
 	// Only D3DRenderer can Update and Render this component.
 	friend class D3DRenderer;
@@ -20,10 +23,10 @@ public:
 	void Init(MeshType meshType, MaterialType matType) override;
 
 	void AddParticles(UINT count);
-	UINT GetParticleCount() const;
+	[[nodiscard]] UINT GetParticleCount() const;
 
-	DirectX::XMFLOAT4 GetColor1() const { return m_Color1; }
-	DirectX::XMFLOAT4 GetColor2() const { return m_Color2; }
+	DirectX::XMFLOAT4 GetColor1() const { return m_color1; }
+	DirectX::XMFLOAT4 GetColor2() const { return m_color2; }
 
 private:
 	std::vector<Particle*> m_particles{};
@@ -31,15 +34,15 @@ private:
 
 	UINT m_particleCount = 0;
 
-	DirectX::XMFLOAT4 m_Color1;
-	DirectX::XMFLOAT4 m_Color2;
+	DirectX::XMFLOAT4 m_color1;
+	DirectX::XMFLOAT4 m_color2;
 
 	void Render(ID3D12GraphicsCommandList* cmdList) override;
 	void Update(float dt) override;
 
 	void Prepare();
 	void CreateMissingParticles();
-	Particle* CreateParticle();
+	void CreateParticle();
 
 	void UpdateParticles(float dt);
 	void UpdateShaderBuffer() const;
