@@ -7,9 +7,9 @@ struct ID3D12Resource;
 class Texture : public IResourceObject
 {
 public:
-	Texture(const std::string& name);
-	~Texture();
-	std::string Name = "";
+	explicit Texture(const std::string& name);
+	~Texture() override;
+	std::string Name;
 	ID3D12Resource* Resource = nullptr;
 	ID3D12Resource* UploadHeap = nullptr;
 

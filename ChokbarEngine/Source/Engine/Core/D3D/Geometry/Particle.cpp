@@ -8,23 +8,23 @@
 using namespace DirectX;
 
 #pragma region ParticleTransform
-ParticleTransform::ParticleTransform() : m_Dirty(false)
+ParticleTransform::ParticleTransform() : m_dirty(false)
 {
 	// Initialize orientation vectors (right, up, forward)
-	m_Right = DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f);
-	m_Up = DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f);
-	m_Forward = DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f);
+	m_right = DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f);
+	m_up = DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f);
+	m_forward = DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f);
 
 	// Initialize position, scale, and rotation
-	m_Position = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
-	DirectX::XMStoreFloat4x4(&m_PositionMatrix, DirectX::XMMatrixIdentity());
-	m_Scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
-	DirectX::XMStoreFloat4x4(&m_ScaleMatrix, DirectX::XMMatrixIdentity());
-	DirectX::XMStoreFloat4x4(&m_RotationMatrix, DirectX::XMMatrixIdentity());
-	m_RotationQuaternion = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+	m_position = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
+	DirectX::XMStoreFloat4x4(&m_positionMatrix, DirectX::XMMatrixIdentity());
+	m_scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
+	DirectX::XMStoreFloat4x4(&m_scaleMatrix, DirectX::XMMatrixIdentity());
+	DirectX::XMStoreFloat4x4(&m_rotationMatrix, DirectX::XMMatrixIdentity());
+	m_rotationQuaternion = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 	// Initialize rotation matrix as an identity matrix
 	// Initialize world matrix as an identity matrix
-	DirectX::XMStoreFloat4x4(&m_WorldMatrix, DirectX::XMMatrixIdentity());
+	DirectX::XMStoreFloat4x4(&m_worldMatrix, DirectX::XMMatrixIdentity());
 }
 
 ParticleTransform::~ParticleTransform()
@@ -34,9 +34,9 @@ ParticleTransform::~ParticleTransform()
 void ParticleTransform::Translate(float x, float y, float z)
 {
 	// Update the position vector
-	m_Position.x += x;
-	m_Position.y += y;
-	m_Position.z += z;
+	m_position.x += x;
+	m_position.y += y;
+	m_position.z += z;
 	UpdatePositionMatrix();
 }
 
@@ -48,9 +48,9 @@ void ParticleTransform::Translate(DirectX::XMFLOAT3 translation)
 void ParticleTransform::SetPosition(float x, float y, float z)
 {
 	// Set the position directly
-	m_Position.x = x;
-	m_Position.y = y;
-	m_Position.z = z;
+	m_position.x = x;
+	m_position.y = y;
+	m_position.z = z;
 	UpdatePositionMatrix();
 }
 
@@ -62,38 +62,38 @@ void ParticleTransform::SetPosition(DirectX::XMFLOAT3 newPosition)
 void ParticleTransform::RotateFromAxisAngle(DirectX::XMFLOAT3 axis, float angle)
 {
 	DirectX::XMVECTOR rotationDelta = DirectX::XMQuaternionRotationAxis(DirectX::XMLoadFloat3(&axis), DirectX::XMConvertToRadians(angle));
-	DirectX::XMVECTOR currentRotation = DirectX::XMLoadFloat4(&m_RotationQuaternion);
+	DirectX::XMVECTOR currentRotation = DirectX::XMLoadFloat4(&m_rotationQuaternion);
 	currentRotation = DirectX::XMQuaternionMultiply(currentRotation, rotationDelta);
 
 	// Store the result back in rotationQuaternion as XMFLOAT4
-	DirectX::XMStoreFloat4(&m_RotationQuaternion, currentRotation);
+	DirectX::XMStoreFloat4(&m_rotationQuaternion, currentRotation);
 	// Store the result back in rotationQuaternion as XMFLOAT4
 	UpdateRotationMatrix();
 	// Recalculate the world matrix
-	m_Right.x = m_RotationMatrix._11;
-	m_Right.y = m_RotationMatrix._12;
-	m_Right.z = m_RotationMatrix._13;
-	m_Up.x = m_RotationMatrix._21;
-	m_Up.y = m_RotationMatrix._22;
-	m_Up.z = m_RotationMatrix._23;
-	m_Forward.x = m_RotationMatrix._31;
-	m_Forward.y = m_RotationMatrix._32;
-	m_Forward.z = m_RotationMatrix._33;
+	m_right.x = m_rotationMatrix._11;
+	m_right.y = m_rotationMatrix._12;
+	m_right.z = m_rotationMatrix._13;
+	m_up.x = m_rotationMatrix._21;
+	m_up.y = m_rotationMatrix._22;
+	m_up.z = m_rotationMatrix._23;
+	m_forward.x = m_rotationMatrix._31;
+	m_forward.y = m_rotationMatrix._32;
+	m_forward.z = m_rotationMatrix._33;
 }
 
 void ParticleTransform::RotateYaw(float angle)
 {
-	RotateFromAxisAngle(m_Up, angle);
+	RotateFromAxisAngle(m_up, angle);
 }
 
 void ParticleTransform::RotatePitch(float angle)
 {
-	RotateFromAxisAngle(m_Right, angle);
+	RotateFromAxisAngle(m_right, angle);
 }
 
 void ParticleTransform::RotateRoll(float angle)
 {
-	RotateFromAxisAngle(m_Forward, angle);
+	RotateFromAxisAngle(m_forward, angle);
 }
 
 void ParticleTransform::Rotate(float pitch = 0.f, float yaw = 0.f, float roll = 0.f)
@@ -111,9 +111,9 @@ void ParticleTransform::Rotate(DirectX::XMFLOAT3 rotation)
 void ParticleTransform::Scale(float x, float y, float z)
 {
 	// Update the scale factors
-	m_Scale.x *= x;
-	m_Scale.y *= y;
-	m_Scale.z *= z;
+	m_scale.x *= x;
+	m_scale.y *= y;
+	m_scale.z *= z;
 	UpdateScaleMatrix();
 }
 
@@ -125,9 +125,9 @@ void ParticleTransform::Scale(DirectX::XMFLOAT3 scaleFactors)
 void ParticleTransform::SetScale(float x, float y, float z)
 {
 	// Set the scale factors directly
-	m_Scale.x = x;
-	m_Scale.y = y;
-	m_Scale.z = z;
+	m_scale.x = x;
+	m_scale.y = y;
+	m_scale.z = z;
 
 	UpdateScaleMatrix();
 }
@@ -139,36 +139,36 @@ void ParticleTransform::SetScale(DirectX::XMFLOAT3 scaleFactors)
 
 void ParticleTransform::UpdatePositionMatrix()
 {
-	m_Dirty = true;
+	m_dirty = true;
 
 	// Create the position matrix
-	DirectX::XMStoreFloat4x4(&m_PositionMatrix, DirectX::XMMatrixTranslation(m_Position.x, m_Position.y, m_Position.z));
+	DirectX::XMStoreFloat4x4(&m_positionMatrix, DirectX::XMMatrixTranslation(m_position.x, m_position.y, m_position.z));
 }
 
 void ParticleTransform::UpdateRotationMatrix()
 {
-	m_Dirty = true;
+	m_dirty = true;
 	// Create a quaternion for this rotation
-	DirectX::XMVECTOR quaternion = DirectX::XMLoadFloat4(&m_RotationQuaternion);
+	DirectX::XMVECTOR quaternion = DirectX::XMLoadFloat4(&m_rotationQuaternion);
 	// Create a quaternion for this rotation
 	// Convert the quaternion to a rotation matrix
-	DirectX::XMStoreFloat4x4(&m_RotationMatrix, DirectX::XMMatrixRotationQuaternion(quaternion));
+	DirectX::XMStoreFloat4x4(&m_rotationMatrix, DirectX::XMMatrixRotationQuaternion(quaternion));
 }
 
 void ParticleTransform::UpdateScaleMatrix()
 {
-	m_Dirty = true;
+	m_dirty = true;
 	// Convert the quaternion to a rotation matrix
 	// Scale the orientation vectors
-	DirectX::XMVECTOR scaledRight = DirectX::XMVectorScale(DirectX::XMLoadFloat3(&m_Right), m_Scale.x);
-	DirectX::XMVECTOR scaledUp = DirectX::XMVectorScale(DirectX::XMLoadFloat3(&m_Up), m_Scale.y);
-	DirectX::XMVECTOR scaledForward = DirectX::XMVectorScale(DirectX::XMLoadFloat3(&m_Forward), m_Scale.z);
+	DirectX::XMVECTOR scaledRight = DirectX::XMVectorScale(DirectX::XMLoadFloat3(&m_right), m_scale.x);
+	DirectX::XMVECTOR scaledUp = DirectX::XMVectorScale(DirectX::XMLoadFloat3(&m_up), m_scale.y);
+	DirectX::XMVECTOR scaledForward = DirectX::XMVectorScale(DirectX::XMLoadFloat3(&m_forward), m_scale.z);
 
 	// Create the scale matrix
-	m_ScaleMatrix = DirectX::XMFLOAT4X4(
-		m_Scale.x, 0.0f, 0.0f, 0.0f,
-		0.0f, m_Scale.y, 0.0f, 0.0f,
-		0.0f, 0.0f, m_Scale.z, 0.0f,
+	m_scaleMatrix = DirectX::XMFLOAT4X4(
+		m_scale.x, 0.0f, 0.0f, 0.0f,
+		0.0f, m_scale.y, 0.0f, 0.0f,
+		0.0f, 0.0f, m_scale.z, 0.0f,
 		0.0f, 0.0f, 0.0f, 1.0f);
 }
 
@@ -176,52 +176,52 @@ void ParticleTransform::UpdateWorldMatrix()
 {
 	// Create the position matrix
 	// Combine rotation and scale and position
-	DirectX::XMMATRIX newWorldMatrix = DirectX::XMLoadFloat4x4(&m_RotationMatrix) * DirectX::XMLoadFloat4x4(&m_ScaleMatrix) * DirectX::XMLoadFloat4x4(&m_PositionMatrix);
+	DirectX::XMMATRIX newWorldMatrix = DirectX::XMLoadFloat4x4(&m_rotationMatrix) * DirectX::XMLoadFloat4x4(&m_scaleMatrix) * DirectX::XMLoadFloat4x4(&m_positionMatrix);
 	// Combine rotation and scale with position
 	// Convert the final world matrix to XMFLOAT4X4
-	DirectX::XMStoreFloat4x4(&m_WorldMatrix, DirectX::XMMatrixTranspose(newWorldMatrix));
+	DirectX::XMStoreFloat4x4(&m_worldMatrix, DirectX::XMMatrixTranspose(newWorldMatrix));
 
-	m_Dirty = false;
+	m_dirty = false;
 }
 #pragma endregion
 
 #pragma region Particle
 Particle::Particle()
-	: m_lifeTime(0.0f), m_currentLifeTime(0.0f), m_velocity(XMFLOAT3(0.0f, 0.0f, 0.0f)), m_angularVelocity(XMFLOAT3(0.0f, 0.0f, 0.0f)), m_isActive(false)
+	: LifeTime(0.0f), CurrentLifeTime(0.0f), Velocity(XMFLOAT3(0.0f, 0.0f, 0.0f)), AngularVelocity(XMFLOAT3(0.0f, 0.0f, 0.0f)), m_isActive(false)
 {
-	m_transform = new ParticleTransform();
+	Transform = new ParticleTransform();
 }
 
 Particle::~Particle()
 {
-	DELPTR(m_transform);
+	DELPTR(Transform);
 }
 
 void Particle::Update(float deltaTime)
 {
-	m_currentLifeTime -= deltaTime;
+	CurrentLifeTime -= deltaTime;
 }
 
 void Particle::Reset()
 {
-	m_currentLifeTime = 0.0f;
+	CurrentLifeTime = 0.0f;
 
-	m_angularVelocity = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
-	m_velocity = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
+	AngularVelocity = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
+	Velocity = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
 
-	m_transform->SetPosition(0.0f, 0.0f, 0.0f);
-	m_transform->SetScale(1.0f, 1.0f, 1.0f);
-	m_transform->Rotate(0.0f, 0.0f, 0.0f);
+	Transform->SetPosition(0.0f, 0.0f, 0.0f);
+	Transform->SetScale(1.0f, 1.0f, 1.0f);
+	Transform->Rotate(0.0f, 0.0f, 0.0f);
 }
 
 void Particle::Init(float rLifeTime, DirectX::XMFLOAT3 rVel, DirectX::XMFLOAT3 rAngVel, DirectX::XMFLOAT3 parentPos)
 {
-	m_lifeTime = rLifeTime;
-	m_currentLifeTime = 0.0f;
+	LifeTime = rLifeTime;
+	CurrentLifeTime = 0.0f;
 
-	m_angularVelocity = rAngVel;
-	m_velocity = rVel;
+	AngularVelocity = rAngVel;
+	Velocity = rVel;
 
-	m_transform->SetPosition(parentPos);
+	Transform->SetPosition(parentPos);
 }
 #pragma endregion

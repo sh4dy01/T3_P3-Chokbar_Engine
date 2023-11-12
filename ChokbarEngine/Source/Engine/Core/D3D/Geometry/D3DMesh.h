@@ -18,6 +18,10 @@ struct Vertex
 	DirectX::XMFLOAT2 TexC;
 };
 
+/*
+This class stores the vertex and index buffers for a geometric mesh.
+It will be used as a buffer to prevent the need to create a new vertex and index for each object.
+*/
 class D3DMesh
 {
 public:
@@ -34,23 +38,23 @@ public:
 
 	void Create(const void* vData, UINT vStride, UINT vSize, const void* iData, UINT iStride, UINT iSize);
 
-	UINT GetIndexCount() const { return IndexCount; }
+	UINT GetIndexCount() const { return m_indexCount; }
 
 private:
-	ID3D12Resource* VertexBufferGPU;
-	ID3D12Resource* IndexBufferGPU;
+	ID3D12Resource* m_pVertexBufferGpu;
+	ID3D12Resource* m_pIndexBufferGpu;
 
-	ID3D12Resource* VertexBufferUploader;
-	ID3D12Resource* IndexBufferUploader;
+	ID3D12Resource* m_pVertexBufferUploader;
+	ID3D12Resource* m_pIndexBufferUploader;
 
-	UINT VertexByteStride;
-	UINT VertexBufferByteSize;
-	DXGI_FORMAT IndexFormat;
-	UINT IndexBufferByteSize;
+	UINT m_vertexByteStride;
+	UINT m_vertexBufferByteSize;
+	DXGI_FORMAT m_indexFormat;
+	UINT m_indexBufferByteSize;
 
-	UINT IndexCount = 0;
-	UINT StartIndexLocation = 0;
-	INT BaseVertexLocation = 0;
+	UINT m_indexCount = 0;
+	UINT m_startIndexLocation = 0;
+	INT m_baseVertexLocation = 0;
 
 private:
 	ID3D12Resource* CreateDefaultBuffer(ID3D12Device* device, ID3D12GraphicsCommandList* cmdList, const void* initData, UINT64 byteSize, ID3D12Resource*& uploadBuffer);

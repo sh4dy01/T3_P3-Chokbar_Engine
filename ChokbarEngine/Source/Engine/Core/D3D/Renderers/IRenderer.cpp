@@ -26,7 +26,7 @@ IRenderer::~IRenderer()
 	m_textures.clear();
 }
 
-void IRenderer::Init(MeshType meshType, MaterialType matType)
+void IRenderer::Init(const MeshType meshType, const MaterialType matType)
 {
 	Mesh = GeometryHandler::GetMesh(meshType);
 
@@ -34,7 +34,7 @@ void IRenderer::Init(MeshType meshType, MaterialType matType)
 	BindMaterial(mat);
 }
 
-void IRenderer::OnDelete()
+void IRenderer::OnDelete() const
 {
 	if (Mat)
 		Mat->GetShader()->UnBind(ObjectCBIndex);

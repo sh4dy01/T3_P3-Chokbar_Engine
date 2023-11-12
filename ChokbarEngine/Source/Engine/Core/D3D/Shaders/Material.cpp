@@ -3,13 +3,14 @@
 
 #include "Material.h"
 
-Material::Material()
+Material::Material() : Name("Material")
 {
 	m_shader = nullptr;
 }
 
 Material::~Material()
 {
+	// We don't own the shader, so we don't delete it
 	m_shader = nullptr;
 }
 

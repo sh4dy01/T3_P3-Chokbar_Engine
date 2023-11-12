@@ -16,45 +16,45 @@ Vertex::Vertex(
 ) : Position(px, py, pz), Color(cr, cg, cb, ca), Normal(nx, ny, nz), TangentU(tx, ty, tz), TexC(u, v) { }
 
 D3DMesh::D3DMesh()
-	: VertexByteStride(0), VertexBufferByteSize(0), IndexFormat(DXGI_FORMAT_R16_UINT), IndexBufferByteSize(0)
+	: m_vertexByteStride(0), m_vertexBufferByteSize(0), m_indexFormat(DXGI_FORMAT_R16_UINT), m_indexBufferByteSize(0)
 {
-	VertexBufferGPU = nullptr;
-	IndexBufferGPU = nullptr;
+	m_pVertexBufferGpu = nullptr;
+	m_pIndexBufferGpu = nullptr;
 
-	VertexBufferUploader = nullptr;
-	IndexBufferUploader = nullptr;
+	m_pVertexBufferUploader = nullptr;
+	m_pIndexBufferUploader = nullptr;
 }
 
 D3DMesh::~D3DMesh()
 {
 	DisposeUploaders();
 
-	RELPTR(VertexBufferGPU);
-	RELPTR(IndexBufferGPU);
+	RELPTR(m_pVertexBufferGpu);
+	RELPTR(m_pIndexBufferGpu);
 }
 
 D3D12_VERTEX_BUFFER_VIEW D3DMesh::VertexBufferView() const {
 	D3D12_VERTEX_BUFFER_VIEW vbv;
-	vbv.BufferLocation = VertexBufferGPU->GetGPUVirtualAddress();
-	vbv.StrideInBytes = VertexByteStride;
-	vbv.SizeInBytes = VertexBufferByteSize;
+	vbv.BufferLocation = m_pVertexBufferGpu->GetGPUVirtualAddress();
+	vbv.StrideInBytes = m_vertexByteStride;
+	vbv.SizeInBytes = m_vertexBufferByteSize;
 
 	return vbv;
 }
 
 D3D12_INDEX_BUFFER_VIEW D3DMesh::IndexBufferView() const {
 	D3D12_INDEX_BUFFER_VIEW ibv;
-	ibv.BufferLocation = IndexBufferGPU->GetGPUVirtualAddress();
-	ibv.Format = IndexFormat;
-	ibv.SizeInBytes = IndexBufferByteSize;
+	ibv.BufferLocation = m_pIndexBufferGpu->GetGPUVirtualAddress();
+	ibv.Format = m_indexFormat;
+	ibv.SizeInBytes = m_indexBufferByteSize;
 
 	return ibv;
 }
 
 void D3DMesh::DisposeUploaders()
 {
-	RELPTR(VertexBufferUploader);
-	RELPTR(IndexBufferUploader);
+	RELPTR(m_pVertexBufferUploader);
+	RELPTR(m_pIndexBufferUploader);
 }
 
 void D3DMesh::Create(const void* vData, UINT vStride, UINT vSize, const void* iData, UINT iStride, UINT iSize)
@@ -68,17 +68,17 @@ void D3DMesh::Create(const void* vData, UINT vStride, UINT vSize, const void* iD
 
 	Name = typeid(D3DMesh).name();
 
-	VertexBufferGPU = CreateDefaultBuffer(device, cmdList, vData, vBufferSize, VertexBufferUploader);
-	VertexByteStride = vStride;
-	VertexBufferByteSize = vBufferSize;
+	m_pVertexBufferGpu = CreateDefaultBuffer(device, cmdList, vData, vBufferSize, m_pVertexBufferUploader);
+	m_vertexByteStride = vStride;
+	m_vertexBufferByteSize = vBufferSize;
 
-	IndexBufferGPU = CreateDefaultBuffer(device, cmdList, iData, iBufferSize, IndexBufferUploader);
-	IndexFormat = DXGI_FORMAT_R32_UINT;
-	IndexBufferByteSize = iBufferSize;
+	m_pIndexBufferGpu = CreateDefaultBuffer(device, cmdList, iData, iBufferSize, m_pIndexBufferUploader);
+	m_indexFormat = DXGI_FORMAT_R32_UINT;
+	m_indexBufferByteSize = iBufferSize;
 
-	IndexCount = iSize;
-	StartIndexLocation = 0;
-	BaseVertexLocation = 0;
+	m_indexCount = iSize;
+	m_startIndexLocation = 0;
+	m_baseVertexLocation = 0;
 
 	I(D3DRenderer)->EndList();
 

@@ -72,8 +72,8 @@ void Resource::CreateShaders(ID3D12Device* device, ID3D12DescriptorHeap* cbvHeap
 	m_shaders[MaterialType::TEXTURE] = new ShaderTexture(device, cbvHeap, cbvSrvDescriptorSize, shaderPathTex);
 	m_shaders[MaterialType::TEXTURE]->Init();
 
-	std::wstring shaderPathTexTrans = L"Shader/Texture_Transparent.hlsl";
-	m_shaders[MaterialType::TEXTURE_UI] = new ShaderTextureOffset(device, cbvHeap, cbvSrvDescriptorSize, shaderPathTexTrans);
+	std::wstring shaderPathTexTrans = L"Shader/Texture_UI.hlsl";
+	m_shaders[MaterialType::TEXTURE_UI] = new ShaderTextureUI(device, cbvHeap, cbvSrvDescriptorSize, shaderPathTexTrans);
 	m_shaders[MaterialType::TEXTURE_UI]->Init();
 
 	std::wstring shaderPathParticle = L"Shader/Particle.hlsl";

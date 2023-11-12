@@ -1,27 +1,25 @@
 #include "Chokbar.h"
 
-#include "Engine/Core/D3D/Base/MeshType.h"
-
 #include "GeometryHandler.h"
 
 using namespace DirectX;
 
-D3DMesh* GeometryHandler::m_Meshes[5];
+D3DMesh* GeometryHandler::m_meshes[5];
 
 void GeometryHandler::CreateAllMeshes()
 {
-	m_Meshes[0] = CreateCube();
-	m_Meshes[1] = CreateGeoSphere();
-	m_Meshes[2] = CreatePyramid();
-	m_Meshes[3] = CreateUISquare(1.0f, 0.1f);
-	m_Meshes[4] = CreateUISquare(1.0f, 1.0f);
+	m_meshes[0] = CreateCube();
+	m_meshes[1] = CreateGeoSphere();
+	m_meshes[2] = CreatePyramid();
+	m_meshes[3] = CreateUISquare(1.0f, 0.1f);
+	m_meshes[4] = CreateUISquare(1.0f, 1.0f);
 }
 
 void GeometryHandler::DestroyAllMeshes()
 {
-	for (int i = 0; i < _countof(m_Meshes); i++)
+	for (auto& mesh : m_meshes)
 	{
-		DELPTR(m_Meshes[i]);
+		DELPTR(mesh)
 	}
 }
 
@@ -29,9 +27,9 @@ D3DMesh* GeometryHandler::CreateCube()
 {
 	Vertex v[24];
 
-	float width = 0.5f;
-	float height = 0.5f;
-	float depth = 0.5f;
+	constexpr float width = 0.5f;
+	constexpr float height = 0.5f;
+	constexpr float depth = 0.5f;
 
 	// Fill in the front face vertex data.
 	v[0] = Vertex(-width, -height, -depth, 0.15f, 0.1f, 0.15f, 1.0F, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
@@ -84,7 +82,7 @@ D3DMesh* GeometryHandler::CreateCube()
 		20, 21, 22, 20, 22, 23
 	};
 
-	D3DMesh* mesh = new D3DMesh();
+	auto* mesh = new D3DMesh();
 	mesh->Create(v, sizeof(Vertex), _countof(v), i, sizeof(UINT), _countof(i));
 
 	return mesh;
@@ -92,9 +90,9 @@ D3DMesh* GeometryHandler::CreateCube()
 
 D3DMesh* GeometryHandler::CreateUVSphere()
 {
-	const float radius = 1.0F;
-	const UINT slices = 20;
-	const UINT stacks = 20;
+	constexpr float radius = 1.0F;
+	constexpr UINT slices = 20;
+	constexpr UINT stacks = 20;
 
 	std::vector<Vertex> vertices;
 	std::vector<UINT> indices;
@@ -117,12 +115,12 @@ D3DMesh* GeometryHandler::CreateUVSphere()
 	// Compute vertices for each stack ring (do not count the poles as rings).
 	for (UINT i = 1; i <= stacks - 1; ++i)
 	{
-		float phi = i * phiStep;
+		float phi = static_cast<float>(i) * phiStep;
 
 		// Vertices of ring.
 		for (UINT j = 0; j <= slices; ++j)
 		{
-			float theta = j * thetaStep;
+			float theta = static_cast<float>(j) * thetaStep;
 
 			Vertex v;
 
@@ -193,7 +191,7 @@ D3DMesh* GeometryHandler::CreateUVSphere()
 	//
 
 	// South pole vertex was added last.
-	UINT southPoleIndex = (UINT)vertices.size() - 1;
+	UINT southPoleIndex = static_cast<UINT>(vertices.size()) - 1;
 
 	// Offset the indices to the index of the first vertex in the last ring.
 	baseIndex = southPoleIndex - ringVertexCount;
@@ -205,7 +203,7 @@ D3DMesh* GeometryHandler::CreateUVSphere()
 		indices.push_back(baseIndex + i + 1);
 	}
 
-	D3DMesh* mesh = new D3DMesh();
+	auto mesh = new D3DMesh();
 	mesh->Create(vertices.data(), sizeof(Vertex), (UINT)vertices.size(), indices.data(), sizeof(UINT), (UINT)indices.size());
 
 	return mesh;
@@ -214,18 +212,18 @@ D3DMesh* GeometryHandler::CreateUVSphere()
 D3DMesh* GeometryHandler::CreateGeoSphere()
 {
 	const float radius = 1;
-	const UINT subDivisions = 6;
+	constexpr UINT subDivisions = 6;
 
 	std::vector<Vertex> vertices;
 	std::vector<UINT> indices;
 
 	// Approximate a sphere by tessellating an icosahedron.
 
-	const float X = 0.525731f;
-	const float Z = 0.850651f;
+	constexpr float X = 0.525731f;
+	constexpr float Z = 0.850651f;
 
-	const UINT numVertices = 12;
-	XMFLOAT3 pos[numVertices] =
+	constexpr UINT numVertices = 12;
+	constexpr XMFLOAT3 pos[numVertices] =
 	{
 		XMFLOAT3(-X, 0.0f, Z),  XMFLOAT3(X, 0.0f, Z),
 		XMFLOAT3(-X, 0.0f, -Z), XMFLOAT3(X, 0.0f, -Z),
@@ -253,41 +251,41 @@ D3DMesh* GeometryHandler::CreateGeoSphere()
 		Subdivide(vertices, indices);
 
 	// Project vertices onto sphere and scale.
-	for (UINT i = 0; i < vertices.size(); ++i)
+	for (auto& vertex : vertices)
 	{
 		// Project onto unit sphere.
-		XMVECTOR n = XMVector3Normalize(XMLoadFloat3(&vertices[i].Position));
+		const XMVECTOR n = XMVector3Normalize(XMLoadFloat3(&vertex.Position));
 
 		// Project onto sphere.
-		XMVECTOR p = radius * n;
+		const XMVECTOR p = radius * n;
 
-		XMStoreFloat3(&vertices[i].Position, p);
-		XMStoreFloat3(&vertices[i].Normal, n);
+		XMStoreFloat3(&vertex.Position, p);
+		XMStoreFloat3(&vertex.Normal, n);
 
 		// Derive texture coordinates from spherical coordinates.
-		float theta = atan2f(vertices[i].Position.z, vertices[i].Position.x);
+		float theta = atan2f(vertex.Position.z, vertex.Position.x);
 
 		// Put in [0, 2pi].
 		if (theta < 0.0f)
 			theta += XM_2PI;
 
-		float phi = acosf(vertices[i].Position.y / radius);
+		const float phi = acosf(vertex.Position.y / radius);
 
-		vertices[i].TexC.x = theta / XM_2PI;
-		vertices[i].TexC.y = phi / XM_PI;
+		vertex.TexC.x = theta / XM_2PI;
+		vertex.TexC.y = phi / XM_PI;
 
 		// Partial derivative of P with respect to theta
-		vertices[i].TangentU.x = -radius * sinf(phi) * sinf(theta);
-		vertices[i].TangentU.y = 0.0f;
-		vertices[i].TangentU.z = +radius * sinf(phi) * cosf(theta);
-		
-		XMVECTOR T = XMLoadFloat3(&vertices[i].TangentU);
-		XMStoreFloat3(&vertices[i].TangentU, XMVector3Normalize(T));
+		vertex.TangentU.x = -radius * sinf(phi) * sinf(theta);
+		vertex.TangentU.y = 0.0f;
+		vertex.TangentU.z = +radius * sinf(phi) * cosf(theta);
 
-		vertices[i].Color = XMFLOAT4(0.8f, 0.1f, 0.1f, 1.0f);
+		const XMVECTOR T = XMLoadFloat3(&vertex.TangentU);
+		XMStoreFloat3(&vertex.TangentU, XMVector3Normalize(T));
+
+		vertex.Color = XMFLOAT4(0.8f, 0.1f, 0.1f, 1.0f);
 	}
 
-	D3DMesh* mesh = new D3DMesh();
+	auto* mesh = new D3DMesh();
 	mesh->Create(vertices.data(), sizeof(Vertex), (UINT)vertices.size(), indices.data(), sizeof(UINT), (UINT)indices.size());
 
 	return mesh;
@@ -313,7 +311,7 @@ void GeometryHandler::Subdivide(std::vector<Vertex>& vertices, std::vector<UINT>
 	// *-----*-----*
 	// v0    m2     v2
 
-	UINT numTris = (UINT)copyIndices.size() / 3;
+	UINT numTris = static_cast<UINT>(copyIndices.size()) / 3;
 	for (UINT i = 0; i < numTris; ++i)
 	{
 		Vertex v0 = copyVertices[copyIndices[i * 3 + 0]];
@@ -414,17 +412,7 @@ D3DMesh* GeometryHandler::CreatePyramid()
 	vList[15] = Vertex(XMFLOAT3(0.5f, 0.0f, 0.5f), XMFLOAT4(0.8f, 0.1f, 0.1f, 1.0f), XMFLOAT3(0.0f, -1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(0.5f, 0.0f));
 	vList[16] = Vertex(XMFLOAT3(0.5f, 0.0f, -0.5f), XMFLOAT4(0.8f, 0.1f, 0.1f, 1.0f), XMFLOAT3(0.0f, -1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(0.0f, 1.0f));
 	vList[17] = Vertex(XMFLOAT3(-0.5f, 0.0f, -0.5f), XMFLOAT4(0.8f, 0.1f, 0.1f, 1.0f), XMFLOAT3(0.0f, -1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(1.0f, 1.0f));
-
-	/*Vertex vList[] =
-	{
-		{ XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT4(0.8f, 0.1f, 0.1f, 1.0f), XMFLOAT3(0.0f, 1.0f, -1.0f),   },
-		{ XMFLOAT3(-0.5f, 0.0f, -0.5f), Colors::White },
-		{ XMFLOAT3(-0.5f, 0.0f, 0.5f),  Colors::LightBlue },
-		{ XMFLOAT3(0.5f, 0.0f, 0.5f),   Colors::White },
-		{ XMFLOAT3(0.5f, 0.0f, -0.5f),  Colors::White },
-	};*/
-
-
+	
 	UINT iList[] =
 	{
 		0, 1, 2,
@@ -436,7 +424,7 @@ D3DMesh* GeometryHandler::CreatePyramid()
 		15, 16, 17
 	};
 
-	D3DMesh* mesh = new D3DMesh();
+	auto* mesh = new D3DMesh();
 	mesh->Create(vList, sizeof(Vertex), _countof(vList), iList, sizeof(UINT), _countof(iList));
 
 	return mesh;
@@ -446,9 +434,8 @@ D3DMesh* GeometryHandler::CreateUISquare(const float uvOffsetX, const float uvOf
 {
 	Vertex vList[4];
 
-	float width = 0.5f;
-	float height = 0.5f;
-	float depth = 0.5f;
+	constexpr float width = 0.5f;
+	constexpr float height = 0.5f;
 
 	vList[0] = Vertex(
 		XMFLOAT3(-width, height, 0.0f),
@@ -488,7 +475,7 @@ D3DMesh* GeometryHandler::CreateUISquare(const float uvOffsetX, const float uvOf
 		2, 3, 1
 	};
 
-	D3DMesh* mesh = new D3DMesh();
+	auto* mesh = new D3DMesh();
 	mesh->Create(vList, sizeof(Vertex), _countof(vList), iList, sizeof(UINT), _countof(iList));
 
 	return mesh;
