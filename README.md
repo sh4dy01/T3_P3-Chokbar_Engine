@@ -1,62 +1,56 @@
-# ChokbarEngine
+# Chokbar Engine
 
-Projet n°3 de notre 3ème année en G.Tech.  
+The main goal of this project was to create a game engine from scratch by using DirectX 12 and C++.  
 
+## Engine Features
+### Rendering
 
-## Nomenclature du code
+The Engine rendering contains multiple features :
+* A custom shader system, we can create different shader class linked to different .hlsl files
+  * Texture rendering
+  * Directional lighting
+* Each shader is bound to a material, bindable to a MeshRenderer
+* Particle system with custom particle shader
+* Primitive Mesh creation and rendering 
+* Different renderers to render different types of things 
+  * MeshRenderer for 3D models
+  * ParticleRenderer for particles
+  * SkyboxRenderer for skyboxes
+  * UIRenderer for UI elements
 
-* Namespace : `ThisIsANamespace`
-* Class : `ThisIsAClass`
-* Field : `m_Name`
-* Field pointer : `m_pName`
-* Boolean field : `isActive` 
-* Method : `ThisIsAMethod()` 
-* Getter boolean: `IsActivated()`
-* Getter/Setter : `GetName()` / `SetName(type var)`
-* TaClasse::GetInstance() -> m_Instance
+### ECS (Entity Component System)
 
-## Git conventions
-Aucun Commit dans dev et master. Pr dans dev.
+The engine is based on an ECS system:  
+* entity with their unique ID and component signature
+* component that holds the main logic of the entity (e.g., Transform, MeshRenderer, ParticleSystem)
+* system registration is automatic by analysing the entity signature on each Add or Remove component
 
-**Branch Naming :** type/name
+### Physics
 
-### Les types de branches
-Le type d’une branche doit être clair afin de comprendre le but de celle-ci. Voici une liste non exhaustive des types de branches :
+The engine incorporates a custom physics engine with:
+* sphere vs. sphere collision detection
+* space partitioning using a classic grid
+* bitmask to determine entities that can collide with each other
 
-* feature: Ajout d’une nouvelle fonctionnalité
-* bugfix: Correction d’un bug
-* hotfix: Correction d’un bug critique
-* chore: Nettoyage du code
-* experiment: Expérimentation de fonctionnalités
+## Game Features
+### Gameplay
 
-### Commit Naming
-Le type nous informe du type de commit. 9 types sont disponibles :
+The game is a 3D space shooter where the player controls a spaceship tasked with destroying asteroids.  
 
-* `feat:` Ajout d’une nouvelle fonctionnalité
-* `fix:` Correction d’un bug
-* `build:` Changement lié au système de build ou qui concerne les dépendances (npm, grunt, gulp, webpack, etc.)
-* `perf:` Amélioration des performances
-* `refactor:` Modification n’ajoutant pas de fonctionnalités ni de correction de bug (renommage d’une variable, suppression de code redondant, simplification du code, etc.)
-* `style:` Changement lié au style du code (indentation, point virgule, etc.)
-* `test:` Ajout ou modification de tests
-* `revert:` Annulation d’un précédent commit
-* `chore:` Toute autre modification (mise à jour de version par exemple)
+* The player can move in three dimensions without any camera lock  
+* Laser shooting capability  
+* Field of view changes based on the player's speed  
+* Waves of asteroids spawn at regular intervals  
+* The player can die and respawn  
 
-#### Le scope
-Cet élément facultatif indique simplement le contexte du commit. Il s’agit des composants de notre projet, voici une liste non exhaustive :
-* `engine`
-* `entities`
-* `components`
-* `windows`
-* `input`
-* `graphics`
-* `physics`
+## Credits
 
+### Supervisor
+* [Sylvain SECCIA](https://www.seccia.com/)
 
-## Organisation des fichiers
-* jeu  
-* ChockbarEngine : projet du moteur  
-  * Core   : éléments nécessaires au bon fonctionnement du moteur (ex : D3DApp...)  
-  * Engine : éléments spécifiques au moteur (exemple : Components, GameTimer...)  
-  * Common : éléments en commun, accessible partout (ex : Logger...)  
-  * Platform (optionnal) : élément spécifique à la plateforme (fenêtre windows, WinEntry...)  
+### Collaborators
+* [Thomas DELORME](https://github.com/generaltoto)
+* [Nathanael VOGT](https://github.com/Gotvna)
+* [Theo DA SILVA](https://github.com/Sinozer)
+
+The development of this project is actually being continued by [Thomas DELORME](https://github.com/generaltoto/Views)
