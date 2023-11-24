@@ -43,6 +43,10 @@ The game is a 3D space shooter where the player controls a spaceship tasked with
 * Waves of asteroids spawn at regular intervals  
 * The player can die and respawn  
 
+![game-example](screenshot.png)
+
+It's also important to note that there may be existing bugs.
+
 ## Credits
 
 ### Supervisor
